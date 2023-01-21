@@ -1,9 +1,8 @@
-FROM node:17-alpine3.15
-
-COPY package.json package-lock.json ./
-
-RUN npm install
-
+FROM node:18-alpine
+WORKDIR /frontend
 COPY . .
-
+RUN npm ci
 RUN npm run build
+ENV NODE_ENV production
+EXPOSE 3000
+CMD [ "npx", "serve", "build" ]

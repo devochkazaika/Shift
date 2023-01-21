@@ -1,0 +1,17 @@
+version: '3'
+services:
+
+  backend:
+    image: "backend"
+    container_name: backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING.PROFILES.ACTIVE=default
+  frontend:
+    image: "frontend"
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    links:
+      - backend
