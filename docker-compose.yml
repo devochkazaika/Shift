@@ -1,17 +1,17 @@
 version: '3'
 services:
 
-  hello-world-backend:
-    image: "hello-world-backend"
-    container_name: hello-world-backend
+  backend:
+    image: "backend"
+    container_name: backend
     ports:
       - "8080:8080"
     environment:
       - SPRING.PROFILES.ACTIVE=default
-  hello-world-frontend:
-    image: "hello-world-frontend"
-    container_name: hello-world-frontend
+  frontend:
+    image: "frontend"
+    container_name: frontend
     ports:
       - "3000:3000"
     links:
-      - hello-world-backend
+      - backend
