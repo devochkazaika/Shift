@@ -18,7 +18,7 @@ public class StoriesController {
     @PostMapping("/")
     public ResponseEntity<StoriesRequestDto> addStories (@Valid @RequestBody StoriesRequestDto storiesRequestDto) {
 
-        log.info("Received json with StoriesDto, which contains: {} ", storiesRequestDto);
+        log.info("Received json with StoriesRequestDto, which contains: {} ", storiesRequestDto);
 
         return ResponseEntity.ok(storiesRequestDto);
     }
