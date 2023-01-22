@@ -1,18 +1,45 @@
 package ru.cft.shiftlab.contentmaker.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class StoryFramesDto {
-    private String title; //:"Онлайн конвертация", Подзаголовок в истории
-    private String text; //"Обменивайте валюту онлайн по выгодному курсу", Сам текст
+
+    //@MyOwnCustomValidation
+    @NotBlank(message = "The story title is not specified")
+    private String title;
+
+    //@MyOwnCustomValidation
+    @NotBlank(message = "The text of the story is not specified")
+    private String text;
+
+    @NotBlank(message = "Story color not specified")
     private String textColor;
-    private String pictureUrl; //путь до картинки
-    private String linkText; //текст гиперссылки
-    private String linkUrl; //ссылка на внешний источник
-    private Boolean buttonVisible; //нужна ли кнопка true/false
-    private String buttonText; //текст кнопки
-    private String buttonTextColor; //цвет текста
-    private String buttonBackgroundColor; //цвет кнопки
-    private String buttonUrl; //ссылка на внутрянку МП, и во внешку ?
+
+    @NotEmpty(message = "The photo of the story is not specified")
+    private byte[] pictureUrl;
+
+    @NotBlank(message = "The hyperlink text is not specified")
+    private String linkText;
+
+    @NotBlank(message = "The hyperlink address is not specified")
+    private String linkUrl;
+
+    @NotNull(message = "Button visibility is not specified")
+    private Boolean buttonVisible;
+
+    @NotBlank(message = "The button text is not specified") //?
+    private String buttonText;
+
+    @NotBlank(message = "The color of the button text is not specified") //?
+    private String buttonTextColor;
+
+    @NotBlank(message = "The button background color is not specified")
+    private String buttonBackgroundColor;
+
+    @NotBlank(message = "The link for the button is not specified")
+    private String buttonUrl;
 }

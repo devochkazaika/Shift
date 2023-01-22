@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.cft.shiftlab.contentmaker.dto.StoriesDto;
+import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 
 @Controller
 @RequestMapping("/stories")
@@ -15,11 +16,10 @@ import ru.cft.shiftlab.contentmaker.dto.StoriesDto;
 public class StoriesController {
 
     @PostMapping("/")
-    public ResponseEntity<StoriesDto> addStories (@RequestBody StoriesDto storiesDto) {
+    public ResponseEntity<StoriesRequestDto> addStories (@Valid @RequestBody StoriesRequestDto storiesRequestDto) {
 
-        log.info("Received json with StoriesDto, which contains: {} ", storiesDto);
-        log.info("Received json with StoryFramesDto, which contains: {} ", storiesDto.getStoryFramesDto());
+        log.info("Received json with StoriesDto, which contains: {} ", storiesRequestDto);
 
-        return ResponseEntity.ok(storiesDto);
+        return ResponseEntity.ok(storiesRequestDto);
     }
 }
