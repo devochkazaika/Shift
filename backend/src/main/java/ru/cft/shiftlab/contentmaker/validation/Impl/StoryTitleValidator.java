@@ -15,12 +15,12 @@ import java.util.Arrays;
 
 
 @Slf4j
-@EnableConfigurationProperties(TitleTextValidator.class)
+@EnableConfigurationProperties(StoriesTitleTextValidator.class)
 @ConfigurationProperties(prefix = "preview.title.validator")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TitleValidator implements ConstraintValidator<StoryTitleValid, StoriesDto> {
+public class StoryTitleValidator implements ConstraintValidator<StoryTitleValid, StoriesDto> {
 
     private int titleMaxStringCount;
 

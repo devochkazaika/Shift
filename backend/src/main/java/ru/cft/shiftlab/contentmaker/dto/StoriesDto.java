@@ -1,5 +1,6 @@
 package ru.cft.shiftlab.contentmaker.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -22,6 +23,7 @@ public class StoriesDto {
 
     private byte[] previewUrl;
 
+    @JsonProperty("storyFrames")
     @Valid
     @Size(max = 6, message = "The maximum number of stories is 6")
     @NotEmpty

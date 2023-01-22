@@ -13,12 +13,12 @@ import ru.cft.shiftlab.contentmaker.validation.StoriesMultipleTitleTextValid;
 
 import java.util.Arrays;
 @Slf4j
-@EnableConfigurationProperties(TitleTextValidator.class)
+@EnableConfigurationProperties(StoriesTitleTextValidator.class)
 @ConfigurationProperties(prefix = "title.text.validator")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TitleTextValidator implements ConstraintValidator<StoriesMultipleTitleTextValid, StoryFramesDto> {
+public class StoriesTitleTextValidator implements ConstraintValidator<StoriesMultipleTitleTextValid, StoryFramesDto> {
 
     private int titleMaxLenForOneString;
     private int textMaxLenForOneString;
