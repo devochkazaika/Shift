@@ -21,7 +21,7 @@ public class StoriesDto {
     @Null
     private byte[] previewUrl;
 
-    @Valid
+//    @Valid
     @Size(max = 6, message = "")
     @NotEmpty
     private ArrayList<StoryFramesDto> storyFramesDtos;

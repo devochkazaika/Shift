@@ -7,6 +7,6 @@ import java.util.ArrayList;
 
 @Data
 public class StoriesRequestDto {
-    @Valid
+//    @Valid
     private ArrayList<StoriesDto> storiesDtos;
 }
