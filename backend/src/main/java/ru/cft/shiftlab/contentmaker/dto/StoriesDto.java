@@ -11,8 +11,7 @@ import ru.cft.shiftlab.contentmaker.validation.StoryTitleValid;
 import java.util.ArrayList;
 
 @Data
-@StoryTitleValid(message = "The number of lines in the title should be less than " +
-        "${preview.title.validator.titleMaxStringCount}")
+@StoryTitleValid(message = "Incorrect number of lines in the title")
 public class StoriesDto {
     //Ограничение количества строк?
     @NotBlank(message = "The preview title is not specified")
