@@ -31,13 +31,12 @@ public class StoryTitleValidator implements ConstraintValidator<StoryTitleValid,
 
     @Override
     public boolean isValid(StoriesDto object, ConstraintValidatorContext constraintValidatorContext) {
-        if (!(object instanceof StoriesDto)) {
+        if (object == null) {
             throw new IllegalArgumentException("@StringValid only applies to StoryFramesDto objects");
         }
 
         StoriesDto storiesDto = (StoriesDto) object;
 
-        return (Arrays.stream(storiesDto.getPreviewTitle().split("/n")).count() <= titleMaxStringCount) ?
-                true : false;
+        return Arrays.stream(storiesDto.getPreviewTitle().split("/n")).count() <= titleMaxStringCount;
     }
 }
