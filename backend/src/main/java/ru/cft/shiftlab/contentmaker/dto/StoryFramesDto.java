@@ -4,15 +4,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import ru.cft.shiftlab.contentmaker.validation.StoriesMultipleTitleTextValid;
 
 @Data
+@StoriesMultipleTitleTextValid(message = "Wrong format in the title or text")
 public class StoryFramesDto {
 
-    //@MyOwnCustomValidation
     @NotBlank(message = "The story title is not specified")
     private String title;
 
-    //@MyOwnCustomValidation
     @NotBlank(message = "The text of the story is not specified")
     private String text;
 
