@@ -3,6 +3,7 @@ package ru.cft.shiftlab.contentmaker.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import ru.cft.shiftlab.contentmaker.validation.StoriesMultipleTitleTextValid;
 
@@ -42,4 +43,9 @@ public class StoryFramesDto {
 
     @NotBlank(message = "The link for the button is not specified")
     private String buttonUrl;
+
+    @NotBlank(message = "The gradient for the story is not specified")
+    @Pattern(regexp = "EMPTY|HALF|FULL", message = "Incorrect parameters. Possible: EMPTY, HALF, FULL")
+    private String gradient;
+
 }
