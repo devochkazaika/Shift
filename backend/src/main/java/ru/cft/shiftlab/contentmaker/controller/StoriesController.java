@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.cft.shiftlab.contentmaker.dto.StoriesDto;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 
 @Controller

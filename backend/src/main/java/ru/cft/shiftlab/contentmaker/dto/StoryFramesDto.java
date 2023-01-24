@@ -7,16 +7,7 @@ import lombok.Data;
 import ru.cft.shiftlab.contentmaker.validation.StoriesMultipleTitleTextValid;
 
 @Data
-@StoriesMultipleTitleTextValid(message = "The title and the main text must comply with the rules: " +
-        "1)" +
-        "Title 1 line - " + "${title.text.validator.titleMaxLenForOneString}" + " characters;" +
-        "The main text is 7 lines - " + "${title.text.validator.textMaxLenForOneString}" + " characters;" +
-        "2)" +
-        "Title 2 line - " + "${title.text.validator.titleMaxLenForTwoString}" + " characters; " +
-        "The main text is 6 lines -  " + "${title.text.validator.textMaxLenForTwoString}" + " characters; " +
-        "3) " +
-        "Title 3 line - " + "${title.text.validator.titleMaxLenForThreeString}" + " characters; " +
-        "Main text 4 lines - " + "${title.text.validator.textMaxLenForThreeString}" + " characters;")
+@StoriesMultipleTitleTextValid(message = "Wrong format in the title or text")
 public class StoryFramesDto {
 
     @NotBlank(message = "The story title is not specified")
