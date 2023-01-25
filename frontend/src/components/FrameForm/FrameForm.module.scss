@@ -1,0 +1,25 @@
+.frame {
+  border: 2px solid #eeeff5;
+}
+
+.frame_title {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px solid #eeeff5;
+  cursor: pointer;
+  span {
+    font-size: 30px;
+  }
+}
+
+.frame_content {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.5s;
+  &:global(.show) {
+    height: auto;
+    max-height: 9999px;
+    display: block;
+    transition: all 1s;
+  }
+}
