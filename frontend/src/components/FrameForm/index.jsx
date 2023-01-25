@@ -4,10 +4,17 @@ import { Field } from 'formik';
 import FormField from '../FormField';
 import ColorPicker from '../ColorPicker';
 
+import styles from './FrameForm.module.scss';
+
 const FrameForm = ({ frameJson, storyIndex, frameIndex, setFieldValue, remove }) => {
+  const [open, setOpen] = React.useState(true);
   return (
-    <>
-      <div className="row">
+    <div className={styles.frame}>
+      <div className={styles.frame_title} onClick={() => setOpen(!open)}>
+        <h3>Карточка {frameIndex + 1}</h3>
+        <span>{open ? '-' : '+'}</span>
+      </div>
+      <div className={styles.frame_content + (open ? ' show' : '')}>
         <FormField
           labelTitle={'Заголовок'}
           name={`stories.${storyIndex}.storyFrames.${frameIndex}.title`}
@@ -112,12 +119,14 @@ const FrameForm = ({ frameJson, storyIndex, frameIndex, setFieldValue, remove })
         />
 
         <div>
-          <button type="button" className="secondary" onClick={() => remove(frameIndex)}>
-            X
-          </button>
+          {frameIndex !== 0 && (
+            <button type="button" className="secondary" onClick={() => remove(frameIndex)}>
+              X
+            </button>
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
