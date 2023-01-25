@@ -5,7 +5,7 @@ import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import java.io.IOException;
 
 /**
- * Интерфейс, предназанченный для сохранения файлов в определенную директорию.
+ * Интерфейс, предназначенный для сохранения файлов в определенную директорию.
  */
 public interface FileSaverService {
 
