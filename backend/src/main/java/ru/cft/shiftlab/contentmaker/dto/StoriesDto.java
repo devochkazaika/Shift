@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import ru.cft.shiftlab.contentmaker.validation.StoryTitleValid;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 @Data
 @StoryTitleValid(message = "Incorrect number of lines in the title")
 public class StoriesDto {
-    //Ограничение количества строк?
     @NotBlank(message = "The preview title is not specified")
     private String previewTitle;
 
@@ -21,6 +21,10 @@ public class StoriesDto {
     private String previewTitleColor;
 
     private byte[] previewUrl;
+
+    @NotBlank(message = "The gradient for the preview is not specified")
+    @Pattern(regexp = "EMPTY|FULL", message = "Incorrect parameters. Possible: EMPTY, FULL")
+    private String previewGradient;
 
     @JsonProperty("storyFrames")
     @Valid

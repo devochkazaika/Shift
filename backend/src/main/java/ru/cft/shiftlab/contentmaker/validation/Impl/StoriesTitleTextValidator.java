@@ -13,6 +13,7 @@ import ru.cft.shiftlab.contentmaker.validation.StoriesMultipleTitleTextValid;
 
 import java.util.Arrays;
 @Slf4j
+
 @EnableConfigurationProperties(StoriesTitleTextValidator.class)
 @ConfigurationProperties(prefix = "title.text.validator")
 @Data
@@ -40,37 +41,28 @@ public class StoriesTitleTextValidator implements ConstraintValidator<StoriesMul
 
     @Override
     public boolean isValid(StoryFramesDto object, ConstraintValidatorContext constraintValidatorContext) {
-        if (!(object instanceof StoryFramesDto)) {
+        if (object == null) {
             throw new IllegalArgumentException("@StringValid only applies to StoryFramesDto objects");
         }
 
-        StoryFramesDto storyFramesDto = (StoryFramesDto) object;
-
-        int countString = (int) Arrays.stream(storyFramesDto.getTitle().split("/n")).count();
+        int countString = (int) Arrays.stream(((StoryFramesDto) object).getTitle().split("/n")).count();
 
         log.info("getTitle().length() = {}, getText().length() = {}, text.count() = {}",
-                storyFramesDto.getTitle().length(),
-                storyFramesDto.getText().length(),
-                Arrays.stream(storyFramesDto.getText().split("/n")).count());
+                ((StoryFramesDto) object).getTitle().length(),
+                ((StoryFramesDto) object).getText().length(),
+                Arrays.stream(((StoryFramesDto) object).getText().split("/n")).count());
 
-        switch (countString) {
-            case 1:
-                return (storyFramesDto.getTitle().length() <= titleMaxLenForOneString &&
-                        storyFramesDto.getText().length() <= textMaxLenForOneString &&
-                        Arrays.stream(storyFramesDto.getText().split("/n")).count() <= textMaxStringCountForOneString) ?
-                        true : false;
-            case 2:
-                return (storyFramesDto.getTitle().length() <= titleMaxLenForTwoString &&
-                        storyFramesDto.getText().length() <= textMaxLenForTwoString &&
-                        Arrays.stream(storyFramesDto.getText().split("/n")).count() <= textMaxStringCountForTwoString) ?
-                        true : false;
-            case 3:
-                return (storyFramesDto.getTitle().length() <= titleMaxLenForThreeString &&
-                        storyFramesDto.getText().length() <= textMaxLenForThreeString &&
-                        Arrays.stream(storyFramesDto.getText().split("/n")).count() <= textMaxStringCountForThreeString) ?
-                        true : false;
-            default:
-                return false;
-        }
+        return switch (countString) {
+            case 1 -> ((StoryFramesDto) object).getTitle().length() <= titleMaxLenForOneString &&
+                    ((StoryFramesDto) object).getText().length() <= textMaxLenForOneString &&
+                    Arrays.stream(((StoryFramesDto) object).getText().split("/n")).count() <= textMaxStringCountForOneString;
+            case 2 -> ((StoryFramesDto) object).getTitle().length() <= titleMaxLenForTwoString &&
+                    ((StoryFramesDto) object).getText().length() <= textMaxLenForTwoString &&
+                    Arrays.stream(((StoryFramesDto) object).getText().split("/n")).count() <= textMaxStringCountForTwoString;
+            case 3 -> ((StoryFramesDto) object).getTitle().length() <= titleMaxLenForThreeString &&
+                    ((StoryFramesDto) object).getText().length() <= textMaxLenForThreeString &&
+                    Arrays.stream(((StoryFramesDto) object).getText().split("/n")).count() <= textMaxStringCountForThreeString;
+            default -> false;
+        };
     }
 }
