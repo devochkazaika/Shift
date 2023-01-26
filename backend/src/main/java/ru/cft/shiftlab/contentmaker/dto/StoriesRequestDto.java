@@ -11,5 +11,9 @@ public class StoriesRequestDto {
 
     @JsonProperty("stories")
     @Valid
-    private ArrayList<StoriesDto> storiesDtos;
+    private ArrayList<StoriesDto> storiesDtos = new ArrayList<>();
+
+    public void addStoriesDtos(StoriesDto storiesDto) {
+        this.storiesDtos.add(storiesDto);
+    }
 }

@@ -21,18 +21,18 @@ import java.util.Arrays;
 @NoArgsConstructor
 public class StoriesTitleTextValidator implements ConstraintValidator<StoriesMultipleTitleTextValid, StoryFramesDto> {
 
-    private int titleMaxLenForOneString;
-    private int textMaxLenForOneString;
-    private int textMaxStringCountForOneString;
+    private int titleMaxLenForOneString = 17;
+    private int textMaxLenForOneString = 245;
+    private int textMaxStringCountForOneString = 7;
 
 
-    private int titleMaxLenForTwoString;
-    private int textMaxLenForTwoString;
-    private int textMaxStringCountForTwoString;
+    private int titleMaxLenForTwoString = 34;
+    private int textMaxLenForTwoString = 210;
+    private int textMaxStringCountForTwoString = 6;
 
-    private int titleMaxLenForThreeString;
-    private int textMaxLenForThreeString;
-    private int textMaxStringCountForThreeString;
+    private int titleMaxLenForThreeString = 51;
+    private int textMaxLenForThreeString = 140;
+    private int textMaxStringCountForThreeString = 4;
 
     @Override
     public void initialize(StoriesMultipleTitleTextValid constraintAnnotation) {

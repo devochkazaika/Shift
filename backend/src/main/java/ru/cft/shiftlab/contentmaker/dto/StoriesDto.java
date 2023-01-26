@@ -30,5 +30,9 @@ public class StoriesDto {
     @Valid
     @Size(max = 6, message = "The maximum number of stories is 6")
     @NotEmpty
-    private ArrayList<StoryFramesDto> storyFramesDtos;
+    private ArrayList<StoryFramesDto> storyFramesDtos = new ArrayList<>();
+
+    public void addStoryFramesDto(StoryFramesDto storyFramesDto) {
+        this.storyFramesDtos.add(storyFramesDto);
+    }
 }

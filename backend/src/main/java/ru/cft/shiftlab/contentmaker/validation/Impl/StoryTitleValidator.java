@@ -22,7 +22,7 @@ import java.util.Arrays;
 @NoArgsConstructor
 public class StoryTitleValidator implements ConstraintValidator<StoryTitleValid, StoriesDto> {
 
-    private int titleMaxStringCount;
+    private int titleMaxStringCount = 2;
 
     @Override
     public void initialize(StoryTitleValid constraintAnnotation) {
