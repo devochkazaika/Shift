@@ -21,7 +21,7 @@ public class StoriesController {
     private final JsonAndImageSaverService storiesService;
 
     @PostMapping("/add")
-    public void addStories (@Valid @RequestBody StoriesRequestDto storiesRequestDto) {
+    public void addStories(@Valid @RequestBody StoriesRequestDto storiesRequestDto) {
 
         log.info("Received json with StoriesRequestDto, which contains: {} ", storiesRequestDto);
 
