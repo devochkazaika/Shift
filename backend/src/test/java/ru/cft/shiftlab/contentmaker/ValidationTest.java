@@ -12,6 +12,10 @@ import ru.cft.shiftlab.contentmaker.validation.Impl.StoryTitleValidator;
 import ru.cft.shiftlab.contentmaker.validation.StoriesMultipleTitleTextValid;
 import ru.cft.shiftlab.contentmaker.validation.StoryTitleValid;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HexFormat;
+
 import static org.junit.Assert.assertTrue;
 
 
@@ -27,29 +31,31 @@ public class ValidationTest {
     private ConstraintValidatorContext constraintValidatorContext;
 
     @Test
-    public void validate_StoriesRequestDtoHasAllCorrectData() {
-        StoryFramesDto storyFramesDto = new StoryFramesDto();
-        StoriesDto storiesDto = new StoriesDto();
+    public void validate_DtosHaveAllCorrectData() {
+        byte[] bytes = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
 
-        storyFramesDto.setTitle("Online converter");
-        storyFramesDto.setText("Convert value");
-        storyFramesDto.setTextColor("FFFFFF");
-        storyFramesDto.setPictureUrl(new byte[] {65, 65, 65});
-        storyFramesDto.setLinkText("link text");
-        storyFramesDto.setLinkUrl("link url");
-        storyFramesDto.setButtonVisible(true);
-        storyFramesDto.setButtonText("Попробовать");
-        storyFramesDto.setButtonTextColor("FFFFFF");
-        storyFramesDto.setButtonBackgroundColor("FFFFFF");
-        storyFramesDto.setButtonUrl("button url");
-        storyFramesDto.setGradient("HALF");
+        StoryFramesDto storyFramesDto = new StoryFramesDto(
+                "Конвертируй",
+                "Обменивайте валюту онлайн по выгодному курсу",
+                "FFFFFF",
+                bytes,
+                "text",
+                "link url",
+                true,
+                "Попробовать",
+                "FFFFFF",
+                "FFFFFF",
+                "buttonurl",
+                "EMPTY"
+        );
 
-        storiesDto.setPreviewTitle("Conv money");
-        storiesDto.setPreviewTitleColor("FFFFFF");
-        storiesDto.setPreviewUrl(new byte[]{65, 65, 65});
-        storiesDto.setPreviewGradient("FULL");
-
-        storiesDto.addStoryFramesDto(storyFramesDto);
+        StoriesDto storiesDto = new StoriesDto(
+                "Конвертируй валюту",
+                "FFFFFF",
+                bytes,
+                "EMPTY",
+                new ArrayList<>(Collections.singletonList(storyFramesDto))
+        );
 
         StoryTitleValidator storyTitleValidator = new StoryTitleValidator();
         storyTitleValidator.initialize(storyTitleValid);
@@ -57,9 +63,10 @@ public class ValidationTest {
         StoriesTitleTextValidator storiesTitleTextValidator = new StoriesTitleTextValidator();
         storiesTitleTextValidator.initialize(storiesMultipleTitleTextValid);
 
-        boolean resultOfStoryTitleValidator = storyTitleValidator.isValid(storiesDto, constraintValidatorContext);
-        boolean resultOfStoriesTitleTextValidator = storiesTitleTextValidator.isValid(storyFramesDto, constraintValidatorContext);
 
-        assertTrue(resultOfStoryTitleValidator && resultOfStoriesTitleTextValidator);
+
+        assertTrue(
+                storyTitleValidator.isValid(storiesDto, constraintValidatorContext) &&
+                storiesTitleTextValidator.isValid(storyFramesDto, constraintValidatorContext));
     }
 }

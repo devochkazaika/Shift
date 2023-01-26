@@ -22,8 +22,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public NoSuchException handleNoSuchException(NoSuchException noSuchException) {
-        return noSuchException;
+    public StaticContentException handleNoSuchException(StaticContentException staticContentException) {
+        return staticContentException;
     }
 
 
