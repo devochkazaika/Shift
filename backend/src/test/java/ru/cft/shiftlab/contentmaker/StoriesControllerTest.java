@@ -40,9 +40,7 @@ public class StoriesControllerTest {
                 "link url", true, "Попробовать", "FFFFFF",
                 "FFFFFF", "buttonurl", "EMPTY");
         StoriesDto storiesDto = new StoriesDto("Конвертируй валюту", "FFFFFF", bytes, "EMPTY", new ArrayList<>(Collections.singletonList(storyFramesDto)));
-        System.out.println(storiesDto);
         StoriesRequestDto storiesRequestDto = new StoriesRequestDto(new ArrayList<>(Collections.singletonList(storiesDto)));
-
 
         mockMvc.perform(post("/stories/add")
                 .contentType(MediaType.APPLICATION_JSON)

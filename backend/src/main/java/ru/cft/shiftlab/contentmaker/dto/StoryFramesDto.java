@@ -47,4 +47,8 @@ public class StoryFramesDto {
 
     @NotBlank(message = "The link for the button is not specified")
     private String buttonUrl;
+
+    @NotBlank(message = "The gradient for the story is not specified")
+    @Pattern(regexp = "EMPTY|HALF|FULL", message = "Incorrect parameters. Possible: EMPTY, HALF, FULL")
+    private String gradient;
 }
