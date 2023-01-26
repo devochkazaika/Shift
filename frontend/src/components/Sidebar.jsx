@@ -21,7 +21,7 @@ const Sidebar = () => {
   return (
     <div className={`sidebar ${!open ? 'collapsed' : ''}`}>
       <div className="top_section">
-        {open && <h1 className="logo">Faktura</h1>}
+        {open && <span className="logo">Faktura</span>}
         <div className="bars">
           <FaBars onClick={() => setOpen(!open)} />
         </div>
