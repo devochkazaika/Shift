@@ -3,10 +3,15 @@ package ru.cft.shiftlab.contentmaker.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.cft.shiftlab.contentmaker.validation.StoriesMultipleTitleTextValid;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @StoriesMultipleTitleTextValid(message = "Wrong format in the title or text")
 public class StoryFramesDto {
 
