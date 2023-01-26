@@ -45,23 +45,23 @@ public class StoriesTitleTextValidator implements ConstraintValidator<StoriesMul
             throw new IllegalArgumentException("@StringValid only applies to StoryFramesDto objects");
         }
 
-        int countString = (int) Arrays.stream(((StoryFramesDto) object).getTitle().split("/n")).count();
+        int countString = (int) Arrays.stream(((StoryFramesDto) object).getTitle().split("\n")).count();
 
         log.info("getTitle().length() = {}, getText().length() = {}, text.count() = {}",
                 ((StoryFramesDto) object).getTitle().length(),
                 ((StoryFramesDto) object).getText().length(),
-                Arrays.stream(((StoryFramesDto) object).getText().split("/n")).count());
+                Arrays.stream(((StoryFramesDto) object).getText().split("\n")).count());
 
         return switch (countString) {
             case 1 -> ((StoryFramesDto) object).getTitle().length() <= titleMaxLenForOneString &&
                     ((StoryFramesDto) object).getText().length() <= textMaxLenForOneString &&
-                    Arrays.stream(((StoryFramesDto) object).getText().split("/n")).count() <= textMaxStringCountForOneString;
+                    Arrays.stream(((StoryFramesDto) object).getText().split("\n")).count() <= textMaxStringCountForOneString;
             case 2 -> ((StoryFramesDto) object).getTitle().length() <= titleMaxLenForTwoString &&
                     ((StoryFramesDto) object).getText().length() <= textMaxLenForTwoString &&
-                    Arrays.stream(((StoryFramesDto) object).getText().split("/n")).count() <= textMaxStringCountForTwoString;
+                    Arrays.stream(((StoryFramesDto) object).getText().split("\n")).count() <= textMaxStringCountForTwoString;
             case 3 -> ((StoryFramesDto) object).getTitle().length() <= titleMaxLenForThreeString &&
                     ((StoryFramesDto) object).getText().length() <= textMaxLenForThreeString &&
-                    Arrays.stream(((StoryFramesDto) object).getText().split("/n")).count() <= textMaxStringCountForThreeString;
+                    Arrays.stream(((StoryFramesDto) object).getText().split("\n")).count() <= textMaxStringCountForThreeString;
             default -> false;
         };
     }

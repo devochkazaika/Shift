@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HexFormat;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 
@@ -69,4 +70,70 @@ public class ValidationTest {
                 storyTitleValidator.isValid(storiesDto, constraintValidatorContext) &&
                 storiesTitleTextValidator.isValid(storyFramesDto, constraintValidatorContext));
     }
+
+    @Test
+    public void validate_DtoHaveIncorrectDataForStoryTitleValid() {
+        byte[] bytes = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
+
+        StoryFramesDto storyFramesDto = new StoryFramesDto(
+                "Конвертируй",
+                "Обменивайте валюту онлайн по выгодному курсу",
+                "FFFFFF",
+                bytes,
+                "text",
+                "link url",
+                true,
+                "Попробовать",
+                "FFFFFF",
+                "FFFFFF",
+                "buttonurl",
+                "EMPTY"
+        );
+
+        StoriesDto storiesDto = new StoriesDto(
+                "Конвертируй\nвалюту\nонлайн", //titleMaxStringCount: 2
+                "FFFFFF",
+                bytes,
+                "EMPTY",
+                new ArrayList<>(Collections.singletonList(storyFramesDto))
+        );
+
+        StoryTitleValidator storyTitleValidator = new StoryTitleValidator();
+        storyTitleValidator.initialize(storyTitleValid);
+
+
+
+        assertFalse(storyTitleValidator.isValid(storiesDto, constraintValidatorContext));
+    }
+
+    @Test
+    public void validate_DtoHaveIncorrectDataForStoriesMultipleTitleTextValid() {
+        byte[] bytes = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
+
+        StoryFramesDto storyFramesDto = new StoryFramesDto(
+                "Онлайн конвертация ", //titleMaxLenForOneString: 17
+                "Обменивайте валюту онлайн по выгодному курсу",
+                "FFFFFF",
+                bytes,
+                "text",
+                "link url",
+                true,
+                "Попробовать",
+                "FFFFFF",
+                "FFFFFF",
+                "buttonurl",
+                "EMPTY"
+        );
+
+
+        StoriesTitleTextValidator storiesTitleTextValidator = new StoriesTitleTextValidator();
+        storiesTitleTextValidator.initialize(storiesMultipleTitleTextValid);
+
+
+
+        assertFalse(storiesTitleTextValidator.isValid(storyFramesDto, constraintValidatorContext));
+    }
+
+
+
 }
