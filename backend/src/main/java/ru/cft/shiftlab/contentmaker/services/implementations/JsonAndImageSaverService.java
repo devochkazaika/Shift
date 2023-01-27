@@ -2,10 +2,9 @@ package ru.cft.shiftlab.contentmaker.services.implementations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.cft.shiftlab.contentmaker.dto.StoriesDto;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
+import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.services.FileSaverService;
 import ru.cft.shiftlab.util.ByteArrayToImageConverter;
@@ -32,7 +31,7 @@ public class JsonAndImageSaverService implements FileSaverService {
             mapper.writeValue(new File(directory, fileName), storiesRequestDto);
             int counterForPreview = 0;
             int counterForStoryFramePicture = 0;
-            for (StoriesDto story: storiesRequestDto.getStoriesDtos()) {
+            for (StoryDto story: storiesRequestDto.getStoryDtos()) {
                 counterForPreview++;
                 byte [] previewUrl = story.getPreviewUrl();
                 BufferedImage bImage = ImageIO.read(new File(directory, "Cft_logo_ru.png"));
