@@ -19,13 +19,11 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public StaticContentException handleNoSuchException(StaticContentException staticContentException) {
         return staticContentException;
     }
-
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @Override

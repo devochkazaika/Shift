@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.cft.shiftlab.contentmaker.controller.StoriesController;
-import ru.cft.shiftlab.contentmaker.dto.StoriesDto;
+import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.services.implementations.JsonAndImageSaverService;
@@ -35,13 +35,28 @@ public class StoriesControllerTest {
     @Test
     public void addStoriesTest() throws Exception {
         byte[] bytes = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
-        StoryFramesDto storyFramesDto = new StoryFramesDto("Конвертируй",
-                "Обменивайте валюту онлайн по выгодному курсу", "FFFFFF", bytes, "text",
-                "link url", true, "Попробовать", "FFFFFF",
-                "FFFFFF", "buttonurl", "EMPTY");
-        StoriesDto storiesDto = new StoriesDto("Конвертируй валюту", "FFFFFF", bytes, "EMPTY", new ArrayList<>(Collections.singletonList(storyFramesDto)));
-        System.out.println(storiesDto);
-        StoriesRequestDto storiesRequestDto = new StoriesRequestDto(new ArrayList<>(Collections.singletonList(storiesDto)));
+        StoryFramesDto storyFramesDto = new StoryFramesDto(
+                "Конвертируй",
+                "Обменивайте валюту онлайн по выгодному курсу",
+                "FFFFFF",
+                bytes,
+                "NONE",
+                "link url",
+                "link text",
+                "Попробовать",
+                "FFFFFF",
+                "FFFFFF",
+                "buttonurl",
+                "EMPTY");
+        StoryDto storyDto = new StoryDto(
+                "Конвертируй валюту",
+                "FFFFFF",
+                bytes,
+                "EMPTY",
+                new ArrayList<>(Collections.singletonList(storyFramesDto)));
+        System.out.println(storyDto);
+        StoriesRequestDto storiesRequestDto = new StoriesRequestDto(new ArrayList<>(Collections.singletonList(storyDto)));
+
 
 
         mockMvc.perform(post("/stories/add")

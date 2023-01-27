@@ -12,12 +12,11 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StoriesRequestDto {
-
     @JsonProperty("stories")
     @Valid
-    private ArrayList<StoriesDto> storiesDtos = new ArrayList<>();
+    private ArrayList<StoryDto> storyDtos = new ArrayList<>();
 
-    public void addStoriesDtos(StoriesDto storiesDto) {
-        this.storiesDtos.add(storiesDto);
+    public void addStoriesDtos(StoryDto storyDto) {
+        this.storyDtos.add(storyDto);
     }
 }

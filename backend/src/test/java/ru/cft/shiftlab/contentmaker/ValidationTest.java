@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.cft.shiftlab.contentmaker.dto.StoriesDto;
+import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
-import ru.cft.shiftlab.contentmaker.validation.Impl.StoriesTitleTextValidator;
-import ru.cft.shiftlab.contentmaker.validation.Impl.StoryTitleValidator;
-import ru.cft.shiftlab.contentmaker.validation.StoriesMultipleTitleTextValid;
-import ru.cft.shiftlab.contentmaker.validation.StoryTitleValid;
+import ru.cft.shiftlab.contentmaker.validation.implementations.StoryFramesValidator;
+import ru.cft.shiftlab.contentmaker.validation.implementations.StoryValidator;
+import ru.cft.shiftlab.contentmaker.validation.StoryFramesValid;
+import ru.cft.shiftlab.contentmaker.validation.StoryValid;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,10 +23,10 @@ import static org.junit.Assert.assertTrue;
 @ExtendWith(MockitoExtension.class)
 public class ValidationTest {
     @Mock
-    StoryTitleValid storyTitleValid;
+    StoryValid storyValid;
 
     @Mock
-    StoriesMultipleTitleTextValid storiesMultipleTitleTextValid;
+    StoryFramesValid storyFramesValid;
 
     @Mock
     private ConstraintValidatorContext constraintValidatorContext;
@@ -40,9 +40,9 @@ public class ValidationTest {
                 "Обменивайте валюту онлайн по выгодному курсу",
                 "FFFFFF",
                 bytes,
-                "text",
+                "NONE",
+                "link text",
                 "link url",
-                true,
                 "Попробовать",
                 "FFFFFF",
                 "FFFFFF",
@@ -50,7 +50,7 @@ public class ValidationTest {
                 "EMPTY"
         );
 
-        StoriesDto storiesDto = new StoriesDto(
+        StoryDto storyDto = new StoryDto(
                 "Конвертируй валюту",
                 "FFFFFF",
                 bytes,
@@ -58,82 +58,73 @@ public class ValidationTest {
                 new ArrayList<>(Collections.singletonList(storyFramesDto))
         );
 
-        StoryTitleValidator storyTitleValidator = new StoryTitleValidator();
-        storyTitleValidator.initialize(storyTitleValid);
+        StoryValidator storyValidator = new StoryValidator();
+        storyValidator.initialize(storyValid);
 
-        StoriesTitleTextValidator storiesTitleTextValidator = new StoriesTitleTextValidator();
-        storiesTitleTextValidator.initialize(storiesMultipleTitleTextValid);
+        StoryFramesValidator storyFramesValidator = new StoryFramesValidator();
+        storyFramesValidator.initialize(storyFramesValid);
 
 
 
         assertTrue(
-                storyTitleValidator.isValid(storiesDto, constraintValidatorContext) &&
-                storiesTitleTextValidator.isValid(storyFramesDto, constraintValidatorContext));
+                storyValidator.isValid(storyDto, constraintValidatorContext) &&
+                storyFramesValidator.isValid(storyFramesDto, constraintValidatorContext));
     }
 
     @Test
-    public void validate_DtoHaveIncorrectDataForStoryTitleValid() {
+    public void validate_DtoHaveIncorrectDataForStoryValid() {
         byte[] bytes = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
-
         StoryFramesDto storyFramesDto = new StoryFramesDto(
                 "Конвертируй",
                 "Обменивайте валюту онлайн по выгодному курсу",
                 "FFFFFF",
                 bytes,
-                "text",
+                "NONE",
+                "link text",
                 "link url",
-                true,
                 "Попробовать",
                 "FFFFFF",
                 "FFFFFF",
                 "buttonurl",
                 "EMPTY"
         );
-
-        StoriesDto storiesDto = new StoriesDto(
+        StoryDto storyDto = new StoryDto(
                 "Конвертируй\nвалюту\nонлайн", //titleMaxStringCount: 2
                 "FFFFFF",
                 bytes,
                 "EMPTY",
                 new ArrayList<>(Collections.singletonList(storyFramesDto))
         );
-
-        StoryTitleValidator storyTitleValidator = new StoryTitleValidator();
-        storyTitleValidator.initialize(storyTitleValid);
-
+        StoryValidator storyValidator = new StoryValidator();
+        storyValidator.initialize(storyValid);
 
 
-        assertFalse(storyTitleValidator.isValid(storiesDto, constraintValidatorContext));
+
+        assertFalse(storyValidator.isValid(storyDto, constraintValidatorContext));
     }
 
     @Test
-    public void validate_DtoHaveIncorrectDataForStoriesMultipleTitleTextValid() {
+    public void validate_DtoHaveIncorrectDataForStoryFramesValid() {
         byte[] bytes = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
-
         StoryFramesDto storyFramesDto = new StoryFramesDto(
                 "Онлайн конвертация ", //titleMaxLenForOneString: 17
                 "Обменивайте валюту онлайн по выгодному курсу",
                 "FFFFFF",
                 bytes,
-                "text",
+                "NONE",
+                "link text",
                 "link url",
-                true,
                 "Попробовать",
                 "FFFFFF",
                 "FFFFFF",
                 "buttonurl",
                 "EMPTY"
         );
-
-
-        StoriesTitleTextValidator storiesTitleTextValidator = new StoriesTitleTextValidator();
-        storiesTitleTextValidator.initialize(storiesMultipleTitleTextValid);
+        StoryFramesValidator storyFramesValidator = new StoryFramesValidator();
+        storyFramesValidator.initialize(storyFramesValid);
 
 
 
-        assertFalse(storiesTitleTextValidator.isValid(storyFramesDto, constraintValidatorContext));
+        assertFalse(storyFramesValidator.isValid(storyFramesDto, constraintValidatorContext));
     }
-
-
-
 }

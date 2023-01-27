@@ -1,4 +1,4 @@
-package ru.cft.shiftlab.contentmaker.validation.Impl;
+package ru.cft.shiftlab.contentmaker.validation.implementations;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -8,35 +8,34 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import ru.cft.shiftlab.contentmaker.dto.StoriesDto;
-import ru.cft.shiftlab.contentmaker.validation.StoryTitleValid;
+import ru.cft.shiftlab.contentmaker.dto.StoryDto;
+import ru.cft.shiftlab.contentmaker.validation.StoryValid;
 
 import java.util.Arrays;
 
 
 @Slf4j
-@EnableConfigurationProperties(StoriesTitleTextValidator.class)
+@EnableConfigurationProperties(StoryFramesValidator.class)
 @ConfigurationProperties(prefix = "preview.title.validator")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StoryTitleValidator implements ConstraintValidator<StoryTitleValid, StoriesDto> {
-
+public class StoryValidator implements ConstraintValidator<StoryValid, StoryDto> {
     private int titleMaxStringCount = 2;
 
     @Override
-    public void initialize(StoryTitleValid constraintAnnotation) {
+    public void initialize(StoryValid constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
     @Override
-    public boolean isValid(StoriesDto object, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(StoryDto object, ConstraintValidatorContext constraintValidatorContext) {
         if (object == null) {
             throw new IllegalArgumentException("@StringValid only applies to StoryFramesDto objects");
         }
 
-        StoriesDto storiesDto = (StoriesDto) object;
+        StoryDto storyDto = (StoryDto) object;
 
-        return Arrays.stream(storiesDto.getPreviewTitle().split("\n")).count() <= titleMaxStringCount;
+        return Arrays.stream(storyDto.getPreviewTitle().split("\n")).count() <= titleMaxStringCount;
     }
 }

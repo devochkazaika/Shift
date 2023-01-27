@@ -2,7 +2,7 @@ package ru.cft.shiftlab.contentmaker.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import ru.cft.shiftlab.contentmaker.validation.Impl.StoryTitleValidator;
+import ru.cft.shiftlab.contentmaker.validation.implementations.StoryValidator;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -13,10 +13,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target({ ElementType.TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = StoryTitleValidator.class)
+@Constraint(validatedBy = StoryValidator.class)
 @Documented
-public @interface StoryTitleValid {
-    String message() default "{ru.cft.shiftlab.contentmaker.validation.PreviewTitleValid}";
+public @interface StoryValid {
+    String message() default "{ru.cft.shiftlab.contentmaker.validation.StoryValid}";
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default { };
 }
