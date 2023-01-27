@@ -1,5 +1,6 @@
 import React from 'react';
 import { Formik, Form, FieldArray } from 'formik';
+import * as Yup from 'yup';
 
 import Button from './Button';
 import PreviewFields from './StoryFormParts/PreviewFields';
@@ -16,7 +17,7 @@ const initialStoryFrame = {
   buttonText: '',
   buttonTextColor: '#000',
   buttonBackgroundColor: '#fff',
-  buttonUri: '',
+  buttonUrl: '',
   gradient: 'EMPTY',
 };
 
@@ -32,6 +33,23 @@ const initialValues = {
   ],
 };
 
+const validationSchema = Yup.object({
+  stories: Yup.array().of(
+    Yup.object().shape({
+      previewTitle: Yup.string().required('Поле обязательно'),
+      storyFrames: Yup.array().of(
+        Yup.object().shape({
+          title: Yup.string().required('Поле обязательно'),
+          text: Yup.string().required('Поле обязательно'),
+          linkText: Yup.string().required('Поле обязательно'),
+          linkUrl: Yup.string().required('Поле обязательно'),
+          buttonText: Yup.string().required('Поле обязательно'),
+        }),
+      ),
+    }),
+  ),
+});
+
 const StoryForm = () => {
   return (
     <div>
@@ -39,10 +57,11 @@ const StoryForm = () => {
       <Formik
         enableReinitialize
         initialValues={initialValues}
+        validationSchema={validationSchema}
         onSubmit={(values) => {
           console.log(JSON.stringify(values, null, 2));
         }}>
-        {(props) => (
+        {({ errors, touched, ...props }) => (
           <Form>
             <FieldArray name="stories">
               {() => (
