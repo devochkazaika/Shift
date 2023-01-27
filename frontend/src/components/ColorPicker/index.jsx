@@ -6,7 +6,7 @@ import rgbHex from 'rgb-hex';
 import styles from './ColorPicker.module.scss';
 
 const ColorPicker = ({ field, form, ...props }) => {
-  const [color, setColor] = useState('#fff');
+  const [color, setColor] = useState(field.value);
   const [modalShown, toggleModal] = React.useState(false);
   const colorAreaRef = React.useRef();
 
@@ -19,7 +19,13 @@ const ColorPicker = ({ field, form, ...props }) => {
 
     document.body.addEventListener('click', closeModal);
     return () => document.body.removeEventListener('click', closeModal);
-  }, []);
+  }, [color]);
+
+  const handleColorChange = (c) => {
+    let hexColor = '#' + rgbHex(c.rgb.r, c.rgb.g, c.rgb.b, c.rgb.a);
+    setColor(hexColor);
+    form.setFieldValue(field.name, hexColor);
+  };
 
   return (
     <div className={styles.color_area} ref={colorAreaRef}>
@@ -29,13 +35,7 @@ const ColorPicker = ({ field, form, ...props }) => {
         onClick={() => {
           toggleModal(!modalShown);
         }}></div>
-      {modalShown && (
-        <SketchPicker
-          color={color}
-          onChange={(c) => setColor('#' + rgbHex(c.rgb.r, c.rgb.g, c.rgb.b, c.rgb.a))}
-          onChangeComplete={() => form.setFieldValue(props.fieldName, color)}
-        />
-      )}
+      {modalShown && <SketchPicker color={color} onChange={handleColorChange} />}
     </div>
   );
 };

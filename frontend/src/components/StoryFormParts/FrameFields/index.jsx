@@ -47,7 +47,7 @@ const FrameFields = ({ frameJson, storyIndex, frameIndex, framesCount, setFieldV
         </div>
 
         {frameIndex !== 0 && (
-          <span class={frameFieldsStyles.bin_icon}>
+          <span onClick={() => remove(frameIndex)} className={frameFieldsStyles.bin_icon}>
             <span></span>
             <i></i>
           </span>

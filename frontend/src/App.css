@@ -5,6 +5,11 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  height: 100%;
+}
+
 h1 {
   margin-bottom: 20px;
 }
@@ -49,7 +54,7 @@ select:focus {
 
 .sidebar {
   background-color: #363740;
-  height: 100vh;
+  min-height: 100%;
   width: 300px;
   transition: all 0.5s;
 }

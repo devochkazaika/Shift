@@ -8,14 +8,14 @@ import FrameFields from './StoryFormParts/FrameFields';
 const initialStoryFrame = {
   title: '',
   text: '',
-  textColor: '#ffffffff',
+  textColor: '#000',
   pictureUrl: '',
   linkText: '',
   linkUrl: '',
   buttonVisible: true,
   buttonText: '',
-  buttonTextColor: '#ffffffff',
-  buttonBackgroundColor: '#ffffffff',
+  buttonTextColor: '#000',
+  buttonBackgroundColor: '#fff',
   buttonUri: '',
   gradient: 'EMPTY',
 };
@@ -24,7 +24,7 @@ const initialValues = {
   stories: [
     {
       previewTitle: '',
-      previewTitleColor: '#ffffffff',
+      previewTitleColor: '#000',
       previewUrl: '',
       previewGradient: 'EMPTY',
       storyFrames: [initialStoryFrame],
