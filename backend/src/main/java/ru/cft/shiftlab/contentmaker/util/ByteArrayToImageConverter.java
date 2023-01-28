@@ -13,7 +13,7 @@ public class ByteArrayToImageConverter {
     public void convertByteArrayToImageAndSave(byte [] bytes, String directory, String fileName, String fileFormat, int counter) throws IOException {
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
         BufferedImage bImage2 = ImageIO.read(bis);
-        ImageIO.write(bImage2, "png", new File(directory, fileName + counter + fileFormat));
+        ImageIO.write(bImage2, fileFormat.substring(1), new File(directory, fileName + counter + fileFormat));
     }
 
 }
