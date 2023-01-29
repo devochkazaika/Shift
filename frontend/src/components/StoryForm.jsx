@@ -6,6 +6,8 @@ import Button from './Button';
 import PreviewFields from './StoryFormParts/PreviewFields';
 import FrameFields from './StoryFormParts/FrameFields';
 
+const maxFrames = 6;
+
 const initialStoryFrame = {
   title: '',
   text: '',
@@ -61,17 +63,20 @@ const StoryForm = () => {
         onSubmit={(values) => {
           console.log(JSON.stringify(values, null, 2));
         }}>
-        {({ errors, touched, ...props }) => (
+        {(props) => (
           <Form>
             <FieldArray name="stories">
               {() => (
                 <>
                   {props.values.stories.map((story, indexS) => (
                     <>
-                      <PreviewFields storyIndex={indexS} />
+                      <PreviewFields
+                        storyIndex={indexS}
+                        errors={props.errors}
+                        touched={props.touched}
+                      />
                       <br />
                       <h2>Карточки</h2>
-
                       <FieldArray name={`stories.${indexS}.storyFrames`}>
                         {({ remove, push }) => (
                           <>
@@ -83,9 +88,11 @@ const StoryForm = () => {
                                 setFieldValue={props.setFieldValue}
                                 frameJson={storyFrame}
                                 remove={remove}
+                                errors={props.errors}
+                                touched={props.touched}
                               />
                             ))}
-                            {story.storyFrames.length <= 5 && (
+                            {story.storyFrames.length < maxFrames && (
                               <Button
                                 text="Добавить"
                                 type="button"

@@ -3,10 +3,9 @@ import React from 'react';
 import FormField from '../../FormField';
 import ColorPicker from '../../ColorPicker';
 
-import previewFieldsStyles from './PreviewFields.module.scss';
 import storyFormPartsStyles from '../StoryFormParts.module.scss';
 
-const PreviewFields = ({ storyIndex }) => {
+const PreviewFields = ({ storyIndex, errors, touched }) => {
   return (
     <>
       <div className={storyFormPartsStyles.row}>
@@ -15,12 +14,16 @@ const PreviewFields = ({ storyIndex }) => {
             labelTitle={'Заголовок истории'}
             name={`stories.${storyIndex}.previewTitle`}
             type={'text'}
+            errors={errors}
+            touched={touched}
           />
         </div>
         <FormField
           labelTitle={'Цвет текста'}
           name={`stories.${storyIndex}.previewTitleColor`}
           component={ColorPicker}
+          errors={errors}
+          touched={touched}
         />
       </div>
       <div className={storyFormPartsStyles.input_field}>
@@ -28,6 +31,8 @@ const PreviewFields = ({ storyIndex }) => {
           labelTitle={'Путь до картинки'}
           name={`stories.${storyIndex}.previewUrl`}
           type="text"
+          errors={errors}
+          touched={touched}
         />
       </div>
       <div className={storyFormPartsStyles.input_field}>
@@ -39,6 +44,8 @@ const PreviewFields = ({ storyIndex }) => {
             { value: 'EMPTY', name: 'Нет' },
             { value: 'FULL', name: 'Поверх всего изображения' },
           ]}
+          errors={errors}
+          touched={touched}
         />
       </div>
     </>
