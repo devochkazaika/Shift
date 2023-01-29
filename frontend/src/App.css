@@ -6,7 +6,8 @@
 }
 
 html,
-body {
+body,
+#root {
   height: 100%;
 }
 
@@ -49,6 +50,7 @@ select:focus {
 
 /**/
 .container {
+  min-height: 100%;
   display: flex;
 }
 

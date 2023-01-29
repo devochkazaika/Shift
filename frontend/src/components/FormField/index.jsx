@@ -1,43 +1,52 @@
 import React from 'react';
-import { Field, ErrorMessage } from 'formik';
+import { Field, ErrorMessage, getIn } from 'formik';
 
 import formFieldStyles from './FormField.module.scss';
 
-const FormField = ({
-  labelTitle,
-  name,
-  type,
-  value,
-  checked,
-  component,
-  as,
-  options,
-  handleClick,
-}) => {
+function ifObjectHasField(object, fieldName) {
+  if (getIn(object, fieldName)) {
+    return true;
+  }
+  return false;
+}
+
+const FormField = (props) => {
   return (
     <div className={formFieldStyles.root}>
-      {type === 'radio' ? (
+      {props.type === 'radio' ? (
         <>
-          <label htmlFor={name} className={formFieldStyles.radio_title}>
-            {labelTitle}
+          <label htmlFor={props.name} className={formFieldStyles.radio_title}>
+            {props.labelTitle}
           </label>
-          <Field name={name} type={type} value={value} onChange={handleClick} checked={checked} />
+          <Field
+            name={props.name}
+            type={props.type}
+            value={props.value}
+            onChange={props.handleClick}
+            checked={props.checked}
+          />
         </>
       ) : (
         <>
-          <label htmlFor={name} className={formFieldStyles.label_title}>
-            {labelTitle}
+          <label htmlFor={props.name} className={formFieldStyles.label_title}>
+            {props.labelTitle}
           </label>
           <Field
-            name={name}
+            name={props.name}
             placeholder=""
-            type={type}
-            component={component}
-            //fieldName={name}
-            as={as}
-            className={formFieldStyles.field}>
-            {options &&
-              options.map((option, i) => (
+            type={props.type}
+            component={props.component}
+            as={props.as}
+            className={
+              formFieldStyles.field +
+              ' ' +
+              (ifObjectHasField(props.errors, props.name) &&
+              ifObjectHasField(props.touched, props.name)
+                ? formFieldStyles.error
+                : '')
+            }>
+            {props.options &&
+              props.options.map((option, i) => (
                 <option key={i} value={option.value}>
                   {option.name}
                 </option>
@@ -45,7 +54,7 @@ const FormField = ({
           </Field>
         </>
       )}
-      <ErrorMessage name={name} component="div" className="field-error" />
+      <ErrorMessage name={props.name} component="div" className={formFieldStyles.field_error} />
     </div>
   );
 };
