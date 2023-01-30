@@ -1,9 +1,12 @@
 import React from 'react';
 import { Formik, Form, FieldArray } from 'formik';
+import * as Yup from 'yup';
 
 import Button from './Button';
 import PreviewFields from './StoryFormParts/PreviewFields';
 import FrameFields from './StoryFormParts/FrameFields';
+
+const maxFrames = 6;
 
 const initialStoryFrame = {
   title: '',
@@ -16,7 +19,7 @@ const initialStoryFrame = {
   buttonText: '',
   buttonTextColor: '#000',
   buttonBackgroundColor: '#fff',
-  buttonUri: '',
+  buttonUrl: '',
   gradient: 'EMPTY',
 };
 
@@ -32,6 +35,33 @@ const initialValues = {
   ],
 };
 
+const validationSchema = Yup.object({
+  stories: Yup.array().of(
+    Yup.object().shape({
+      previewTitle: Yup.string().required('Поле обязательно'),
+      storyFrames: Yup.array().of(
+        Yup.object().shape({
+          title: Yup.string().required('Поле обязательно'),
+          text: Yup.string().required('Поле обязательно'),
+          buttonVisible: Yup.boolean(),
+          linkText: Yup.string().when('buttonVisible', {
+            is: false,
+            then: Yup.string().required('Поле обязательно'),
+          }),
+          linkUrl: Yup.string().when('buttonVisible', {
+            is: false,
+            then: Yup.string().required('Поле обязательно'),
+          }),
+          buttonText: Yup.string().when('buttonVisible', {
+            is: true,
+            then: Yup.string().required('Поле обязательно'),
+          }),
+        }),
+      ),
+    }),
+  ),
+});
+
 const StoryForm = () => {
   return (
     <div>
@@ -39,6 +69,7 @@ const StoryForm = () => {
       <Formik
         enableReinitialize
         initialValues={initialValues}
+        validationSchema={validationSchema}
         onSubmit={(values) => {
           console.log(JSON.stringify(values, null, 2));
         }}>
@@ -49,10 +80,13 @@ const StoryForm = () => {
                 <>
                   {props.values.stories.map((story, indexS) => (
                     <>
-                      <PreviewFields storyIndex={indexS} />
+                      <PreviewFields
+                        storyIndex={indexS}
+                        errors={props.errors}
+                        touched={props.touched}
+                      />
                       <br />
                       <h2>Карточки</h2>
-
                       <FieldArray name={`stories.${indexS}.storyFrames`}>
                         {({ remove, push }) => (
                           <>
@@ -64,9 +98,11 @@ const StoryForm = () => {
                                 setFieldValue={props.setFieldValue}
                                 frameJson={storyFrame}
                                 remove={remove}
+                                errors={props.errors}
+                                touched={props.touched}
                               />
                             ))}
-                            {story.storyFrames.length <= 5 && (
+                            {story.storyFrames.length < maxFrames && (
                               <Button
                                 text="Добавить"
                                 type="button"
