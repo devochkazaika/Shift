@@ -67,7 +67,7 @@ const FrameFields = ({ frameJson, storyIndex, frameIndex, framesCount, setFieldV
               <FormField
                 labelTitle={'Текст'}
                 name={`stories.${storyIndex}.storyFrames.${frameIndex}.text`}
-                type={'text'}
+                as={'textarea'}
               />
             </div>
             <FormField
@@ -127,7 +127,7 @@ const FrameFields = ({ frameJson, storyIndex, frameIndex, framesCount, setFieldV
                   <FormField
                     labelTitle={'Текст кнопки'}
                     name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonText`}
-                    type="text"
+                    as={'textarea'}
                   />
                 </div>
                 <FormField
