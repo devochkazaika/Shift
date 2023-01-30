@@ -43,9 +43,19 @@ const validationSchema = Yup.object({
         Yup.object().shape({
           title: Yup.string().required('Поле обязательно'),
           text: Yup.string().required('Поле обязательно'),
-          linkText: Yup.string().required('Поле обязательно'),
-          linkUrl: Yup.string().required('Поле обязательно'),
-          buttonText: Yup.string().required('Поле обязательно'),
+          buttonVisible: Yup.boolean(),
+          linkText: Yup.string().when('buttonVisible', {
+            is: false,
+            then: Yup.string().required('Поле обязательно'),
+          }),
+          linkUrl: Yup.string().when('buttonVisible', {
+            is: false,
+            then: Yup.string().required('Поле обязательно'),
+          }),
+          buttonText: Yup.string().when('buttonVisible', {
+            is: true,
+            then: Yup.string().required('Поле обязательно'),
+          }),
         }),
       ),
     }),
