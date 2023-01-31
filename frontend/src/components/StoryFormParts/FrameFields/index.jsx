@@ -2,6 +2,7 @@ import React from 'react';
 
 import FormField from '../../FormField';
 import ColorPicker from '../../ColorPicker';
+import UploadImage from '../../UploadImage';
 
 import frameFieldsStyles from './FrameFields.module.scss';
 import storyFormPartsStyles from '../StoryFormParts.module.scss';
@@ -93,9 +94,9 @@ const FrameFields = ({
           </div>
           <div className={storyFormPartsStyles.input_field}>
             <FormField
-              labelTitle={'Путь до картинки'}
+              labelTitle={'Картинка карточки'}
               name={`stories.${storyIndex}.storyFrames.${frameIndex}.pictureUrl`}
-              type="text"
+              component={UploadImage}
               errors={errors}
               touched={touched}
             />

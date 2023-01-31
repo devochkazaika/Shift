@@ -2,10 +2,11 @@ import React from 'react';
 
 import FormField from '../../FormField';
 import ColorPicker from '../../ColorPicker';
+import UploadImage from '../../UploadImage';
 
 import storyFormPartsStyles from '../StoryFormParts.module.scss';
 
-const PreviewFields = ({ storyIndex, errors, touched }) => {
+const PreviewFields = ({ storyIndex, setFieldValue, errors, touched }) => {
   return (
     <>
       <div className={storyFormPartsStyles.row}>
@@ -28,9 +29,9 @@ const PreviewFields = ({ storyIndex, errors, touched }) => {
       </div>
       <div className={storyFormPartsStyles.input_field}>
         <FormField
-          labelTitle={'Путь до картинки'}
+          labelTitle={'Картинка превью'}
           name={`stories.${storyIndex}.previewUrl`}
-          type="text"
+          component={UploadImage}
           errors={errors}
           touched={touched}
         />
