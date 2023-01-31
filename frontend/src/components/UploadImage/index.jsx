@@ -8,9 +8,13 @@ const UploadImage = ({ field, form, ...props }) => {
   const handleUploadImage = async (e) => {
     let img = e.target.files[0];
     setImage(img);
-    const buffer = await img.arrayBuffer();
-    let byteArray = new Uint8Array(buffer);
-    form.setFieldValue(field.name, Array.from(byteArray));
+    if (img) {
+      const buffer = await img.arrayBuffer();
+      let byteArray = new Uint8Array(buffer);
+      form.setFieldValue(field.name, Array.from(byteArray));
+    } else {
+      form.setFieldValue(field.name, null);
+    }
   };
 
   return (
