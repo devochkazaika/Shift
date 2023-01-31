@@ -1,5 +1,7 @@
 import React from 'react';
 
+import PreviewImage from './PreviewImage';
+
 const UploadImage = ({ field, form, ...props }) => {
   const [image, setImage] = React.useState(null);
 
@@ -19,7 +21,7 @@ const UploadImage = ({ field, form, ...props }) => {
         accept="image/*"
         onChange={(e) => handleUploadImage(e)}
       />
-      <div className="file_preview">{image && <img src={image.name} />}</div>
+      {image && <PreviewImage image={image} />}
     </>
   );
 };
