@@ -12,7 +12,7 @@ const initialStoryFrame = {
   title: '',
   text: '',
   textColor: '#000',
-  pictureUrl: '',
+  pictureUrl: [],
   linkText: '',
   linkUrl: '',
   buttonVisible: true,
@@ -28,7 +28,7 @@ const initialValues = {
     {
       previewTitle: '',
       previewTitleColor: '#000',
-      previewUrl: '',
+      previewUrl: [],
       previewGradient: 'EMPTY',
       storyFrames: [initialStoryFrame],
     },
@@ -43,6 +43,7 @@ const validationSchema = Yup.object({
         Yup.object().shape({
           title: Yup.string().required('Поле обязательно'),
           text: Yup.string().required('Поле обязательно'),
+          pictureUrl: Yup.mixed().required('Поле обязательно'),
           buttonVisible: Yup.boolean(),
           linkText: Yup.string().when('buttonVisible', {
             is: false,
@@ -69,9 +70,12 @@ const StoryForm = () => {
       <Formik
         enableReinitialize
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        //validationSchema={validationSchema}
         onSubmit={(values) => {
           console.log(JSON.stringify(values, null, 2));
+          // console.log(values.file);
+          // const content = new Uint8Array(values.file);
+          // setA(URL.createObjectURL(new Blob([content.buffer], { type: 'image/*' } /* (1) */)));
         }}>
         {(props) => (
           <Form>
@@ -82,6 +86,7 @@ const StoryForm = () => {
                     <>
                       <PreviewFields
                         storyIndex={indexS}
+                        setFieldValue={props.setFieldValue}
                         errors={props.errors}
                         touched={props.touched}
                       />
