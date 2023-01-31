@@ -101,21 +101,36 @@ const FrameFields = ({
             />
           </div>
 
+          <div className={storyFormPartsStyles.input_field}>
+            <FormField
+              labelTitle={'Градиент'}
+              name={`stories.${storyIndex}.storyFrames.${frameIndex}.gradient`}
+              as="select"
+              options={[
+                { value: 'EMPTY', name: 'Нет' },
+                { value: 'FULL', name: 'Поверх всего изображения' },
+                { value: 'HALF', name: 'Поверх нижней половины изображения' },
+              ]}
+              errors={errors}
+              touched={touched}
+            />
+          </div>
+
           <div role="group" aria-labelledby="my-radio-group">
             <div className={storyFormPartsStyles.row}>
               <label>
                 <FormField
                   labelTitle="Кнопка"
                   type="radio"
-                  name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonVisible`}
-                  value="true"
-                  handleClick={() => {
-                    setFieldValue(
-                      `stories.${storyIndex}.storyFrames.${frameIndex}.buttonVisible`,
-                      true,
-                    );
-                  }}
-                  checked={frameJson.buttonVisible}
+                  name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
+                  value="BUTTON"
+                  // handleClick={() => {
+                  //   setFieldValue(
+                  //     `stories.${storyIndex}.storyFrames.${frameIndex}.buttonVisible`,
+                  //     true,
+                  //   );
+                  // }}
+                  checked={frameJson.visibleLinkOrButtonOrNone === 'BUTTON'}
                   errors={errors}
                   touched={touched}
                 />
@@ -125,15 +140,27 @@ const FrameFields = ({
                 <FormField
                   labelTitle="Ссылка"
                   type="radio"
-                  name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonVisible`}
-                  value="false"
-                  handleClick={() =>
-                    setFieldValue(
-                      `stories.${storyIndex}.storyFrames.${frameIndex}.buttonVisible`,
-                      false,
-                    )
-                  }
-                  checked={!frameJson.buttonVisible}
+                  name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
+                  value="LINK"
+                  // handleClick={() =>
+                  //   setFieldValue(
+                  //     `stories.${storyIndex}.storyFrames.${frameIndex}.buttonVisible`,
+                  //     false,
+                  //   )
+                  // }
+                  checked={frameJson.visibleLinkOrButtonOrNone === 'LINK'}
+                  errors={errors}
+                  touched={touched}
+                />
+              </label>
+
+              <label>
+                <FormField
+                  labelTitle="Ничего"
+                  type="radio"
+                  name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
+                  value="NONE"
+                  checked={frameJson.visibleLinkOrButtonOrNone === 'NONE'}
                   errors={errors}
                   touched={touched}
                 />
@@ -141,7 +168,7 @@ const FrameFields = ({
             </div>
           </div>
 
-          {frameJson.buttonVisible ? (
+          {frameJson.visibleLinkOrButtonOrNone === 'BUTTON' && (
             <>
               <div className={storyFormPartsStyles.row}>
                 <div className={storyFormPartsStyles.input_field}>
@@ -178,7 +205,8 @@ const FrameFields = ({
                 />
               </div>
             </>
-          ) : (
+          )}
+          {frameJson.visibleLinkOrButtonOrNone === 'LINK' && (
             <>
               <div className={storyFormPartsStyles.input_field}>
                 <FormField
@@ -200,21 +228,6 @@ const FrameFields = ({
               </div>
             </>
           )}
-
-          <div className={storyFormPartsStyles.input_field}>
-            <FormField
-              labelTitle={'Градиент'}
-              name={`stories.${storyIndex}.storyFrames.${frameIndex}.gradient`}
-              as="select"
-              options={[
-                { value: 'EMPTY', name: 'Нет' },
-                { value: 'FULL', name: 'Поверх всего изображения' },
-                { value: 'HALF', name: 'Поверх нижней половины изображения' },
-              ]}
-              errors={errors}
-              touched={touched}
-            />
-          </div>
         </div>
       )}
     </div>

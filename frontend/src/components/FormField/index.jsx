@@ -18,13 +18,7 @@ const FormField = (props) => {
           <label htmlFor={props.name} className={formFieldStyles.radio_title}>
             {props.labelTitle}
           </label>
-          <Field
-            name={props.name}
-            type={props.type}
-            value={props.value}
-            onChange={props.handleClick}
-            checked={props.checked}
-          />
+          <Field name={props.name} type={props.type} value={props.value} checked={props.checked} />
         </>
       ) : (
         <>

@@ -13,14 +13,14 @@ const initialStoryFrame = {
   text: '',
   textColor: '#000',
   pictureUrl: '',
+  gradient: 'EMPTY',
+  visibleLinkOrButtonOrNone: 'BUTTON',
   linkText: '',
   linkUrl: '',
-  buttonVisible: true,
   buttonText: '',
   buttonTextColor: '#000',
   buttonBackgroundColor: '#fff',
   buttonUrl: '',
-  gradient: 'EMPTY',
 };
 
 const initialValues = {
@@ -43,17 +43,21 @@ const validationSchema = Yup.object({
         Yup.object().shape({
           title: Yup.string().required('Поле обязательно'),
           text: Yup.string().required('Поле обязательно'),
-          buttonVisible: Yup.boolean(),
-          linkText: Yup.string().when('buttonVisible', {
-            is: false,
+          //buttonVisible: Yup.boolean(),
+          linkText: Yup.string().when('visibleLinkOrButtonOrNone', {
+            is: 'LINK',
             then: Yup.string().required('Поле обязательно'),
           }),
-          linkUrl: Yup.string().when('buttonVisible', {
-            is: false,
+          linkUrl: Yup.string().when('visibleLinkOrButtonOrNone', {
+            is: 'LINK',
             then: Yup.string().required('Поле обязательно'),
           }),
-          buttonText: Yup.string().when('buttonVisible', {
-            is: true,
+          buttonText: Yup.string().when('visibleLinkOrButtonOrNone', {
+            is: 'BUTTON',
+            then: Yup.string().required('Поле обязательно'),
+          }),
+          buttonUrl: Yup.string().when('visibleLinkOrButtonOrNone', {
+            is: 'BUTTON',
             then: Yup.string().required('Поле обязательно'),
           }),
         }),
