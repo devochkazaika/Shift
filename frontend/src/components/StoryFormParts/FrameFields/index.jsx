@@ -95,7 +95,7 @@ const FrameFields = ({
           <div className={storyFormPartsStyles.input_field}>
             <FormField
               labelTitle={'Картинка карточки'}
-              name={`stories.${storyIndex}.previewUrl`}
+              name={`stories.${storyIndex}.storyFrames.${frameIndex}.pictureUrl`}
               component={UploadImage}
               errors={errors}
               touched={touched}

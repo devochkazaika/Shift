@@ -10,7 +10,7 @@ const PreviewImage = ({ image }) => {
   };
 
   return (
-    <div>
+    <div style={{ marginTop: '10px' }}>
       {preview ? <img alt="preview" src={preview} width="100px" height="100px" /> : 'Loading...'}
     </div>
   );
