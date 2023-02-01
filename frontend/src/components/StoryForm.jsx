@@ -79,7 +79,11 @@ const StoryForm = () => {
         validationSchema={validationSchema}
         onSubmit={(values) => {
           const data = JSON.stringify(values, null, 2);
-          // ОТПРАВИТЬ
+          fetch('http://localhost:8080/stories/add', {
+                method: "POST"
+        })
+                .then(response => response.json())
+                .then(result => console.log(result))
           console.log(JSON.stringify(values, null, 2));
         }}>
         {(props) => (
