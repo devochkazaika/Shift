@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.services.implementations.JsonAndImageSaverService;
 
+@CrossOrigin(origins="http://localhost:3000")
 @RestController
 @RequestMapping("/stories")
 @Slf4j
