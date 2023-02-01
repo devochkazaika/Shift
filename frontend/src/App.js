@@ -1,23 +1,25 @@
 import './App.css';
-import {useEffect, useState} from "react";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
+import Sidebar from './components/Sidebar';
+import Stories from './pages/Stories';
+import Banners from './pages/Banners';
 
 function App() {
-    const [message, setMessage] = useState("");
-
-    useEffect(() => {
-        fetch('http://localhost:8080/')
-            .then(response => response.text())
-            .then(message => {
-                setMessage(message);
-            });
-    },[])
-    return (
-        <div className="App">
-            <header className="">
-                <h2 className="App-title">{message}</h2>
-            </header>
-        </div>
-    )
+  return (
+    <BrowserRouter>
+      <div className="container">
+        <Sidebar />
+        <main className="content">
+          <Routes>
+            <Route path="/" element={<Stories />} />
+            <Route path="/stories" element={<Stories />} />
+            <Route path="/banners" element={<Banners />} />
+          </Routes>
+        </main>
+      </div>
+    </BrowserRouter>
+  );
 }
 
 export default App;
