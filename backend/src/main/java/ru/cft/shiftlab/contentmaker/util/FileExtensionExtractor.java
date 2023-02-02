@@ -8,7 +8,7 @@ import java.net.URLConnection;
 /**
  * Класс, предназначенный для извлечения расширения картинки из байтогово массива.
  */
-public class FileExtensionExtractor {
+public class  FileExtensionExtractor {
 
     public String getFileExtensionFromByteArray(byte[] bytes) {
         try {
