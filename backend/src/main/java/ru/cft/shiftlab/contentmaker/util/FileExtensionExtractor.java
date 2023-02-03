@@ -10,6 +10,12 @@ import java.net.URLConnection;
  */
 public class FileExtensionExtractor {
 
+    /**
+     * Метод, который извлекает расширение картинки из байтового массива.
+     *
+     * @param bytes байтовый массив, из которого будет доставаться расширение файла (картинки).
+     * @throws RuntimeException исключение, которое возникает в процессе работы программы.
+     */
     public static String getFileExtensionFromByteArray(byte[] bytes) {
         try {
             InputStream is = new ByteArrayInputStream(bytes);
