@@ -21,7 +21,6 @@ public class JsonAndImageSaverService implements FileSaverService {
     public void saveFiles(StoriesRequestDto storiesRequestDto){
         try {
             ObjectMapper mapper = new ObjectMapper();
-            ByteArrayToImageConverter byteArrayToImageConverter = new ByteArrayToImageConverter();
             String jsonDirectory =
                     "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story";
             String fileName = "stories.json";
@@ -30,13 +29,12 @@ public class JsonAndImageSaverService implements FileSaverService {
             int counterForStoryFramePicture = 0;
             String picturesDirectory =
                     "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/test_bank";
-            FileExtensionExtractor fileExtensionExtractor = new FileExtensionExtractor();
             for (StoryDto story: storiesRequestDto.getStoryDtos()) {
                 counterForPreview++;
                 byte [] previewUrl = story.getPreviewUrl();
                 String previewFileExtension =
-                        fileExtensionExtractor.getFileExtensionFromByteArray(previewUrl);
-                byteArrayToImageConverter.convertByteArrayToImageAndSave(
+                        FileExtensionExtractor.getFileExtensionFromByteArray(previewUrl);
+                ByteArrayToImageConverter.convertByteArrayToImageAndSave(
                         previewUrl,
                         picturesDirectory,
                         "preview",
@@ -46,8 +44,8 @@ public class JsonAndImageSaverService implements FileSaverService {
                     counterForStoryFramePicture++;
                     byte [] storyFramePictureUrl = storyFramesDto.getPictureUrl();
                     String storyFramePictureFileExtension =
-                            fileExtensionExtractor.getFileExtensionFromByteArray(storyFramePictureUrl);
-                    byteArrayToImageConverter.convertByteArrayToImageAndSave(
+                            FileExtensionExtractor.getFileExtensionFromByteArray(storyFramePictureUrl);
+                    ByteArrayToImageConverter.convertByteArrayToImageAndSave(
                             storyFramePictureUrl,
                             picturesDirectory,
                             "storyFramePicture",

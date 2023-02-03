@@ -10,13 +10,16 @@ import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.services.implementations.JsonAndImageSaverService;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HexFormat;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,8 +30,13 @@ public class JsonAndImageSaverServiceTest {
     private JsonAndImageSaverService jsonAndImageSaverService;
 
     @Test
-    void should_save_files() {
-        byte[] bytes = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
+    void should_save_files() throws IOException {
+        BufferedImage bImage = ImageIO.read(
+                new File("/content-maker/backend/src/test/java/ru/cft/shiftlab/contentmaker/test_pictures",
+                        "sample.png"));
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ImageIO.write(bImage, "png", bos );
+        byte[] bytes = bos.toByteArray();
         StoryFramesDto storyFramesDto = new StoryFramesDto(
                 "Конвертируй",
                 "Обменивайте валюту онлайн по выгодному курсу",
@@ -52,13 +60,20 @@ public class JsonAndImageSaverServiceTest {
 
         jsonAndImageSaverService.saveFiles(storiesRequestDto);
 
-        Path path = Paths.get("/content-maker/backend/src/main/resources/data/stories.json");
-        File file = path.toFile();
+        Path jsonFilePath = Paths.get("/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/stories.json");
+        Path previewPictureFilePath = Paths.get("/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/test_bank/preview1.png");
+        Path storyFramePictureFilePath = Paths.get("/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/test_bank/storyFramePicture1.png");
+
+        File jsonFile = jsonFilePath.toFile();
+        File previewPicture = previewPictureFilePath.toFile();
+        File storyFramePicture = storyFramePictureFilePath.toFile();
 
         assertAll(
-                () -> assertTrue(Files.exists(file.toPath()), "File should exist"),
+                () -> assertTrue(Files.exists(jsonFile.toPath()), "File should exist"),
+                () -> assertTrue(Files.exists(previewPicture.toPath()), "File should exist"),
+                () -> assertTrue(Files.exists(storyFramePicture.toPath()), "File should exist"),
                 () -> assertLinesMatch(Collections.singletonList(asJsonString(storiesRequestDto)),
-                        Files.readAllLines(file.toPath())));
+                        Files.readAllLines(jsonFile.toPath())));
     }
 
     public static String asJsonString(final Object obj) {

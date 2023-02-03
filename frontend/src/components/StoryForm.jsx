@@ -12,9 +12,9 @@ const initialStoryFrame = {
   title: '',
   text: '',
   textColor: '#000',
-  pictureUrl: '',
   gradient: 'EMPTY',
   visibleLinkOrButtonOrNone: 'BUTTON',
+  pictureUrl: null,
   linkText: '',
   linkUrl: '',
   buttonText: '',
@@ -28,7 +28,7 @@ const initialValues = {
     {
       previewTitle: '',
       previewTitleColor: '#000',
-      previewUrl: '',
+      previewUrl: null,
       previewGradient: 'EMPTY',
       storyFrames: [initialStoryFrame],
     },
@@ -44,6 +44,9 @@ const validationSchema = Yup.object({
           title: Yup.string().required('Поле обязательно'),
           text: Yup.string().required('Поле обязательно'),
           //buttonVisible: Yup.boolean(),
+
+          pictureUrl: Yup.array().nullable().required('Поле обязательно'),
+
           linkText: Yup.string().when('visibleLinkOrButtonOrNone', {
             is: 'LINK',
             then: Yup.string().required('Поле обязательно'),
@@ -75,7 +78,17 @@ const StoryForm = () => {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          console.log(JSON.stringify(values, null, 2));
+          const data = JSON.stringify(values, null, 2);
+          fetch('http://localhost:8080/stories/add', {
+              method: 'POST',
+              headers: {
+                    'Content-Type': 'application/json',
+                },
+              body: data,
+          })
+              .then(response => response.json())
+              .then(result => console.log(result))
+            console.log(JSON.stringify(values, null, 2));
         }}>
         {(props) => (
           <Form>
@@ -86,6 +99,7 @@ const StoryForm = () => {
                     <>
                       <PreviewFields
                         storyIndex={indexS}
+                        setFieldValue={props.setFieldValue}
                         errors={props.errors}
                         touched={props.touched}
                       />
