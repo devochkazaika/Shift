@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 
+/**
+ * Entity, которая содержит информацию о итоговом json
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

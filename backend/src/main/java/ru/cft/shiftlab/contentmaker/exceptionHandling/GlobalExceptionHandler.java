@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public StaticContentException handleNoSuchException(StaticContentException staticContentException) {
+    public StaticContentException handleStaticContentExceptionException(StaticContentException staticContentException) {
         return staticContentException;
     }
 
