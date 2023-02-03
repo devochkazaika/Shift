@@ -10,6 +10,9 @@ import ru.cft.shiftlab.contentmaker.validation.StoryValid;
 
 import java.util.ArrayList;
 
+/**
+ * DTO, который содержит информацию об превью
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
