@@ -6,11 +6,11 @@ import java.io.InputStream;
 import java.net.URLConnection;
 
 /**
- * Класс, предназначенный для извлечения расширения картинки из байтогово массива.
+ * Класс, предназначенный для извлечения расширения картинки из байтового массива.
  */
 public class FileExtensionExtractor {
 
-    public String getFileExtensionFromByteArray(byte[] bytes) {
+    public static String getFileExtensionFromByteArray(byte[] bytes) {
         try {
             InputStream is = new ByteArrayInputStream(bytes);
             String mimeType = URLConnection.guessContentTypeFromStream(is);
