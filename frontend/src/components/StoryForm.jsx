@@ -80,10 +80,14 @@ const StoryForm = () => {
         onSubmit={(values) => {
           const data = JSON.stringify(values, null, 2);
           fetch('http://localhost:8080/stories/add', {
-                method: "POST"
-        })
-                .then(response => response.json())
-                .then(result => console.log(result))
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: data,
+          })
+            .then((response) => response.json())
+            .then((result) => console.log(result));
           console.log(JSON.stringify(values, null, 2));
         }}>
         {(props) => (
