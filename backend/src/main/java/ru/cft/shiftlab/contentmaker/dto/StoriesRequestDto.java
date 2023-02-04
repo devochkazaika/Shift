@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 
+/**
+ * DTO, который приходит с FrontEnd'а
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
