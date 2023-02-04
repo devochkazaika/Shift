@@ -62,7 +62,7 @@ public class StoriesControllerTest {
         mockMvc.perform(post("/stories/add")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(storiesRequestDto)))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
     public static String asJsonString(final Object obj) {
         try {
