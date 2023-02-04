@@ -72,7 +72,6 @@ const validationSchema = Yup.object({
 const StoryForm = () => {
   return (
     <div>
-      <h2>История</h2>
       <Formik
         enableReinitialize
         initialValues={initialValues}
@@ -84,6 +83,7 @@ const StoryForm = () => {
         }}>
         {(props) => (
           <Form>
+            <h2>Превью</h2>
             <FieldArray name="stories">
               {() => (
                 <>

@@ -12,7 +12,6 @@ const FrameFields = ({
   storyIndex,
   frameIndex,
   framesCount,
-  setFieldValue,
   remove,
   errors,
   touched,
@@ -94,7 +93,7 @@ const FrameFields = ({
           </div>
           <div className={storyFormPartsStyles.input_field}>
             <FormField
-              labelTitle={'Картинка карточки'}
+              labelTitle={'Картинка'}
               name={`stories.${storyIndex}.storyFrames.${frameIndex}.pictureUrl`}
               component={UploadImage}
               errors={errors}
@@ -125,12 +124,6 @@ const FrameFields = ({
                   type="radio"
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
                   value="BUTTON"
-                  // handleClick={() => {
-                  //   setFieldValue(
-                  //     `stories.${storyIndex}.storyFrames.${frameIndex}.buttonVisible`,
-                  //     true,
-                  //   );
-                  // }}
                   checked={frameJson.visibleLinkOrButtonOrNone === 'BUTTON'}
                   errors={errors}
                   touched={touched}
@@ -143,12 +136,6 @@ const FrameFields = ({
                   type="radio"
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
                   value="LINK"
-                  // handleClick={() =>
-                  //   setFieldValue(
-                  //     `stories.${storyIndex}.storyFrames.${frameIndex}.buttonVisible`,
-                  //     false,
-                  //   )
-                  // }
                   checked={frameJson.visibleLinkOrButtonOrNone === 'LINK'}
                   errors={errors}
                   touched={touched}
@@ -174,7 +161,7 @@ const FrameFields = ({
               <div className={storyFormPartsStyles.row}>
                 <div className={storyFormPartsStyles.input_field}>
                   <FormField
-                    labelTitle={'Текст кнопки'}
+                    labelTitle={'Текст'}
                     name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonText`}
                     as={'textarea'}
                     errors={errors}
@@ -198,7 +185,7 @@ const FrameFields = ({
               />
               <div className={storyFormPartsStyles.input_field}>
                 <FormField
-                  labelTitle={'Ссылка на источник'}
+                  labelTitle={'Ссылка'}
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonUrl`}
                   type="text"
                   errors={errors}
@@ -211,7 +198,7 @@ const FrameFields = ({
             <>
               <div className={storyFormPartsStyles.input_field}>
                 <FormField
-                  labelTitle={'Текст гиперссылки'}
+                  labelTitle={'Текст'}
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.linkText`}
                   type="text"
                   errors={errors}
@@ -220,7 +207,7 @@ const FrameFields = ({
               </div>
               <div className={storyFormPartsStyles.input_field}>
                 <FormField
-                  labelTitle={'Ссылка на источник'}
+                  labelTitle={'Ссылка'}
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.linkUrl`}
                   type="text"
                   errors={errors}
