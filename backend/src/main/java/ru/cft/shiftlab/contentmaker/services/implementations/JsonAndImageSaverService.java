@@ -11,6 +11,7 @@ import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.services.FileSaverService;
 import ru.cft.shiftlab.contentmaker.util.ByteArrayToImageConverter;
 import ru.cft.shiftlab.contentmaker.util.FileExtensionExtractor;
+import ru.cft.shiftlab.contentmaker.util.FileNameCreator;
 import ru.cft.shiftlab.contentmaker.util.RequestDtoToEntityConverter;
 
 import java.io.File;
@@ -28,7 +29,7 @@ public class JsonAndImageSaverService implements FileSaverService {
             ObjectMapper mapper = new ObjectMapper();
             String jsonDirectory =
                     "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story";
-            String fileName = "stories.json";
+            String fileName = FileNameCreator.createFileName(storiesRequestDto.getStoryDtos().get(0).getPreviewTitle());
             List<StoryPresentation> presentationList = new ArrayList<>();
             RequestDtoToEntityConverter requestDtoToEntityConverter = new RequestDtoToEntityConverter(new ModelMapper());
             for (StoryDto storyDto: storiesRequestDto.getStoryDtos()) {
@@ -37,8 +38,12 @@ public class JsonAndImageSaverService implements FileSaverService {
             mapper.writeValue(new File(jsonDirectory, fileName), presentationList);
             int counterForPreview = 0;
             int counterForStoryFramePicture = 0;
-            String picturesDirectory =
-                    "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/test_bank";
+            String picturesDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
+                            + storiesRequestDto.getStoryDtos().get(0).getPreviewTitle();
+            File newDirectory = new File(picturesDirectory);
+            if (!newDirectory.exists()) {
+                newDirectory.mkdirs();
+            }
             for (StoryDto story: storiesRequestDto.getStoryDtos()) {
                 counterForPreview++;
                 byte [] previewUrl = story.getPreviewUrl();
