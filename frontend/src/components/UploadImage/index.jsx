@@ -5,20 +5,21 @@ import uploadImageStyles from './UploadImage.module.scss';
 import PreviewImage from './PreviewImage';
 
 const UploadImage = ({ field, form, ...props }) => {
-  const [image, setImage] = React.useState(null);
+  const [image, setImage] = React.useState(field.value);
   const inputRef = React.useRef();
 
   const handleUploadImage = async (e) => {
     let img = e.target.files[0];
-    setImage(img);
 
     if (img) {
       const buffer = await img.arrayBuffer();
       let byteArray = new Uint8Array(buffer);
       form.setFieldValue(field.name, Array.from(byteArray));
-    } else {
-      form.setFieldValue(field.name, null);
+      setImage(Array.from(byteArray));
     }
+    // else {
+    //   form.setFieldValue(field.name, null);
+    // }
   };
 
   return (
@@ -49,7 +50,7 @@ const UploadImage = ({ field, form, ...props }) => {
           setImage={setImage}
           setFieldValue={form.setFieldValue}
           fieldName={field.name}
-          input={inputRef.current}
+          input={inputRef}
         />
       )}
     </>

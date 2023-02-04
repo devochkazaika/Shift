@@ -9,14 +9,19 @@ const PreviewImage = ({ image, setImage, setFieldValue, fieldName, input }) => {
   const [preview, setPreview] = React.useState(null);
   const [modalShown, toggleModal] = React.useState(false);
 
-  const reader = new FileReader();
-  reader.readAsDataURL(image);
-  reader.onload = () => {
-    setPreview(reader.result);
-  };
+  // const reader = new FileReader();
+  // reader.readAsDataURL(image);
+  // reader.onload = () => {
+  //   setPreview(reader.result);
+  // };
+
+  React.useEffect(() => {
+    const content = new Uint8Array(image);
+    setPreview(URL.createObjectURL(new Blob([content.buffer], { type: 'image/*' } /* (1) */)));
+  }, [image]);
 
   const handleDeleteImage = () => {
-    input.value = '';
+    input.current.value = '';
     setPreview(null);
     setImage(null);
     setFieldValue(fieldName, null);
@@ -24,6 +29,7 @@ const PreviewImage = ({ image, setImage, setFieldValue, fieldName, input }) => {
 
   return (
     <div className={previewImageStyles.root}>
+      {/* {console.log(preview)} */}
       {preview ? (
         <>
           <img
