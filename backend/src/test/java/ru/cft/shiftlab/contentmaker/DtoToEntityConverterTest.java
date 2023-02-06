@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.cft.shiftlab.contentmaker.util.RequestDtoToEntityConverter;
+import ru.cft.shiftlab.contentmaker.util.DtoToEntityConverter;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
@@ -17,10 +17,10 @@ import java.util.HexFormat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-public class RequestDtoToEntityConverterTest {
+public class DtoToEntityConverterTest {
 
     private ModelMapper modelMapper = new ModelMapper();
-    private RequestDtoToEntityConverter converterRequestDto = new RequestDtoToEntityConverter(modelMapper);
+    private DtoToEntityConverter converterRequestDto = new DtoToEntityConverter(modelMapper);
     private StoryPresentation storyPresentation = new StoryPresentation();
 
 
@@ -53,7 +53,7 @@ public class RequestDtoToEntityConverterTest {
 
 
 
-        storyPresentation = converterRequestDto.fromStoriesRequestDtoToStoryPresentation(storyDto);
+        storyPresentation = converterRequestDto.fromStoryDtoToStoryPresentation("id", storyDto);
 
 
 

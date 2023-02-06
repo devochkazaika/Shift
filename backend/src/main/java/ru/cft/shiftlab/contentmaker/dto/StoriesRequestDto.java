@@ -15,6 +15,9 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StoriesRequestDto {
+
+    private String bankId;
+
     @JsonProperty("stories")
     @Valid
     private ArrayList<StoryDto> storyDtos = new ArrayList<>();

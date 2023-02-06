@@ -1,27 +1,43 @@
 package ru.cft.shiftlab.contentmaker.util;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
+@AllArgsConstructor
 /**
  * Класс, предназначенный для конверации StoriesRequestDto в StoryPresentation
  */
-public class RequestDtoToEntityConverter {
+public class DtoToEntityConverter {
 
     private final ModelMapper modelMapper;
 
-    @Autowired
-    public RequestDtoToEntityConverter(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
+    public Map<String, List<StoryPresentation>> fromStoriesRequestDtoToMap(StoriesRequestDto storiesRequestDto) {
+
+        Map<String, List<StoryPresentation>> presentationMap = new HashMap<>();
+
+        List<StoryPresentation> storyPresentations = new ArrayList<>();
+
+        for (StoryDto storyDto: storiesRequestDto.getStoryDtos()) {
+            storyPresentations.add(fromStoryDtoToStoryPresentation(storiesRequestDto.getBankId(), storyDto));
+            presentationMap.put("stories", storyPresentations);
+        }
+
+        return presentationMap;
     }
 
-    public StoryPresentation fromStoriesRequestDtoToStoryPresentation(StoryDto storyDto) {
+    public StoryPresentation fromStoryDtoToStoryPresentation(String bankId, StoryDto storyDto) {
         StoryPresentation storyPresentation = modelMapper.map(storyDto, StoryPresentation.class);
 
         for(StoryFramesDto storyFramesDto : storyDto.getStoryFramesDtos()) {

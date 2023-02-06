@@ -15,6 +15,7 @@ import java.util.ArrayList;
 @AllArgsConstructor
 public class StoryPresentation {
 
+    private String bankIdl;
     private String previewTitle;
     private String previewTitleColor;
     private byte[] previewUrl;

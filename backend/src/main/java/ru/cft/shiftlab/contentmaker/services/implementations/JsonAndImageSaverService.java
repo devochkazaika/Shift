@@ -13,7 +13,7 @@ import ru.cft.shiftlab.contentmaker.services.FileSaverService;
 import ru.cft.shiftlab.contentmaker.util.ByteArrayToImageConverter;
 import ru.cft.shiftlab.contentmaker.util.FileExtensionExtractor;
 import ru.cft.shiftlab.contentmaker.util.FileNameCreator;
-import ru.cft.shiftlab.contentmaker.util.RequestDtoToEntityConverter;
+import ru.cft.shiftlab.contentmaker.util.DtoToEntityConverter;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,13 +33,13 @@ public class JsonAndImageSaverService implements FileSaverService {
             String jsonDirectory =
                     "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story";
             String fileName = FileNameCreator.createFileName(storiesRequestDto.getStoryDtos().get(0).getPreviewTitle());
-            Map<String, List<StoryPresentation>> presentationList = new HashMap<>();
-            RequestDtoToEntityConverter requestDtoToEntityConverter = new RequestDtoToEntityConverter(new ModelMapper());
-            List<StoryPresentation> storyPresentations = new ArrayList<>();
-            for (StoryDto storyDto: storiesRequestDto.getStoryDtos()) {
-                storyPresentations.add(requestDtoToEntityConverter.fromStoriesRequestDtoToStoryPresentation(storyDto));
-                presentationList.put("stories", storyPresentations);
-            }
+
+            DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
+
+            Map<String, List<StoryPresentation>> presentationList =
+                    dtoToEntityConverter.fromStoriesRequestDtoToMap(storiesRequestDto);
+
+
             mapper.writeValue(new File(jsonDirectory, fileName), presentationList);
             int counterForPreview = 0;
             int counterForStoryFramePicture = 0;

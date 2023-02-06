@@ -55,7 +55,7 @@ public class StoriesControllerTest {
                 "EMPTY",
                 new ArrayList<>(Collections.singletonList(storyFramesDto)));
         System.out.println(storyDto);
-        StoriesRequestDto storiesRequestDto = new StoriesRequestDto(new ArrayList<>(Collections.singletonList(storyDto)));
+        StoriesRequestDto storiesRequestDto = new StoriesRequestDto("id" ,new ArrayList<>(Collections.singletonList(storyDto)));
 
 
 
