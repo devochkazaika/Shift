@@ -21,4 +21,6 @@ public class StoryPresentationFrames {
     private String buttonBackgroundColor;
     private String buttonUrl;
     private String gradient;
+
+
 }

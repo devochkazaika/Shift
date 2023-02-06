@@ -15,11 +15,14 @@ import java.util.ArrayList;
 @AllArgsConstructor
 public class StoryPresentation {
 
-    private String bankIdl;
+    private String bankId;
     private String previewTitle;
     private String previewTitleColor;
     private byte[] previewUrl;
     private String previewGradient;
+
+    private String jsonDirectory;
+    private String picturesDirectory;
 
     @JsonProperty("storyFrames")
     private ArrayList<StoryPresentationFrames> storyPresentationFrames = new ArrayList<>();
