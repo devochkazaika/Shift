@@ -1,125 +1,24 @@
 import React from 'react';
 import { Formik, Form, FieldArray } from 'formik';
-import * as Yup from 'yup';
+
+import { storyValidationSchema } from '../utils/helpers/validation';
+import { initialStoryValues, initialStoryFrame } from '../utils/constants/initialValues';
+import { banks } from '../utils/constants/banks';
 
 import Button from './Button';
 import PreviewFields from './StoryFormParts/PreviewFields';
 import FrameFields from './StoryFormParts/FrameFields';
+import FormField from './FormField';
 
 const maxFrames = 6;
-const previewRules = [
-  {
-    maxTitleLength: 17,
-    maxTextLength: 245,
-  },
-  {
-    maxTitleLength: 34,
-    maxTextLength: 210,
-  },
-  {
-    maxTitleLength: 51,
-    maxTextLength: 140,
-  },
-];
-
-const initialStoryFrame = {
-  title: '',
-  text: '',
-  textColor: '#000',
-  gradient: 'EMPTY',
-  visibleLinkOrButtonOrNone: 'BUTTON',
-  pictureUrl: null,
-  linkText: '',
-  linkUrl: '',
-  buttonText: '',
-  buttonTextColor: '#000',
-  buttonBackgroundColor: '#fff',
-  buttonUrl: '',
-};
-
-const initialValues = {
-  stories: [
-    {
-      previewTitle: '',
-      previewTitleColor: '#000',
-      previewUrl: null,
-      previewGradient: 'EMPTY',
-      storyFrames: [initialStoryFrame],
-    },
-  ],
-};
-
-const validationSchema = Yup.object({
-  stories: Yup.array().of(
-    Yup.object().shape({
-      previewTitle: Yup.string().required('Поле обязательно'),
-      storyFrames: Yup.array().of(
-        Yup.object().shape({
-          title: Yup.string()
-            .required('Поле обязательно')
-            .max(
-              previewRules[2].maxTitleLength,
-              `Длина заголовка должна содержать менее ${
-                previewRules[2].maxTitleLength + 1
-              } символов`,
-            ),
-          text: Yup.string()
-            .required('Поле обязательно')
-            .when('title', (titleValue, textSchema) => {
-              switch (true) {
-                case titleValue &&
-                  previewRules[1].maxTitleLength < titleValue.length &&
-                  titleValue.length <= previewRules[2].maxTitleLength:
-                  return textSchema.max(
-                    previewRules[2].maxTextLength,
-                    `Длина текста должна быть менее ${previewRules[2].maxTextLength + 1} символа`,
-                  );
-                case titleValue &&
-                  previewRules[0].maxTitleLength < titleValue.length &&
-                  titleValue.length <= previewRules[1].maxTitleLength:
-                  return textSchema.max(
-                    previewRules[1].maxTextLength,
-                    `Длина текста должна быть менее ${previewRules[1].maxTextLength + 1} символов`,
-                  );
-                case titleValue && titleValue.length <= previewRules[0].maxTitleLength:
-                  return textSchema.max(
-                    previewRules[0].maxTextLength,
-                    `Длина текста должна быть менее ${previewRules[0].maxTextLength + 1} символов`,
-                  );
-                default:
-                  return textSchema;
-              }
-            }),
-          pictureUrl: Yup.array().nullable().required('Поле обязательно'),
-          linkText: Yup.string().when('visibleLinkOrButtonOrNone', {
-            is: 'LINK',
-            then: Yup.string().required('Поле обязательно'),
-          }),
-          linkUrl: Yup.string().when('visibleLinkOrButtonOrNone', {
-            is: 'LINK',
-            then: Yup.string().required('Поле обязательно'),
-          }),
-          buttonText: Yup.string().when('visibleLinkOrButtonOrNone', {
-            is: 'BUTTON',
-            then: Yup.string().required('Поле обязательно'),
-          }),
-          buttonUrl: Yup.string().when('visibleLinkOrButtonOrNone', {
-            is: 'BUTTON',
-            then: Yup.string().required('Поле обязательно'),
-          }),
-        }),
-      ),
-    }),
-  ),
-});
 
 const StoryForm = () => {
   return (
     <div>
       <Formik
         enableReinitialize
-        initialValues={initialValues}
-        validationSchema={validationSchema}
+        initialValues={initialStoryValues}
+        validationSchema={storyValidationSchema}
         onSubmit={(values) => {
           const data = JSON.stringify(values, null, 2);
           // ОТПРАВИТЬ
@@ -127,6 +26,18 @@ const StoryForm = () => {
         }}>
         {(props) => (
           <Form>
+            <div className="input_field">
+              <FormField
+                labelTitle={'Банк'}
+                name={`bankId`}
+                as="select"
+                options={banks.map((bank) => {
+                  return { value: bank.id, name: bank.name };
+                })}
+                errors={props.errors}
+                touched={props.touched}
+              />
+            </div>
             <h2>Превью</h2>
             <FieldArray name="stories">
               {() => (
