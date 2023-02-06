@@ -39,6 +39,7 @@ public class DtoToEntityConverter {
 
     public StoryPresentation fromStoryDtoToStoryPresentation(String bankId, StoryDto storyDto) {
         StoryPresentation storyPresentation = modelMapper.map(storyDto, StoryPresentation.class);
+        storyPresentation.setBankId(bankId);
 
         for(StoryFramesDto storyFramesDto : storyDto.getStoryFramesDtos()) {
             storyPresentation.getStoryPresentationFrames().add(fromStoryFramesDtoToStoryPresentationFrames(storyFramesDto));
@@ -47,7 +48,6 @@ public class DtoToEntityConverter {
 
         log.info("New StoryPresentation Object: {}",
                 storyPresentation);
-
 
         return storyPresentation;
     }

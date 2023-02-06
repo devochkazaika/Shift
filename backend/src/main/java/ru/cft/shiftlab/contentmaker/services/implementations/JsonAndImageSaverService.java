@@ -29,28 +29,33 @@ public class JsonAndImageSaverService implements FileSaverService {
     @Override
     public void saveFiles(StoriesRequestDto storiesRequestDto){
         try {
+
             ObjectMapper mapper = new ObjectMapper();
+
             String jsonDirectory =
                     "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story";
             String fileName = FileNameCreator.createFileName(storiesRequestDto.getStoryDtos().get(0).getPreviewTitle());
 
             DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
-
             Map<String, List<StoryPresentation>> presentationList =
                     dtoToEntityConverter.fromStoriesRequestDtoToMap(storiesRequestDto);
 
-
             mapper.writeValue(new File(jsonDirectory, fileName), presentationList);
+
             int counterForPreview = 0;
             int counterForStoryFramePicture = 0;
+
             String picturesDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
                             + storiesRequestDto.getStoryDtos().get(0).getPreviewTitle();
+
             File newDirectory = new File(picturesDirectory);
             if (!newDirectory.exists()) {
                 newDirectory.mkdirs();
             }
+
             for (StoryDto story: storiesRequestDto.getStoryDtos()) {
                 counterForPreview++;
+
                 byte [] previewUrl = story.getPreviewUrl();
                 String previewFileExtension =
                         FileExtensionExtractor.getFileExtensionFromByteArray(previewUrl);
@@ -60,8 +65,10 @@ public class JsonAndImageSaverService implements FileSaverService {
                         "preview",
                         previewFileExtension,
                         counterForPreview);
+
                 for (StoryFramesDto storyFramesDto: story.getStoryFramesDtos()) {
                     counterForStoryFramePicture++;
+
                     byte [] storyFramePictureUrl = storyFramesDto.getPictureUrl();
                     String storyFramePictureFileExtension =
                             FileExtensionExtractor.getFileExtensionFromByteArray(storyFramePictureUrl);
