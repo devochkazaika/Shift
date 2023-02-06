@@ -29,7 +29,6 @@ public class JsonAndImageSaverService implements FileSaverService {
     @Override
     public void saveFiles(StoriesRequestDto storiesRequestDto){
         try {
-
             ObjectMapper mapper = new ObjectMapper();
 
             String jsonDirectory =
