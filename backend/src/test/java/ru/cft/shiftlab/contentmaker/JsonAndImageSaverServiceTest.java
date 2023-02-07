@@ -5,10 +5,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
+import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.services.implementations.JsonAndImageSaverService;
+import ru.cft.shiftlab.contentmaker.util.DtoToEntityConverter;
 import ru.cft.shiftlab.contentmaker.util.FileNameCreator;
 
 import javax.imageio.ImageIO;
@@ -21,6 +24,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -60,11 +65,17 @@ public class JsonAndImageSaverServiceTest {
 
         jsonAndImageSaverService.saveFiles(storiesRequestDto);
 
-        String picturesDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
-                + storiesRequestDto.getStoryDtos().get(0).getPreviewTitle();
-        String fileName = FileNameCreator.createFileName(storiesRequestDto.getStoryDtos().get(0).getPreviewTitle());
+        DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
 
-        Path jsonFilePath = Paths.get("/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/" + fileName);
+        String picturesDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
+                + storiesRequestDto.getBankId();
+        String fileName = FileNameCreator.createFileName(storiesRequestDto.getBankId());
+        String jsonDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
+
+        Map<String, List<StoryPresentation>> presentationList =
+                dtoToEntityConverter.fromStoriesRequestDtoToMap(storiesRequestDto, jsonDirectory, picturesDirectory);
+
+        Path jsonFilePath = Paths.get(jsonDirectory + fileName);
         Path previewPictureFilePath = Paths.get(picturesDirectory +"/preview1.png");
         Path storyFramePictureFilePath = Paths.get(picturesDirectory + "/storyFramePicture1.png");
 
@@ -75,9 +86,9 @@ public class JsonAndImageSaverServiceTest {
         assertAll(
                 () -> assertTrue(Files.exists(jsonFile.toPath()), "File should exist"),
                 () -> assertTrue(Files.exists(previewPicture.toPath()), "File should exist"),
-                () -> assertTrue(Files.exists(storyFramePicture.toPath()), "File should exist"));
-                //() -> assertLinesMatch(Collections.singletonList(asJsonString(storiesRequestDto)),
-               //         Files.readAllLines(jsonFile.toPath())));
+                () -> assertTrue(Files.exists(storyFramePicture.toPath()), "File should exist"),
+                () -> assertLinesMatch(Collections.singletonList(asJsonString(presentationList)),
+                        Files.readAllLines(jsonFile.toPath())));
     }
 
      public static String asJsonString(final Object obj) {

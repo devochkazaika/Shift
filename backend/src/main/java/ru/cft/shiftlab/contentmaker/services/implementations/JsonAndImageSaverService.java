@@ -29,26 +29,32 @@ public class JsonAndImageSaverService implements FileSaverService {
     @Override
     public void saveFiles(StoriesRequestDto storiesRequestDto){
         try {
-            ObjectMapper mapper = new ObjectMapper();
             String jsonDirectory =
-                    "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story";
-            String fileName = FileNameCreator.createFileName(storiesRequestDto.getStoryDtos().get(0).getPreviewTitle());
+                    "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
+
+            String picturesDirectory =
+                    "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
+                    + storiesRequestDto.getBankId();
+
+            File newDirectory = new File(picturesDirectory);
+
+            if (!newDirectory.exists()) {
+                newDirectory.mkdirs();
+            }
+
+            String fileName = FileNameCreator.createFileName(storiesRequestDto.getBankId());
 
             DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
 
             Map<String, List<StoryPresentation>> presentationList =
-                    dtoToEntityConverter.fromStoriesRequestDtoToMap(storiesRequestDto);
+                    dtoToEntityConverter.fromStoriesRequestDtoToMap(storiesRequestDto, jsonDirectory, picturesDirectory);
 
-
+            ObjectMapper mapper = new ObjectMapper();
             mapper.writeValue(new File(jsonDirectory, fileName), presentationList);
+
             int counterForPreview = 0;
             int counterForStoryFramePicture = 0;
-            String picturesDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
-                            + storiesRequestDto.getStoryDtos().get(0).getPreviewTitle();
-            File newDirectory = new File(picturesDirectory);
-            if (!newDirectory.exists()) {
-                newDirectory.mkdirs();
-            }
+
             for (StoryDto story: storiesRequestDto.getStoryDtos()) {
                 counterForPreview++;
                 byte [] previewUrl = story.getPreviewUrl();
@@ -74,14 +80,6 @@ public class JsonAndImageSaverService implements FileSaverService {
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

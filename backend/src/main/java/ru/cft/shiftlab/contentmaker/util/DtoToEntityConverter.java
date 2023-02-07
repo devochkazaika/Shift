@@ -23,26 +23,34 @@ public class DtoToEntityConverter {
 
     private final ModelMapper modelMapper;
 
-    public Map<String, List<StoryPresentation>> fromStoriesRequestDtoToMap(StoriesRequestDto storiesRequestDto) {
+    public Map<String, List<StoryPresentation>> fromStoriesRequestDtoToMap(StoriesRequestDto storiesRequestDto,
+                                                                           String jsonDirectory,
+                                                                           String picturesDirectory) {
 
         Map<String, List<StoryPresentation>> presentationMap = new HashMap<>();
 
         List<StoryPresentation> storyPresentations = new ArrayList<>();
 
         for (StoryDto storyDto: storiesRequestDto.getStoryDtos()) {
-            storyPresentations.add(fromStoryDtoToStoryPresentation(storiesRequestDto.getBankId(), storyDto));
+            storyPresentations.add(fromStoryDtoToStoryPresentation(storiesRequestDto.getBankId(), storyDto,
+                    jsonDirectory, picturesDirectory));
             presentationMap.put("stories", storyPresentations);
         }
 
         return presentationMap;
     }
 
-    public StoryPresentation fromStoryDtoToStoryPresentation(String bankId, StoryDto storyDto) {
+    public StoryPresentation fromStoryDtoToStoryPresentation(String bankId,
+                                                             StoryDto storyDto,
+                                                             String jsonDirectory,
+                                                             String picturesDirectory) {
         StoryPresentation storyPresentation = modelMapper.map(storyDto, StoryPresentation.class);
 
         for(StoryFramesDto storyFramesDto : storyDto.getStoryFramesDtos()) {
+            storyPresentation.setBankId(bankId);
+            storyPresentation.setJsonDirectory(jsonDirectory);
+            storyPresentation.setPicturesDirectory(picturesDirectory);
             storyPresentation.getStoryPresentationFrames().add(fromStoryFramesDtoToStoryPresentationFrames(storyFramesDto));
-
         }
 
         log.info("New StoryPresentation Object: {}",

@@ -51,9 +51,7 @@ public class DtoToEntityConverterTest {
                 new ArrayList<>(Collections.singletonList(storyFramesDto))
         );
 
-
-
-        storyPresentation = converterRequestDto.fromStoryDtoToStoryPresentation("id", storyDto);
+        storyPresentation = converterRequestDto.fromStoryDtoToStoryPresentation("id", storyDto, null, null);
 
 
 

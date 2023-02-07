@@ -10,12 +10,12 @@ public class FileNameCreator {
     /**
      * Метод, который генерирует название JSON файла.
      *
-     * @param previewTitle заголовок истории (в будущем будет заменено на bankId).
+     * @param bankId уникальный идентификатор банка, который будет использоваться в формировании названия файла.
      * @return название JSON файла.
      */
-    public static String createFileName(String previewTitle) {
+    public static String createFileName(String bankId) {
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        return dateFormat.format(date) + "-" + previewTitle + ".json";
+        return dateFormat.format(date) + "-" + bankId + ".json";
     }
 }
