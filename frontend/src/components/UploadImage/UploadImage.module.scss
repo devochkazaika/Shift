@@ -1,0 +1,30 @@
+.file_input {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+  & + label {
+    color: white;
+    background-color: #74747b;
+    border-radius: 12px;
+    max-width: 80%;
+    font-size: 1rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 0.625rem 1.25rem;
+    box-shadow: -1px 3px 7px rgb(0 0 0 / 40%);
+    transition: transform 0.2s ease-out;
+  }
+
+  &:hover + label,
+  &:focus + label {
+    transform: scale(1.01);
+    background-color: #a5a5aa;
+  }
+}

@@ -12,7 +12,7 @@ const PreviewFields = ({ storyIndex, setFieldValue, errors, touched }) => {
       <div className={storyFormPartsStyles.row}>
         <div className={storyFormPartsStyles.input_field}>
           <FormField
-            labelTitle={'Заголовок истории'}
+            labelTitle={'Заголовок'}
             name={`stories.${storyIndex}.previewTitle`}
             type={'text'}
             errors={errors}
@@ -29,7 +29,7 @@ const PreviewFields = ({ storyIndex, setFieldValue, errors, touched }) => {
       </div>
       <div className={storyFormPartsStyles.input_field}>
         <FormField
-          labelTitle={'Картинка превью'}
+          labelTitle={'Картинка'}
           name={`stories.${storyIndex}.previewUrl`}
           component={UploadImage}
           errors={errors}
@@ -38,7 +38,7 @@ const PreviewFields = ({ storyIndex, setFieldValue, errors, touched }) => {
       </div>
       <div className={storyFormPartsStyles.input_field}>
         <FormField
-          labelTitle={'Градиент истории'}
+          labelTitle={'Градиент'}
           name={`stories.${storyIndex}.previewGradient`}
           as="select"
           options={[

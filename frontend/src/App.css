@@ -146,3 +146,7 @@ select:focus {
   border: 2px solid #eeeff5;
   padding: 20px 30px;
 }
+
+.input_field {
+  width: 65%;
+}

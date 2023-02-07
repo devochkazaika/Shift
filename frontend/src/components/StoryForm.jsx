@@ -1,97 +1,64 @@
 import React from 'react';
 import { Formik, Form, FieldArray } from 'formik';
-import * as Yup from 'yup';
+
+import api from '../api/stories';
+import { storyValidationSchema } from '../utils/helpers/validation';
+import { initialStoryValues, initialStoryFrame } from '../utils/constants/initialValues';
+import { banks } from '../utils/constants/banks';
 
 import Button from './Button';
 import PreviewFields from './StoryFormParts/PreviewFields';
 import FrameFields from './StoryFormParts/FrameFields';
+import FormField from './FormField';
+import AlertMessage from './AlertMessage';
 
 const maxFrames = 6;
 
-const initialStoryFrame = {
-  title: '',
-  text: '',
-  textColor: '#000',
-  gradient: 'EMPTY',
-  visibleLinkOrButtonOrNone: 'BUTTON',
-  pictureUrl: null,
-  linkText: '',
-  linkUrl: '',
-  buttonText: '',
-  buttonTextColor: '#000',
-  buttonBackgroundColor: '#fff',
-  buttonUrl: '',
-};
-
-const initialValues = {
-  stories: [
-    {
-      previewTitle: '',
-      previewTitleColor: '#000',
-      previewUrl: null,
-      previewGradient: 'EMPTY',
-      storyFrames: [initialStoryFrame],
-    },
-  ],
-};
-
-const validationSchema = Yup.object({
-  stories: Yup.array().of(
-    Yup.object().shape({
-      previewTitle: Yup.string().required('Поле обязательно'),
-      storyFrames: Yup.array().of(
-        Yup.object().shape({
-          title: Yup.string().required('Поле обязательно'),
-          text: Yup.string().required('Поле обязательно'),
-          //buttonVisible: Yup.boolean(),
-
-          pictureUrl: Yup.array().nullable().required('Поле обязательно'),
-
-          linkText: Yup.string().when('visibleLinkOrButtonOrNone', {
-            is: 'LINK',
-            then: Yup.string().required('Поле обязательно'),
-          }),
-          linkUrl: Yup.string().when('visibleLinkOrButtonOrNone', {
-            is: 'LINK',
-            then: Yup.string().required('Поле обязательно'),
-          }),
-          buttonText: Yup.string().when('visibleLinkOrButtonOrNone', {
-            is: 'BUTTON',
-            then: Yup.string().required('Поле обязательно'),
-          }),
-          buttonUrl: Yup.string().when('visibleLinkOrButtonOrNone', {
-            is: 'BUTTON',
-            then: Yup.string().required('Поле обязательно'),
-          }),
-        }),
-      ),
-    }),
-  ),
-});
-
 const StoryForm = () => {
+  const [send, setSend] = React.useState(false);
+  const [success, setSuccess] = React.useState(true);
   return (
     <div>
-      <h2>История</h2>
       <Formik
         enableReinitialize
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={(values) => {
-          const data = JSON.stringify(values, null, 2);
-          fetch('http://localhost:8080/stories/add', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: data,
-          })
-            .then((response) => response.json())
-            .then((result) => console.log(result));
-          console.log(JSON.stringify(values, null, 2));
+        initialValues={initialStoryValues}
+        validationSchema={storyValidationSchema}
+        onSubmit={async (values, { resetForm }) => {
+          const jsonValues = JSON.stringify(values, null, 2);
+          try {
+            const response = await api.post('/add', jsonValues);
+            resetForm(initialStoryValues);
+            setSuccess(true);
+            setSend(true);
+            setTimeout(() => {
+              setSend(false);
+            }, 2000);
+          } catch (error) {
+            setSuccess(false);
+            setSend(true);
+            if (error.response) {
+              console.log(error.response.data);
+            } else {
+              console.log(`Error ${error.message}`);
+            }
+          }
+          //console.log(JSON.stringify(values, null, 2));
         }}>
         {(props) => (
           <Form>
+            <div className="input_field">
+              <FormField
+                labelTitle={'Банк'}
+                name={`bankId`}
+                as="select"
+                options={banks.map((bank) => {
+                  return { value: bank.id, name: bank.name };
+                })}
+                errors={props.errors}
+                touched={props.touched}
+              />
+            </div>
+            <h2>Превью</h2>
             <FieldArray name="stories">
               {() => (
                 <>
@@ -155,6 +122,7 @@ const StoryForm = () => {
               )}
             </FieldArray>
             <Button text="Отправить" type="submit" color="red" />
+            {send && <AlertMessage success={success} />}
           </Form>
         )}
       </Formik>
