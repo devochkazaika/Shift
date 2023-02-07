@@ -1,6 +1,7 @@
 import React from 'react';
 import { Formik, Form, FieldArray } from 'formik';
 
+import api from '../api/stories';
 import { storyValidationSchema } from '../utils/helpers/validation';
 import { initialStoryValues, initialStoryFrame } from '../utils/constants/initialValues';
 import { banks } from '../utils/constants/banks';
@@ -9,20 +10,39 @@ import Button from './Button';
 import PreviewFields from './StoryFormParts/PreviewFields';
 import FrameFields from './StoryFormParts/FrameFields';
 import FormField from './FormField';
+import AlertMessage from './AlertMessage';
 
 const maxFrames = 6;
 
 const StoryForm = () => {
+  const [send, setSend] = React.useState(false);
+  const [success, setSuccess] = React.useState(true);
   return (
     <div>
       <Formik
         enableReinitialize
         initialValues={initialStoryValues}
         validationSchema={storyValidationSchema}
-        onSubmit={(values) => {
-          const data = JSON.stringify(values, null, 2);
-          // ОТПРАВИТЬ
-          console.log(JSON.stringify(values, null, 2));
+        onSubmit={async (values, { resetForm }) => {
+          const jsonValues = JSON.stringify(values, null, 2);
+          try {
+            const response = await api.post('/add', jsonValues);
+            resetForm(initialStoryValues);
+            setSuccess(true);
+            setSend(true);
+            setTimeout(() => {
+              setSend(false);
+            }, 2000);
+          } catch (error) {
+            setSuccess(false);
+            setSend(true);
+            if (error.response) {
+              console.log(error.response.data);
+            } else {
+              console.log(`Error ${error.message}`);
+            }
+          }
+          //console.log(JSON.stringify(values, null, 2));
         }}>
         {(props) => (
           <Form>
@@ -102,6 +122,7 @@ const StoryForm = () => {
               )}
             </FieldArray>
             <Button text="Отправить" type="submit" color="red" />
+            {send && <AlertMessage success={success} />}
           </Form>
         )}
       </Formik>
