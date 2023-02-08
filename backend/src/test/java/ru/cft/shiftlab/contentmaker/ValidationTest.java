@@ -7,6 +7,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
+import ru.cft.shiftlab.contentmaker.validation.Whitelist;
+import ru.cft.shiftlab.contentmaker.validation.implementations.BankIdValidator;
 import ru.cft.shiftlab.contentmaker.validation.implementations.StoryFramesValidator;
 import ru.cft.shiftlab.contentmaker.validation.implementations.StoryValidator;
 import ru.cft.shiftlab.contentmaker.validation.StoryFramesValid;
@@ -27,6 +29,9 @@ public class ValidationTest {
 
     @Mock
     StoryFramesValid storyFramesValid;
+
+    @Mock
+    Whitelist whitelist;
 
     @Mock
     private ConstraintValidatorContext constraintValidatorContext;
@@ -126,5 +131,28 @@ public class ValidationTest {
 
 
         assertFalse(storyFramesValidator.isValid(storyFramesDto, constraintValidatorContext));
+    }
+
+
+    @Test
+    public void validate_BankIdCorrect() {
+
+        String bankId = "nskbl";
+
+        BankIdValidator bankIdValidator = new BankIdValidator();
+        bankIdValidator.initialize(whitelist);
+
+        assertTrue(bankIdValidator.isValid(bankId, constraintValidatorContext));
+    }
+
+    @Test
+    public void validate_BankIdIncorrect() {
+
+        String bankId = "noneBankIdIncorrect";
+
+        BankIdValidator bankIdValidator = new BankIdValidator();
+        bankIdValidator.initialize(whitelist);
+
+        assertFalse(bankIdValidator.isValid(bankId, constraintValidatorContext));
     }
 }
