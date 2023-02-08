@@ -107,7 +107,7 @@ public class ValidationTest {
     public void validate_DtoHaveIncorrectDataForStoryFramesValid() {
         byte[] bytes = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
         StoryFramesDto storyFramesDto = new StoryFramesDto(
-                "Онлайн конвертация ", //titleMaxLenForOneString: 17
+                "Онлайн конвертация ", 
                 "Обменивайте валюту онлайн по выгодному курсу",
                 "FFFFFF",
                 bytes,

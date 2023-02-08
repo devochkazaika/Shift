@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.cft.shiftlab.contentmaker.validation.Whitelist;
 
 import java.util.ArrayList;
 
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 public class StoriesRequestDto {
 
     @NotBlank
+    @Whitelist
     private String bankId;
 
     @JsonProperty("stories")

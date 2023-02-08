@@ -45,6 +45,7 @@ public class DtoToEntityConverter {
                                                              String jsonDirectory,
                                                              String picturesDirectory) {
         StoryPresentation storyPresentation = modelMapper.map(storyDto, StoryPresentation.class);
+        storyPresentation.setBankId(bankId);
 
         for(StoryFramesDto storyFramesDto : storyDto.getStoryFramesDtos()) {
             storyPresentation.setBankId(bankId);
@@ -55,7 +56,6 @@ public class DtoToEntityConverter {
 
         log.info("New StoryPresentation Object: {}",
                 storyPresentation);
-
 
         return storyPresentation;
     }
