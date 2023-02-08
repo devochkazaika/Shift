@@ -1,5 +1,6 @@
 package ru.cft.shiftlab.contentmaker;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
@@ -51,30 +52,27 @@ public class DtoToEntityConverterTest {
                 new ArrayList<>(Collections.singletonList(storyFramesDto))
         );
 
+
+
         storyPresentation = converterRequestDto.fromStoryDtoToStoryPresentation("id", storyDto, null, null);
 
 
-
-        assertAll (
+        assertAll(
                 () -> assertEquals(storyDto.getPreviewTitle(), storyPresentation.getPreviewTitle()),
                 () -> assertEquals(storyDto.getPreviewTitleColor(), storyPresentation.getPreviewTitleColor()),
                 () -> assertTrue(Arrays.equals(storyDto.getPreviewUrl(), bytes)),
                 () -> assertEquals(storyDto.getPreviewGradient(), storyPresentation.getPreviewGradient()),
 
-                () -> assertAll (
-                        () -> assertEquals(storyFramesDto.getTitle(), storyPresentation.getStoryPresentationFrames().get(0).getTitle()),
-                        () -> assertEquals(storyFramesDto.getText(), storyPresentation.getStoryPresentationFrames().get(0).getText()),
-                        () -> assertEquals(storyFramesDto.getTextColor(), storyPresentation.getStoryPresentationFrames().get(0).getTextColor()),
-                        () -> assertTrue(Arrays.equals(storyFramesDto.getPictureUrl(), storyPresentation.getStoryPresentationFrames().get(0).getPictureUrl())),
-                        () -> assertEquals(storyFramesDto.getVisibleLinkOrButtonOrNone(), storyPresentation.getStoryPresentationFrames().get(0).getVisibleLinkOrButtonOrNone()),
-                        () -> assertTrue(storyFramesDto.getLinkUrl().equals(storyPresentation.getStoryPresentationFrames().get(0).getLinkUrl())),
-                        () -> assertEquals(storyFramesDto.getLinkText(), storyPresentation.getStoryPresentationFrames().get(0).getLinkText()),
-                        () -> assertTrue(storyFramesDto.getButtonUrl().equals(storyPresentation.getStoryPresentationFrames().get(0).getButtonUrl())),
-                        () -> assertEquals(storyFramesDto.getButtonBackgroundColor(), storyPresentation.getStoryPresentationFrames().get(0).getButtonBackgroundColor()),
-                        () -> assertEquals(storyFramesDto.getButtonText(), storyPresentation.getStoryPresentationFrames().get(0).getButtonText()),
-                        () -> assertEquals(storyFramesDto.getButtonTextColor(), storyPresentation.getStoryPresentationFrames().get(0).getButtonTextColor()),
-                        () -> assertEquals(storyFramesDto.getGradient(), storyPresentation.getStoryPresentationFrames().get(0).getGradient())
-                )
+                () -> assertLinesMatch(Collections.singletonList(asJsonString(storyPresentation.getStoryPresentationFrames().get(0))),
+                        Collections.singletonList(asJsonString(storyFramesDto)))
         );
+    }
+
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
