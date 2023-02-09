@@ -61,7 +61,7 @@ public class JsonAndImageSaverServiceTest {
                 bytes,
                 "EMPTY",
                 new ArrayList<>(Collections.singletonList(storyFramesDto)));
-        StoriesRequestDto storiesRequestDto = new StoriesRequestDto("id", new ArrayList<>(Collections.singletonList(storyDto)));
+        StoriesRequestDto storiesRequestDto = new StoriesRequestDto("absolutbank", new ArrayList<>(Collections.singletonList(storyDto)));
 
         jsonAndImageSaverService.saveFiles(storiesRequestDto);
 

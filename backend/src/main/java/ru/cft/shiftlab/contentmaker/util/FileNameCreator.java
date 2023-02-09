@@ -2,6 +2,7 @@ package ru.cft.shiftlab.contentmaker.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 /**
  * Класс, предназначенный для генерации названия JSON файла.
  */
@@ -16,6 +17,8 @@ public class FileNameCreator {
     public static String createFileName(String bankId) {
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        return dateFormat.format(date) + "-" + bankId + ".json";
+        String bankName = WhiteList.findValueByKey(bankId);
+
+        return bankName + "_" + bankId + "_" + dateFormat.format(date) + ".json";
     }
 }
