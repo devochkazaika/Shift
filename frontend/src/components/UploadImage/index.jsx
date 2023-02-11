@@ -1,37 +1,31 @@
 import React from 'react';
 
 import uploadImageStyles from './UploadImage.module.scss';
-
+import { convertImageToByteArray } from '../../utils/helpers/byteArrayFunctions';
 import PreviewImage from './PreviewImage';
 
 const UploadImage = ({ field, form, ...props }) => {
-  const [image, setImage] = React.useState(field.value);
   const inputRef = React.useRef();
 
   const handleUploadImage = async (e) => {
     let img = e.target.files[0];
 
     if (img) {
-      const buffer = await img.arrayBuffer();
-      let byteArray = new Uint8Array(buffer);
-      form.setFieldValue(field.name, Array.from(byteArray));
-      setImage(Array.from(byteArray));
+      form.setFieldValue(field.name, await convertImageToByteArray(img));
     }
-    // else {
-    //   form.setFieldValue(field.name, null);
-    // }
   };
 
   return (
     <>
       <input
         className={uploadImageStyles.file_input}
-        ref={inputRef}
         name={field.name}
         id={'file' + field.name}
         type="file"
         accept="image/*"
-        onChange={(e) => handleUploadImage(e)}
+        onChange={handleUploadImage}
+        onClick={(e) => (e.target.value = null)}
+        ref={inputRef}
       />
       <label htmlFor={'file' + field.name}>
         <svg
@@ -44,10 +38,9 @@ const UploadImage = ({ field, form, ...props }) => {
         </svg>{' '}
         <span>Выберите файл</span>
       </label>
-      {image && (
+      {field.value && (
         <PreviewImage
-          image={image}
-          setImage={setImage}
+          image={field.value}
           setFieldValue={form.setFieldValue}
           fieldName={field.name}
           input={inputRef}

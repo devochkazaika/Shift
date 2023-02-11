@@ -11,12 +11,15 @@ import PreviewFields from './StoryFormParts/PreviewFields';
 import FrameFields from './StoryFormParts/FrameFields';
 import FormField from './FormField';
 import AlertMessage from './AlertMessage';
+import Loader from './Loader';
 
 const maxFrames = 6;
 
 const StoryForm = () => {
   const [send, setSend] = React.useState(false);
   const [success, setSuccess] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
+
   return (
     <div>
       <Formik
@@ -24,6 +27,8 @@ const StoryForm = () => {
         initialValues={initialStoryValues}
         validationSchema={storyValidationSchema}
         onSubmit={async (values, { resetForm }) => {
+          setSend(false);
+          setLoading(true);
           const jsonValues = JSON.stringify(values, null, 2);
           try {
             const response = await api.post('/add', jsonValues);
@@ -42,10 +47,12 @@ const StoryForm = () => {
               console.log(`Error ${error.message}`);
             }
           }
+          setLoading(false);
           //console.log(JSON.stringify(values, null, 2));
         }}>
         {(props) => (
           <Form>
+            {loading && <Loader />}
             <div className="input_field">
               <FormField
                 labelTitle={'Банк'}

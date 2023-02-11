@@ -2,34 +2,25 @@ import React from 'react';
 import { AnimatePresence } from 'framer-motion';
 
 import previewImageStyles from './PreviewImage.module.scss';
-
+import { convertByteArrayToSrc } from '../../utils/helpers/byteArrayFunctions';
 import Modal from '../Modal';
 
-const PreviewImage = ({ image, setImage, setFieldValue, fieldName, input }) => {
+const PreviewImage = ({ image, setFieldValue, fieldName, input }) => {
   const [preview, setPreview] = React.useState(null);
   const [modalShown, toggleModal] = React.useState(false);
 
-  // const reader = new FileReader();
-  // reader.readAsDataURL(image);
-  // reader.onload = () => {
-  //   setPreview(reader.result);
-  // };
-
   React.useEffect(() => {
-    const content = new Uint8Array(image);
-    setPreview(URL.createObjectURL(new Blob([content.buffer], { type: 'image/*' } /* (1) */)));
+    setPreview(convertByteArrayToSrc(image));
   }, [image]);
 
   const handleDeleteImage = () => {
-    input.current.value = '';
+    input.current.value = null;
     setPreview(null);
-    setImage(null);
     setFieldValue(fieldName, null);
   };
 
   return (
     <div className={previewImageStyles.root}>
-      {/* {console.log(preview)} */}
       {preview ? (
         <>
           <img
