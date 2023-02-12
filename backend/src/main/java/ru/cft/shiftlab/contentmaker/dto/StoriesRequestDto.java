@@ -19,14 +19,10 @@ import java.util.ArrayList;
 public class StoriesRequestDto {
 
     @NotBlank
-    @Whitelist
+    @Whitelist(message = "bankId must match the allowed")
     private String bankId;
 
     @JsonProperty("stories")
     @Valid
     private ArrayList<StoryDto> storyDtos = new ArrayList<>();
-
-    public void addStoriesDtos(StoryDto storyDto) {
-        this.storyDtos.add(storyDto);
-    }
 }

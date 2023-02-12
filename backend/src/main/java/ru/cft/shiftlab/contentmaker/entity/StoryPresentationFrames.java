@@ -1,10 +1,9 @@
 package ru.cft.shiftlab.contentmaker.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class StoryPresentationFrames {

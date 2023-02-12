@@ -1,18 +1,17 @@
 package ru.cft.shiftlab.contentmaker.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 
 /**
  * Entity, которая содержит информацию о итоговом json
  */
-@Data
-@NoArgsConstructor
+@Setter
+@Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class StoryPresentation {
 
     private String bankId;
