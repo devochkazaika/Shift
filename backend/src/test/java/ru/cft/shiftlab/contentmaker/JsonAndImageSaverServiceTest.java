@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
@@ -11,8 +12,7 @@ import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.services.implementations.JsonAndImageSaverService;
-import ru.cft.shiftlab.contentmaker.util.DtoToEntityConverter;
-import ru.cft.shiftlab.contentmaker.util.FileNameCreator;
+import ru.cft.shiftlab.contentmaker.util.*;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -32,8 +32,19 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 public class JsonAndImageSaverServiceTest {
 
-    @InjectMocks
-    private JsonAndImageSaverService jsonAndImageSaverService;
+
+    private final WhiteList whiteList = new WhiteList();
+
+    private final FileExtensionExtractor fileExtensionExtractor = new FileExtensionExtractor();
+
+    private final ByteArrayToImageConverter byteArrayToImageConverter = new ByteArrayToImageConverter();
+
+    private FileNameCreator fileNameCreator = new FileNameCreator(whiteList);
+
+    private JsonAndImageSaverService jsonAndImageSaverService = new JsonAndImageSaverService(fileNameCreator,
+                                                                                            fileExtensionExtractor,
+                                                                                            byteArrayToImageConverter);
+
     @Test
     void should_save_files() throws IOException {
         BufferedImage bImage = ImageIO.read(
@@ -69,7 +80,7 @@ public class JsonAndImageSaverServiceTest {
 
         String picturesDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
                 + storiesRequestDto.getBankId();
-        String fileName = FileNameCreator.createFileName(storiesRequestDto.getBankId());
+        String fileName = fileNameCreator.createFileName(storiesRequestDto.getBankId());
         String jsonDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
 
         Map<String, List<StoryPresentation>> presentationList =

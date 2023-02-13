@@ -1,8 +1,10 @@
 package ru.cft.shiftlab.contentmaker.services.implementations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
@@ -23,8 +25,21 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
 public class JsonAndImageSaverService implements FileSaverService {
+
+
+    private final FileNameCreator fileNameCreator;
+    private final FileExtensionExtractor fileExtensionExtractor;
+    private final ByteArrayToImageConverter byteArrayToImageConverter;
+
+    @Autowired
+    public JsonAndImageSaverService(FileNameCreator fileNameCreator,
+                                    FileExtensionExtractor fileExtensionExtractor,
+                                    ByteArrayToImageConverter byteArrayToImageConverter) {
+        this.fileNameCreator = fileNameCreator;
+        this.fileExtensionExtractor = fileExtensionExtractor;
+        this.byteArrayToImageConverter = byteArrayToImageConverter;
+    }
 
     @Override
     public void saveFiles(StoriesRequestDto storiesRequestDto){
@@ -42,7 +57,7 @@ public class JsonAndImageSaverService implements FileSaverService {
                 newDirectory.mkdirs();
             }
 
-            String fileName = FileNameCreator.createFileName(storiesRequestDto.getBankId());
+            String fileName = fileNameCreator.createFileName(storiesRequestDto.getBankId());
 
             DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
 
@@ -59,8 +74,8 @@ public class JsonAndImageSaverService implements FileSaverService {
                 counterForPreview++;
                 byte [] previewUrl = story.getPreviewUrl();
                 String previewFileExtension =
-                        FileExtensionExtractor.getFileExtensionFromByteArray(previewUrl);
-                ByteArrayToImageConverter.convertByteArrayToImageAndSave(
+                        fileExtensionExtractor.getFileExtensionFromByteArray(previewUrl);
+                byteArrayToImageConverter.convertByteArrayToImageAndSave(
                         previewUrl,
                         picturesDirectory,
                         "preview",
@@ -70,8 +85,8 @@ public class JsonAndImageSaverService implements FileSaverService {
                     counterForStoryFramePicture++;
                     byte [] storyFramePictureUrl = storyFramesDto.getPictureUrl();
                     String storyFramePictureFileExtension =
-                            FileExtensionExtractor.getFileExtensionFromByteArray(storyFramePictureUrl);
-                    ByteArrayToImageConverter.convertByteArrayToImageAndSave(
+                            fileExtensionExtractor.getFileExtensionFromByteArray(storyFramePictureUrl);
+                    byteArrayToImageConverter.convertByteArrayToImageAndSave(
                             storyFramePictureUrl,
                             picturesDirectory,
                             "storyFramePicture",

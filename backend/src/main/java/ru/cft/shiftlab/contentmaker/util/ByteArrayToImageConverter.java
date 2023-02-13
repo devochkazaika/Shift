@@ -1,5 +1,7 @@
 package ru.cft.shiftlab.contentmaker.util;
 
+import org.springframework.stereotype.Component;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -9,6 +11,7 @@ import java.io.IOException;
 /**
  * Класс, предназначенный для конвертации массива байтов в картинку, которая в дальнейшем будет сохраняться в директорию.
  */
+@Component
 public class ByteArrayToImageConverter {
 
     /**
@@ -21,7 +24,7 @@ public class ByteArrayToImageConverter {
      * @param bytes      байтовый массив, который будет конвертироваться в картинку.
      * @throws IOException исключение ввода-вывода.
      */
-    public static void convertByteArrayToImageAndSave(byte [] bytes, String directory, String fileName,
+    public void convertByteArrayToImageAndSave(byte [] bytes, String directory, String fileName,
                                                       String fileFormat, int counter) throws IOException {
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
         BufferedImage bImage = ImageIO.read(bis);

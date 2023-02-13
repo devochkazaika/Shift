@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.cft.shiftlab.contentmaker.validation.Whitelist;
+import ru.cft.shiftlab.contentmaker.validation.WhitelistValid;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class StoriesRequestDto {
 
     @NotBlank
-    @Whitelist(message = "bankId must match the allowed")
+    @WhitelistValid(message = "bankId must match the allowed")
     private String bankId;
 
     @JsonProperty("stories")

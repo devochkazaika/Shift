@@ -1,13 +1,15 @@
 package ru.cft.shiftlab.contentmaker;
 
 import jakarta.validation.ConstraintValidatorContext;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
-import ru.cft.shiftlab.contentmaker.validation.Whitelist;
+import ru.cft.shiftlab.contentmaker.util.WhiteList;
+import ru.cft.shiftlab.contentmaker.validation.WhitelistValid;
 import ru.cft.shiftlab.contentmaker.validation.implementations.BankIdValidator;
 import ru.cft.shiftlab.contentmaker.validation.implementations.StoryFramesValidator;
 import ru.cft.shiftlab.contentmaker.validation.implementations.StoryValidator;
@@ -31,10 +33,12 @@ public class ValidationTest {
     StoryFramesValid storyFramesValid;
 
     @Mock
-    Whitelist whitelist;
+    WhitelistValid whitelistValid;
 
     @Mock
     private ConstraintValidatorContext constraintValidatorContext;
+
+    private final WhiteList whiteList = new WhiteList();
 
     @Test
     public void validate_DtosHaveAllCorrectData() {
@@ -139,8 +143,8 @@ public class ValidationTest {
 
         String bankId = "nskbl";
 
-        BankIdValidator bankIdValidator = new BankIdValidator();
-        bankIdValidator.initialize(whitelist);
+        BankIdValidator bankIdValidator = new BankIdValidator(whiteList);
+        bankIdValidator.initialize(whitelistValid);
 
         assertTrue(bankIdValidator.isValid(bankId, constraintValidatorContext));
     }
@@ -150,8 +154,8 @@ public class ValidationTest {
 
         String bankId = "noneBankIdIncorrect";
 
-        BankIdValidator bankIdValidator = new BankIdValidator();
-        bankIdValidator.initialize(whitelist);
+        BankIdValidator bankIdValidator = new BankIdValidator(whiteList);
+        bankIdValidator.initialize(whitelistValid);
 
         assertFalse(bankIdValidator.isValid(bankId, constraintValidatorContext));
     }
