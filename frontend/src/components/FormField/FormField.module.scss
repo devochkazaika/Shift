@@ -20,13 +20,15 @@
   &.error {
     border: 1px solid red;
   }
-  &_error {
-    color: red;
-  }
-  &_error::before {
-    content: '\0021';
-    font-size: 20px;
-    font-weight: 900;
-    margin-right: 5px;
-  }
+}
+
+.error_message {
+  color: red;
+}
+
+.error_message::before {
+  content: '\0021';
+  font-size: 20px;
+  font-weight: 900;
+  margin-right: 5px;
 }

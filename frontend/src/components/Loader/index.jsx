@@ -10,11 +10,11 @@ const Loader = () => {
   }, []);
 
   return (
-    <div className={styles.overlay}>
+    <div className="overlay">
       <div className={styles.dots}>
-        <div className={styles.dot + ' ' + styles.dot1}></div>
-        <div className={styles.dot + ' ' + styles.dot2}></div>
-        <div className={styles.dot + ' ' + styles.dot3}></div>
+        <div className={`${styles.dot} ${styles.dot1}`}></div>
+        <div className={`${styles.dot} ${styles.dot2}`}></div>
+        <div className={`${styles.dot} ${styles.dot3}`}></div>
       </div>
     </div>
   );

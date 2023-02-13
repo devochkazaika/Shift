@@ -1,5 +1,6 @@
-import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
+import './styles/globals.scss';
 
 import Sidebar from './components/Sidebar';
 import Stories from './pages/Stories';

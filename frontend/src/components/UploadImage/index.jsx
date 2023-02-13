@@ -1,9 +1,10 @@
 import React from 'react';
 
 import { ReactComponent as UploadIcon } from '../../assets/icons/upload.svg';
-
-import uploadImageStyles from './UploadImage.module.scss';
 import { convertImageToByteArray } from '../../utils/helpers/byteArrayFunctions';
+
+import styles from './UploadImage.module.scss';
+
 import PreviewImage from './PreviewImage';
 
 const UploadImage = ({ field, form, ...props }) => {
@@ -20,7 +21,7 @@ const UploadImage = ({ field, form, ...props }) => {
   return (
     <>
       <input
-        className={uploadImageStyles.file_input}
+        className={styles.file_input}
         name={field.name}
         id={'file' + field.name}
         type="file"
@@ -37,7 +38,7 @@ const UploadImage = ({ field, form, ...props }) => {
           image={field.value}
           setFieldValue={form.setFieldValue}
           fieldName={field.name}
-          input={inputRef}
+          inputRef={inputRef}
         />
       )}
     </>

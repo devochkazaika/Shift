@@ -1,10 +1,10 @@
 .root {
   font-size: 18px;
   font-weight: 700;
-  &.green {
+  &.success {
     color: rgb(73, 173, 73);
   }
-  &.red {
+  &.fail {
     color: rgb(169, 71, 71);
   }
 }

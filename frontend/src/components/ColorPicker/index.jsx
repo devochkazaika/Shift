@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-
+import React from 'react';
 import { SketchPicker } from 'react-color';
 import rgbHex from 'rgb-hex';
 

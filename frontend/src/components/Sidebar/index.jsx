@@ -3,6 +3,8 @@ import { FaBars } from 'react-icons/fa';
 import { BsFilePlus } from 'react-icons/bs';
 import { NavLink } from 'react-router-dom';
 
+import styles from './Sidebar.module.scss';
+
 const Sidebar = () => {
   const [open, setOpen] = React.useState(true);
 
@@ -19,18 +21,18 @@ const Sidebar = () => {
     },
   ];
   return (
-    <div className={`sidebar ${!open ? 'collapsed' : ''}`}>
-      <div className="top_section">
-        {open && <span className="logo">Faktura</span>}
-        <div className="bars">
+    <div className={`${styles.sidebar} ${!open ? styles.collapsed : ''}`}>
+      <div className={styles.top_section}>
+        {open && <span className={styles.logo}>Faktura</span>}
+        <div className={styles.bars}>
           <FaBars onClick={() => setOpen(!open)} />
         </div>
       </div>
-      <div className="nav_links">
+      <div className={styles.nav_links}>
         {menuItems.map((item, i) => (
-          <NavLink key={i} to={item.path} className="link">
-            <div className="icon">{item.icon}</div>
-            {open && <div className="link_text">{item.name}</div>}
+          <NavLink key={i} to={item.path} className={styles.link}>
+            <div className={styles.icon}>{item.icon}</div>
+            {open && <div className={styles.text}>{item.name}</div>}
           </NavLink>
         ))}
       </div>

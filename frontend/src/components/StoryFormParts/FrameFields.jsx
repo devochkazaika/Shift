@@ -1,14 +1,13 @@
 import React from 'react';
 
-import FormField from '../../FormField';
-import ColorPicker from '../../ColorPicker';
-import UploadImage from '../../UploadImage';
+import FormField from '../FormField';
+import ColorPicker from '../ColorPicker';
+import UploadImage from '../UploadImage';
 
-import { ReactComponent as MinusIcon } from '../../../assets/icons/minus.svg';
-import { ReactComponent as PlusIcon } from '../../../assets/icons/plus.svg';
+import { ReactComponent as MinusIcon } from '../../assets/icons/minus.svg';
+import { ReactComponent as PlusIcon } from '../../assets/icons/plus.svg';
 
-import frameFieldsStyles from './FrameFields.module.scss';
-import storyFormPartsStyles from '../StoryFormParts.module.scss';
+import styles from './StoryFormParts.module.scss';
 
 const FrameFields = ({
   frameJson,
@@ -20,17 +19,20 @@ const FrameFields = ({
   touched,
 }) => {
   const [open, setOpen] = React.useState(true);
+  const gradientOptions = [
+    { value: 'EMPTY', name: 'Нет' },
+    { value: 'FULL', name: 'Поверх всего изображения' },
+    { value: 'HALF', name: 'Поверх нижней половины изображения' },
+  ];
+
   return (
-    <div className={frameFieldsStyles.frame}>
+    <div>
       <div
-        style={
-          frameIndex === framesCount - 1 && !open
-            ? { borderBottom: '2px solid #eeeff5' }
-            : { borderBottom: 'none' }
-        }
-        className={frameFieldsStyles.frame_header}
+        className={`${styles.frame_header} ${
+          frameIndex === framesCount - 1 && !open && styles.bordered
+        }`}
         onClick={() => setOpen(!open)}>
-        <div className={frameFieldsStyles.frame_title}>
+        <div className={styles.frame_title}>
           <span>
             {open ? (
               <MinusIcon height="15px" width="15px" />
@@ -42,15 +44,15 @@ const FrameFields = ({
         </div>
 
         {frameIndex !== 0 && (
-          <span onClick={() => remove(frameIndex)} className={frameFieldsStyles.bin_icon}>
+          <span onClick={() => remove(frameIndex)} className={styles.frame_bin}>
             <span></span>
             <i></i>
           </span>
         )}
       </div>
       {open && (
-        <div className={frameFieldsStyles.frame_content}>
-          <div className={storyFormPartsStyles.input_field}>
+        <div className={styles.frame_content}>
+          <div className={styles.input_field}>
             <FormField
               labelTitle={'Заголовок'}
               name={`stories.${storyIndex}.storyFrames.${frameIndex}.title`}
@@ -59,8 +61,8 @@ const FrameFields = ({
               touched={touched}
             />
           </div>
-          <div className={storyFormPartsStyles.row}>
-            <div className={storyFormPartsStyles.input_field}>
+          <div className={styles.row}>
+            <div className={styles.input_field}>
               <FormField
                 labelTitle={'Текст'}
                 name={`stories.${storyIndex}.storyFrames.${frameIndex}.text`}
@@ -77,7 +79,7 @@ const FrameFields = ({
               touched={touched}
             />
           </div>
-          <div className={storyFormPartsStyles.input_field}>
+          <div className={styles.input_field}>
             <FormField
               labelTitle={'Картинка'}
               name={`stories.${storyIndex}.storyFrames.${frameIndex}.pictureUrl`}
@@ -87,23 +89,19 @@ const FrameFields = ({
             />
           </div>
 
-          <div className={storyFormPartsStyles.input_field}>
+          <div className={styles.input_field}>
             <FormField
               labelTitle={'Градиент'}
               name={`stories.${storyIndex}.storyFrames.${frameIndex}.gradient`}
               as="select"
-              options={[
-                { value: 'EMPTY', name: 'Нет' },
-                { value: 'FULL', name: 'Поверх всего изображения' },
-                { value: 'HALF', name: 'Поверх нижней половины изображения' },
-              ]}
+              options={gradientOptions}
               errors={errors}
               touched={touched}
             />
           </div>
 
           <div role="group" aria-labelledby="my-radio-group">
-            <div className={storyFormPartsStyles.row}>
+            <div className={styles.row}>
               <label>
                 <FormField
                   labelTitle="Кнопка"
@@ -144,8 +142,8 @@ const FrameFields = ({
 
           {frameJson.visibleLinkOrButtonOrNone === 'BUTTON' && (
             <>
-              <div className={storyFormPartsStyles.row}>
-                <div className={storyFormPartsStyles.input_field}>
+              <div className={styles.row}>
+                <div className={styles.input_field}>
                   <FormField
                     labelTitle={'Текст'}
                     name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonText`}
@@ -169,7 +167,7 @@ const FrameFields = ({
                 errors={errors}
                 touched={touched}
               />
-              <div className={storyFormPartsStyles.input_field}>
+              <div className={styles.input_field}>
                 <FormField
                   labelTitle={'Ссылка'}
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonUrl`}
@@ -182,7 +180,7 @@ const FrameFields = ({
           )}
           {frameJson.visibleLinkOrButtonOrNone === 'LINK' && (
             <>
-              <div className={storyFormPartsStyles.input_field}>
+              <div className={styles.input_field}>
                 <FormField
                   labelTitle={'Текст'}
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.linkText`}
@@ -191,7 +189,7 @@ const FrameFields = ({
                   touched={touched}
                 />
               </div>
-              <div className={storyFormPartsStyles.input_field}>
+              <div className={styles.input_field}>
                 <FormField
                   labelTitle={'Ссылка'}
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.linkUrl`}

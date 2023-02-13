@@ -1,13 +1,14 @@
 import React from 'react';
 import { AnimatePresence } from 'framer-motion';
 
-import { ReactComponent as BinIcon } from '../../assets/icons/bin.svg';
+import { ReactComponent as BinIcon } from '../../../assets/icons/bin.svg';
+import { convertByteArrayToSrc } from '../../../utils/helpers/byteArrayFunctions';
 
-import previewImageStyles from './PreviewImage.module.scss';
-import { convertByteArrayToSrc } from '../../utils/helpers/byteArrayFunctions';
-import Modal from '../Modal';
+import styles from './PreviewImage.module.scss';
 
-const PreviewImage = ({ image, setFieldValue, fieldName, input }) => {
+import Modal from '../../Modal';
+
+const PreviewImage = ({ image, setFieldValue, fieldName, inputRef }) => {
   const [preview, setPreview] = React.useState(null);
   const [modalShown, toggleModal] = React.useState(false);
 
@@ -16,24 +17,24 @@ const PreviewImage = ({ image, setFieldValue, fieldName, input }) => {
   }, [image]);
 
   const handleDeleteImage = () => {
-    input.current.value = null;
+    inputRef.current.value = null;
     setPreview(null);
     setFieldValue(fieldName, null);
   };
 
   return (
-    <div className={previewImageStyles.root}>
+    <div className={styles.root}>
       {preview ? (
         <>
           <img
-            className={previewImageStyles.image}
+            className={styles.image}
             alt="preview"
             src={preview}
             width="100px"
             height="100px"
             onClick={() => toggleModal(true)}
           />
-          <div className={previewImageStyles.delete} onClick={handleDeleteImage}>
+          <div className={styles.delete} onClick={handleDeleteImage}>
             <BinIcon />
             <span>Удалить</span>
           </div>

@@ -8,7 +8,7 @@ const AlertMessage = ({ success }) => {
     <motion.div
       initial={{ scale: 0.2, x: '-50%', opacity: 0 }}
       animate={{ scale: 1, x: 0, opacity: 1 }}
-      className={styles.root + ' ' + `${success ? styles.green : styles.red}`}>
+      className={`${styles.root} ${success ? styles.success : styles.fail}`}>
       {' '}
       {success ? 'Данные успешно отправлены!' : 'Возникла ошибка :('}
     </motion.div>
