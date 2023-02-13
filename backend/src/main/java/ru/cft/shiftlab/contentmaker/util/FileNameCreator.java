@@ -1,6 +1,6 @@
 package ru.cft.shiftlab.contentmaker.util;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
@@ -11,14 +11,10 @@ import java.util.Date;
  */
 
 @Component
+@RequiredArgsConstructor
 public class FileNameCreator {
 
     private final WhiteList whiteList;
-
-    @Autowired
-    public FileNameCreator(WhiteList whiteList) {
-        this.whiteList = whiteList;
-    }
 
     /**
      * Метод, который генерирует название JSON файла.

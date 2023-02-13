@@ -1,9 +1,8 @@
 package ru.cft.shiftlab.contentmaker.util;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
@@ -21,14 +20,10 @@ import java.util.Map;
  * Класс, предназначенный для конверации StoriesRequestDto в StoryPresentation
  */
 @Component
+@RequiredArgsConstructor
 public class DtoToEntityConverter {
 
     private final ModelMapper modelMapper;
-
-    @Autowired
-    public DtoToEntityConverter(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
 
     public Map<String, List<StoryPresentation>> fromStoriesRequestDtoToMap(StoriesRequestDto storiesRequestDto,
                                                                            String jsonDirectory,

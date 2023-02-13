@@ -1,10 +1,9 @@
 package ru.cft.shiftlab.contentmaker.services.implementations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
+
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
@@ -19,12 +18,11 @@ import ru.cft.shiftlab.contentmaker.util.DtoToEntityConverter;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class JsonAndImageSaverService implements FileSaverService {
 
 
@@ -32,14 +30,6 @@ public class JsonAndImageSaverService implements FileSaverService {
     private final FileExtensionExtractor fileExtensionExtractor;
     private final ByteArrayToImageConverter byteArrayToImageConverter;
 
-    @Autowired
-    public JsonAndImageSaverService(FileNameCreator fileNameCreator,
-                                    FileExtensionExtractor fileExtensionExtractor,
-                                    ByteArrayToImageConverter byteArrayToImageConverter) {
-        this.fileNameCreator = fileNameCreator;
-        this.fileExtensionExtractor = fileExtensionExtractor;
-        this.byteArrayToImageConverter = byteArrayToImageConverter;
-    }
 
     @Override
     public void saveFiles(StoriesRequestDto storiesRequestDto){
