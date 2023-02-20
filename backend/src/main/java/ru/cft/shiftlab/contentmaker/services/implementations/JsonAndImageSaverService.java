@@ -3,7 +3,6 @@ package ru.cft.shiftlab.contentmaker.services.implementations;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
@@ -39,8 +38,6 @@ public class JsonAndImageSaverService implements FileSaverService {
 
     private final String PICTURES_DIRECTORY =
             "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
-
-
 
     @Override
     public void saveFiles(StoriesRequestDto storiesRequestDto){

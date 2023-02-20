@@ -10,10 +10,14 @@ import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HexFormat;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,8 +30,13 @@ public class DtoToEntityConverterTest {
 
 
     @Test
-    public void whenConvertStoryRequestDtoToStoryPresentation_thenCorrect() {
-        byte[] bytes = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
+    public void whenConvertStoryRequestDtoToStoryPresentation_thenCorrect() throws IOException {
+        BufferedImage bImage = ImageIO.read(
+                new File("/content-maker/backend/src/test/java/ru/cft/shiftlab/contentmaker/test_pictures",
+                        "sample.png"));
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ImageIO.write(bImage, "png", bos );
+        byte[] bytes = bos.toByteArray();
 
         StoryFramesDto storyFramesDto = new StoryFramesDto(
                 "Конвертируй",

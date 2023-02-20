@@ -1,12 +1,13 @@
 package ru.cft.shiftlab.contentmaker.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.services.implementations.JsonAndImageSaverService;
+
+import javax.validation.Valid;
 
 /**
  * Контроллер, обрабатывающий запросы для работы с Story

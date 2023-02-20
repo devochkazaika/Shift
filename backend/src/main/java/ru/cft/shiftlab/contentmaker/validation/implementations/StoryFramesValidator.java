@@ -1,7 +1,5 @@
 package ru.cft.shiftlab.contentmaker.validation.implementations;
 
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +9,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.validation.StoryFramesValid;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 import java.util.Arrays;
 
 /**
@@ -76,17 +76,21 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
         }
 
         StoryFramesDto storyFramesDto = (StoryFramesDto) object;
+        String visibleType = storyFramesDto.getVisibleLinkOrButtonOrNone();
 
-        return switch (storyFramesDto.getVisibleLinkOrButtonOrNone()) {
-            case "LINK" -> !(storyFramesDto.getLinkText().isBlank()) &&
-                           !(storyFramesDto.getLinkUrl().isBlank());
-            case "BUTTON" -> !(storyFramesDto.getButtonText().isBlank()) &&
-                             !(storyFramesDto.getButtonUrl()).isBlank() &&
-                             !(storyFramesDto.getButtonTextColor().isBlank()) &&
-                             !(storyFramesDto.getButtonBackgroundColor().isBlank());
-            case "NONE" -> true; //?
-            default -> false;
-        };
+        if (visibleType.equals("LINK")) {
+            return !(storyFramesDto.getLinkText().isBlank()) &&
+                    !(storyFramesDto.getLinkUrl().isBlank());
+        } else if (visibleType.equals("BUTTON")) {
+            return !(storyFramesDto.getButtonText().isBlank()) &&
+                    !(storyFramesDto.getButtonUrl()).isBlank() &&
+                    !(storyFramesDto.getButtonTextColor().isBlank()) &&
+                    !(storyFramesDto.getButtonBackgroundColor().isBlank());
+        } else if (visibleType.equals("NONE")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -103,17 +107,20 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
         StoryFramesDto storyFramesDto = (StoryFramesDto) object;
         int countString = (int) Arrays.stream(storyFramesDto.getTitle().split("\n")).count();
 
-        return switch (countString) {
-            case 1 -> storyFramesDto.getTitle().length() <= titleMaxLenForOneString &&
+        if (countString == 1) {
+            return storyFramesDto.getTitle().length() <= titleMaxLenForOneString &&
                     storyFramesDto.getText().length() <= textMaxLenForOneString &&
                     Arrays.stream(storyFramesDto.getText().split("\n")).count() <= textMaxStringCountForOneString;
-            case 2 -> storyFramesDto.getTitle().length() <= titleMaxLenForTwoString &&
+        } else if (countString == 2) {
+            return storyFramesDto.getTitle().length() <= titleMaxLenForTwoString &&
                     storyFramesDto.getText().length() <= textMaxLenForTwoString &&
                     Arrays.stream(storyFramesDto.getText().split("\n")).count() <= textMaxStringCountForTwoString;
-            case 3 -> storyFramesDto.getTitle().length() <= titleMaxLenForThreeString &&
+        } else if (countString == 3) {
+            return storyFramesDto.getTitle().length() <= titleMaxLenForThreeString &&
                     storyFramesDto.getText().length() <= textMaxLenForThreeString &&
                     Arrays.stream(storyFramesDto.getText().split("\n")).count() <= textMaxStringCountForThreeString;
-            default -> false;
-        };
+        } else {
+            return false;
+        }
     }
 }

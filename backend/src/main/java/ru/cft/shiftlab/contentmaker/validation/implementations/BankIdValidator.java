@@ -1,12 +1,13 @@
 package ru.cft.shiftlab.contentmaker.validation.implementations;
 
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.cft.shiftlab.contentmaker.util.WhiteList;
 import ru.cft.shiftlab.contentmaker.validation.WhitelistValid;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 /**
  * Имплементация валидации идентификатора банка.

@@ -1,9 +1,9 @@
 package ru.cft.shiftlab.contentmaker.validation;
 
-import jakarta.validation.Constraint;
-import jakarta.validation.Payload;
 import ru.cft.shiftlab.contentmaker.validation.implementations.StoryValidator;
 
+import javax.validation.Constraint;
+import javax.validation.Payload;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

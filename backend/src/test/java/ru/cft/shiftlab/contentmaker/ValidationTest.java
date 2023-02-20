@@ -1,7 +1,5 @@
 package ru.cft.shiftlab.contentmaker;
 
-import jakarta.validation.ConstraintValidatorContext;
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -16,9 +14,14 @@ import ru.cft.shiftlab.contentmaker.validation.implementations.StoryValidator;
 import ru.cft.shiftlab.contentmaker.validation.StoryFramesValid;
 import ru.cft.shiftlab.contentmaker.validation.StoryValid;
 
+import javax.imageio.ImageIO;
+import javax.validation.ConstraintValidatorContext;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HexFormat;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -41,9 +44,13 @@ public class ValidationTest {
     private final WhiteList whiteList = new WhiteList();
 
     @Test
-    public void validate_DtosHaveAllCorrectData() {
-        byte[] bytes = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
-
+    public void validate_DtosHaveAllCorrectData() throws IOException {
+        BufferedImage bImage = ImageIO.read(
+                new File("/content-maker/backend/src/test/java/ru/cft/shiftlab/contentmaker/test_pictures",
+                        "sample.png"));
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ImageIO.write(bImage, "png", bos );
+        byte[] bytes = bos.toByteArray();
         StoryFramesDto storyFramesDto = new StoryFramesDto(
                 "Конвертируй",
                 "Обменивайте валюту онлайн по выгодному курсу",
@@ -81,8 +88,13 @@ public class ValidationTest {
     }
 
     @Test
-    public void validate_DtoHaveIncorrectDataForStoryValid() {
-        byte[] bytes = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
+    public void validate_DtoHaveIncorrectDataForStoryValid() throws IOException {
+        BufferedImage bImage = ImageIO.read(
+                new File("/content-maker/backend/src/test/java/ru/cft/shiftlab/contentmaker/test_pictures",
+                        "sample.png"));
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ImageIO.write(bImage, "png", bos );
+        byte[] bytes = bos.toByteArray();
         StoryFramesDto storyFramesDto = new StoryFramesDto(
                 "Конвертируй",
                 "Обменивайте валюту онлайн по выгодному курсу",
@@ -113,8 +125,13 @@ public class ValidationTest {
     }
 
     @Test
-    public void validate_DtoHaveIncorrectDataForStoryFramesValid() {
-        byte[] bytes = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
+    public void validate_DtoHaveIncorrectDataForStoryFramesValid() throws IOException {
+        BufferedImage bImage = ImageIO.read(
+                new File("/content-maker/backend/src/test/java/ru/cft/shiftlab/contentmaker/test_pictures",
+                        "sample.png"));
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ImageIO.write(bImage, "png", bos );
+        byte[] bytes = bos.toByteArray();
         StoryFramesDto storyFramesDto = new StoryFramesDto(
                 "Онлайн конвертация ", 
                 "Обменивайте валюту онлайн по выгодному курсу",
