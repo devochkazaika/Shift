@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ru.cft.shiftlab.contentmaker.util.WhiteList;
 import ru.cft.shiftlab.contentmaker.validation.WhitelistValid;
 
-
+/**
+ * Имплементация валидации идентификатора банка.
+ */
 @Slf4j
 @Data
 public class BankIdValidator implements ConstraintValidator<WhitelistValid, String> {
@@ -24,6 +26,14 @@ public class BankIdValidator implements ConstraintValidator<WhitelistValid, Stri
     public void initialize(WhitelistValid constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
+
+    /**
+     * Метод проверяет входит ли bankId в список разрешенных идентификаторов.
+     *
+     * @param object предполагаемый bankId, который нужно валидировать.
+     * @param constraintValidatorContext
+     * @return True/False в зависимости от результата валидации.
+     */
     @Override
     public boolean isValid(String object, ConstraintValidatorContext constraintValidatorContext) {
         if (object == null) {

@@ -11,7 +11,7 @@ import ru.cft.shiftlab.contentmaker.validation.WhitelistValid;
 import java.util.ArrayList;
 
 /**
- * DTO, который приходит с FrontEnd'а
+ * Исходная DTO, которая приходит с FrontEnd'а
  */
 @Data
 @NoArgsConstructor

@@ -11,6 +11,9 @@ import java.lang.annotation.Target;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+/**
+ * Валидация StoryDTO.
+ */
 @Target({ ElementType.TYPE})
 @Retention(RUNTIME)
 @Constraint(validatedBy = StoryValidator.class)

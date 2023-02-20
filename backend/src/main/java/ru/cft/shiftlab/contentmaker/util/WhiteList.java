@@ -9,7 +9,7 @@ import java.util.Map;
 import static java.util.Map.entry;
 
 /**
- * Класс, предназначенный для работы с Map списка банков.
+ * Класс, предназначенный для работы с Map, в котором находится список валидных банков.
  */
 @Component
 public class WhiteList {
@@ -62,6 +62,5 @@ public class WhiteList {
         bankName = bankName.replace("\"", "");
         return bankName;
     }
-
 
 }

@@ -12,8 +12,11 @@ import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.validation.StoryFramesValid;
 
 import java.util.Arrays;
-@Slf4j
 
+/**
+ * Имлпементация валидации StoryFramesDto.
+ */
+@Slf4j
 @EnableConfigurationProperties(StoryFramesValidator.class)
 @ConfigurationProperties(prefix = "title.text.validator")
 @Data
@@ -38,6 +41,13 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
+    /**
+     * Составной метод, который вызывает вспомогательные методы валидации.
+     *
+     * @param object предполагаемый StoryFramesDto, который нужно валидировать.
+     * @param constraintValidatorContext
+     * @return True/False в зависимости от результата валидации.
+     */
     @Override
     public boolean isValid(StoryFramesDto object, ConstraintValidatorContext constraintValidatorContext) {
         if (object == null) {
@@ -54,6 +64,12 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
         return validButtonLink(storyFramesDto) && validTitleText(storyFramesDto);
     }
 
+    /**
+     * Вспомогательный метод для проверки полей связанных с LINK, BUTTON и NONE.
+     *
+     * @param object проверяемый StoryFramesDto.
+     * @return True/False в зависимости от результата валидации.
+     */
     private boolean validButtonLink(StoryFramesDto object) {
         if (object == null) {
             throw new IllegalArgumentException("@StringValid only applies to StoryFramesDto objects");
@@ -73,6 +89,12 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
         };
     }
 
+    /**
+     * Вспомогательный метод для проверки Title и Text.
+     *
+     * @param object проверяемый StoryFramesDto.
+     * @return True/False в зависимости от результата валидации.
+     */
     private boolean validTitleText(StoryFramesDto object) {
         if (object == null) {
             throw new IllegalArgumentException("@StringValid only applies to StoryFramesDto objects");

@@ -2,6 +2,9 @@ package ru.cft.shiftlab.contentmaker.entity;
 
 import lombok.*;
 
+/**
+ * Вспомогательная Entity для хранения данных об каждой карточке.
+ */
 @Setter
 @Getter
 @NoArgsConstructor
@@ -20,6 +23,5 @@ public class StoryPresentationFrames {
     private String buttonBackgroundColor;
     private String buttonUrl;
     private String gradient;
-
 
 }

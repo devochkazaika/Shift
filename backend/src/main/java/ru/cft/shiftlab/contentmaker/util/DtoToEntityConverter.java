@@ -15,16 +15,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 /**
  * Класс, предназначенный для конверации StoriesRequestDto в StoryPresentation
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class DtoToEntityConverter {
 
     private final ModelMapper modelMapper;
 
+    /**
+     * Метод конвертирующий исходный DTO, прилетающий с FrontEnd'а, в Entity,
+     * которая является итоговым JSON-файлом.
+     *
+     * @param storiesRequestDto исходное DTO, которое мы получаем от FrontEnd'a.
+     * @param jsonDirectory директория, в которую будет записан итоговый JSON.
+     * @param picturesDirectory директория, в которую будут записаны картинки из DTO.
+     * @return ассоциативный массив, который содержит: ключ - "stories", значение - StoryPresentation.
+     */
     public Map<String, List<StoryPresentation>> fromStoriesRequestDtoToMap(StoriesRequestDto storiesRequestDto,
                                                                            String jsonDirectory,
                                                                            String picturesDirectory) {
@@ -42,6 +51,15 @@ public class DtoToEntityConverter {
         return presentationMap;
     }
 
+    /**
+     * Метод для конвертации StoryDto в StoryPresentation.
+     *
+     * @param bankId идентификатор банка, который отправил запрос.
+     * @param storyDto DTO, которую нужно конвертировать в Entity.
+     * @param jsonDirectory директория, в которую будет записан итоговый JSON.
+     * @param picturesDirectory директория, в которую будут записаны картинки из DTO.
+     * @return StoryPresentation, полученный после конвертации StoryDto.
+     */
     public StoryPresentation fromStoryDtoToStoryPresentation(String bankId,
                                                              StoryDto storyDto,
                                                              String jsonDirectory,
@@ -62,6 +80,12 @@ public class DtoToEntityConverter {
         return storyPresentation;
     }
 
+    /**
+     * Метод для конвертации StoryFramesDto в StoryPresentationFrames.
+     *
+     * @param storyFramesDto DTO, которую нужно конвертировать в Entity.
+     * @return StoryPresentationFrames, полученный после конвертации из StoryFramesDto.
+     */
     public StoryPresentationFrames fromStoryFramesDtoToStoryPresentationFrames(StoryFramesDto storyFramesDto) {
         StoryPresentationFrames storyPresentationFrames = modelMapper.map(storyFramesDto, StoryPresentationFrames.class);
 
@@ -70,4 +94,5 @@ public class DtoToEntityConverter {
 
         return storyPresentationFrames;
     }
+
 }

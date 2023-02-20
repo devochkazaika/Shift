@@ -28,4 +28,5 @@ public class FileExtensionExtractor {
             throw new RuntimeException(e);
         }
     }
+
 }

@@ -29,4 +29,5 @@ public class FileNameCreator {
 
         return bankName + "_" + bankId + "_" + dateFormat.format(date) + ".json";
     }
+
 }

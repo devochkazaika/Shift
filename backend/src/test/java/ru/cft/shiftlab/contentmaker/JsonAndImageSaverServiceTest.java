@@ -41,9 +41,12 @@ public class JsonAndImageSaverServiceTest {
 
     private FileNameCreator fileNameCreator = new FileNameCreator(whiteList);
 
+    private final DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
+
     private JsonAndImageSaverService jsonAndImageSaverService = new JsonAndImageSaverService(fileNameCreator,
                                                                                             fileExtensionExtractor,
-                                                                                            byteArrayToImageConverter);
+                                                                                            byteArrayToImageConverter,
+                                                                                            dtoToEntityConverter);
 
     @Test
     void should_save_files() throws IOException {

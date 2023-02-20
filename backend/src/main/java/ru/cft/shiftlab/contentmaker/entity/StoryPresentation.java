@@ -6,7 +6,7 @@ import lombok.*;
 import java.util.ArrayList;
 
 /**
- * Entity, которая содержит информацию о итоговом json
+ * Entity, которая содержит информацию об итоговом JSON-файле.
  */
 @Setter
 @Getter

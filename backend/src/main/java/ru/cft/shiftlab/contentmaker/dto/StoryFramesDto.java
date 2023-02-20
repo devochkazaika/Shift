@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import ru.cft.shiftlab.contentmaker.validation.StoryFramesValid;
 
 /**
- * DTO, который содержит информацию истории
+ * DTO, который содержит информацию карточке истории.
  */
 @Data
 @NoArgsConstructor

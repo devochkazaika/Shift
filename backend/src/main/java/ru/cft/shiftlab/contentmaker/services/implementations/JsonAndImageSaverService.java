@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Имплементация интерфейса FIleSaverService.
+ */
 @Service
 @RequiredArgsConstructor
 public class JsonAndImageSaverService implements FileSaverService {
@@ -29,19 +32,21 @@ public class JsonAndImageSaverService implements FileSaverService {
     private final FileNameCreator fileNameCreator;
     private final FileExtensionExtractor fileExtensionExtractor;
     private final ByteArrayToImageConverter byteArrayToImageConverter;
+    private final DtoToEntityConverter dtoToEntityConverter;
+
+    private final String JSON_DIRECTORY =
+            "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
+
+    private final String PICTURES_DIRECTORY =
+            "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
+
 
 
     @Override
     public void saveFiles(StoriesRequestDto storiesRequestDto){
         try {
-            String jsonDirectory =
-                    "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
 
-            String picturesDirectory =
-                    "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
-                    + storiesRequestDto.getBankId();
-
-            File newDirectory = new File(picturesDirectory);
+            File newDirectory = new File(PICTURES_DIRECTORY + storiesRequestDto.getBankId());
 
             if (!newDirectory.exists()) {
                 newDirectory.mkdirs();
@@ -49,13 +54,14 @@ public class JsonAndImageSaverService implements FileSaverService {
 
             String fileName = fileNameCreator.createFileName(storiesRequestDto.getBankId());
 
-            DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
 
             Map<String, List<StoryPresentation>> presentationList =
-                    dtoToEntityConverter.fromStoriesRequestDtoToMap(storiesRequestDto, jsonDirectory, picturesDirectory);
+                    dtoToEntityConverter.fromStoriesRequestDtoToMap(storiesRequestDto,
+                            JSON_DIRECTORY,
+                            PICTURES_DIRECTORY + storiesRequestDto.getBankId());
 
             ObjectMapper mapper = new ObjectMapper();
-            mapper.writeValue(new File(jsonDirectory, fileName), presentationList);
+            mapper.writeValue(new File(JSON_DIRECTORY, fileName), presentationList);
 
             int counterForPreview = 0;
             int counterForStoryFramePicture = 0;
@@ -67,7 +73,7 @@ public class JsonAndImageSaverService implements FileSaverService {
                         fileExtensionExtractor.getFileExtensionFromByteArray(previewUrl);
                 byteArrayToImageConverter.convertByteArrayToImageAndSave(
                         previewUrl,
-                        picturesDirectory,
+                        PICTURES_DIRECTORY + storiesRequestDto.getBankId(),
                         "preview",
                         previewFileExtension,
                         counterForPreview);
@@ -78,7 +84,7 @@ public class JsonAndImageSaverService implements FileSaverService {
                             fileExtensionExtractor.getFileExtensionFromByteArray(storyFramePictureUrl);
                     byteArrayToImageConverter.convertByteArrayToImageAndSave(
                             storyFramePictureUrl,
-                            picturesDirectory,
+                            PICTURES_DIRECTORY + storiesRequestDto.getBankId(),
                             "storyFramePicture",
                             storyFramePictureFileExtension,
                             counterForStoryFramePicture);
