@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Banners = () => {
-  return <div>Banners</div>;
+  return <div></div>;
 };
 
 export default Banners;

@@ -2,7 +2,7 @@ import React from 'react';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { motion } from 'framer-motion';
 
-import { ReactComponent as CloseIcon } from '../../assets/icons/close.svg';
+import { ReactComponent as CloseIcon } from '../../../assets/icons/close.svg';
 
 import styles from './Modal.module.scss';
 

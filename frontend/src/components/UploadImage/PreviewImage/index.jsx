@@ -6,7 +6,7 @@ import { convertByteArrayToSrc } from '../../../utils/helpers/byteArrayFunctions
 
 import styles from './PreviewImage.module.scss';
 
-import Modal from '../../Modal';
+import Modal from '../../ui/Modal';
 
 const PreviewImage = ({ image, setFieldValue, fieldName, inputRef }) => {
   const [preview, setPreview] = React.useState(null);

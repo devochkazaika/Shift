@@ -6,7 +6,7 @@ import UploadImage from '../UploadImage';
 
 import styles from './StoryFormParts.module.scss';
 
-const PreviewFields = ({ storyIndex, errors, touched }) => {
+const PreviewFields = ({ storyIndex, ...props }) => {
   const gradientOptions = [
     { value: 'EMPTY', name: 'Нет' },
     { value: 'FULL', name: 'Поверх всего изображения' },
@@ -20,16 +20,14 @@ const PreviewFields = ({ storyIndex, errors, touched }) => {
             labelTitle={'Заголовок'}
             name={`stories.${storyIndex}.previewTitle`}
             type={'text'}
-            errors={errors}
-            touched={touched}
+            {...props}
           />
         </div>
         <FormField
           labelTitle={'Цвет текста'}
           name={`stories.${storyIndex}.previewTitleColor`}
           component={ColorPicker}
-          errors={errors}
-          touched={touched}
+          {...props}
         />
       </div>
       <div className={styles.input_field}>
@@ -37,8 +35,7 @@ const PreviewFields = ({ storyIndex, errors, touched }) => {
           labelTitle={'Картинка'}
           name={`stories.${storyIndex}.previewUrl`}
           component={UploadImage}
-          errors={errors}
-          touched={touched}
+          {...props}
         />
       </div>
       <div className={styles.input_field}>
@@ -47,8 +44,7 @@ const PreviewFields = ({ storyIndex, errors, touched }) => {
           name={`stories.${storyIndex}.previewGradient`}
           as="select"
           options={gradientOptions}
-          errors={errors}
-          touched={touched}
+          {...props}
         />
       </div>
     </>

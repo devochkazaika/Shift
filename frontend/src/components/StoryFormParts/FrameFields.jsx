@@ -9,15 +9,7 @@ import { ReactComponent as PlusIcon } from '../../assets/icons/plus.svg';
 
 import styles from './StoryFormParts.module.scss';
 
-const FrameFields = ({
-  frameJson,
-  storyIndex,
-  frameIndex,
-  framesCount,
-  remove,
-  errors,
-  touched,
-}) => {
+const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, ...props }) => {
   const [open, setOpen] = React.useState(true);
   const gradientOptions = [
     { value: 'EMPTY', name: 'Нет' },
@@ -57,8 +49,7 @@ const FrameFields = ({
               labelTitle={'Заголовок'}
               name={`stories.${storyIndex}.storyFrames.${frameIndex}.title`}
               type={'text'}
-              errors={errors}
-              touched={touched}
+              {...props}
             />
           </div>
           <div className={styles.row}>
@@ -67,16 +58,14 @@ const FrameFields = ({
                 labelTitle={'Текст'}
                 name={`stories.${storyIndex}.storyFrames.${frameIndex}.text`}
                 as={'textarea'}
-                errors={errors}
-                touched={touched}
+                {...props}
               />
             </div>
             <FormField
               labelTitle={'Цвет текста'}
               name={`stories.${storyIndex}.storyFrames.${frameIndex}.textColor`}
               component={ColorPicker}
-              errors={errors}
-              touched={touched}
+              {...props}
             />
           </div>
           <div className={styles.input_field}>
@@ -84,8 +73,7 @@ const FrameFields = ({
               labelTitle={'Картинка'}
               name={`stories.${storyIndex}.storyFrames.${frameIndex}.pictureUrl`}
               component={UploadImage}
-              errors={errors}
-              touched={touched}
+              {...props}
             />
           </div>
 
@@ -95,8 +83,7 @@ const FrameFields = ({
               name={`stories.${storyIndex}.storyFrames.${frameIndex}.gradient`}
               as="select"
               options={gradientOptions}
-              errors={errors}
-              touched={touched}
+              {...props}
             />
           </div>
 
@@ -109,8 +96,7 @@ const FrameFields = ({
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
                   value="BUTTON"
                   checked={frameJson.visibleLinkOrButtonOrNone === 'BUTTON'}
-                  errors={errors}
-                  touched={touched}
+                  {...props}
                 />
               </label>
 
@@ -121,8 +107,7 @@ const FrameFields = ({
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
                   value="LINK"
                   checked={frameJson.visibleLinkOrButtonOrNone === 'LINK'}
-                  errors={errors}
-                  touched={touched}
+                  {...props}
                 />
               </label>
 
@@ -133,8 +118,7 @@ const FrameFields = ({
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
                   value="NONE"
                   checked={frameJson.visibleLinkOrButtonOrNone === 'NONE'}
-                  errors={errors}
-                  touched={touched}
+                  {...props}
                 />
               </label>
             </div>
@@ -148,32 +132,28 @@ const FrameFields = ({
                     labelTitle={'Текст'}
                     name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonText`}
                     as={'textarea'}
-                    errors={errors}
-                    touched={touched}
+                    {...props}
                   />
                 </div>
                 <FormField
                   labelTitle={'Цвет текста'}
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonTextColor`}
                   component={ColorPicker}
-                  errors={errors}
-                  touched={touched}
+                  {...props}
                 />
               </div>
               <FormField
                 labelTitle={'Цвет кнопки'}
                 name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonBackgroundColor`}
                 component={ColorPicker}
-                errors={errors}
-                touched={touched}
+                {...props}
               />
               <div className={styles.input_field}>
                 <FormField
                   labelTitle={'Ссылка'}
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonUrl`}
                   type="text"
-                  errors={errors}
-                  touched={touched}
+                  {...props}
                 />
               </div>
             </>
@@ -185,8 +165,7 @@ const FrameFields = ({
                   labelTitle={'Текст'}
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.linkText`}
                   type="text"
-                  errors={errors}
-                  touched={touched}
+                  {...props}
                 />
               </div>
               <div className={styles.input_field}>
@@ -194,8 +173,7 @@ const FrameFields = ({
                   labelTitle={'Ссылка'}
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.linkUrl`}
                   type="text"
-                  errors={errors}
-                  touched={touched}
+                  {...props}
                 />
               </div>
             </>
