@@ -3,6 +3,7 @@ package ru.cft.shiftlab.contentmaker.services.implementations;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
@@ -17,6 +18,8 @@ import ru.cft.shiftlab.contentmaker.util.DtoToEntityConverter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,70 +28,84 @@ import java.util.Map;
  */
 @Service
 @RequiredArgsConstructor
+@ConfigurationProperties(prefix = "files.save.directory")
 public class JsonAndImageSaverService implements FileSaverService {
-
 
     private final FileNameCreator fileNameCreator;
     private final FileExtensionExtractor fileExtensionExtractor;
     private final ByteArrayToImageConverter byteArrayToImageConverter;
     private final DtoToEntityConverter dtoToEntityConverter;
 
-    private final String JSON_DIRECTORY =
-            "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
-
-    private final String PICTURES_DIRECTORY =
-            "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
-
     @Override
     public void saveFiles(StoriesRequestDto storiesRequestDto){
         try {
+            String filesSaveDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
+            String bankId = storiesRequestDto.getBankId();
+            String picturesSaveDirectory = filesSaveDirectory + bankId + "/";
 
-            File newDirectory = new File(PICTURES_DIRECTORY + storiesRequestDto.getBankId());
+            File newDirectory = new File(picturesSaveDirectory);
 
             if (!newDirectory.exists()) {
                 newDirectory.mkdirs();
             }
 
-            String fileName = fileNameCreator.createFileName(storiesRequestDto.getBankId());
+            String fileName = fileNameCreator.createFileName(bankId);
 
-
-            Map<String, List<StoryPresentation>> presentationList =
-                    dtoToEntityConverter.fromStoriesRequestDtoToMap(storiesRequestDto,
-                            JSON_DIRECTORY,
-                            PICTURES_DIRECTORY + storiesRequestDto.getBankId());
-
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.writeValue(new File(JSON_DIRECTORY, fileName), presentationList);
+            List<StoryPresentation> storyPresentationList = new ArrayList<>();
 
             int counterForPreview = 0;
             int counterForStoryFramePicture = 0;
 
             for (StoryDto story: storiesRequestDto.getStoryDtos()) {
                 counterForPreview++;
-                byte [] previewUrl = story.getPreviewUrl();
+                byte [] previewUrlBytes = story.getPreviewUrl();
+
                 String previewFileExtension =
-                        fileExtensionExtractor.getFileExtensionFromByteArray(previewUrl);
+                        fileExtensionExtractor.getFileExtensionFromByteArray(previewUrlBytes);
                 byteArrayToImageConverter.convertByteArrayToImageAndSave(
-                        previewUrl,
-                        PICTURES_DIRECTORY + storiesRequestDto.getBankId(),
+                        previewUrlBytes,
+                        picturesSaveDirectory,
                         "preview",
                         previewFileExtension,
                         counterForPreview);
+
+                String previewUrl = picturesSaveDirectory + "preview" + counterForPreview + "." + previewFileExtension;
+                storyPresentationList.add(dtoToEntityConverter.fromStoryDtoToStoryPresentation(
+                        bankId,
+                        story,
+                        filesSaveDirectory,
+                        picturesSaveDirectory,
+                        previewUrl));
+
                 for (StoryFramesDto storyFramesDto: story.getStoryFramesDtos()) {
                     counterForStoryFramePicture++;
-                    byte [] storyFramePictureUrl = storyFramesDto.getPictureUrl();
+                    byte [] storyFramePictureUrlBytes = storyFramesDto.getPictureUrl();
+
                     String storyFramePictureFileExtension =
-                            fileExtensionExtractor.getFileExtensionFromByteArray(storyFramePictureUrl);
+                            fileExtensionExtractor.getFileExtensionFromByteArray(storyFramePictureUrlBytes);
                     byteArrayToImageConverter.convertByteArrayToImageAndSave(
-                            storyFramePictureUrl,
-                            PICTURES_DIRECTORY + storiesRequestDto.getBankId(),
+                            storyFramePictureUrlBytes,
+                            picturesSaveDirectory,
                             "storyFramePicture",
                             storyFramePictureFileExtension,
                             counterForStoryFramePicture);
+
+                    String storyFramePictureUrl = picturesSaveDirectory + "storyFramePicture" + counterForStoryFramePicture + "." + storyFramePictureFileExtension;
+                    storyPresentationList.get(counterForPreview - 1).getStoryPresentationFrames().get(counterForStoryFramePicture - 1).setPictureUrl(storyFramePictureUrl);
+
                 }
             }
-        } catch (IOException e) {
+            Map<String, List<StoryPresentation>> resultMap = new HashMap<>();
+
+            resultMap.put("stories", storyPresentationList);
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(new File(filesSaveDirectory, fileName), resultMap);
+
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
 }

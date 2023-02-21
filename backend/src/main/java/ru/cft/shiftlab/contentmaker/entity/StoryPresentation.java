@@ -17,7 +17,7 @@ public class StoryPresentation {
     private String bankId;
     private String previewTitle;
     private String previewTitleColor;
-    private byte[] previewUrl;
+    private String previewUrl;
     private String previewGradient;
 
     private String jsonDirectory;

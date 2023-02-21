@@ -14,7 +14,7 @@ public class StoryPresentationFrames {
     private String title;
     private String text;
     private String textColor;
-    private byte[] pictureUrl;
+    private String pictureUrl;
     private String visibleLinkOrButtonOrNone;
     private String linkText;
     private String linkUrl;

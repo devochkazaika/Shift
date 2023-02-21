@@ -31,18 +31,11 @@ public class DtoToEntityConverterTest {
 
     @Test
     public void whenConvertStoryRequestDtoToStoryPresentation_thenCorrect() throws IOException {
-        BufferedImage bImage = ImageIO.read(
-                new File("/content-maker/backend/src/test/java/ru/cft/shiftlab/contentmaker/test_pictures",
-                        "sample.png"));
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ImageIO.write(bImage, "png", bos );
-        byte[] bytes = bos.toByteArray();
-
         StoryFramesDto storyFramesDto = new StoryFramesDto(
                 "Конвертируй",
                 "Обменивайте валюту онлайн по выгодному курсу",
                 "FFFFFF",
-                bytes,
+                null,
                 "NONE",
                 "link text",
                 "link url",
@@ -56,20 +49,18 @@ public class DtoToEntityConverterTest {
         StoryDto storyDto = new StoryDto(
                 "Конвертируй валюту",
                 "FFFFFF",
-                bytes,
+                null,
                 "EMPTY",
                 new ArrayList<>(Collections.singletonList(storyFramesDto))
         );
 
-
-
-        storyPresentation = converterRequestDto.fromStoryDtoToStoryPresentation("id", storyDto, null, null);
+        storyPresentation = converterRequestDto.fromStoryDtoToStoryPresentation("id", storyDto, null, null, null);
 
 
         assertAll(
                 () -> assertEquals(storyDto.getPreviewTitle(), storyPresentation.getPreviewTitle()),
                 () -> assertEquals(storyDto.getPreviewTitleColor(), storyPresentation.getPreviewTitleColor()),
-                () -> assertTrue(Arrays.equals(storyDto.getPreviewUrl(), bytes)),
+                () -> assertTrue(Arrays.equals(storyDto.getPreviewUrl(), null)),
                 () -> assertEquals(storyDto.getPreviewGradient(), storyPresentation.getPreviewGradient()),
 
                 () -> assertLinesMatch(Collections.singletonList(asJsonString(storyPresentation.getStoryPresentationFrames().get(0))),

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Класс, предназначенный для конверации StoriesRequestDto в StoryPresentation
+ * Класс, предназначенный для конвертации StoriesRequestDto в StoryPresentation
  */
 @Slf4j
 @Component
@@ -24,32 +24,6 @@ import java.util.Map;
 public class DtoToEntityConverter {
 
     private final ModelMapper modelMapper;
-
-    /**
-     * Метод конвертирующий исходный DTO, прилетающий с FrontEnd'а, в Entity,
-     * которая является итоговым JSON-файлом.
-     *
-     * @param storiesRequestDto исходное DTO, которое мы получаем от FrontEnd'a.
-     * @param jsonDirectory директория, в которую будет записан итоговый JSON.
-     * @param picturesDirectory директория, в которую будут записаны картинки из DTO.
-     * @return ассоциативный массив, который содержит: ключ - "stories", значение - StoryPresentation.
-     */
-    public Map<String, List<StoryPresentation>> fromStoriesRequestDtoToMap(StoriesRequestDto storiesRequestDto,
-                                                                           String jsonDirectory,
-                                                                           String picturesDirectory) {
-
-        Map<String, List<StoryPresentation>> presentationMap = new HashMap<>();
-
-        List<StoryPresentation> storyPresentations = new ArrayList<>();
-
-        for (StoryDto storyDto: storiesRequestDto.getStoryDtos()) {
-            storyPresentations.add(fromStoryDtoToStoryPresentation(storiesRequestDto.getBankId(), storyDto,
-                    jsonDirectory, picturesDirectory));
-            presentationMap.put("stories", storyPresentations);
-        }
-
-        return presentationMap;
-    }
 
     /**
      * Метод для конвертации StoryDto в StoryPresentation.
@@ -63,7 +37,8 @@ public class DtoToEntityConverter {
     public StoryPresentation fromStoryDtoToStoryPresentation(String bankId,
                                                              StoryDto storyDto,
                                                              String jsonDirectory,
-                                                             String picturesDirectory) {
+                                                             String picturesDirectory,
+                                                             String previewUrl) {
         StoryPresentation storyPresentation = modelMapper.map(storyDto, StoryPresentation.class);
         storyPresentation.setBankId(bankId);
 
@@ -72,6 +47,7 @@ public class DtoToEntityConverter {
             storyPresentation.setJsonDirectory(jsonDirectory);
             storyPresentation.setPicturesDirectory(picturesDirectory);
             storyPresentation.getStoryPresentationFrames().add(fromStoryFramesDtoToStoryPresentationFrames(storyFramesDto));
+            storyPresentation.setPreviewUrl(previewUrl);
         }
 
         log.info("New StoryPresentation Object: {}",
