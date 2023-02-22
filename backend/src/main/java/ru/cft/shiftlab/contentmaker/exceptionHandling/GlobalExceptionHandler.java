@@ -2,7 +2,6 @@ package ru.cft.shiftlab.contentmaker.exceptionHandling;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public StaticContentException handleNoSuchException(StaticContentException staticContentException) {
+    public StaticContentException handleStaticContentExceptionException(StaticContentException staticContentException) {
         return staticContentException;
     }
 
@@ -30,7 +29,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
             HttpHeaders headers,
-            HttpStatusCode status,
+            HttpStatus status,
             WebRequest request) {
 
         final List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();

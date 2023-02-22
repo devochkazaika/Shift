@@ -1,0 +1,106 @@
+.frame_header {
+  margin: 0 -30px;
+  padding: 0 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 2px solid #eeeff5;
+  cursor: pointer;
+  .frame_title {
+    display: flex;
+    span {
+      display: flex;
+      align-items: center;
+      margin-right: 10px;
+    }
+  }
+}
+
+.frame_content {
+  margin: 0 -30px;
+  padding: 0 30px;
+  padding-top: 20px;
+  border-top: 2px solid #eeeff5;
+}
+
+.bin_icon {
+  margin-top: 10px;
+  background: #f12b2c;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  position: relative;
+  -webkit-border-bottom-right-radius: 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  -moz-border-radius-bottomright: 6px;
+  -moz-border-radius-bottomleft: 6px;
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
+
+  span {
+    position: absolute;
+    height: 4px;
+    background: #f12b2c;
+    top: -6px;
+    left: -3px;
+    right: -3px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    transform: rotate(0deg);
+    transition: transform 250ms;
+    transform-origin: 19% 100%;
+    &:after {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 3px;
+      background: #f12b2c;
+      top: -4px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      transform: rotate(0deg);
+      transition: transform 250ms;
+      transform-origin: 19% 100%;
+      left: 6px;
+    }
+  }
+  i {
+    position: relative;
+    width: 1px;
+    height: 13px;
+    background: #fff;
+    display: block;
+    margin: 14px auto;
+    border-radius: 5px;
+    top: -11px;
+    &:after {
+      content: '';
+      width: 1px;
+      height: 13px;
+      background: #fff;
+      position: absolute;
+      left: -5px;
+      border-radius: 5px;
+    }
+    &:before {
+      content: '';
+      width: 1px;
+      height: 13px;
+      background: #fff;
+      position: absolute;
+      right: -5px;
+      border-radius: 5px;
+    }
+  }
+  &:hover {
+    background-color: #ef7373;
+    span {
+      background-color: #ef7373;
+      transform: rotate(-45deg);
+      transition: transform 250ms;
+      &:after {
+        background-color: #ef7373;
+      }
+    }
+  }
+}

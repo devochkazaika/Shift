@@ -1,0 +1,35 @@
+.button {
+  border-radius: 100px;
+  padding: 18px 20px;
+  cursor: pointer;
+  border: 1px solid #c9caca;
+  transition: all 0.3s;
+  color: white;
+  font-size: 'Mulish', sans-serif;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  margin: 20px 10px 20px 0;
+  z-index: 0;
+  &:global(.green) {
+    background-color: #29cc97;
+    &:hover {
+      background-color: #56e4b5;
+      transition: all 0.3s;
+    }
+  }
+  &:global(.red) {
+    background-color: #f12b2c;
+
+    &:hover {
+      background-color: #ef7373;
+      transition: all 0.3s;
+    }
+  }
+  .icon {
+    svg {
+      fill: #fff;
+      margin-right: 10px;
+    }
+  }
+}

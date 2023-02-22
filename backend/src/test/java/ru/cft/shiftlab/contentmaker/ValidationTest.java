@@ -1,20 +1,27 @@
 package ru.cft.shiftlab.contentmaker;
 
-import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
+import ru.cft.shiftlab.contentmaker.util.WhiteList;
+import ru.cft.shiftlab.contentmaker.validation.WhitelistValid;
+import ru.cft.shiftlab.contentmaker.validation.implementations.BankIdValidator;
 import ru.cft.shiftlab.contentmaker.validation.implementations.StoryFramesValidator;
 import ru.cft.shiftlab.contentmaker.validation.implementations.StoryValidator;
 import ru.cft.shiftlab.contentmaker.validation.StoryFramesValid;
 import ru.cft.shiftlab.contentmaker.validation.StoryValid;
 
+import javax.imageio.ImageIO;
+import javax.validation.ConstraintValidatorContext;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HexFormat;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -29,12 +36,21 @@ public class ValidationTest {
     StoryFramesValid storyFramesValid;
 
     @Mock
+    WhitelistValid whitelistValid;
+
+    @Mock
     private ConstraintValidatorContext constraintValidatorContext;
 
-    @Test
-    public void validate_DtosHaveAllCorrectData() {
-        byte[] bytes = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
+    private final WhiteList whiteList = new WhiteList();
 
+    @Test
+    public void validate_DtosHaveAllCorrectData() throws IOException {
+        BufferedImage bImage = ImageIO.read(
+                new File("/content-maker/backend/src/test/java/ru/cft/shiftlab/contentmaker/test_pictures",
+                        "sample.png"));
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ImageIO.write(bImage, "png", bos );
+        byte[] bytes = bos.toByteArray();
         StoryFramesDto storyFramesDto = new StoryFramesDto(
                 "Конвертируй",
                 "Обменивайте валюту онлайн по выгодному курсу",
@@ -72,8 +88,13 @@ public class ValidationTest {
     }
 
     @Test
-    public void validate_DtoHaveIncorrectDataForStoryValid() {
-        byte[] bytes = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
+    public void validate_DtoHaveIncorrectDataForStoryValid() throws IOException {
+        BufferedImage bImage = ImageIO.read(
+                new File("/content-maker/backend/src/test/java/ru/cft/shiftlab/contentmaker/test_pictures",
+                        "sample.png"));
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ImageIO.write(bImage, "png", bos );
+        byte[] bytes = bos.toByteArray();
         StoryFramesDto storyFramesDto = new StoryFramesDto(
                 "Конвертируй",
                 "Обменивайте валюту онлайн по выгодному курсу",
@@ -104,10 +125,15 @@ public class ValidationTest {
     }
 
     @Test
-    public void validate_DtoHaveIncorrectDataForStoryFramesValid() {
-        byte[] bytes = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
+    public void validate_DtoHaveIncorrectDataForStoryFramesValid() throws IOException {
+        BufferedImage bImage = ImageIO.read(
+                new File("/content-maker/backend/src/test/java/ru/cft/shiftlab/contentmaker/test_pictures",
+                        "sample.png"));
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ImageIO.write(bImage, "png", bos );
+        byte[] bytes = bos.toByteArray();
         StoryFramesDto storyFramesDto = new StoryFramesDto(
-                "Онлайн конвертация ", //titleMaxLenForOneString: 17
+                "Онлайн конвертация ", 
                 "Обменивайте валюту онлайн по выгодному курсу",
                 "FFFFFF",
                 bytes,
@@ -126,5 +152,28 @@ public class ValidationTest {
 
 
         assertFalse(storyFramesValidator.isValid(storyFramesDto, constraintValidatorContext));
+    }
+
+
+    @Test
+    public void validate_BankIdCorrect() {
+
+        String bankId = "nskbl";
+
+        BankIdValidator bankIdValidator = new BankIdValidator(whiteList);
+        bankIdValidator.initialize(whitelistValid);
+
+        assertTrue(bankIdValidator.isValid(bankId, constraintValidatorContext));
+    }
+
+    @Test
+    public void validate_BankIdIncorrect() {
+
+        String bankId = "noneBankIdIncorrect";
+
+        BankIdValidator bankIdValidator = new BankIdValidator(whiteList);
+        bankIdValidator.initialize(whitelistValid);
+
+        assertFalse(bankIdValidator.isValid(bankId, constraintValidatorContext));
     }
 }

@@ -1,0 +1,32 @@
+.root {
+  margin-bottom: 20px;
+}
+
+.label_title,
+.radio_title {
+  display: block;
+  font-weight: 700;
+  font-size: 17px;
+  margin-bottom: 10px;
+}
+
+.radio_title {
+  display: inline;
+  margin-right: 10px;
+}
+
+.field {
+  width: 100%;
+  &.error {
+    border: 1px solid red;
+  }
+  &_error {
+    color: red;
+  }
+  &_error::before {
+    content: '\0021';
+    font-size: 20px;
+    font-weight: 900;
+    margin-right: 5px;
+  }
+}
