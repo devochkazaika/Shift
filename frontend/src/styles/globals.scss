@@ -23,37 +23,6 @@ h3 {
   margin: 10px 0;
 }
 
-input[type='text'],
-textarea,
-select {
-  border-radius: 12px;
-  border: 1px solid #d0d4d9;
-  padding: 15px 15px;
-  font-family: 'Mulish', sans-serif;
-  font-size: 16px;
-  transition: all 0.5s;
-}
-
-select,
-input[type='radio'] {
-  cursor: pointer;
-}
-
-textarea {
-  min-height: 150px;
-  resize: vertical;
-}
-
-textarea:focus,
-input:focus,
-select:focus {
-  outline: none;
-  box-shadow: 0px 0px 10px 0px rgb(222 218 218);
-  transition: all 0.5s;
-}
-
-/**/
-
 .overlay {
   background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
@@ -67,7 +36,7 @@ select:focus {
   z-index: 2;
 }
 
-.container {
+.main_container {
   min-height: 100%;
   display: flex;
 }
@@ -82,6 +51,11 @@ select:focus {
   background: #fff;
   border: 2px solid #eeeff5;
   padding: 20px 30px;
+}
+
+.row {
+  display: flex;
+  gap: 40px;
 }
 
 .input_field {

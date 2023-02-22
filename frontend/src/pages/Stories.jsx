@@ -19,7 +19,6 @@ const Stories = () => {
     setSend(false);
     setLoading(true);
     const jsonValues = JSON.stringify(values, null, 2);
-    console.log(jsonValues);
     try {
       await api.post('/add', jsonValues);
       resetForm(initialStoryValues);

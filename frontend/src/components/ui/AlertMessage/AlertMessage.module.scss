@@ -1,10 +1,14 @@
+@use '../../../styles/variables';
+
 .root {
-  font-size: 18px;
+  font-size: variables.$alert-size;
   font-weight: 700;
+
   &.success {
-    color: rgb(73, 173, 73);
+    color: variables.$success-color;
   }
+
   &.fail {
-    color: rgb(169, 71, 71);
+    color: variables.$error-color;
   }
 }

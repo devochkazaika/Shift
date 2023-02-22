@@ -1,15 +1,19 @@
+@use '../../../styles/variables';
+
 .btn_close {
   position: fixed;
-  fill: white;
+  fill: variables.$white-color;
   right: 30px;
   top: 10px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: variables.$transition-all-fast;
+
   &:hover {
-    fill: rgb(191, 191, 191);
-    transition: all 0.3s;
+    fill: variables.$light-gray-color;
+    transition: variables.$transition-all-fast;
   }
 }
+
 .image {
   max-height: 100vh;
 }

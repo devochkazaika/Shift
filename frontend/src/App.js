@@ -9,7 +9,7 @@ import Banners from './pages/Banners';
 function App() {
   return (
     <BrowserRouter>
-      <div className="container">
+      <div className="main_container">
         <Sidebar />
         <main className="content">
           <Routes>

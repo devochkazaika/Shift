@@ -3,6 +3,7 @@ import React from 'react';
 import FormField from '../FormField';
 import ColorPicker from '../ColorPicker';
 import UploadImage from '../UploadImage';
+import Bin from '../ui/Bin';
 
 import { ReactComponent as MinusIcon } from '../../assets/icons/minus.svg';
 import { ReactComponent as PlusIcon } from '../../assets/icons/plus.svg';
@@ -11,6 +12,7 @@ import styles from './StoryFormParts.module.scss';
 
 const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, ...props }) => {
   const [open, setOpen] = React.useState(true);
+
   const gradientOptions = [
     { value: 'EMPTY', name: 'Нет' },
     { value: 'FULL', name: 'Поверх всего изображения' },
@@ -35,16 +37,11 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
           <h3>Карточка {frameIndex + 1}</h3>
         </div>
 
-        {frameIndex !== 0 && (
-          <span onClick={() => remove(frameIndex)} className={styles.frame_bin}>
-            <span></span>
-            <i></i>
-          </span>
-        )}
+        {frameIndex !== 0 && <Bin handleOnClick={() => remove(frameIndex)} />}
       </div>
       {open && (
         <div className={styles.frame_content}>
-          <div className={styles.input_field}>
+          <div className="input_field">
             <FormField
               labelTitle={'Заголовок'}
               name={`stories.${storyIndex}.storyFrames.${frameIndex}.title`}
@@ -52,8 +49,8 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
               {...props}
             />
           </div>
-          <div className={styles.row}>
-            <div className={styles.input_field}>
+          <div className="row">
+            <div className="input_field">
               <FormField
                 labelTitle={'Текст'}
                 name={`stories.${storyIndex}.storyFrames.${frameIndex}.text`}
@@ -68,7 +65,7 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
               {...props}
             />
           </div>
-          <div className={styles.input_field}>
+          <div className="input_field">
             <FormField
               labelTitle={'Картинка'}
               name={`stories.${storyIndex}.storyFrames.${frameIndex}.pictureUrl`}
@@ -77,7 +74,7 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
             />
           </div>
 
-          <div className={styles.input_field}>
+          <div className="input_field">
             <FormField
               labelTitle={'Градиент'}
               name={`stories.${storyIndex}.storyFrames.${frameIndex}.gradient`}
@@ -88,7 +85,7 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
           </div>
 
           <div role="group" aria-labelledby="my-radio-group">
-            <div className={styles.row}>
+            <div className="row">
               <label>
                 <FormField
                   labelTitle="Кнопка"
@@ -126,8 +123,8 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
 
           {frameJson.visibleLinkOrButtonOrNone === 'BUTTON' && (
             <>
-              <div className={styles.row}>
-                <div className={styles.input_field}>
+              <div className="row">
+                <div className="input_field">
                   <FormField
                     labelTitle={'Текст'}
                     name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonText`}
@@ -148,7 +145,7 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
                 component={ColorPicker}
                 {...props}
               />
-              <div className={styles.input_field}>
+              <div className="input_field">
                 <FormField
                   labelTitle={'Ссылка'}
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonUrl`}
@@ -160,7 +157,7 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
           )}
           {frameJson.visibleLinkOrButtonOrNone === 'LINK' && (
             <>
-              <div className={styles.input_field}>
+              <div className="input_field">
                 <FormField
                   labelTitle={'Текст'}
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.linkText`}
@@ -168,7 +165,7 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
                   {...props}
                 />
               </div>
-              <div className={styles.input_field}>
+              <div className="input_field">
                 <FormField
                   labelTitle={'Ссылка'}
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.linkUrl`}

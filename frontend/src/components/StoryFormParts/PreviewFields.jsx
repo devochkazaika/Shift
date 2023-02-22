@@ -4,8 +4,6 @@ import FormField from '../FormField';
 import ColorPicker from '../ColorPicker';
 import UploadImage from '../UploadImage';
 
-import styles from './StoryFormParts.module.scss';
-
 const PreviewFields = ({ storyIndex, ...props }) => {
   const gradientOptions = [
     { value: 'EMPTY', name: 'Нет' },
@@ -14,8 +12,8 @@ const PreviewFields = ({ storyIndex, ...props }) => {
 
   return (
     <>
-      <div className={styles.row}>
-        <div className={styles.input_field}>
+      <div className="row">
+        <div className="input_field">
           <FormField
             labelTitle={'Заголовок'}
             name={`stories.${storyIndex}.previewTitle`}
@@ -30,7 +28,7 @@ const PreviewFields = ({ storyIndex, ...props }) => {
           {...props}
         />
       </div>
-      <div className={styles.input_field}>
+      <div className="input_field">
         <FormField
           labelTitle={'Картинка'}
           name={`stories.${storyIndex}.previewUrl`}
@@ -38,7 +36,7 @@ const PreviewFields = ({ storyIndex, ...props }) => {
           {...props}
         />
       </div>
-      <div className={styles.input_field}>
+      <div className="input_field">
         <FormField
           labelTitle={'Градиент'}
           name={`stories.${storyIndex}.previewGradient`}

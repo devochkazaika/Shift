@@ -1,3 +1,5 @@
+@use '../../../styles/variables';
+
 .dots {
   margin: 0 auto;
   text-align: center;
@@ -13,17 +15,14 @@
     margin-right: 5px;
     border-radius: 50%;
     display: inline-block;
-    -webkit-animation: bouncedelay 2s infinite cubic-bezier(0.62, 0.28, 0.23, 0.99) both;
     animation: bouncedelay 2s infinite cubic-bezier(0.62, 0.28, 0.23, 0.99) both;
   }
 
   .dot1 {
-    -webkit-animation-delay: -0.16s;
     animation-delay: -0.16s;
   }
 
   .dot2 {
-    -webkit-animation-delay: -0.08s;
     animation-delay: -0.08s;
   }
 }
@@ -31,61 +30,30 @@
 @keyframes bouncedelay {
   0% {
     bottom: 0;
-    background-color: #03a9f4;
+    background-color: variables.$blue-color;
   }
   16.66% {
     bottom: 40px;
-    background-color: #fb6542;
+    background-color: variables.$orange-color;
   }
   33.33% {
     bottom: 0px;
-    background-color: #fb6542;
+    background-color: variables.$orange-color;
   }
   50% {
     bottom: 40px;
-    background-color: #ffbb00;
+    background-color: variables.$yellow-color;
   }
   66.66% {
     bottom: 0px;
-    background-color: #ffbb00;
+    background-color: variables.$yellow-color;
   }
   83.33% {
     bottom: 40px;
-    background-color: #03a9f4;
+    background-color: variables.$blue-color;
   }
   100% {
     bottom: 0;
-    background-color: #03a9f4;
-  }
-}
-
-@-webkit-keyframes bouncedelay {
-  0% {
-    bottom: 0;
-    background-color: #03a9f4;
-  }
-  16.66% {
-    bottom: 40px;
-    background-color: #fb6542;
-  }
-  33.33% {
-    bottom: 0px;
-    background-color: #fb6542;
-  }
-  50% {
-    bottom: 40px;
-    background-color: #ffbb00;
-  }
-  66.66% {
-    bottom: 0px;
-    background-color: #ffbb00;
-  }
-  83.33% {
-    bottom: 40px;
-    background-color: #03a9f4;
-  }
-  100% {
-    bottom: 0;
-    background-color: #03a9f4;
+    background-color: variables.$blue-color;
   }
 }

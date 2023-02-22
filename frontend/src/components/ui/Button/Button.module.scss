@@ -1,35 +1,40 @@
+@use '../../../styles/variables';
+
 .button {
   cursor: pointer;
   padding: 18px 20px;
-  margin-bottom: 20px;
+  margin-bottom: variables.$distance-between-blocks;
   min-width: 150px;
-  border: 1px solid #c9caca;
-  border-radius: 100px;
-  color: white;
+  border: variables.$border;
+  border-radius: variables.$button-border-radius;
+  color: variables.$white-color;
   text-transform: uppercase;
   font-weight: 700;
   letter-spacing: 0.8px;
   z-index: 0;
-  transition: all 0.3s;
+  transition: variables.$transition-all-fast;
+
   .icon {
     svg {
-      fill: #fff;
+      fill: variables.$white-color;
       margin-right: 10px;
     }
   }
+
   &:global(.green) {
-    background-color: #29cc97;
+    background-color: variables.$green-color;
     &:hover {
-      background-color: #56e4b5;
-      transition: all 0.3s;
+      background-color: variables.$green-hover-color;
+      transition: variables.$transition-all-fast;
     }
   }
+
   &:global(.red) {
-    background-color: #f12b2c;
+    background-color: variables.$red-color;
 
     &:hover {
-      background-color: #ef7373;
-      transition: all 0.3s;
+      background-color: variables.$red-hover-color;
+      transition: variables.$transition-all-fast;
     }
   }
 }

@@ -1,34 +1,66 @@
+@use '../../styles/variables';
+
 .root {
-  margin-bottom: 20px;
-}
+  margin-bottom: variables.$distance-between-blocks;
 
-.label_title,
-.radio_title {
-  display: block;
-  font-weight: 700;
-  font-size: 17px;
-  margin-bottom: 10px;
-}
-
-.radio_title {
-  display: inline;
-  margin-right: 10px;
-}
-
-.field {
-  width: 100%;
-  &.error {
-    border: 1px solid red;
+  .label_title {
+    display: block;
+    font-weight: 700;
+    font-size: variables.$subtitle-size;
+    margin-bottom: variables.$distance-from-title;
   }
-}
 
-.error_message {
-  color: red;
-}
+  .radio_title {
+    @extend .label_title;
+    display: inline;
+    margin-right: variables.$distance-from-title;
+  }
 
-.error_message::before {
-  content: '\0021';
-  font-size: 20px;
-  font-weight: 900;
-  margin-right: 5px;
+  input[type='text'],
+  textarea,
+  select {
+    border-radius: variables.$border-radius;
+    border: variables.$border-field;
+    padding: 15px 15px;
+    font-family: 'Mulish', sans-serif;
+    font-size: variables.$text-size;
+    transition: variables.$transition-all-slow;
+  }
+
+  select,
+  input[type='radio'] {
+    cursor: pointer;
+  }
+
+  textarea {
+    min-height: 150px;
+    resize: vertical;
+  }
+
+  textarea:focus,
+  input:focus,
+  select:focus {
+    outline: none;
+    box-shadow: 0px 0px 10px 0px rgb(222 218 218);
+    transition: variables.$transition-all-slow;
+  }
+
+  .field {
+    width: 100%;
+
+    &.error {
+      border: 1px solid variables.$red-color;
+    }
+  }
+
+  .error_message {
+    color: variables.$red-color;
+  }
+
+  .error_message::before {
+    content: '\0021';
+    font-size: 20px;
+    font-weight: 900;
+    margin-right: 5px;
+  }
 }

@@ -1,0 +1,86 @@
+@use '../../../styles/variables';
+
+.bin {
+  margin-top: 10px;
+  background: variables.$red-color;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  position: relative;
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
+
+  span {
+    position: absolute;
+    height: 4px;
+    background: variables.$red-color;
+    top: -6px;
+    left: -3px;
+    right: -3px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    transform: rotate(0deg);
+    transition: transform 250ms;
+    transform-origin: 19% 100%;
+
+    &:after {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 3px;
+      background: variables.$red-color;
+      top: -4px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      transform: rotate(0deg);
+      transition: transform 250ms;
+      transform-origin: 19% 100%;
+      left: 6px;
+    }
+  }
+
+  i {
+    position: relative;
+    width: 1px;
+    height: 13px;
+    background: #fff;
+    display: block;
+    margin: 14px auto;
+    border-radius: 5px;
+    top: -11px;
+
+    &:after {
+      content: '';
+      width: 1px;
+      height: 13px;
+      background: #fff;
+      position: absolute;
+      left: -5px;
+      border-radius: 5px;
+    }
+
+    &:before {
+      content: '';
+      width: 1px;
+      height: 13px;
+      background: #fff;
+      position: absolute;
+      right: -5px;
+      border-radius: 5px;
+    }
+  }
+
+  &:hover {
+    background-color: variables.$red-hover-color;
+
+    span {
+      background-color: variables.$red-hover-color;
+      transform: rotate(-45deg);
+      transition: transform 250ms;
+
+      &:after {
+        background-color: variables.$red-hover-color;
+      }
+    }
+  }
+}
