@@ -1,7 +1,7 @@
 package ru.cft.shiftlab.contentmaker.util;
 
 import org.springframework.stereotype.Component;
-import ru.cft.shiftlab.contentmaker.exception.CanNotBeExtractedException;
+import ru.cft.shiftlab.contentmaker.exceptionHandling.StaticContentException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -18,16 +18,16 @@ public class FileExtensionExtractor {
      * Метод, который извлекает расширение картинки из байтового массива.
      *
      * @param bytes байтовый массив, из которого будет доставаться расширение файла (картинки).
-     * @throws CanNotBeExtractedException исключение, которое возникает при невозможности извлечь расширение файла.
+     * @throws StaticContentException исключение, которое возникает при невозможности извлечь расширение файла.
      */
-    public String getFileExtensionFromByteArray(byte[] bytes) throws CanNotBeExtractedException {
+    public String getFileExtensionFromByteArray(byte[] bytes) throws StaticContentException {
         try {
             InputStream is = new ByteArrayInputStream(bytes);
             String mimeType = URLConnection.guessContentTypeFromStream(is);
             return mimeType.split("/")[1];
         }
         catch (IOException e) {
-            throw new CanNotBeExtractedException("Failed to retrieve file extension");
+            throw new StaticContentException("Failed to retrieve file extension", "HTTP 500 - INTERNAL_SERVER_ERROR");
         }
     }
 
