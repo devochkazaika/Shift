@@ -1,7 +1,6 @@
 package ru.cft.shiftlab.contentmaker.validation.implementations;
 
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.cft.shiftlab.contentmaker.util.WhiteList;
 import ru.cft.shiftlab.contentmaker.validation.WhitelistValid;
@@ -12,7 +11,6 @@ import javax.validation.ConstraintValidatorContext;
 /**
  * Имплементация валидации идентификатора банка.
  */
-@Slf4j
 @Data
 public class BankIdValidator implements ConstraintValidator<WhitelistValid, String> {
 
@@ -42,9 +40,6 @@ public class BankIdValidator implements ConstraintValidator<WhitelistValid, Stri
         }
 
         String bankId = (String) object;
-
-        log.info("storiesRequestDto from bank with bankId = {}",
-                bankId);
 
         return whiteList.checkContainsKeyOrNot(bankId);
     }

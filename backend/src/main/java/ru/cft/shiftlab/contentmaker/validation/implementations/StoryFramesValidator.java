@@ -16,7 +16,6 @@ import java.util.Arrays;
 /**
  * Имлпементация валидации StoryFramesDto.
  */
-@Slf4j
 @EnableConfigurationProperties(StoryFramesValidator.class)
 @ConfigurationProperties(prefix = "title.text.validator")
 @Data
@@ -55,11 +54,6 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
         }
 
         StoryFramesDto storyFramesDto = (StoryFramesDto) object;
-
-        log.info("getTitle().length() = {}, getText().length() = {}, text.count() = {}",
-                storyFramesDto.getTitle().length(),
-                storyFramesDto.getText().length(),
-                Arrays.stream(storyFramesDto.getText().split("\n")).count());
 
         return validButtonLink(storyFramesDto) && validTitleText(storyFramesDto);
     }
