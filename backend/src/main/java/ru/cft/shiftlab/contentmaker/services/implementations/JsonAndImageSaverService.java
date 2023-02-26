@@ -2,8 +2,11 @@ package ru.cft.shiftlab.contentmaker.services.implementations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
@@ -15,6 +18,7 @@ import ru.cft.shiftlab.contentmaker.util.ByteArrayToImageConverter;
 import ru.cft.shiftlab.contentmaker.util.FileExtensionExtractor;
 import ru.cft.shiftlab.contentmaker.util.FileNameCreator;
 import ru.cft.shiftlab.contentmaker.util.DtoToEntityConverter;
+import ru.cft.shiftlab.contentmaker.validation.implementations.StoryFramesValidator;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +32,8 @@ import java.util.Map;
  */
 @Service
 @RequiredArgsConstructor
+@Getter
+@Setter
 @ConfigurationProperties(prefix = "files.save.directory")
 public class JsonAndImageSaverService implements FileSaverService {
 
@@ -36,11 +42,12 @@ public class JsonAndImageSaverService implements FileSaverService {
     private final ByteArrayToImageConverter byteArrayToImageConverter;
     private final DtoToEntityConverter dtoToEntityConverter;
 
+    private String filesSaveDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
+
     @Override
     public void saveFiles(StoriesRequestDto storiesRequestDto){
         try {
-            String filesSaveDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
-            String bankId = storiesRequestDto.getBankId();
+           String bankId = storiesRequestDto.getBankId();
             String picturesSaveDirectory = filesSaveDirectory + bankId + "/";
 
             File newDirectory = new File(picturesSaveDirectory);
