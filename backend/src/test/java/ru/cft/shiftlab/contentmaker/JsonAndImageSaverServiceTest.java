@@ -32,11 +32,11 @@ public class JsonAndImageSaverServiceTest {
 
     private final ByteArrayToImageConverter byteArrayToImageConverter = new ByteArrayToImageConverter();
 
-    private FileNameCreator fileNameCreator = new FileNameCreator(whiteList);
+    private final FileNameCreator fileNameCreator = new FileNameCreator(whiteList);
 
     private final DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
 
-    private JsonAndImageSaverService jsonAndImageSaverService = new JsonAndImageSaverService(fileNameCreator,
+    private final JsonAndImageSaverService jsonAndImageSaverService = new JsonAndImageSaverService(fileNameCreator,
                                                                                             fileExtensionExtractor,
                                                                                             byteArrayToImageConverter,
                                                                                             dtoToEntityConverter);
