@@ -15,7 +15,6 @@ import javax.validation.Valid;
 @CrossOrigin(origins="http://localhost:3000")
 @RestController
 @RequestMapping("/stories")
-@Slf4j
 @RequiredArgsConstructor
 public class StoriesController {
     private final JsonAndImageSaverService storiesService;
@@ -28,7 +27,6 @@ public class StoriesController {
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
     public void addStories(@Valid @RequestBody StoriesRequestDto storiesRequestDto) {
-        log.info("Received json with StoriesRequestDto, which contains: {} ", storiesRequestDto);
 
         storiesService.saveFiles(storiesRequestDto);
     }

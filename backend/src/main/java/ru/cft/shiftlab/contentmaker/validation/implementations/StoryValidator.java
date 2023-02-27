@@ -41,7 +41,7 @@ public class StoryValidator implements ConstraintValidator<StoryValid, StoryDto>
     @Override
     public boolean isValid(StoryDto object, ConstraintValidatorContext constraintValidatorContext) {
         if (object == null) {
-            throw new IllegalArgumentException("@StringValid only applies to StoryFramesDto objects");
+            return false;
         }
 
         StoryDto storyDto = (StoryDto) object;

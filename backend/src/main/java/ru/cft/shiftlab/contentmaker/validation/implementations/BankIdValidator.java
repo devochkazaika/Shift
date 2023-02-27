@@ -38,7 +38,7 @@ public class BankIdValidator implements ConstraintValidator<WhitelistValid, Stri
     @Override
     public boolean isValid(String object, ConstraintValidatorContext constraintValidatorContext) {
         if (object == null) {
-            throw new IllegalArgumentException("@StringValid only applies to StoryFramesDto objects");
+            return false;
         }
 
         String bankId = (String) object;

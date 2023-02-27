@@ -18,7 +18,7 @@ import java.util.ArrayList;
 @AllArgsConstructor
 public class StoriesRequestDto {
 
-    @NotBlank
+    @NotBlank(message = "bankId is not specified")
     @WhitelistValid(message = "bankId must match the allowed")
     private String bankId;
 
