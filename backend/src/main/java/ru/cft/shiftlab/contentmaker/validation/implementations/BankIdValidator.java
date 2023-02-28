@@ -1,7 +1,6 @@
 package ru.cft.shiftlab.contentmaker.validation.implementations;
 
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.cft.shiftlab.contentmaker.util.WhiteList;
 import ru.cft.shiftlab.contentmaker.validation.WhitelistValid;

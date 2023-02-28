@@ -6,19 +6,15 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
+import ru.cft.shiftlab.contentmaker.exceptionHandling.StaticContentException;
 import ru.cft.shiftlab.contentmaker.services.FileSaverService;
-import ru.cft.shiftlab.contentmaker.util.ByteArrayToImageConverter;
-import ru.cft.shiftlab.contentmaker.util.FileExtensionExtractor;
-import ru.cft.shiftlab.contentmaker.util.FileNameCreator;
-import ru.cft.shiftlab.contentmaker.util.DtoToEntityConverter;
-import ru.cft.shiftlab.contentmaker.validation.implementations.StoryFramesValidator;
+import ru.cft.shiftlab.contentmaker.util.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,11 +37,12 @@ public class JsonAndImageSaverService implements FileSaverService {
     private final FileExtensionExtractor fileExtensionExtractor;
     private final ByteArrayToImageConverter byteArrayToImageConverter;
     private final DtoToEntityConverter dtoToEntityConverter;
+    private final ImageNameGenerator imageNameGenerator;
 
     private String filesSaveDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
 
     @Override
-    public void saveFiles(StoriesRequestDto storiesRequestDto){
+    public void saveFiles(StoriesRequestDto storiesRequestDto, boolean testOrNot){
         try {
            String bankId = storiesRequestDto.getBankId();
             String picturesSaveDirectory = filesSaveDirectory + bankId + "/";
@@ -67,16 +64,21 @@ public class JsonAndImageSaverService implements FileSaverService {
                 counterForPreview++;
                 byte [] previewUrlBytes = story.getPreviewUrl();
 
+                String previewPictureName = imageNameGenerator.generateImageName();
+
+                if (testOrNot) {
+                    previewPictureName = "preview1";
+                }
+
                 String previewFileExtension =
                         fileExtensionExtractor.getFileExtensionFromByteArray(previewUrlBytes);
                 byteArrayToImageConverter.convertByteArrayToImageAndSave(
                         previewUrlBytes,
                         picturesSaveDirectory,
-                        "preview",
-                        previewFileExtension,
-                        counterForPreview);
+                        previewPictureName,
+                        previewFileExtension);
 
-                String previewUrl = picturesSaveDirectory + "preview" + counterForPreview + "." + previewFileExtension;
+                String previewUrl = picturesSaveDirectory + previewPictureName + "." + previewFileExtension;
                 storyPresentationList.add(dtoToEntityConverter.fromStoryDtoToStoryPresentation(
                         bankId,
                         story,
@@ -88,16 +90,21 @@ public class JsonAndImageSaverService implements FileSaverService {
                     counterForStoryFramePicture++;
                     byte [] storyFramePictureUrlBytes = storyFramesDto.getPictureUrl();
 
+                    String storyFramePictureName = imageNameGenerator.generateImageName();
+
+                    if (testOrNot) {
+                        storyFramePictureName = "storyFramePicture1";
+                    }
+
                     String storyFramePictureFileExtension =
                             fileExtensionExtractor.getFileExtensionFromByteArray(storyFramePictureUrlBytes);
                     byteArrayToImageConverter.convertByteArrayToImageAndSave(
                             storyFramePictureUrlBytes,
                             picturesSaveDirectory,
-                            "storyFramePicture",
-                            storyFramePictureFileExtension,
-                            counterForStoryFramePicture);
+                            storyFramePictureName,
+                            storyFramePictureFileExtension);
 
-                    String storyFramePictureUrl = picturesSaveDirectory + "storyFramePicture" + counterForStoryFramePicture + "." + storyFramePictureFileExtension;
+                    String storyFramePictureUrl = picturesSaveDirectory + storyFramePictureName + "." + storyFramePictureFileExtension;
                     storyPresentationList.get(counterForPreview - 1).getStoryPresentationFrames().get(counterForStoryFramePicture - 1).setPictureUrl(storyFramePictureUrl);
 
                 }
@@ -111,7 +118,7 @@ public class JsonAndImageSaverService implements FileSaverService {
 
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new StaticContentException("Could not save files", "HTTP 500 - INTERNAL_SERVER_ERROR");
         }
     }
 

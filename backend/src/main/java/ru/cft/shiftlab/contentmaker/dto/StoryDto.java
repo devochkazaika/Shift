@@ -27,7 +27,6 @@ public class StoryDto {
     @NotBlank(message = "Preview color not specified")
     private String previewTitleColor;
 
-    @NotEmpty(message = "The preview of the story is not specified")
     private byte[] previewUrl;
 
     @NotBlank(message = "The gradient for the preview is not specified")

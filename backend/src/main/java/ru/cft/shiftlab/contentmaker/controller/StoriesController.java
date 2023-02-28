@@ -28,6 +28,6 @@ public class StoriesController {
     @ResponseStatus(HttpStatus.CREATED)
     public void addStories(@Valid @RequestBody StoriesRequestDto storiesRequestDto) {
 
-        storiesService.saveFiles(storiesRequestDto);
+        storiesService.saveFiles(storiesRequestDto, false);
     }
 }
