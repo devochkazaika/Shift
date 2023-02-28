@@ -12,7 +12,6 @@ import javax.validation.ConstraintValidatorContext;
 /**
  * Имплементация валидации идентификатора банка.
  */
-@Slf4j
 @Data
 public class BankIdValidator implements ConstraintValidator<WhitelistValid, String> {
 
@@ -42,9 +41,6 @@ public class BankIdValidator implements ConstraintValidator<WhitelistValid, Stri
         }
 
         String bankId = (String) object;
-
-        log.info("storiesRequestDto from bank with bankId = {}",
-                bankId);
 
         return whiteList.checkContainsKeyOrNot(bankId);
     }

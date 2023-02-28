@@ -18,7 +18,6 @@ import java.util.Map;
 /**
  * Класс, предназначенный для конвертации StoriesRequestDto в StoryPresentation
  */
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class DtoToEntityConverter {
@@ -50,9 +49,6 @@ public class DtoToEntityConverter {
             storyPresentation.setPreviewUrl(previewUrl);
         }
 
-        log.info("New StoryPresentation Object: {}",
-                storyPresentation);
-
         return storyPresentation;
     }
 
@@ -63,10 +59,8 @@ public class DtoToEntityConverter {
      * @return StoryPresentationFrames, полученный после конвертации из StoryFramesDto.
      */
     public StoryPresentationFrames fromStoryFramesDtoToStoryPresentationFrames(StoryFramesDto storyFramesDto) {
-        StoryPresentationFrames storyPresentationFrames = modelMapper.map(storyFramesDto, StoryPresentationFrames.class);
 
-        log.info("New StoryPresentationFrames Object: {}",
-                storyPresentationFrames);
+        StoryPresentationFrames storyPresentationFrames = modelMapper.map(storyFramesDto, StoryPresentationFrames.class);
 
         return storyPresentationFrames;
     }

@@ -62,7 +62,7 @@ public class StoriesControllerTest {
                 bytes,
                 "EMPTY",
                 new ArrayList<>(Collections.singletonList(storyFramesDto)));
-        System.out.println(storyDto);
+
         StoriesRequestDto storiesRequestDto = new StoriesRequestDto("nskbl" ,new ArrayList<>(Collections.singletonList(storyDto)));
 
 

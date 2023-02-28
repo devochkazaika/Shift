@@ -17,7 +17,6 @@ import java.util.Arrays;
 /**
  * Имплементация валидации StoryDto.
  */
-@Slf4j
 @EnableConfigurationProperties(StoryFramesValidator.class)
 @ConfigurationProperties(prefix = "preview.title.validator")
 @Data
