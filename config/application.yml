@@ -1,0 +1,24 @@
+title:
+  text:
+    validator:
+      titleMaxLenForOneString: 17
+      textMaxLenForOneString: 245
+      textMaxStringCountForOneString: 7
+
+      titleMaxLenForTwoString: 34
+      textMaxLenForTwoString: 210
+      textMaxStringCountForTwoString: 6
+
+      titleMaxLenForThreeString: 51
+      textMaxLenForThreeString: 140
+      textMaxStringCountForThreeString: 4
+
+preview:
+  title:
+    validator:
+      titleMaxStringCount: 2
+
+files:
+  save:
+    directory:
+      filesSaveDirectory: "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
