@@ -1,17 +1,17 @@
 package ru.cft.shiftlab.contentmaker.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.cft.shiftlab.contentmaker.validation.Whitelist;
+import ru.cft.shiftlab.contentmaker.validation.WhitelistValid;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 
 /**
- * DTO, который приходит с FrontEnd'а
+ * Исходная DTO, которая приходит с FrontEnd'а
  */
 @Data
 @NoArgsConstructor
@@ -19,14 +19,10 @@ import java.util.ArrayList;
 public class StoriesRequestDto {
 
     @NotBlank
-    @Whitelist
+    @WhitelistValid(message = "bankId must match the allowed")
     private String bankId;
 
     @JsonProperty("stories")
     @Valid
     private ArrayList<StoryDto> storyDtos = new ArrayList<>();
-
-    public void addStoriesDtos(StoryDto storyDto) {
-        this.storyDtos.add(storyDto);
-    }
 }

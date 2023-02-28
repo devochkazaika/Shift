@@ -15,9 +15,12 @@ import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.services.implementations.JsonAndImageSaverService;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HexFormat;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,7 +37,12 @@ public class StoriesControllerTest {
 
     @Test
     public void addStoriesTest() throws Exception {
-        byte[] bytes = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
+        BufferedImage bImage = ImageIO.read(
+                new File("/content-maker/backend/src/test/java/ru/cft/shiftlab/contentmaker/test_pictures",
+                        "sample.png"));
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ImageIO.write(bImage, "png", bos );
+        byte[] bytes = bos.toByteArray();
         StoryFramesDto storyFramesDto = new StoryFramesDto(
                 "Конвертируй",
                 "Обменивайте валюту онлайн по выгодному курсу",

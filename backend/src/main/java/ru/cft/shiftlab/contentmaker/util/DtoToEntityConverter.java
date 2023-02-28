@@ -1,8 +1,9 @@
 package ru.cft.shiftlab.contentmaker.util;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
@@ -14,36 +15,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
-@AllArgsConstructor
 /**
- * Класс, предназначенный для конверации StoriesRequestDto в StoryPresentation
+ * Класс, предназначенный для конвертации StoriesRequestDto в StoryPresentation
  */
+
+@Component
+@RequiredArgsConstructor
 public class DtoToEntityConverter {
 
     private final ModelMapper modelMapper;
 
-    public Map<String, List<StoryPresentation>> fromStoriesRequestDtoToMap(StoriesRequestDto storiesRequestDto,
-                                                                           String jsonDirectory,
-                                                                           String picturesDirectory) {
-
-        Map<String, List<StoryPresentation>> presentationMap = new HashMap<>();
-
-        List<StoryPresentation> storyPresentations = new ArrayList<>();
-
-        for (StoryDto storyDto: storiesRequestDto.getStoryDtos()) {
-            storyPresentations.add(fromStoryDtoToStoryPresentation(storiesRequestDto.getBankId(), storyDto,
-                    jsonDirectory, picturesDirectory));
-            presentationMap.put("stories", storyPresentations);
-        }
-
-        return presentationMap;
-    }
-
+    /**
+     * Метод для конвертации StoryDto в StoryPresentation.
+     *
+     * @param bankId идентификатор банка, который отправил запрос.
+     * @param storyDto DTO, которую нужно конвертировать в Entity.
+     * @param jsonDirectory директория, в которую будет записан итоговый JSON.
+     * @param picturesDirectory директория, в которую будут записаны картинки из DTO.
+     * @return StoryPresentation, полученный после конвертации StoryDto.
+     */
     public StoryPresentation fromStoryDtoToStoryPresentation(String bankId,
                                                              StoryDto storyDto,
                                                              String jsonDirectory,
-                                                             String picturesDirectory) {
+                                                             String picturesDirectory,
+                                                             String previewUrl) {
         StoryPresentation storyPresentation = modelMapper.map(storyDto, StoryPresentation.class);
         storyPresentation.setBankId(bankId);
 
@@ -52,20 +47,22 @@ public class DtoToEntityConverter {
             storyPresentation.setJsonDirectory(jsonDirectory);
             storyPresentation.setPicturesDirectory(picturesDirectory);
             storyPresentation.getStoryPresentationFrames().add(fromStoryFramesDtoToStoryPresentationFrames(storyFramesDto));
+            storyPresentation.setPreviewUrl(previewUrl);
         }
-
-        log.info("New StoryPresentation Object: {}",
-                storyPresentation);
 
         return storyPresentation;
     }
 
+    /**
+     * Метод для конвертации StoryFramesDto в StoryPresentationFrames.
+     *
+     * @param storyFramesDto DTO, которую нужно конвертировать в Entity.
+     * @return StoryPresentationFrames, полученный после конвертации из StoryFramesDto.
+     */
     public StoryPresentationFrames fromStoryFramesDtoToStoryPresentationFrames(StoryFramesDto storyFramesDto) {
         StoryPresentationFrames storyPresentationFrames = modelMapper.map(storyFramesDto, StoryPresentationFrames.class);
 
-        log.info("New StoryPresentationFrames Object: {}",
-                storyPresentationFrames);
-
         return storyPresentationFrames;
     }
+
 }

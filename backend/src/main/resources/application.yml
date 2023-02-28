@@ -17,3 +17,8 @@ preview:
   title:
     validator:
       titleMaxStringCount: 2
+
+files:
+  save:
+    directory:
+      filesSaveDirectory: "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"

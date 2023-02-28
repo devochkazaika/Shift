@@ -1,12 +1,17 @@
 package ru.cft.shiftlab.contentmaker.util;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
+
 import java.util.Map;
 
 import static java.util.Map.entry;
 
 /**
- * Класс, предназначенный для работы с Map списка банков.
+ * Класс, предназначенный для работы с Map, в котором находится список валидных банков.
  */
+@Component
 public class WhiteList {
 
     static Map<String, String> whitelistBank = Map.ofEntries(
@@ -42,7 +47,7 @@ public class WhiteList {
      * @param bankId уникальный идентификатор банка.
      * @return true - если ключ с таким значением имеется, false - если нет.
      */
-    public static boolean checkContainsKeyOrNot(String bankId) {
+    public boolean checkContainsKeyOrNot(String bankId) {
         return whitelistBank.containsKey(bankId);
     }
 
@@ -52,11 +57,10 @@ public class WhiteList {
      * @param bankId уникальный идентификатор банка.
      * @return название банка.
      */
-    public static String findValueByKey(String bankId) {
+    public String findValueByKey(String bankId) {
         String bankName = whitelistBank.get(bankId);
         bankName = bankName.replace("\"", "");
         return bankName;
     }
-
 
 }

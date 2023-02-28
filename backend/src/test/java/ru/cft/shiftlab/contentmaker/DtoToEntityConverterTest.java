@@ -10,10 +10,14 @@ import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HexFormat;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,14 +30,12 @@ public class DtoToEntityConverterTest {
 
 
     @Test
-    public void whenConvertStoryRequestDtoToStoryPresentation_thenCorrect() {
-        byte[] bytes = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
-
+    public void whenConvertStoryRequestDtoToStoryPresentation_thenCorrect() throws IOException {
         StoryFramesDto storyFramesDto = new StoryFramesDto(
                 "Конвертируй",
                 "Обменивайте валюту онлайн по выгодному курсу",
                 "FFFFFF",
-                bytes,
+                null,
                 "NONE",
                 "link text",
                 "link url",
@@ -47,20 +49,18 @@ public class DtoToEntityConverterTest {
         StoryDto storyDto = new StoryDto(
                 "Конвертируй валюту",
                 "FFFFFF",
-                bytes,
+                null,
                 "EMPTY",
                 new ArrayList<>(Collections.singletonList(storyFramesDto))
         );
 
-
-
-        storyPresentation = converterRequestDto.fromStoryDtoToStoryPresentation("id", storyDto, null, null);
+        storyPresentation = converterRequestDto.fromStoryDtoToStoryPresentation("id", storyDto, null, null, null);
 
 
         assertAll(
                 () -> assertEquals(storyDto.getPreviewTitle(), storyPresentation.getPreviewTitle()),
                 () -> assertEquals(storyDto.getPreviewTitleColor(), storyPresentation.getPreviewTitleColor()),
-                () -> assertTrue(Arrays.equals(storyDto.getPreviewUrl(), bytes)),
+                () -> assertTrue(Arrays.equals(storyDto.getPreviewUrl(), null)),
                 () -> assertEquals(storyDto.getPreviewGradient(), storyPresentation.getPreviewGradient()),
 
                 () -> assertLinesMatch(Collections.singletonList(asJsonString(storyPresentation.getStoryPresentationFrames().get(0))),
