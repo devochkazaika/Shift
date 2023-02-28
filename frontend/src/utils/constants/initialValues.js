@@ -1,5 +1,7 @@
 import { banks } from './banks';
 
+export const maxFrames = 6;
+
 export const initialStoryFrame = {
   title: '',
   text: '',

@@ -1,0 +1,15 @@
+@use '../../../styles/variables';
+
+.btn_close {
+  position: fixed;
+  fill: variables.$white-color;
+  right: 30px;
+  top: 10px;
+  cursor: pointer;
+  transition: variables.$transition-all-fast;
+
+  &:hover {
+    fill: variables.$light-gray-color;
+    transition: variables.$transition-all-fast;
+  }
+}
