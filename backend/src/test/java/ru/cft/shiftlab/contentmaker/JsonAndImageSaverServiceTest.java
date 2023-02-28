@@ -35,11 +35,14 @@ public class JsonAndImageSaverServiceTest {
     private final FileNameCreator fileNameCreator = new FileNameCreator(whiteList);
 
     private final DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
+    private final ImageNameGenerator imageNameGenerator = new ImageNameGenerator();
 
-    private final JsonAndImageSaverService jsonAndImageSaverService = new JsonAndImageSaverService(fileNameCreator,
-                                                                                            fileExtensionExtractor,
-                                                                                            byteArrayToImageConverter,
-                                                                                            dtoToEntityConverter);
+    private final JsonAndImageSaverService jsonAndImageSaverService = new JsonAndImageSaverService(
+            fileNameCreator,
+            fileExtensionExtractor,
+            byteArrayToImageConverter,
+            dtoToEntityConverter,
+            imageNameGenerator);
 
     @Test
     void should_save_files() throws IOException {
@@ -70,7 +73,7 @@ public class JsonAndImageSaverServiceTest {
                 new ArrayList<>(Collections.singletonList(storyFramesDto)));
         StoriesRequestDto storiesRequestDto = new StoriesRequestDto("absolutbank", new ArrayList<>(Collections.singletonList(storyDto)));
 
-        jsonAndImageSaverService.saveFiles(storiesRequestDto);
+        jsonAndImageSaverService.saveFiles(storiesRequestDto, true);
 
         DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
 

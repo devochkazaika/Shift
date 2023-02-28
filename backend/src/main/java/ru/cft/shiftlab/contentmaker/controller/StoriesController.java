@@ -30,6 +30,6 @@ public class StoriesController {
     public void addStories(@Valid @RequestBody StoriesRequestDto storiesRequestDto) {
         log.info("Received json with StoriesRequestDto, which contains: {} ", storiesRequestDto);
 
-        storiesService.saveFiles(storiesRequestDto);
+        storiesService.saveFiles(storiesRequestDto, false);
     }
 }
