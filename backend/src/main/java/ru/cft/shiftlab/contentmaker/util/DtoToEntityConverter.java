@@ -18,7 +18,6 @@ import java.util.Map;
 /**
  * Класс, предназначенный для конвертации StoriesRequestDto в StoryPresentation
  */
-
 @Component
 @RequiredArgsConstructor
 public class DtoToEntityConverter {
@@ -60,6 +59,7 @@ public class DtoToEntityConverter {
      * @return StoryPresentationFrames, полученный после конвертации из StoryFramesDto.
      */
     public StoryPresentationFrames fromStoryFramesDtoToStoryPresentationFrames(StoryFramesDto storyFramesDto) {
+
         StoryPresentationFrames storyPresentationFrames = modelMapper.map(storyFramesDto, StoryPresentationFrames.class);
 
         return storyPresentationFrames;

@@ -27,7 +27,7 @@ public class FileExtensionExtractor {
             return mimeType.split("/")[1];
         }
         catch (IOException e) {
-            throw new StaticContentException("Failed to retrieve file extension", "HTTP 500 - INTERNAL_SERVER_ERROR");
+            throw new StaticContentException("Failed to retrieve file extension", "500");
         }
     }
 

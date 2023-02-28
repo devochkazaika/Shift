@@ -50,7 +50,7 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
     @Override
     public boolean isValid(StoryFramesDto object, ConstraintValidatorContext constraintValidatorContext) {
         if (object == null) {
-            throw new IllegalArgumentException("@StringValid only applies to StoryFramesDto objects");
+            return false;
         }
 
         StoryFramesDto storyFramesDto = (StoryFramesDto) object;
@@ -66,7 +66,7 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
      */
     private boolean validButtonLink(StoryFramesDto object) {
         if (object == null) {
-            throw new IllegalArgumentException("@StringValid only applies to StoryFramesDto objects");
+            return false;
         }
 
         StoryFramesDto storyFramesDto = (StoryFramesDto) object;
@@ -95,7 +95,7 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
      */
     private boolean validTitleText(StoryFramesDto object) {
         if (object == null) {
-            throw new IllegalArgumentException("@StringValid only applies to StoryFramesDto objects");
+            return false;
         }
 
         StoryFramesDto storyFramesDto = (StoryFramesDto) object;
