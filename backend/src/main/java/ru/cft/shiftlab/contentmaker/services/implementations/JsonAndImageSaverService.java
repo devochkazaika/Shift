@@ -118,7 +118,7 @@ public class JsonAndImageSaverService implements FileSaverService {
 
         }
         catch (IOException e) {
-            throw new StaticContentException("Не удалось сохранить картинку", "400");
+            throw new StaticContentException("Could not save files", "HTTP 500 - INTERNAL_SERVER_ERROR");
         }
     }
 
