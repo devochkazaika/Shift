@@ -30,8 +30,9 @@ const Stories = () => {
     } catch (error) {
       setSuccess(false);
       setSend(true);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

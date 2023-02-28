@@ -6,10 +6,14 @@
   align-items: flex-end;
   gap: 10px;
 
-  .image {
+  .preview_image {
     object-fit: cover;
     border-radius: variables.$border-radius;
     cursor: pointer;
+  }
+
+  .modal_image {
+    max-height: 100vh;
   }
 
   .delete {

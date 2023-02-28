@@ -1,13 +1,10 @@
 import React from 'react';
-import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+import useBodyScroll from '../../../hooks/useBodyScroll';
 
 import styles from './Loader.module.scss';
 
 const Loader = () => {
-  React.useEffect(() => {
-    disableBodyScroll(document);
-    return () => enableBodyScroll(document);
-  }, []);
+  useBodyScroll();
 
   return (
     <div className="overlay">

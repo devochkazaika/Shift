@@ -2,22 +2,18 @@ import React from 'react';
 import { SketchPicker } from 'react-color';
 import rgbHex from 'rgb-hex';
 
+import useOutsideClick from '../../hooks/useOutsideClick';
 import styles from './ColorPicker.module.scss';
 
 const ColorPicker = ({ field, form, ...props }) => {
   const [modalShown, toggleModal] = React.useState(false);
   const colorAreaRef = React.useRef();
 
-  React.useEffect(() => {
-    const closeModal = (e) => {
-      if (!colorAreaRef.current.contains(e.target)) {
-        toggleModal(false);
-      }
-    };
+  const closeModal = () => {
+    toggleModal(false);
+  };
 
-    document.body.addEventListener('click', closeModal);
-    return () => document.body.removeEventListener('click', closeModal);
-  }, [field.value]);
+  useOutsideClick(colorAreaRef, closeModal);
 
   const handleColorChange = (c) => {
     let hexColor = '#' + rgbHex(c.rgb.r, c.rgb.g, c.rgb.b, c.rgb.a);

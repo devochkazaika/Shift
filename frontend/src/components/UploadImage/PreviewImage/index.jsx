@@ -27,7 +27,7 @@ const PreviewImage = ({ image, setFieldValue, fieldName, inputRef }) => {
       {preview ? (
         <>
           <img
-            className={styles.image}
+            className={styles.preview_image}
             alt="preview"
             src={preview}
             width="100px"
@@ -39,7 +39,11 @@ const PreviewImage = ({ image, setFieldValue, fieldName, inputRef }) => {
             <span>Удалить</span>
           </div>
           <AnimatePresence initial={false} onExitComplete={() => null}>
-            {modalShown && <Modal onClose={() => toggleModal(false)} image={preview} />}
+            {modalShown && (
+              <Modal onClose={() => toggleModal(false)}>
+                <img src={preview} alt="modal_image" className={styles.modal_image} />
+              </Modal>
+            )}
           </AnimatePresence>
         </>
       ) : (
