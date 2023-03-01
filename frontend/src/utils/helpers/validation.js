@@ -1,11 +1,49 @@
 import * as Yup from 'yup';
 
-import { previewRules } from '../constants/previewValidation';
+import {
+  previewRules,
+  MAX_IMAGE_SIZE,
+  SUPPORTED_FORMATS,
+  MAX_IMAGE_WIDTH,
+  MAX_IMAGE_HEIGHT,
+} from '../constants/validation';
+
+const checkImageSides = (value) => {
+  return new Promise((resolve) => {
+    const _URL = window.URL || window.webkitURL;
+    const image = new Image();
+    const objectUrl = _URL.createObjectURL(value);
+    image.src = objectUrl;
+    image.onload = () => {
+      resolve(image);
+      return image.width <= MAX_IMAGE_WIDTH && image.height <= MAX_IMAGE_HEIGHT;
+    };
+  });
+};
 
 export const storyValidationSchema = Yup.object({
   stories: Yup.array().of(
     Yup.object().shape({
       previewTitle: Yup.string().required('Поле обязательно'),
+      previewUrl: Yup.mixed()
+        .test('fileFormat', 'Неподходящий тип изображения', (value) => {
+          if (!value) return true;
+          return SUPPORTED_FORMATS.includes(value.type);
+        })
+        .test('fileSize', `Максимальный допустимый размер - ${MAX_IMAGE_SIZE}КБ`, (value) => {
+          if (!value) return true;
+          return value.size <= MAX_IMAGE_SIZE * 1024;
+        })
+        .test(
+          'fileSides',
+          `Максимальный допустимый размер - ${MAX_IMAGE_WIDTH}x${MAX_IMAGE_HEIGHT}px`,
+          (value) => {
+            if (!value) return true;
+            return checkImageSides(value).then(
+              (image) => image.width <= MAX_IMAGE_WIDTH && image.height <= MAX_IMAGE_HEIGHT,
+            );
+          },
+        ),
       storyFrames: Yup.array().of(
         Yup.object().shape({
           title: Yup.string()
@@ -43,7 +81,28 @@ export const storyValidationSchema = Yup.object({
                   return textSchema;
               }
             }),
-          pictureUrl: Yup.array().nullable().required('Поле обязательно'),
+          pictureUrl: Yup.mixed()
+            .nullable()
+            .required('Поле обязательно')
+            .test(
+              'fileFormat',
+              'Неподходящий тип изображения',
+              (value) => value && SUPPORTED_FORMATS.includes(value.type),
+            )
+            .test(
+              'fileSize',
+              `Максимальный допустимый размер - ${MAX_IMAGE_SIZE}КБ`,
+              (value) => value && value.size <= MAX_IMAGE_SIZE * 1024,
+            )
+            .test(
+              'fileSides',
+              `Максимальный допустимый размер - ${MAX_IMAGE_WIDTH}x${MAX_IMAGE_HEIGHT}px`,
+              (value) =>
+                value &&
+                checkImageSides(value).then(
+                  (image) => image.width <= MAX_IMAGE_WIDTH && image.height <= MAX_IMAGE_HEIGHT,
+                ),
+            ),
           linkText: Yup.string().when('visibleLinkOrButtonOrNone', {
             is: 'LINK',
             then: Yup.string().required('Поле обязательно'),
