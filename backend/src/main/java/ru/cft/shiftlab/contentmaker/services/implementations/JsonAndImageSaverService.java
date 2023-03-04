@@ -55,6 +55,10 @@ public class JsonAndImageSaverService implements FileSaverService {
 
             String fileName = fileNameCreator.createFileName(bankId);
 
+            if (testOrNot) {
+                fileName = "test.json";
+            }
+
             List<StoryPresentation> storyPresentationList = new ArrayList<>();
 
             int counterForPreview = 0;
