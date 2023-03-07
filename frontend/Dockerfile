@@ -10,6 +10,8 @@ COPY . /app
 
 RUN npm run build
 
+EXPOSE 3000
+
 
 ###### DEPLOYMENT IMAGE ######
 FROM nginx:1.23.3-alpine-slim
