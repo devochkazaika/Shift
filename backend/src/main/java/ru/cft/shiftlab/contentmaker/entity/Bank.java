@@ -26,7 +26,7 @@ public class Bank {
     private UUID id;
 
     /**
-     * Название
+     * Название.
      */
     @Column(name = "C_NAME")
     private String name;
