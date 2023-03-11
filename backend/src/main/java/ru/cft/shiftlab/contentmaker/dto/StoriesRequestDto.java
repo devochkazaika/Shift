@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.cft.shiftlab.contentmaker.validation.WhitelistValid;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhitelistValid;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -25,4 +25,5 @@ public class StoriesRequestDto {
     @JsonProperty("stories")
     @Valid
     private ArrayList<StoryDto> storyDtos = new ArrayList<>();
+
 }

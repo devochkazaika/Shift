@@ -7,12 +7,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.util.WhiteList;
-import ru.cft.shiftlab.contentmaker.validation.WhitelistValid;
-import ru.cft.shiftlab.contentmaker.validation.implementations.BankIdValidator;
-import ru.cft.shiftlab.contentmaker.validation.implementations.StoryFramesValidator;
-import ru.cft.shiftlab.contentmaker.validation.implementations.StoryValidator;
-import ru.cft.shiftlab.contentmaker.validation.StoryFramesValid;
-import ru.cft.shiftlab.contentmaker.validation.StoryValid;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhitelistValid;
+import ru.cft.shiftlab.contentmaker.util.validation.validator.BankIdValidator;
+import ru.cft.shiftlab.contentmaker.util.validation.validator.StoryFramesValidator;
+import ru.cft.shiftlab.contentmaker.util.validation.validator.StoryValidator;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.StoryFramesValid;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.StoryValid;
 
 import javax.imageio.ImageIO;
 import javax.validation.ConstraintValidatorContext;

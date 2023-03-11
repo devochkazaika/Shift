@@ -13,7 +13,7 @@ import ru.cft.shiftlab.contentmaker.controller.StoriesController;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
-import ru.cft.shiftlab.contentmaker.services.implementations.JsonAndImageSaverService;
+import ru.cft.shiftlab.contentmaker.service.implementations.JsonAndImageSaverService;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

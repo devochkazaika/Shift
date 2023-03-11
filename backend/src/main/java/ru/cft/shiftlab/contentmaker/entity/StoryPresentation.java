@@ -25,4 +25,5 @@ public class StoryPresentation {
 
     @JsonProperty("storyFrames")
     private ArrayList<StoryPresentationFrames> storyPresentationFrames = new ArrayList<>();
+
 }

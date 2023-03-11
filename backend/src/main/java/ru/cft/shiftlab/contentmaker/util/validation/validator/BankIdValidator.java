@@ -1,9 +1,9 @@
-package ru.cft.shiftlab.contentmaker.validation.implementations;
+package ru.cft.shiftlab.contentmaker.util.validation.validator;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.cft.shiftlab.contentmaker.util.WhiteList;
-import ru.cft.shiftlab.contentmaker.validation.WhitelistValid;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhitelistValid;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

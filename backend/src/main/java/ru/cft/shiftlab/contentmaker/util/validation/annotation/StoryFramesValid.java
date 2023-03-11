@@ -1,6 +1,6 @@
-package ru.cft.shiftlab.contentmaker.validation;
+package ru.cft.shiftlab.contentmaker.util.validation.annotation;
 
-import ru.cft.shiftlab.contentmaker.validation.implementations.StoryFramesValidator;
+import ru.cft.shiftlab.contentmaker.util.validation.validator.StoryFramesValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -19,7 +19,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = StoryFramesValidator.class)
 @Documented
 public @interface StoryFramesValid {
-    String message() default "{ru.cft.shiftlab.contentmaker.validation.StoryFramesValid}";
+    String message() default "{ru.cft.shiftlab.contentmaker.validation.annotation.StoryFramesValid}";
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default { };
 }

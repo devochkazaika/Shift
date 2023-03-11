@@ -1,4 +1,4 @@
-package ru.cft.shiftlab.contentmaker.exceptionHandling;
+package ru.cft.shiftlab.contentmaker.exceptionhandling;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
