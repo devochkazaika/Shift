@@ -1,13 +1,12 @@
-package ru.cft.shiftlab.contentmaker.validation.implementations;
+package ru.cft.shiftlab.contentmaker.util.validation.validator;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
-import ru.cft.shiftlab.contentmaker.validation.StoryFramesValid;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.StoryFramesValid;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -43,8 +42,8 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
     /**
      * Составной метод, который вызывает вспомогательные методы валидации.
      *
-     * @param object предполагаемый StoryFramesDto, который нужно валидировать.
-     * @param constraintValidatorContext
+     * @param object                     предполагаемый StoryFramesDto, который нужно валидировать.
+     * @param constraintValidatorContext контекст, в котором вычисляется ограничение.
      * @return True/False в зависимости от результата валидации.
      */
     @Override
@@ -104,15 +103,18 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
         if (countString == 1) {
             return storyFramesDto.getTitle().length() <= titleMaxLenForOneString &&
                     storyFramesDto.getText().length() <= textMaxLenForOneString &&
-                    Arrays.stream(storyFramesDto.getText().split("\n")).count() <= textMaxStringCountForOneString;
+                    Arrays.stream(storyFramesDto.getText().split("\n"))
+                            .count() <= textMaxStringCountForOneString;
         } else if (countString == 2) {
             return storyFramesDto.getTitle().length() <= titleMaxLenForTwoString &&
                     storyFramesDto.getText().length() <= textMaxLenForTwoString &&
-                    Arrays.stream(storyFramesDto.getText().split("\n")).count() <= textMaxStringCountForTwoString;
+                    Arrays.stream(storyFramesDto.getText().split("\n"))
+                            .count() <= textMaxStringCountForTwoString;
         } else if (countString == 3) {
             return storyFramesDto.getTitle().length() <= titleMaxLenForThreeString &&
                     storyFramesDto.getText().length() <= textMaxLenForThreeString &&
-                    Arrays.stream(storyFramesDto.getText().split("\n")).count() <= textMaxStringCountForThreeString;
+                    Arrays.stream(storyFramesDto.getText().split("\n"))
+                            .count() <= textMaxStringCountForThreeString;
         } else {
             return false;
         }

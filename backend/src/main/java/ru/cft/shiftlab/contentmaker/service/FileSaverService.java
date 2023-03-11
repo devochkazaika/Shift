@@ -1,4 +1,4 @@
-package ru.cft.shiftlab.contentmaker.services;
+package ru.cft.shiftlab.contentmaker.service;
 
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 
@@ -13,8 +13,8 @@ public interface FileSaverService {
      * Метод для сохранения JSON файла и картинки в определенную директорию.
      *
      * @param storiesRequestDto DTO с информацией о Stories.
-     * @param testOrNot         булевая переменная, которая указывает на то, вызывается метод в тесте или нет
-     * @throws RuntimeException исключение, которые может возникнуть во время выполнения приложения.
+     * @param testOrNot         булевая переменная, которая указывает на то, вызывается метод в тесте или нет.
+     * @throws RuntimeException исключение, которые может возникнуть во время работы приложения.
      */
     default void saveFiles(StoriesRequestDto storiesRequestDto, boolean testOrNot) {
         IOException e = new IOException();

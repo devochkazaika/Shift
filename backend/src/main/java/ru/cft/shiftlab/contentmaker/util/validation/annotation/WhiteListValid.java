@@ -1,6 +1,6 @@
-package ru.cft.shiftlab.contentmaker.validation;
+package ru.cft.shiftlab.contentmaker.util.validation.annotation;
 
-import ru.cft.shiftlab.contentmaker.validation.implementations.BankIdValidator;
+import ru.cft.shiftlab.contentmaker.util.validation.validator.BankIdValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -16,8 +16,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({ ElementType.FIELD})
 @Retention(RUNTIME)
 @Constraint(validatedBy = BankIdValidator.class)
-public @interface WhitelistValid {
-    String message() default "{ru.cft.shiftlab.contentmaker.validation.WhitelistValid}";
+public @interface WhiteListValid {
+    String message() default "{ru.cft.shiftlab.contentmaker.validation.annotation.WhitelistValid}";
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default { };
 }

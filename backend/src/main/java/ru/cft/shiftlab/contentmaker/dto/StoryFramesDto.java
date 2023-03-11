@@ -3,20 +3,21 @@ package ru.cft.shiftlab.contentmaker.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.cft.shiftlab.contentmaker.validation.StoryFramesValid;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.StoryFramesValid;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
 /**
- * DTO, который содержит информацию карточке истории.
+ * DTO, который содержит информацию о карточке истории.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @StoryFramesValid(message = "Incorrect parameters for Story Frames")
 public class StoryFramesDto {
+
     @NotBlank(message = "The story title is not specified")
     private String title;
 
@@ -43,4 +44,5 @@ public class StoryFramesDto {
     @NotBlank(message = "The gradient for the story is not specified")
     @Pattern(regexp = "EMPTY|HALF|FULL", message = "Incorrect parameters. Possible: EMPTY, HALF, FULL")
     private String gradient;
+
 }

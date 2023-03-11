@@ -1,7 +1,7 @@
 package ru.cft.shiftlab.contentmaker.util;
 
 import org.springframework.stereotype.Component;
-import ru.cft.shiftlab.contentmaker.exceptionHandling.StaticContentException;
+import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class FileExtensionExtractor {
             return mimeType.split("/")[1];
         }
         catch (IOException e) {
-            throw new StaticContentException("Failed to retrieve file extension", "500");
+            throw new StaticContentException("Невозможно извлечь расширение файла", "500");
         }
     }
 

@@ -1,4 +1,4 @@
-package ru.cft.shiftlab.contentmaker.exceptionHandling;
+package ru.cft.shiftlab.contentmaker.exceptionhandling;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,6 +40,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 )
         );
 
-        return new ResponseEntity(errorsMap.isEmpty()? ex:errorsMap, headers, status);
+        return new ResponseEntity<>(errorsMap.isEmpty()? ex:errorsMap, headers, status);
     }
 }

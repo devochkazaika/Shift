@@ -1,16 +1,15 @@
 package ru.cft.shiftlab.contentmaker.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
-import ru.cft.shiftlab.contentmaker.services.implementations.JsonAndImageSaverService;
+import ru.cft.shiftlab.contentmaker.service.implementation.JsonAndImageSaverService;
 
 import javax.validation.Valid;
 
 /**
- * Контроллер, обрабатывающий запросы для работы с Story
+ * Контроллер, обрабатывающий запросы для работы с Story.
  */
 @CrossOrigin(origins="http://localhost:3000")
 @RestController
@@ -30,4 +29,5 @@ public class StoriesController {
 
         storiesService.saveFiles(storiesRequestDto, false);
     }
+
 }
