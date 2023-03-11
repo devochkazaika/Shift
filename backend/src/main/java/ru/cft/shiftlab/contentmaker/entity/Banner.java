@@ -7,6 +7,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+/**
+ * Сущность баннера, которая будет отображаться в БД.
+ */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,81 +24,81 @@ public class Banner {
     private Long id;
 
     /**
-     * Код баннера
+     * Код баннера.
      */
     @Column(name = "C_CODE")
     private String code;
 
     /**
-     * Название
+     * Название.
      */
     @Column(name = "C_NAME")
     private String name;
 
     /**
-     * Название картинки
+     * Название картинки.
      */
     @Column(name = "C_PICTURE")
     private String picture;
 
     /**
-     * Банк владельца баннера
+     * Банк владельца баннера.
      */
     @ManyToOne
     @JoinColumn(name = "C_BANK")
     private Bank bank;
 
     /**
-     * Основной баннер
+     * Основной баннер.
      */
     @ManyToOne
     @JoinColumn(name = "C_MAIN_BANNER")
     private MainBanner mainBanner;
 
     /**
-     * Название иконки
+     * Название иконки.
      */
     @Column(name = "C_ICON")
     private String icon;
 
     /**
-     * Текст баннера
+     * Текст баннера.
      */
     @Column(name = "C_TEXT")
     private String text;
 
     /**
-     * Ссылка для перехода при клике на баннер
+     * Ссылка для перехода при клике на баннер.
      */
     @Column(name = "C_URL")
     private String url;
 
     /**
-     * Текст ссылки
+     * Текст ссылки.
      */
     @Column(name = "C_URL_TEXT")
     private String urlText;
 
     /**
-     * Приоритет отображения баннера
+     * Приоритет отображения баннера.
      */
     @Column(name = "C_PRIORITY")
     private Integer priority;
 
     /**
-     * Код цвета кнопки
+     * Код цвета кнопки.
      */
     @Column(name = "C_COLOR")
     private String color;
 
     /**
-     * Признак Доступен всем
+     * Признак Доступен всем.
      */
     @Column(name = "C_AVAILABLE_TO_ALL")
     private boolean availableForAll;
 
     /**
-     * Тип платформы для отображения Банера
+     * Тип платформы для отображения Банера.
      */
     @Column(name = "C_PLATFORM")
     private String platformType;
