@@ -16,7 +16,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({ ElementType.FIELD})
 @Retention(RUNTIME)
 @Constraint(validatedBy = BankIdValidator.class)
-public @interface WhitelistValid {
+public @interface WhiteListValid {
     String message() default "{ru.cft.shiftlab.contentmaker.validation.annotation.WhitelistValid}";
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default { };

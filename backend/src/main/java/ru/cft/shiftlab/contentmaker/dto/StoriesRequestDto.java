@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhitelistValid;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class StoriesRequestDto {
 
     @NotBlank(message = "bankId is not specified")
-    @WhitelistValid(message = "bankId must match the allowed")
+    @WhiteListValid(message = "bankId must match the allowed")
     private String bankId;
 
     @JsonProperty("stories")

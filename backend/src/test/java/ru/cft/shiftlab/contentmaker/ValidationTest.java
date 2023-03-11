@@ -7,7 +7,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.util.WhiteList;
-import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhitelistValid;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
 import ru.cft.shiftlab.contentmaker.util.validation.validator.BankIdValidator;
 import ru.cft.shiftlab.contentmaker.util.validation.validator.StoryFramesValidator;
 import ru.cft.shiftlab.contentmaker.util.validation.validator.StoryValidator;
@@ -36,7 +36,7 @@ public class ValidationTest {
     StoryFramesValid storyFramesValid;
 
     @Mock
-    WhitelistValid whitelistValid;
+    WhiteListValid whitelistValid;
 
     @Mock
     private ConstraintValidatorContext constraintValidatorContext;

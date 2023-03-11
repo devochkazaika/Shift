@@ -3,7 +3,7 @@ package ru.cft.shiftlab.contentmaker.util.validation.validator;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.cft.shiftlab.contentmaker.util.WhiteList;
-import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhitelistValid;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -12,7 +12,7 @@ import javax.validation.ConstraintValidatorContext;
  * Имплементация валидации идентификатора банка.
  */
 @Data
-public class BankIdValidator implements ConstraintValidator<WhitelistValid, String> {
+public class BankIdValidator implements ConstraintValidator<WhiteListValid, String> {
 
     private final WhiteList whiteList;
 
@@ -22,7 +22,7 @@ public class BankIdValidator implements ConstraintValidator<WhitelistValid, Stri
     }
 
     @Override
-    public void initialize(WhitelistValid constraintAnnotation) {
+    public void initialize(WhiteListValid constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
