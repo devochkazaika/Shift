@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
-import ru.cft.shiftlab.contentmaker.service.implementations.JsonAndImageSaverService;
+import ru.cft.shiftlab.contentmaker.service.implementation.JsonAndImageSaverService;
 
 import javax.validation.Valid;
 

@@ -1,4 +1,4 @@
-package ru.cft.shiftlab.contentmaker.service.implementations;
+package ru.cft.shiftlab.contentmaker.service.implementation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
