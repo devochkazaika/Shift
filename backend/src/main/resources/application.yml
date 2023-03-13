@@ -38,4 +38,7 @@ spring:
 
 
 
-  
+
+
+server:
+  port: 9090
