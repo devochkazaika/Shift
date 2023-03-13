@@ -35,10 +35,3 @@ spring:
   sql:
     init:
       platform: org.hibernate.dialect.H2Dialect
-
-
-
-
-
-server:
-  port: 9090
