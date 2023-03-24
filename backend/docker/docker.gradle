@@ -1,0 +1,67 @@
+buildscript {
+  repositories {
+    maven {
+      url "$artifactoryUrl/libs-release"
+    }
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.bmuschko:gradle-docker-plugin:6.7.0'
+  }
+}
+
+apply plugin: com.bmuschko.gradle.docker.DockerRemoteApiPlugin
+
+import com.bmuschko.gradle.docker.tasks.image.*
+
+
+// docker
+def dockerDirPath = "${project.buildDir}/docker"
+def branch = project.hasProperty("branch") ? project.getProperty("branch") : "U"
+branch = (branch == null) ? "" : branch.replaceAll("/", "-")
+def dockerImageId = "$dockerRegistryName/${project.name}:${project.version}-$branch"
+
+// Docker registry credentials settings
+docker {
+  registryCredentials {
+    url = dockerRegistryUrl
+  }
+}
+
+task copyJarFiles(type: Copy, dependsOn: 'bootJar') {
+  description = 'Copy JAR file to build directory'
+  from 'build/libs'
+  into { dockerDirPath }
+}
+task copyConfigFiles(type: Copy, dependsOn: 'copyJarFiles') {
+  description = 'Copy config directory to build directory'
+  from './docker/config/'
+  into { "${dockerDirPath}/config" }
+}
+task copyDockerFile(type: Copy, dependsOn: 'copyConfigFiles') {
+  description = 'Copy Dockerfile to build directory'
+  from './docker/Dockerfile'
+  into { dockerDirPath }
+}
+
+// Build docker image
+
+task buildImage(type: DockerBuildImage, dependsOn: 'copyDockerFile') {
+  description = "Build image with id: $dockerImageId"
+  inputDir = file(dockerDirPath)
+  images = ["$dockerImageId"]
+  buildArgs = ['JAR_FILE'     : "*.jar",
+               'VERSION'      : "${project.name}-${branch}",
+               'CREATION_DATE': new Date().format('yyyy.MM.dd HH:mm:ss'),
+               'COMMIT_HASH'  : "git rev-parse HEAD".execute().text.trim()]
+}
+
+// Push docker image to registry
+task pushImage(type: DockerPushImage) {
+  images = ["$dockerImageId"]
+}
+
+// Remove local docker image
+task removeImage(type: DockerRemoveImage) {
+  targetImageId "$dockerImageId"
+}
