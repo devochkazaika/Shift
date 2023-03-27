@@ -1,7 +1,7 @@
 import React from 'react';
 
-import FormField from '../FormField';
 import ColorPicker from '../ColorPicker';
+import FormField from '../FormField';
 import UploadImage from '../UploadImage';
 
 const PreviewFields = ({ storyIndex, ...props }) => {
