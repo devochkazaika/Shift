@@ -2,10 +2,7 @@ import React from 'react';
 import { AnimatePresence } from 'framer-motion';
 
 import { ReactComponent as BinIcon } from '../../../assets/icons/bin.svg';
-import { convertByteArrayToSrc } from '../../../utils/helpers/byteArrayFunctions';
-
 import styles from './PreviewImage.module.scss';
-
 import Modal from '../../ui/Modal';
 
 const PreviewImage = ({ image, setFieldValue, fieldName, inputRef }) => {
@@ -13,7 +10,7 @@ const PreviewImage = ({ image, setFieldValue, fieldName, inputRef }) => {
   const [modalShown, toggleModal] = React.useState(false);
 
   React.useEffect(() => {
-    setPreview(convertByteArrayToSrc(image));
+    setPreview(URL.createObjectURL(image));
   }, [image]);
 
   const handleDeleteImage = () => {

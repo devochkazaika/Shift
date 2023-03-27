@@ -35,3 +35,6 @@ spring:
   sql:
     init:
       platform: org.hibernate.dialect.H2Dialect
+
+
+

@@ -1,4 +1,4 @@
-package ru.cft.shiftlab.contentmaker.services.implementations;
+package ru.cft.shiftlab.contentmaker.service.implementation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -12,8 +12,8 @@ import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
-import ru.cft.shiftlab.contentmaker.exceptionHandling.StaticContentException;
-import ru.cft.shiftlab.contentmaker.services.FileSaverService;
+import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
+import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 import ru.cft.shiftlab.contentmaker.util.*;
 
 import java.io.File;
@@ -54,6 +54,10 @@ public class JsonAndImageSaverService implements FileSaverService {
             }
 
             String fileName = fileNameCreator.createFileName(bankId);
+
+            if (testOrNot) {
+                fileName = "test.json";
+            }
 
             List<StoryPresentation> storyPresentationList = new ArrayList<>();
 

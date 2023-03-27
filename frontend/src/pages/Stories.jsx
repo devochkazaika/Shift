@@ -1,6 +1,7 @@
 import React from 'react';
 import { Formik, Form, FieldArray } from 'formik';
 
+import { convertToPayload } from '../utils/helpers/byteArrayFunctions';
 import { initialStoryValues } from '../utils/constants/initialValues';
 import { storyValidationSchema } from '../utils/helpers/validation';
 import api from '../api/stories';
@@ -18,9 +19,10 @@ const Stories = () => {
   const handleOnSubmit = async (values, { resetForm }) => {
     setSend(false);
     setLoading(true);
-    const jsonValues = JSON.stringify(values, null, 2);
+    const payload = await convertToPayload(values);
+    const jsonPayload = JSON.stringify(payload, null, 2);
     try {
-      await api.post('/add', jsonValues);
+      await api.post('/add', jsonPayload);
       resetForm(initialStoryValues);
       setSuccess(true);
       setSend(true);

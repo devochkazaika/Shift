@@ -9,7 +9,7 @@ import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
-import ru.cft.shiftlab.contentmaker.services.implementations.JsonAndImageSaverService;
+import ru.cft.shiftlab.contentmaker.service.implementation.JsonAndImageSaverService;
 import ru.cft.shiftlab.contentmaker.util.*;
 
 import javax.imageio.ImageIO;
@@ -79,7 +79,7 @@ public class JsonAndImageSaverServiceTest {
 
         String picturesDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
                 + storiesRequestDto.getBankId() + "/";
-        String fileName = fileNameCreator.createFileName(storiesRequestDto.getBankId());
+        String fileName = "test.json";
         String jsonDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
         String previewUrl = picturesDirectory + "/preview1.png";
 

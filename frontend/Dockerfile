@@ -1,9 +1,22 @@
-FROM node:18-alpine
-WORKDIR /frontend
-COPY package.json /frontend/package.json
+###### BUILD IMAGE ######
+FROM node:18.14.2-alpine3.17 AS build
+WORKDIR /app
+
+COPY package.json /app/package.json
+COPY package-lock.json /app/package-lock.json
+
 RUN npm install
-COPY . .
+COPY . /app
+
 RUN npm run build
-ENV NODE_ENV production
+
 EXPOSE 3000
-CMD [ "npx", "serve", "build" ]
+
+
+###### DEPLOYMENT IMAGE ######
+FROM nginx:1.23.3-alpine-slim
+COPY --from=build /app/.nginx.conf /etc/nginx/conf.d/default.conf
+WORKDIR /usr/share/nginx/html
+RUN rm -rf ./*
+COPY --from=build /app/build .
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

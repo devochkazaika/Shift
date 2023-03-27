@@ -13,7 +13,7 @@ import ru.cft.shiftlab.contentmaker.controller.StoriesController;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
-import ru.cft.shiftlab.contentmaker.services.implementations.JsonAndImageSaverService;
+import ru.cft.shiftlab.contentmaker.service.implementation.JsonAndImageSaverService;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -62,7 +62,7 @@ public class StoriesControllerTest {
                 bytes,
                 "EMPTY",
                 new ArrayList<>(Collections.singletonList(storyFramesDto)));
-        System.out.println(storyDto);
+
         StoriesRequestDto storiesRequestDto = new StoriesRequestDto("nskbl" ,new ArrayList<>(Collections.singletonList(storyDto)));
 
 

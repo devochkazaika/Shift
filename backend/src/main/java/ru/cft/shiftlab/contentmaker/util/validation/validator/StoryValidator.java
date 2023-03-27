@@ -1,13 +1,12 @@
-package ru.cft.shiftlab.contentmaker.validation.implementations;
+package ru.cft.shiftlab.contentmaker.util.validation.validator;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
-import ru.cft.shiftlab.contentmaker.validation.StoryValid;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.StoryValid;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -40,7 +39,7 @@ public class StoryValidator implements ConstraintValidator<StoryValid, StoryDto>
     @Override
     public boolean isValid(StoryDto object, ConstraintValidatorContext constraintValidatorContext) {
         if (object == null) {
-            throw new IllegalArgumentException("@StringValid only applies to StoryFramesDto objects");
+            return false;
         }
 
         StoryDto storyDto = (StoryDto) object;
