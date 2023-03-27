@@ -29,7 +29,7 @@ const FormField = (props) => {
           ifObjectHasField(props.errors, props.name) && ifObjectHasField(props.touched, props.name)
             ? styles.error
             : ''
-        }`}>
+        } ${props.className}`}>
         {props.options &&
           props.options.map((option, i) => (
             <option key={i} value={option.value}>

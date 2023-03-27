@@ -1,23 +1,20 @@
 import React from 'react';
 
+import { gradientOptions } from '../../utils/constants/gradient';
 import ColorPicker from '../ColorPicker';
 import FormField from '../FormField';
 import UploadImage from '../UploadImage';
 
 const PreviewFields = ({ storyIndex, ...props }) => {
-  const gradientOptions = [
-    { value: 'EMPTY', name: 'Нет' },
-    { value: 'FULL', name: 'Поверх всего изображения' },
-  ];
-
   return (
     <>
       <div className="row">
         <div className="input_field">
           <FormField
+            className="title"
             labelTitle={'Заголовок'}
             name={`stories.${storyIndex}.previewTitle`}
-            type={'text'}
+            as={'textarea'}
             {...props}
           />
         </div>
