@@ -1,9 +1,9 @@
 import React from 'react';
 
-import FormField from '../FormField';
 import ColorPicker from '../ColorPicker';
-import UploadImage from '../UploadImage';
+import FormField from '../FormField';
 import Bin from '../ui/Bin';
+import UploadImage from '../UploadImage';
 
 import { ReactComponent as MinusIcon } from '../../assets/icons/minus.svg';
 import { ReactComponent as PlusIcon } from '../../assets/icons/plus.svg';
@@ -43,9 +43,10 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
         <div className={styles.frame_content}>
           <div className="input_field">
             <FormField
+              className="title"
               labelTitle={'Заголовок'}
               name={`stories.${storyIndex}.storyFrames.${frameIndex}.title`}
-              type={'text'}
+              as={'textarea'}
               {...props}
             />
           </div>

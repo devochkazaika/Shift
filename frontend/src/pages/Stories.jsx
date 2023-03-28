@@ -1,15 +1,15 @@
+import { FieldArray, Form, Formik } from 'formik';
 import React from 'react';
-import { Formik, Form, FieldArray } from 'formik';
 
-import { convertToPayload } from '../utils/helpers/byteArrayFunctions';
-import { initialStoryValues } from '../utils/constants/initialValues';
-import { storyValidationSchema } from '../utils/helpers/validation';
 import api from '../api/stories';
+import { initialStoryValues } from '../utils/constants/initialValues';
+import { convertToPayload } from '../utils/helpers/byteArrayFunctions';
+import { storyValidationSchema } from '../utils/helpers/validation';
 
+import StoryForm from '../components/StoryForm';
+import AlertMessage from '../components/ui/AlertMessage';
 import Button from '../components/ui/Button';
 import Loader from '../components/ui/Loader';
-import AlertMessage from '../components/ui/AlertMessage';
-import StoryForm from '../components/StoryForm';
 
 const Stories = () => {
   const [send, setSend] = React.useState(false);

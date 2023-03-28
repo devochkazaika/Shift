@@ -1,15 +1,18 @@
-export const previewRules = [
+export const framesRules = [
   {
     maxTitleLength: 17,
     maxTextLength: 245,
+    maxTextStrings: 7,
   },
   {
     maxTitleLength: 34,
     maxTextLength: 210,
+    maxTextStrings: 6,
   },
   {
     maxTitleLength: 51,
     maxTextLength: 140,
+    maxTextStrings: 4,
   },
 ];
 
