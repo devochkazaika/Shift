@@ -53,21 +53,21 @@ public class JsonAndImageSaverServiceTest {
         ImageIO.write(bImage, "png", bos );
         byte[] bytes = bos.toByteArray();
         StoryFramesDto storyFramesDto = new StoryFramesDto(
-                "Конвертируй",
-                "Обменивайте валюту онлайн по выгодному курсу",
-                "FFFFFF",
+                "Заголовок",
+                "Текст карточки",
+                "FF0000",
                 bytes,
                 "NONE",
-                "link url",
-                "link text",
-                "Попробовать",
-                "FFFFFF",
-                "FFFFFF",
-                "buttonurl",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
                 "EMPTY");
         StoryDto storyDto = new StoryDto(
-                "Конвертируй",
-                "FFFFFF",
+                "Заголовок превью",
+                "FF0000",
                 bytes,
                 "EMPTY",
                 new ArrayList<>(Collections.singletonList(storyFramesDto)));
