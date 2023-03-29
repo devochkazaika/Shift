@@ -66,6 +66,15 @@ public class JsonAndImageSaverService implements FileSaverService {
 
             for (StoryDto story: storiesRequestDto.getStoryDtos()) {
                 counterForPreview++;
+
+                if(story.getPreviewUrl() == null) {
+                    story.setPreviewUrl(
+                            story
+                                    .getStoryFramesDtos()
+                                    .get(0)
+                                    .getPictureUrl());
+                }
+
                 byte [] previewUrlBytes = story.getPreviewUrl();
 
                 String previewPictureName = imageNameGenerator.generateImageName();
