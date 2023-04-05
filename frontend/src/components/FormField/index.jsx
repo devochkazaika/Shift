@@ -1,5 +1,5 @@
+import { ErrorMessage, Field, getIn, useField } from 'formik';
 import React from 'react';
-import { Field, ErrorMessage, getIn } from 'formik';
 
 import styles from './FormField.module.scss';
 
@@ -8,6 +8,8 @@ function ifObjectHasField(object, fieldName) {
 }
 
 const FormField = (props) => {
+  const [field] = useField(props.name);
+
   return (
     <div className={styles.root}>
       <label
@@ -21,13 +23,13 @@ const FormField = (props) => {
         type={props.type}
         component={props.component}
         as={props.as}
-        value={props.value}
+        value={props.value || field.value}
         checked={props.checked}
         className={`${props.type !== 'radio' && styles.field} ${
           ifObjectHasField(props.errors, props.name) && ifObjectHasField(props.touched, props.name)
             ? styles.error
             : ''
-        }`}>
+        } ${props.className}`}>
         {props.options &&
           props.options.map((option, i) => (
             <option key={i} value={option.value}>
