@@ -9,8 +9,8 @@ services:
       - SPRING.PROFILES.ACTIVE=default
   frontend:
     build: 'frontend/'
-    container_name: frontend
+    container_name: static-content-frontend
     ports:
-      - '3000:80'
+      - '3232:80'
     links:
       - backend
