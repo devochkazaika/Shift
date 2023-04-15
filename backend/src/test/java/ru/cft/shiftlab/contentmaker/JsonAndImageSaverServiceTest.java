@@ -26,13 +26,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class JsonAndImageSaverServiceTest {
-    private final WhiteList whiteList = new WhiteList();
 
     private final FileExtensionExtractor fileExtensionExtractor = new FileExtensionExtractor();
 
     private final ByteArrayToImageConverter byteArrayToImageConverter = new ByteArrayToImageConverter();
 
-    private final FileNameCreator fileNameCreator = new FileNameCreator(whiteList);
+    private final FileNameCreator fileNameCreator = new FileNameCreator();
 
     private final DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
     private final ImageNameGenerator imageNameGenerator = new ImageNameGenerator();
