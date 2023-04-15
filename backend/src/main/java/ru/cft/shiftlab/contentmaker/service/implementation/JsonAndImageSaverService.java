@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Имплементация интерфейса FIleSaverService.
+ * Сервис предназначенный для сохранения JSON файла и картинок.
  */
 @Service
 @RequiredArgsConstructor

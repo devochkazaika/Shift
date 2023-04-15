@@ -54,10 +54,7 @@ public class DtoToEntityConverter {
      */
     public StoryPresentationFrames fromStoryFramesDtoToStoryPresentationFrames(StoryFramesDto storyFramesDto) {
 
-        StoryPresentationFrames storyPresentationFrames =
-                modelMapper.map(storyFramesDto, StoryPresentationFrames.class);
-
-        return storyPresentationFrames;
+        return modelMapper.map(storyFramesDto, StoryPresentationFrames.class);
     }
 
 }
