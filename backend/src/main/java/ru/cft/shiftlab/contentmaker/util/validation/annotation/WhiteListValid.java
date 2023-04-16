@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Валидация корректности идентификатора банка.
+ * Валидация идентификатора банка.
  */
 @Target({ ElementType.FIELD})
 @Retention(RUNTIME)

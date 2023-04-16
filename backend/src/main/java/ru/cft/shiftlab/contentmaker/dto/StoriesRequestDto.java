@@ -11,17 +11,23 @@ import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 
 /**
- * Исходная DTO, которая приходит с FrontEnd'а
+ * Класс, представляющий DTO с информацией, которая прилетает с Frontend'a.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class StoriesRequestDto {
 
+    /**
+     * Код банка.
+     */
     @NotBlank(message = "bankId is not specified")
     @WhiteListValid(message = "bankId must match the allowed")
     private String bankId;
 
+    /**
+     * Информация об историях.
+     */
     @JsonProperty("stories")
     @Valid
     private ArrayList<StoryDto> storyDtos = new ArrayList<>();

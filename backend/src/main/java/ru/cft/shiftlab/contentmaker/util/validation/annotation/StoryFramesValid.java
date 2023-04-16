@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Валидация StoryFramesDto.
+ * Аннотация необходимая для валидации {@link ru.cft.shiftlab.contentmaker.dto.StoryFramesDto}.
  */
 @Target({ ElementType.TYPE})
 @Retention(RUNTIME)

@@ -27,11 +27,12 @@ public class BankIdValidator implements ConstraintValidator<WhiteListValid, Stri
     }
 
     /**
-     * Метод проверяет входит ли bankId в список разрешенных идентификаторов.
+     * Метод, проверяющий является ли переданный объект допустимым банковским идентификатором..
      *
-     * @param object предполагаемый bankId, который нужно валидировать.
-     * @param constraintValidatorContext
-     * @return True/False в зависимости от результата валидации.
+     * @param object предполагаемый идентификатор банка, который необходимо проверить на допустимость.
+     * @param constraintValidatorContext контекст, содержащий информацию о проверке.
+     * @return {@code true}, если переданный объект является допустимым банковским идентификатором,
+     * {@code false} в противном случае.
      */
     @Override
     public boolean isValid(String object, ConstraintValidatorContext constraintValidatorContext) {
@@ -39,9 +40,7 @@ public class BankIdValidator implements ConstraintValidator<WhiteListValid, Stri
             return false;
         }
 
-        String bankId = (String) object;
-
-        return whiteList.checkContainsKeyOrNot(bankId);
+        return whiteList.checkContainsKeyOrNot(object);
     }
 
 }

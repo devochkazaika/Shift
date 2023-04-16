@@ -33,7 +33,7 @@ public class StoryValidator implements ConstraintValidator<StoryValid, StoryDto>
      * Метод проверяет количество строк в поле PreviewTitle.
      *
      * @param object предполагаемый StoryDto, который нужно валидировать.
-     * @param constraintValidatorContext
+     * @param constraintValidatorContext контекст, содержащий информацию о проверке.
      * @return True/False в зависимости от результата валидации.
      */
     @Override
@@ -42,8 +42,6 @@ public class StoryValidator implements ConstraintValidator<StoryValid, StoryDto>
             return false;
         }
 
-        StoryDto storyDto = (StoryDto) object;
-
-        return Arrays.stream(storyDto.getPreviewTitle().split("\n")).count() <= titleMaxStringCount;
+        return Arrays.stream(object.getPreviewTitle().split("\n")).count() <= titleMaxStringCount;
     }
 }
