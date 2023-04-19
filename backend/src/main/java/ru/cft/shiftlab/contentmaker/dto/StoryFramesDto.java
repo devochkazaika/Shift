@@ -18,29 +18,70 @@ import javax.validation.constraints.Pattern;
 @StoryFramesValid(message = "Incorrect parameters for Story Frames")
 public class StoryFramesDto {
 
+    /**
+     * Подзаголовок карточки истории.
+     */
     @NotBlank(message = "The story title is not specified")
     private String title;
 
+    /**
+     * Текст карточки истории.
+     */
     @NotBlank(message = "The text of the story is not specified")
     private String text;
 
+    /**
+     * Цвет текста карточки истории.
+     */
     @NotBlank(message = "Story color not specified")
     private String textColor;
 
+    /**
+     * Картинка карточки истории, представленная в виде байтового массива.
+     */
     @NotEmpty(message = "The picture of the story is not specified")
     private byte[] pictureUrl;
 
+    /**
+     * Поле, показывающее необходимость либо ссылки, либо кнопки, либо ничего из этого.
+     */
     @NotBlank(message = "Button and link display is not specified")
     @Pattern(regexp = "LINK|BUTTON|NONE", message = "Incorrect parameters. Possible: LINK, BUTTON, NONE")
     private String visibleLinkOrButtonOrNone;
 
+    /**
+     * Текст гиперссылки.
+     */
     private String linkText;
+
+    /**
+     * Ссылка на внешний источник.
+     */
     private String linkUrl;
+
+    /**
+     * Текст кнопки.
+     */
     private String buttonText;
+
+    /**
+     * Цвет текста кнопки.
+     */
     private String buttonTextColor;
+
+    /**
+     * Цвет фона кнопки.
+     */
     private String buttonBackgroundColor;
+
+    /**
+     * Ссылка и на внутрянку МП, и во внешку.
+     */
     private String buttonUrl;
 
+    /**
+     * Градиент карточки истории.
+     */
     @NotBlank(message = "The gradient for the story is not specified")
     @Pattern(regexp = "EMPTY|HALF|FULL", message = "Incorrect parameters. Possible: EMPTY, HALF, FULL")
     private String gradient;

@@ -25,7 +25,6 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
     private int textMaxLenForOneString = 245;
     private int textMaxStringCountForOneString = 7;
 
-
     private int titleMaxLenForTwoString = 34;
     private int textMaxLenForTwoString = 210;
     private int textMaxStringCountForTwoString = 6;

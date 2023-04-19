@@ -3,11 +3,6 @@ package ru.cft.shiftlab.contentmaker.util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-
 /**
  * Класс, предназначенный для генерации названия JSON файла.
  */
@@ -16,8 +11,6 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class FileNameCreator {
 
-    private final WhiteList whiteList;
-
     /**
      * Метод, который генерирует название JSON файла.
      *
@@ -25,16 +18,7 @@ public class FileNameCreator {
      * @return название JSON файла.
      */
     public String createFileName(String bankId) {
-        Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-        LocalTime currentTime = LocalTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH-mm-ss");
-        String formattedTime = currentTime.format(formatter);
-
-        String bankName = whiteList.findValueByKey(bankId);
-
-        return bankName + "_" + bankId + "_" + dateFormat.format(date) + " " + formattedTime +  ".json";
+        return "story_" + bankId + ".json";
     }
 
 }

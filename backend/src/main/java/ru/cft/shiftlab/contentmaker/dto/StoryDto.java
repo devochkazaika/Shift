@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 import java.util.ArrayList;
 
 /**
- * DTO, который содержит информацию о превью.
+ * Класс, представляющий DTO, который содержит информацию о превью.
  */
 @Data
 @NoArgsConstructor
@@ -22,18 +22,33 @@ import java.util.ArrayList;
 @StoryValid(message = "Incorrect number of lines in the title")
 public class StoryDto {
 
+    /**
+     * Заголовок превью.
+     */
     @NotBlank(message = "The preview title is not specified")
     private String previewTitle;
 
+    /**
+     * Цвет текста заголовка превью.
+     */
     @NotBlank(message = "Preview color not specified")
     private String previewTitleColor;
 
+    /**
+     * Картинка для превью, представленная в виде байтового массива.
+     */
     private byte[] previewUrl;
 
+    /**
+     * Градиент превью.
+     */
     @NotBlank(message = "The gradient for the preview is not specified")
     @Pattern(regexp = "EMPTY|FULL", message = "Incorrect parameters. Possible: EMPTY, FULL")
     private String previewGradient;
 
+    /**
+     * Список карточек истории.
+     */
     @JsonProperty("storyFrames")
     @Valid
     @Size(min = 1, max = 6, message = "The maximum number of stories is 6")

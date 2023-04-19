@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Имплементация интерфейса FIleSaverService.
+ * Сервис предназначенный для сохранения JSON файла и картинок.
  */
 @Service
 @RequiredArgsConstructor
@@ -44,7 +44,7 @@ public class JsonAndImageSaverService implements FileSaverService {
     @Override
     public void saveFiles(StoriesRequestDto storiesRequestDto, boolean testOrNot){
         try {
-           String bankId = storiesRequestDto.getBankId();
+            String bankId = storiesRequestDto.getBankId();
             String picturesSaveDirectory = filesSaveDirectory + bankId + "/";
 
             File newDirectory = new File(picturesSaveDirectory);
