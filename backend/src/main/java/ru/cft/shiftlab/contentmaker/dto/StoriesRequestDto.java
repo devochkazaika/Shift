@@ -8,6 +8,7 @@ import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 
 /**
@@ -24,6 +25,11 @@ public class StoriesRequestDto {
     @NotBlank(message = "bankId is not specified")
     @WhiteListValid(message = "bankId must match the allowed")
     private String bankId;
+
+    @NotBlank(message = "platformType is not specified")
+    @Pattern(regexp = "IOS|ANDROID|ALL PLATFORMS",
+            message = "Incorrect parameters. Possible: IOS, ANDROID, ALL PLATFORMS")
+    private String platformType;
 
     /**
      * Информация об историях.
