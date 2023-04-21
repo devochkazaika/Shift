@@ -70,7 +70,10 @@ public class JsonAndImageSaverServiceTest {
                 bytes,
                 "EMPTY",
                 new ArrayList<>(Collections.singletonList(storyFramesDto)));
-        StoriesRequestDto storiesRequestDto = new StoriesRequestDto("absolutbank", new ArrayList<>(Collections.singletonList(storyDto)));
+        StoriesRequestDto storiesRequestDto = new StoriesRequestDto(
+                "absolutbank",
+                "IOS",
+                new ArrayList<>(Collections.singletonList(storyDto)));
 
         jsonAndImageSaverService.saveFiles(storiesRequestDto, true);
 
@@ -78,7 +81,7 @@ public class JsonAndImageSaverServiceTest {
 
         String picturesDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
                 + storiesRequestDto.getBankId() + "/";
-        String fileName = "test.json";
+        String fileName = "story_absolutbank_iOS.json";
         String jsonDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
         String previewUrl = picturesDirectory + "/preview1.png";
 
@@ -91,7 +94,8 @@ public class JsonAndImageSaverServiceTest {
                 picturesDirectory,
                 previewUrl));
 
-        storyPresentationList.get(0).getStoryPresentationFrames().get(0).setPictureUrl("/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/absolutbank/storyFramePicture1.png");
+        storyPresentationList.get(0).getStoryPresentationFrames().get(0)
+                .setPictureUrl("/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/absolutbank/storyFramePicture1.png");
         storyPresentationList.get(0).setPreviewUrl("/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/absolutbank/preview1.png");
 
         Map<String, List<StoryPresentation>> presentationList = new HashMap<>();

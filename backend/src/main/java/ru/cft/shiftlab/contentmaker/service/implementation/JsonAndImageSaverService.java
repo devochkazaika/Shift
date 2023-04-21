@@ -39,7 +39,8 @@ public class JsonAndImageSaverService implements FileSaverService {
     private final DtoToEntityConverter dtoToEntityConverter;
     private final ImageNameGenerator imageNameGenerator;
 
-    private String filesSaveDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
+    private String filesSaveDirectory =
+            "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
 
     @Override
     public void saveFiles(StoriesRequestDto storiesRequestDto, boolean testOrNot){
@@ -53,11 +54,7 @@ public class JsonAndImageSaverService implements FileSaverService {
                 newDirectory.mkdirs();
             }
 
-            String fileName = fileNameCreator.createFileName(bankId);
-
-            if (testOrNot) {
-                fileName = "test.json";
-            }
+            String fileName = fileNameCreator.createFileName(bankId, storiesRequestDto.getPlatformType());
 
             List<StoryPresentation> storyPresentationList = new ArrayList<>();
 

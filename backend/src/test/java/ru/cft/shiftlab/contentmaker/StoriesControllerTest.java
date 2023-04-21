@@ -63,7 +63,8 @@ public class StoriesControllerTest {
                 "EMPTY",
                 new ArrayList<>(Collections.singletonList(storyFramesDto)));
 
-        StoriesRequestDto storiesRequestDto = new StoriesRequestDto("nskbl" ,new ArrayList<>(Collections.singletonList(storyDto)));
+        StoriesRequestDto storiesRequestDto = new StoriesRequestDto("nskbl", "ALL PLATFORMS",
+                new ArrayList<>(Collections.singletonList(storyDto)));
 
 
 
