@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { gradientOptions } from '../../utils/constants/gradient';
-import ColorPicker from '../ColorPicker';
-import FormField from '../FormField';
-import UploadImage from '../UploadImage';
+import { gradientOptions } from '../../../utils/constants/gradient';
+import ColorPicker from '../../ColorPicker';
+import FormField from '../../FormField';
+import UploadImage from '../../UploadImage';
 
 const PreviewFields = ({ storyIndex, ...props }) => {
   return (
