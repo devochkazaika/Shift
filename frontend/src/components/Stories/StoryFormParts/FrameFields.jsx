@@ -1,23 +1,18 @@
 import React from 'react';
 
-import ColorPicker from '../ColorPicker';
-import FormField from '../FormField';
-import Bin from '../ui/Bin';
-import UploadImage from '../UploadImage';
+import { gradientOptions } from '../../../utils/constants/gradient';
+import ColorPicker from '../../ColorPicker';
+import FormField from '../../FormField';
+import UploadImage from '../../UploadImage';
+import Bin from '../../ui/Bin';
 
-import { ReactComponent as MinusIcon } from '../../assets/icons/minus.svg';
-import { ReactComponent as PlusIcon } from '../../assets/icons/plus.svg';
+import { ReactComponent as MinusIcon } from '../../../assets/icons/minus.svg';
+import { ReactComponent as PlusIcon } from '../../../assets/icons/plus.svg';
 
 import styles from './StoryFormParts.module.scss';
 
 const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, ...props }) => {
   const [open, setOpen] = React.useState(true);
-
-  const gradientOptions = [
-    { value: 'EMPTY', name: 'Нет' },
-    { value: 'FULL', name: 'Поверх всего изображения' },
-    { value: 'HALF', name: 'Поверх нижней половины изображения' },
-  ];
 
   return (
     <div>

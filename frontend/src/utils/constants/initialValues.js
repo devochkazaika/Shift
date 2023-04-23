@@ -26,6 +26,7 @@ const initialStoryPreview = {
 
 export const initialStoryValues = {
   bankId: banks[0].id,
+  platformType: 'ALL PLATFORMS',
   stories: [
     {
       ...initialStoryPreview,
