@@ -1,31 +1,17 @@
-import React from 'react';
 import { FieldArray } from 'formik';
+import React from 'react';
 
-import { banks } from '../utils/constants/banks';
-import { initialStoryFrame, maxFrames } from '../utils/constants/initialValues';
+import { initialStoryFrame, maxFrames } from '../../utils/constants/initialValues';
 
-import Button from './ui/Button';
-import PreviewFields from './StoryFormParts/PreviewFields';
+import Button from '.././ui/Button';
 import FrameFields from './StoryFormParts/FrameFields';
-import FormField from './FormField';
+import PreviewFields from './StoryFormParts/PreviewFields';
 
-import { ReactComponent as ArrowIcon } from '../assets/icons/arrow-up.svg';
+import { ReactComponent as ArrowIcon } from '../../assets/icons/arrow-up.svg';
 
 const StoryForm = ({ storyIndex, storyJson, ...props }) => {
   return (
     <div>
-      <h2>Банк</h2>
-      <div className="input_field">
-        <FormField
-          name={`bankId`}
-          as="select"
-          options={banks.map((bank) => {
-            return { value: bank.id, name: bank.name };
-          })}
-          {...props}
-        />
-      </div>
-
       <h2>Превью</h2>
       <PreviewFields storyIndex={storyIndex} {...props} />
       <br />

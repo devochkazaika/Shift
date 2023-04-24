@@ -6,7 +6,8 @@ import { initialStoryValues } from '../utils/constants/initialValues';
 import { convertToPayload } from '../utils/helpers/byteArrayFunctions';
 import { storyValidationSchema } from '../utils/helpers/validation';
 
-import StoryForm from '../components/StoryForm';
+import CommonForm from '../components/Stories/CommonForm';
+import StoryForm from '../components/Stories/StoryForm';
 import AlertMessage from '../components/ui/AlertMessage';
 import Button from '../components/ui/Button';
 import Loader from '../components/ui/Loader';
@@ -49,6 +50,7 @@ const Stories = () => {
           onSubmit={handleOnSubmit}>
           {(props) => (
             <Form>
+              <CommonForm {...props} />
               <FieldArray name="stories">
                 {() => (
                   <>
@@ -63,6 +65,7 @@ const Stories = () => {
                   </>
                 )}
               </FieldArray>
+
               <Button text="Отправить" type="submit" color="red" />
               {send && <AlertMessage success={success} />}
             </Form>
