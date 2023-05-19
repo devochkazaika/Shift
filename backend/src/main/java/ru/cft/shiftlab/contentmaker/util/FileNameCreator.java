@@ -3,6 +3,8 @@ package ru.cft.shiftlab.contentmaker.util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 /**
  * Класс, предназначенный для генерации названия JSON файла.
  */
@@ -15,9 +17,16 @@ public class FileNameCreator {
      * Метод, который генерирует название JSON файла.
      *
      * @param bankId уникальный идентификатор банка, который будет использоваться в формировании названия файла.
+     * @param platformType тип платформы.
      * @return название JSON файла.
      */
-    public String createFileName(String bankId) {
+    public String createFileName(String bankId, String platformType) {
+        if (Objects.equals(platformType, "IOS")) {
+            return "story_" + bankId + "_iOS" + ".json";
+        }
+        else if (Objects.equals(platformType, "ANDROID")) {
+            return "story_" + bankId + "_android" + ".json";
+        }
         return "story_" + bankId + ".json";
     }
 
