@@ -1,0 +1,48 @@
+@use '../../../styles/variables';
+
+.root {
+  margin-top: variables.$distance-from-title;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+
+  .preview_image {
+    object-fit: cover;
+    border-radius: variables.$border-radius;
+    cursor: pointer;
+  }
+
+  .modal_image {
+    max-height: 100vh;
+  }
+
+  .delete {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+
+    svg {
+      margin-bottom: -1px;
+      width: 25px;
+      transition: variables.$transition-all-fast;
+    }
+
+    span {
+      font-size: 13px;
+      transition: variables.$transition-all-fast;
+    }
+
+    &:hover {
+      svg {
+        fill: variables.$gray-color;
+        transition: variables.$transition-all-fast;
+      }
+
+      span {
+        color: variables.$gray-color;
+        transition: variables.$transition-all-fast;
+      }
+    }
+  }
+}

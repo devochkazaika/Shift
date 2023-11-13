@@ -1,0 +1,16 @@
+version: '3'
+services:
+  backend:
+    build: 'backend/docker'
+    container_name: static-content-backend
+    ports:
+      - '8080:8080'
+    environment:
+      - SPRING.PROFILES.ACTIVE=default
+  frontend:
+    build: 'frontend/'
+    container_name: static-content-frontend
+    ports:
+      - '3232:80'
+    links:
+      - backend

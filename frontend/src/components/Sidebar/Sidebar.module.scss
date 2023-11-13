@@ -1,0 +1,83 @@
+@use '../../styles/variables';
+
+.sidebar {
+  background-color: variables.$sidebar-color;
+  min-height: 100%;
+  width: variables.$sidebar-width;
+  transition: variables.$transition-all-slow;
+
+  &.collapsed {
+    width: variables.$sidebar-collapsed-width;
+    transition: variables.$transition-all-slow;
+
+    .bars {
+      margin-left: 0;
+    }
+  }
+}
+
+.top_section {
+  display: flex;
+  align-items: center;
+  padding: 25px 15px;
+
+  * {
+    color: variables.$logo-color;
+    font-size: variables.$logo-size;
+  }
+
+  .logo {
+    font-weight: 700;
+  }
+
+  .bars {
+    display: flex;
+    margin-left: 70px;
+    cursor: pointer;
+  }
+}
+
+.nav_links {
+  margin-top: 30px;
+
+  .link {
+    color: variables.$link-text-color;
+    display: flex;
+    padding: 15px 15px;
+    gap: 15px;
+    position: relative;
+    transition: variables.$transition-all-slow;
+
+    @mixin linkHighlighted {
+      background: variables.$link-highlight-color;
+      transition: variables.$transition-all-slow;
+
+      &::before {
+        content: '';
+        position: absolute;
+        width: 2px;
+        height: 100%;
+        left: 0;
+        top: 0;
+        background-color: variables.$link-line-color;
+      }
+    }
+
+    &:hover {
+      @include linkHighlighted();
+    }
+
+    &:global(.active) {
+      @include linkHighlighted();
+    }
+
+    .text {
+      font-size: variables.$text-size;
+    }
+
+    .icon {
+      @extend .text;
+      transition: variables.$transition-all-slow;
+    }
+  }
+}

@@ -1,0 +1,33 @@
+@use '../../styles/variables';
+
+.file_input {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+
+  & + label {
+    color: variables.$white-color;
+    background-color: variables.$upload-color;
+    border-radius: variables.$border-radius;
+    max-width: 80%;
+    font-size: variables.$text-size;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 10px 20px;
+    box-shadow: -1px 3px 7px rgb(0 0 0 / 40%);
+    transition: transform 0.2s ease-out;
+  }
+
+  &:hover + label,
+  &:focus + label {
+    transform: scale(1.01);
+    background-color: variables.$upload-hover-color;
+  }
+}

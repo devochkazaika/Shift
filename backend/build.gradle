@@ -1,0 +1,112 @@
+plugins {
+    id("org.springframework.boot") version "2.7.4"
+    id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    id("org.asciidoctor.jvm.convert") version "3.3.2"
+    id 'maven-publish'
+    id 'distribution'
+    id 'idea'
+    id 'java'
+}
+
+sourceCompatibility = '11'
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}
+configurations {
+    jaxb
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+repositories {
+    maven {
+        url "$artifactoryUrl/libs-release"
+    }
+    mavenCentral()
+    if (isSnapshot()) {
+        maven {
+            url "$artifactoryUrl/libs-snapshot"
+        }
+    }
+}
+
+private isSnapshot() {
+    version.endsWith('SNAPSHOT')
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs("$buildDir/generated/sources/gcpay/java")
+        }
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.1'
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation 'org.projectlombok:lombok:1.18.24'
+    implementation 'org.modelmapper:modelmapper:3.1.1'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.h2database:h2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'junit:junit'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+}
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2021.0.1"
+    }
+}
+test {
+    useJUnitPlatform()
+}
+
+publishing {
+    repositories {
+        maven {
+            url "$artifactoryUrl/distribution-${version.toUpperCase(Locale.ENGLISH).endsWith('-SNAPSHOT') ? 'snapshot' : 'release'}"
+            credentials {
+                username "$artifactoryUser"
+                password "$artifactoryPassword"
+            }
+        }
+    }
+    publications {
+        maven(MavenPublication) {
+            artifactId 'static-content'
+            artifact distZip
+        }
+    }
+}
+
+distributions {
+    main {
+        baseName = 'static-content'
+        contents {
+            from bootJar
+        }
+        contents {
+            from 'changelog.md'
+        }
+        contents {
+            into("docs") {
+                from asciidoctor {
+                    exclude '.asciidoctor'
+                }
+            }
+        }
+        contents {
+            from 'config/application.yml'
+        }
+    }
+}
+
+apply from: rootProject.file('docker/docker.gradle')

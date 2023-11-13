@@ -1,0 +1,14 @@
+@use '../../../styles/variables';
+
+.root {
+  font-size: variables.$alert-size;
+  font-weight: 700;
+
+  &.success {
+    color: variables.$success-color;
+  }
+
+  &.fail {
+    color: variables.$error-color;
+  }
+}
