@@ -11,7 +11,7 @@ import javax.validation.Valid;
 /**
  * Контроллер, обрабатывающий запросы для работы с Story.
  */
-@CrossOrigin(origins="http://localhost:3000")
+//@CrossOrigin(origins="http://localhost:3000")
 @RestController
 @RequestMapping("/stories")
 @RequiredArgsConstructor
