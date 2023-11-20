@@ -1,7 +1,9 @@
 package ru.cft.shiftlab.contentmaker.service.implementation;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -41,6 +43,7 @@ public class JsonAndImageSaverService implements FileSaverService {
 
     private String filesSaveDirectory =
             "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
+    private String STORIES = "stories";
 
     @Override
     public void saveFiles(StoriesRequestDto storiesRequestDto, boolean testOrNot){
@@ -51,12 +54,18 @@ public class JsonAndImageSaverService implements FileSaverService {
             File newDirectory = new File(picturesSaveDirectory);
 
             if (!newDirectory.exists()) {
-                newDirectory.mkdirs();
+                if(newDirectory.mkdirs()){
+                    throw new IOException("Can't create dir: " + picturesSaveDirectory);
+                }
             }
 
             String fileName = fileNameCreator.createFileName(bankId, storiesRequestDto.getPlatformType());
 
             List<StoryPresentation> storyPresentationList = new ArrayList<>();
+
+            //проверка на присутствие json
+            checkFileInBankDir(filesSaveDirectory, fileName, storyPresentationList);
+
 
             storiesDtoToPresentations(
                     bankId,
@@ -68,14 +77,30 @@ public class JsonAndImageSaverService implements FileSaverService {
 
             Map<String, List<StoryPresentation>> resultMap = new HashMap<>();
 
-            resultMap.put("stories", storyPresentationList);
+            resultMap.put(STORIES, storyPresentationList);
 
             ObjectMapper mapper = new ObjectMapper();
+            mapper.enable(SerializationFeature.INDENT_OUTPUT);
             mapper.writeValue(new File(filesSaveDirectory, fileName), resultMap);
 
         }
         catch (IOException e) {
             throw new StaticContentException("Could not save files", "HTTP 500 - INTERNAL_SERVER_ERROR");
+        }
+    }
+
+    private void checkFileInBankDir(String picturesSaveDirectory, String fileName, List<StoryPresentation> storyPresentationList) throws IOException {
+        File bankJsonFile = new File(picturesSaveDirectory + fileName);
+
+        if (bankJsonFile.exists()) {
+            ObjectMapper mapper = new ObjectMapper();
+            TypeReference<Map<String, List<StoryPresentation>>> typeReference = new TypeReference<>() {
+            };
+
+            storyPresentationList.addAll(mapper.readValue(
+                    new File(picturesSaveDirectory,fileName), typeReference)
+                    .get(STORIES)
+            );
         }
     }
 
@@ -137,7 +162,10 @@ public class JsonAndImageSaverService implements FileSaverService {
                         storyFramePictureFileExtension);
 
                 String storyFramePictureUrl = picturesSaveDirectory + storyFramePictureName + "." + storyFramePictureFileExtension;
-                storyPresentationList.get(counterForPreview - 1).getStoryPresentationFrames().get(counterForStoryFramePicture - 1).setPictureUrl(storyFramePictureUrl);
+                storyPresentationList.get(counterForPreview - 1).
+                        getStoryPresentationFrames().
+                        get(counterForStoryFramePicture - 1).
+                        setPictureUrl(storyFramePictureUrl);
 
             }
         }
