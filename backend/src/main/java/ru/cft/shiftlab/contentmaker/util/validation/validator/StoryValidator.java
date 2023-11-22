@@ -42,6 +42,6 @@ public class StoryValidator implements ConstraintValidator<StoryValid, StoryDto>
             return false;
         }
 
-        return Arrays.stream(object.getPreviewTitle().split("\n")).count() <= titleMaxStringCount;
+        return Arrays.stream(object.getPreviewTitle().split("\\s*\\n\\s*")).count() <= titleMaxStringCount;
     }
 }

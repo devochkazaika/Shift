@@ -104,7 +104,13 @@ public class JsonAndImageSaverService implements FileSaverService {
         }
     }
 
-    private void storiesDtoToPresentations(String bankId, String picturesSaveDirectory, StoriesRequestDto storiesRequestDto, List<StoryPresentation> storyPresentationList, boolean testOrNot) throws IOException {
+    private void storiesDtoToPresentations(
+            String bankId,
+            String picturesSaveDirectory,
+            StoriesRequestDto storiesRequestDto,
+            List<StoryPresentation> storyPresentationList,
+            boolean testOrNot
+    ) throws IOException {
         int counterForPreview = 0;
         int counterForStoryFramePicture = 0;
 
