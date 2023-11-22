@@ -6,6 +6,8 @@ import Sidebar from './components/Sidebar';
 import Stories from './pages/Stories';
 import Banners from './pages/Banners';
 
+import React from 'react';
+
 function App() {
   return (
     <BrowserRouter>

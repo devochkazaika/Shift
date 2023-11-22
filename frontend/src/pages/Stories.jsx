@@ -10,7 +10,7 @@ import CommonForm from "../components/Stories/CommonForm";
 import StoryForm from "../components/Stories/StoryForm";
 import AlertMessage from "../components/ui/AlertMessage";
 import Button from "../components/ui/Button";
-import Loader from "../components/ui/Loader";
+import Loader from "../components/ui/Loader/index.jsx";
 
 const Stories = () => {
   const [send, setSend] = React.useState(false);
