@@ -1,6 +1,13 @@
-import axios from 'axios';
+import axios from "axios";
 
-export default axios.create({
-  baseURL: `${process.env.REACT_APP_API_URL}/stories`,
-  headers: { 'Content-Type': 'application/json' },
-});
+export const uploadStories = async (jsonPayload) => {
+  // TODO: Информативный вывод и проверка по статусам ответа
+  try {
+    await axios.post("/stories/add", jsonPayload, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
