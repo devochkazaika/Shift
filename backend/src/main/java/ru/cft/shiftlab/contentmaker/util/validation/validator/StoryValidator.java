@@ -22,7 +22,8 @@ import java.util.Arrays;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StoryValidator implements ConstraintValidator<StoryValid, StoryDto> {
-    private int titleMaxStringCount = 2;
+    private int titleMaxStringCount = 3;
+    private int titleMaxStringLength = 17;
 
     @Override
     public void initialize(StoryValid constraintAnnotation) {
@@ -41,7 +42,8 @@ public class StoryValidator implements ConstraintValidator<StoryValid, StoryDto>
         if (object == null) {
             return false;
         }
-
-        return Arrays.stream(object.getPreviewTitle().split("\\s*\\n\\s*")).count() <= titleMaxStringCount;
+        return Arrays.stream(object.getPreviewTitle().split("\\s*\n\\s*"))
+                .filter(entry -> entry.length() < titleMaxStringLength)
+                .count() < titleMaxStringCount;
     }
 }
