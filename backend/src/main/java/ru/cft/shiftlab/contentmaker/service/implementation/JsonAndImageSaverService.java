@@ -20,10 +20,7 @@ import ru.cft.shiftlab.contentmaker.util.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Сервис предназначенный для сохранения JSON файла и картинок.
@@ -59,13 +56,11 @@ public class JsonAndImageSaverService implements FileSaverService {
                 }
             }
 
-            String fileName = fileNameCreator.createFileName(bankId, storiesRequestDto.getPlatformType());
-
+            String platformType = storiesRequestDto.getPlatformType();
+            String fileName = fileNameCreator.createFileName(bankId, platformType);
             List<StoryPresentation> storyPresentationList = new ArrayList<>();
 
-            //проверка на присутствие json
             checkFileInBankDir(filesSaveDirectory, fileName, storyPresentationList);
-
 
             storiesDtoToPresentations(
                     bankId,
@@ -83,14 +78,24 @@ public class JsonAndImageSaverService implements FileSaverService {
             mapper.enable(SerializationFeature.INDENT_OUTPUT);
             mapper.writeValue(new File(filesSaveDirectory, fileName), resultMap);
 
+            if(platformType.equals("ALL PLATFORMS")){
+                File iosFile = new File(fileNameCreator.createFileName(bankId, "IOS"));
+                File androidFile = new File(fileNameCreator.createFileName(bankId, "ANDROID"));
+                if(iosFile.exists()){
+                    iosFile.delete();
+                }
+                if(androidFile.exists()){
+                    androidFile.delete();
+                }
+            }
         }
         catch (IOException e) {
             throw new StaticContentException("Could not save files", "HTTP 500 - INTERNAL_SERVER_ERROR");
         }
     }
 
-    private void checkFileInBankDir(String picturesSaveDirectory, String fileName, List<StoryPresentation> storyPresentationList) throws IOException {
-        File bankJsonFile = new File(picturesSaveDirectory + fileName);
+    private void checkFileInBankDir(String filesSaveDirectory, String fileName, List<StoryPresentation> storyPresentationList) throws IOException {
+        File bankJsonFile = new File(filesSaveDirectory + fileName);
 
         if (bankJsonFile.exists()) {
             ObjectMapper mapper = new ObjectMapper();
@@ -98,7 +103,7 @@ public class JsonAndImageSaverService implements FileSaverService {
             };
 
             storyPresentationList.addAll(mapper.readValue(
-                    new File(picturesSaveDirectory,fileName), typeReference)
+                    new File(filesSaveDirectory,fileName), typeReference)
                     .get(STORIES)
             );
         }

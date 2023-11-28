@@ -3,6 +3,7 @@ package ru.cft.shiftlab.contentmaker.util.validation.validator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
@@ -10,7 +11,6 @@ import ru.cft.shiftlab.contentmaker.util.validation.annotation.StoryFramesValid;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.Arrays;
 
 /**
  * Имлпементация валидации StoryFramesDto.
@@ -78,11 +78,7 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
                     !(storyFramesDto.getButtonUrl()).isBlank() &&
                     !(storyFramesDto.getButtonTextColor().isBlank()) &&
                     !(storyFramesDto.getButtonBackgroundColor().isBlank());
-        } else if (visibleType.equals("NONE")) {
-            return true;
-        } else {
-            return false;
-        }
+        } else return visibleType.equals("NONE");
     }
 
     /**
@@ -97,23 +93,20 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
         }
 
         StoryFramesDto storyFramesDto = (StoryFramesDto) object;
-        int countString = (int) Arrays.stream(storyFramesDto.getTitle().split("\n")).count();
+        var countLines = StringUtils.countMatches(storyFramesDto.getTitle(), "\n");
 
-        if (countString == 1) {
+        if (countLines == 1) {
             return storyFramesDto.getTitle().length() <= titleMaxLenForOneString &&
                     storyFramesDto.getText().length() <= textMaxLenForOneString &&
-                    Arrays.stream(storyFramesDto.getText().split("\n"))
-                            .count() <= textMaxStringCountForOneString;
-        } else if (countString == 2) {
+                    StringUtils.countMatches(storyFramesDto.getTitle(), "\n") < textMaxStringCountForOneString;
+        } else if (countLines == 2) {
             return storyFramesDto.getTitle().length() <= titleMaxLenForTwoString &&
                     storyFramesDto.getText().length() <= textMaxLenForTwoString &&
-                    Arrays.stream(storyFramesDto.getText().split("\n"))
-                            .count() <= textMaxStringCountForTwoString;
-        } else if (countString == 3) {
+                    StringUtils.countMatches(storyFramesDto.getTitle(), "\n") < textMaxStringCountForTwoString;
+        } else if (countLines == 3) {
             return storyFramesDto.getTitle().length() <= titleMaxLenForThreeString &&
                     storyFramesDto.getText().length() <= textMaxLenForThreeString &&
-                    Arrays.stream(storyFramesDto.getText().split("\n"))
-                            .count() <= textMaxStringCountForThreeString;
+                    StringUtils.countMatches(storyFramesDto.getTitle(), "\n") < textMaxStringCountForThreeString;
         } else {
             return false;
         }
