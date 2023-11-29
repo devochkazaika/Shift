@@ -3,7 +3,6 @@ package ru.cft.shiftlab.contentmaker.util.validation.validator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
@@ -11,7 +10,8 @@ import ru.cft.shiftlab.contentmaker.util.validation.annotation.StoryValid;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.Arrays;
+
+import static ru.cft.shiftlab.contentmaker.util.validation.validator.util.checkTextConditional.checkTextCond;
 
 
 /**
@@ -43,10 +43,7 @@ public class StoryValidator implements ConstraintValidator<StoryValid, StoryDto>
         if (object == null) {
             return false;
         }
-        var stringsTitle = object.getPreviewTitle().split("\n");
-        var countLines = StringUtils.countMatches(object.getPreviewTitle(), "\n");
-
-        return countLines < titleMaxStringCount &&
-                Arrays.stream(stringsTitle).noneMatch(entry -> entry.length() > titleMaxStringLength);
+        String textTitle = object.getPreviewTitle();
+        return checkTextCond(textTitle, titleMaxStringCount, titleMaxStringLength);
     }
 }

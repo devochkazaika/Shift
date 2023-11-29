@@ -12,6 +12,8 @@ import ru.cft.shiftlab.contentmaker.util.validation.annotation.StoryFramesValid;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import static ru.cft.shiftlab.contentmaker.util.validation.validator.util.checkTextConditional.checkTextCond;
+
 /**
  * Имлпементация валидации StoryFramesDto.
  */
@@ -21,6 +23,10 @@ import javax.validation.ConstraintValidatorContext;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StoryFramesValidator implements ConstraintValidator<StoryFramesValid, StoryFramesDto> {
+    private int titleMaxStringCount = 3;
+    private int textMaxLenOneString = 35;
+    private int titleMaxLenOneString = 17;
+
     private int titleMaxLenForOneString = 17;
     private int textMaxLenForOneString = 245;
     private int textMaxStringCountForOneString = 7;
@@ -91,24 +97,18 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
         if (object == null) {
             return false;
         }
+        var countLines = StringUtils.countMatches(object.getTitle(), "\n");
+        boolean isTitleValid = checkTextCond(object.getTitle(), titleMaxStringCount, titleMaxLenOneString);
 
-        StoryFramesDto storyFramesDto = (StoryFramesDto) object;
-        var countLines = StringUtils.countMatches(storyFramesDto.getTitle(), "\n");
-
+        String text = object.getText();
+        boolean isTextValid = false;
         if (countLines == 1) {
-            return storyFramesDto.getTitle().length() <= titleMaxLenForOneString &&
-                    storyFramesDto.getText().length() <= textMaxLenForOneString &&
-                    StringUtils.countMatches(storyFramesDto.getTitle(), "\n") < textMaxStringCountForOneString;
+            isTextValid = checkTextCond(text, textMaxStringCountForOneString, textMaxLenOneString);
         } else if (countLines == 2) {
-            return storyFramesDto.getTitle().length() <= titleMaxLenForTwoString &&
-                    storyFramesDto.getText().length() <= textMaxLenForTwoString &&
-                    StringUtils.countMatches(storyFramesDto.getTitle(), "\n") < textMaxStringCountForTwoString;
+            isTextValid = checkTextCond(text, textMaxStringCountForTwoString, textMaxLenOneString);
         } else if (countLines == 3) {
-            return storyFramesDto.getTitle().length() <= titleMaxLenForThreeString &&
-                    storyFramesDto.getText().length() <= textMaxLenForThreeString &&
-                    StringUtils.countMatches(storyFramesDto.getTitle(), "\n") < textMaxStringCountForThreeString;
-        } else {
-            return false;
+            isTextValid = checkTextCond(text, textMaxStringCountForThreeString, textMaxLenOneString);
         }
+        return isTitleValid && isTextValid;
     }
 }
