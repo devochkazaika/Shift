@@ -31,8 +31,8 @@ const checkStringsCount = (value, maxStringsCount) => {
 
 const checkLength = (value, maxLength) => {
   const strings = getStrings(value);
-  const len = strings.reduce((count, str) => (count += str.length), 0);
-  return len <= maxLength;
+  const valueSymbolsCount = strings.reduce((count, str) => (count += str.length), 0);
+  return valueSymbolsCount <= maxLength;
 };
 
 const checkTitleStrings = (value) => {
@@ -54,6 +54,24 @@ const checkTitleLength = (value, { createError }) => {
   return true;
 };
 
+const chechTitleStringsLength = (value, { createError}) => {
+  const strings = getStrings(value);
+  const rule = framesRules[2];
+  for (const string of strings) {
+    if (string.length >= rule.maxTitleLength) {
+      return createError({
+        message: `Максимальное кол-во символов в строке заголовка - ${rule.maxTitleLength}`,
+      });
+    }
+    if (string.length < rule.minLength) {
+      return createError({
+        message: `Пустая строка`,
+      });
+    }
+  }
+  return true;
+}
+
 const checkFileFormat = (value) => {
   if (!value) return true;
   return SUPPORTED_FORMATS.includes(value.type);
@@ -74,7 +92,7 @@ const checkFileSides = (value) => {
 export const storyValidationSchema = Yup.object({
   stories: Yup.array().of(
     Yup.object().shape({
-      previewTitle: Yup.string().required('Поле обязательно'),
+      previewTitle: Yup.string(),
       previewUrl: Yup.mixed()
         .test('fileFormat', 'Неподходящий тип изображения', checkFileFormat)
         .test('fileSize', `Максимальный допустимый размер - ${MAX_IMAGE_SIZE}КБ`, checkFileSize)
@@ -92,7 +110,8 @@ export const storyValidationSchema = Yup.object({
               `Максимальное кол-во строк в заголовке - ${framesRules.length}`,
               checkTitleStrings,
             )
-            .test('titleLength', checkTitleLength),
+            .test('titleLength', checkTitleLength)
+            .test('titleStringsLength', chechTitleStringsLength),
           text: Yup.string()
             .required('Поле обязательно')
             .when('title', (titleValue, textSchema) => {
@@ -112,6 +131,14 @@ export const storyValidationSchema = Yup.object({
                   return createError({
                     message: `Максимальное кол-во символов в тексте - ${rule.maxTextLength}`,
                   });
+                const strings = getStrings(value);
+                for (const string of strings) {
+                  if (string.length < rule.minLength) {
+                    return createError({
+                      message: `Пустая строка`,
+                    });
+                  }
+                }
 
                 return true;
               });

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
 
 import { gradientOptions } from '../../../utils/constants/gradient';
@@ -145,26 +146,6 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
                 <FormField
                   labelTitle={'Ссылка'}
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonUrl`}
-                  type="text"
-                  {...props}
-                />
-              </div>
-            </>
-          )}
-          {frameJson.visibleLinkOrButtonOrNone === 'LINK' && (
-            <>
-              <div className="input_field">
-                <FormField
-                  labelTitle={'Текст'}
-                  name={`stories.${storyIndex}.storyFrames.${frameIndex}.linkText`}
-                  type="text"
-                  {...props}
-                />
-              </div>
-              <div className="input_field">
-                <FormField
-                  labelTitle={'Ссылка'}
-                  name={`stories.${storyIndex}.storyFrames.${frameIndex}.linkUrl`}
                   type="text"
                   {...props}
                 />
