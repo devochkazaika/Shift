@@ -57,41 +57,54 @@ public class JsonAndImageSaverService implements FileSaverService {
             }
 
             String platformType = storiesRequestDto.getPlatformType();
-            String fileName = fileNameCreator.createFileName(bankId, platformType);
-            List<StoryPresentation> storyPresentationList = new ArrayList<>();
-
-            checkFileInBankDir(filesSaveDirectory, fileName, storyPresentationList);
-
-            storiesDtoToPresentations(
-                    bankId,
-                    picturesSaveDirectory,
-                    storiesRequestDto,
-                    storyPresentationList,
-                    testOrNot
-            );
-
-            Map<String, List<StoryPresentation>> resultMap = new HashMap<>();
-
-            resultMap.put(STORIES, storyPresentationList);
-
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.enable(SerializationFeature.INDENT_OUTPUT);
-            mapper.writeValue(new File(filesSaveDirectory, fileName), resultMap);
-
             if(platformType.equals("ALL PLATFORMS")){
-                File iosFile = new File(fileNameCreator.createFileName(bankId, "IOS"));
-                File androidFile = new File(fileNameCreator.createFileName(bankId, "ANDROID"));
-                if(iosFile.exists()){
-                    iosFile.delete();
-                }
-                if(androidFile.exists()){
-                    androidFile.delete();
-                }
+                writeIntoFileJson(fileNameCreator.createFileName(bankId, "IOS"),
+                        storiesRequestDto,
+                        testOrNot,
+                        bankId,
+                        picturesSaveDirectory);
+                writeIntoFileJson(fileNameCreator.createFileName(bankId, "ANDROID"),
+                        storiesRequestDto,
+                        testOrNot,
+                        bankId,
+                        picturesSaveDirectory);
+            }else if(platformType.equals("ANDROID") || platformType.equals("IOS")){
+                writeIntoFileJson(fileNameCreator.createFileName(bankId, platformType),
+                        storiesRequestDto,
+                        testOrNot,
+                        bankId,
+                        picturesSaveDirectory);
             }
         }
         catch (IOException e) {
             throw new StaticContentException("Could not save files", "HTTP 500 - INTERNAL_SERVER_ERROR");
         }
+    }
+
+    private void writeIntoFileJson(String fileName,
+                                   StoriesRequestDto storiesRequestDto,
+                                   boolean testOrNot,
+                                   String bankId,
+                                   String picturesSaveDirectory) throws IOException {
+        List<StoryPresentation> storyPresentationList = new ArrayList<>();
+
+        checkFileInBankDir(filesSaveDirectory, fileName, storyPresentationList);
+
+        storiesDtoToPresentations(
+                bankId,
+                picturesSaveDirectory,
+                storiesRequestDto,
+                storyPresentationList,
+                testOrNot
+        );
+
+        Map<String, List<StoryPresentation>> resultMap = new HashMap<>();
+
+        resultMap.put(STORIES, storyPresentationList);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.writeValue(new File(filesSaveDirectory, fileName), resultMap);
     }
 
     private void checkFileInBankDir(String filesSaveDirectory, String fileName, List<StoryPresentation> storyPresentationList) throws IOException {
