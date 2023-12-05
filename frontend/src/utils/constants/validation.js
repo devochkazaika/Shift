@@ -1,3 +1,4 @@
+// TODO : переработать framesRules
 export const framesRules = [
   {
     maxTitleLength: 17,
@@ -27,6 +28,9 @@ export const framesRules = [
     minLength: 1,
   },
 ];
+
+// TODO: убрать после переработки framesRules
+export const NUMBER_CORRECT_FRAMES_RULE = 2;
 
 export const MAX_IMAGE_SIZE = 500;
 export const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg', 'image/png'];

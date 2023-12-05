@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 
 import {
   framesRules,
+  NUMBER_CORRECT_FRAMES_RULE,
   MAX_IMAGE_HEIGHT,
   MAX_IMAGE_SIZE,
   MAX_IMAGE_WIDTH,
@@ -54,9 +55,9 @@ const checkTitleLength = (value, { createError }) => {
   return true;
 };
 
-const chechTitleStringsLength = (value, { createError}) => {
+const checkTitleStringsLength = (value, { createError}) => {
   const strings = getStrings(value);
-  const rule = framesRules[2];
+  const rule = framesRules[NUMBER_CORRECT_FRAMES_RULE];
   for (const string of strings) {
     if (string.length >= rule.maxTitleLength) {
       return createError({
@@ -111,7 +112,7 @@ export const storyValidationSchema = Yup.object({
               checkTitleStrings,
             )
             .test('titleLength', checkTitleLength)
-            .test('titleStringsLength', chechTitleStringsLength),
+            .test('titleStringsLength', checkTitleStringsLength),
           text: Yup.string()
             .required('Поле обязательно')
             .when('title', (titleValue, textSchema) => {
