@@ -51,7 +51,7 @@ public class JsonAndImageSaverService implements FileSaverService {
             File newDirectory = new File(picturesSaveDirectory);
 
             if (!newDirectory.exists()) {
-                if(newDirectory.mkdirs()){
+                if(!newDirectory.mkdirs()){
                     throw new IOException("Can't create dir: " + picturesSaveDirectory);
                 }
             }
