@@ -97,7 +97,7 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
         if (object == null) {
             return false;
         }
-        var countLines = StringUtils.countMatches(object.getTitle(), "\n");
+        var countLines = StringUtils.countMatches(object.getTitle(), "\n") + 1;
         boolean isTitleValid = checkTextCond(object.getTitle(), titleMaxStringCount, titleMaxLenOneString);
 
         String text = object.getText();

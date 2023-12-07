@@ -10,7 +10,7 @@ import java.util.Arrays;
 public class checkTextConditional {
     static public boolean checkTextCond(String text, int textMaxStringCountForThreeString, int maxLength) {
         var textLines = text.split("\n");
-        var countLines = StringUtils.countMatches(text, "\n");
+        var countLines = StringUtils.countMatches(text, "\n") + 1;
 
         return countLines < textMaxStringCountForThreeString &&
                 Arrays.stream(textLines).noneMatch(entry -> entry.length() > maxLength);
