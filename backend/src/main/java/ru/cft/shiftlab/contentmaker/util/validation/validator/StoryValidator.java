@@ -10,7 +10,8 @@ import ru.cft.shiftlab.contentmaker.util.validation.annotation.StoryValid;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.Arrays;
+
+import static ru.cft.shiftlab.contentmaker.util.validation.validator.util.checkTextConditional.checkTextCond;
 
 
 /**
@@ -22,7 +23,8 @@ import java.util.Arrays;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StoryValidator implements ConstraintValidator<StoryValid, StoryDto> {
-    private int titleMaxStringCount = 2;
+    private int titleMaxStringCount = 3;
+    private int titleMaxStringLength = 17;
 
     @Override
     public void initialize(StoryValid constraintAnnotation) {
@@ -41,7 +43,7 @@ public class StoryValidator implements ConstraintValidator<StoryValid, StoryDto>
         if (object == null) {
             return false;
         }
-
-        return Arrays.stream(object.getPreviewTitle().split("\n")).count() <= titleMaxStringCount;
+        String textTitle = object.getPreviewTitle();
+        return checkTextCond(textTitle, titleMaxStringCount, titleMaxStringLength);
     }
 }

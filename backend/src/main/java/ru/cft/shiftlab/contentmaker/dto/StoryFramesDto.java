@@ -46,7 +46,7 @@ public class StoryFramesDto {
      * Поле, показывающее необходимость либо ссылки, либо кнопки, либо ничего из этого.
      */
     @NotBlank(message = "Button and link display is not specified")
-    @Pattern(regexp = "LINK|BUTTON|NONE", message = "Incorrect parameters. Possible: LINK, BUTTON, NONE")
+    @Pattern(regexp = "BUTTON|NONE", message = "Incorrect parameters. Possible: LINK, BUTTON, NONE")
     private String visibleLinkOrButtonOrNone;
 
     /**
