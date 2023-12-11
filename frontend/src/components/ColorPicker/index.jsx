@@ -5,6 +5,8 @@ import rgbHex from 'rgb-hex';
 import useOutsideClick from '../../hooks/useOutsideClick';
 import styles from './ColorPicker.module.scss';
 
+// TODO: не понял зачем тут ...props
+// eslint-disable-next-line no-unused-vars
 const ColorPicker = ({ field, form, ...props }) => {
   const [modalShown, toggleModal] = React.useState(false);
   const colorAreaRef = React.useRef();
