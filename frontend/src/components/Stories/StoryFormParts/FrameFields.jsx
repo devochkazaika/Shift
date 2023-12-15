@@ -1,5 +1,3 @@
-// TODO : исключить либо обработать данную ошибку на всем проекте
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
 
 import { gradientOptions } from '../../../utils/constants/gradient';
@@ -84,9 +82,10 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
 
           <div role="group" aria-labelledby="my-radio-group">
             <div className="row">
-              <label>
+              <label htmlFor="ButtonIntarectiveType">
                 <FormField
                   labelTitle="Кнопка"
+                  id="ButtonIntarectiveType"
                   type="radio"
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
                   value="BUTTON"
@@ -95,9 +94,10 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
                 />
               </label>
 
-              <label>
+              <label htmlFor="LinkIntarectiveType">
                 <FormField
                   labelTitle="Ссылка"
+                  id="LinkIntarectiveType"
                   type="radio"
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
                   value="LINK"
@@ -106,9 +106,10 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
                 />
               </label>
 
-              <label>
+              <label htmlFor="NonIntarectiveType">
                 <FormField
                   labelTitle="Ничего"
+                  id="NonIntarectiveType"
                   type="radio"
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
                   value="NONE"

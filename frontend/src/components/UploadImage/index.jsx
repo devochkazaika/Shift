@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from 'react';
 
 import { SUPPORTED_FORMATS } from '../../utils/constants/validation';
@@ -6,7 +5,7 @@ import { ReactComponent as UploadIcon } from '../../assets/icons/upload.svg';
 import styles from './UploadImage.module.scss';
 import PreviewImage from './PreviewImage';
 
-const UploadImage = ({ field, form, ...props }) => {
+const UploadImage = ({ field, form }) => {
   const inputRef = React.useRef();
 
   const handleUploadImage = async (e) => {

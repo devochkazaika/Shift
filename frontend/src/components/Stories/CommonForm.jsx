@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
 
 import FormField from '../FormField';
@@ -23,9 +22,10 @@ const CommonForm = (props) => {
       <h2>Платформа</h2>
       <div role="group" aria-labelledby="my-radio-group">
         <div className="row">
-          <label>
+          <label htmlFor="AllPlatformType">
             <FormField
               labelTitle="Все платформы"
+              id="AllPlatformType"
               type="radio"
               name={`platformType`}
               value="ALL PLATFORMS"
@@ -34,9 +34,10 @@ const CommonForm = (props) => {
             />
           </label>
 
-          <label>
+          <label htmlFor="AndroidPlatformType">
             <FormField
               labelTitle="Android"
+              id="AndroidPlatformType"
               type="radio"
               name={`platformType`}
               value="ANDROID"
@@ -45,9 +46,10 @@ const CommonForm = (props) => {
             />
           </label>
 
-          <label>
+          <label htmlFor="IOSPlatformType">
             <FormField
               labelTitle="IOS"
+              id="IOSPlatformType"
               type="radio"
               name={`platformType`}
               value="IOS"
