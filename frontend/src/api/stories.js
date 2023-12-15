@@ -1,9 +1,10 @@
 import axios from "axios";
 import { defaultToastOptions, defaultUpdateToastOptions } from '../utils/constants/toastOptions';
 import { toast } from "react-toastify";
+import { defaultToastMessages } from "../utils/constants/defaultToastMessages";
 
 export const uploadStories = async (jsonPayload) => {
-  const toastView = toast("Отправляем данные", {
+  const toastView = toast(defaultToastMessages.uploadingData, {
     ...defaultToastOptions,
     autoClose: false,
     isLoading: true,
@@ -21,7 +22,7 @@ export const uploadStories = async (jsonPayload) => {
     if (error.response.status === 500) {
       toast.update(toastView, {
         ...defaultUpdateToastOptions,
-        render: "Ошибка соединения с сервером",
+        render: defaultToastMessages.connectionError,
         type: "warning"
       });
       return false;
