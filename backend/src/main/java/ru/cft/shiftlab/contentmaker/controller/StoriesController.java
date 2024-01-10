@@ -1,5 +1,8 @@
 package ru.cft.shiftlab.contentmaker.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +27,10 @@ public class StoriesController {
      * @param storiesRequestDto DTO, которая содержит информацию об историях.
      */
     @PostMapping("/add")
+    @Operation(summary = "Добавление истории на сервер.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "История добавлена на сервер.")
+    })
     @ResponseStatus(HttpStatus.CREATED)
     public void addStories(@Valid @RequestBody StoriesRequestDto storiesRequestDto) {
 
