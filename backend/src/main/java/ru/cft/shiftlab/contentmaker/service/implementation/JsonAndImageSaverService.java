@@ -49,7 +49,6 @@ public class JsonAndImageSaverService implements FileSaverService {
             String picturesSaveDirectory = filesSaveDirectory + bankId + "/";
 
             File newDirectory = new File(picturesSaveDirectory);
-
             if (!newDirectory.exists()) {
                 if(!newDirectory.mkdirs()){
                     throw new IOException("Can't create dir: " + picturesSaveDirectory);
@@ -57,24 +56,12 @@ public class JsonAndImageSaverService implements FileSaverService {
             }
 
             String platformType = storiesRequestDto.getPlatformType();
-            if(platformType.equals("ALL PLATFORMS")){
-                writeIntoFileJson(fileNameCreator.createFileName(bankId, "IOS"),
-                        storiesRequestDto,
-                        testOrNot,
-                        bankId,
-                        picturesSaveDirectory);
-                writeIntoFileJson(fileNameCreator.createFileName(bankId, "ANDROID"),
-                        storiesRequestDto,
-                        testOrNot,
-                        bankId,
-                        picturesSaveDirectory);
-            }else if(platformType.equals("ANDROID") || platformType.equals("IOS")){
-                writeIntoFileJson(fileNameCreator.createFileName(bankId, platformType),
-                        storiesRequestDto,
-                        testOrNot,
-                        bankId,
-                        picturesSaveDirectory);
-            }
+
+            writeIntoFileJson(fileNameCreator.createFileName(bankId, platformType),
+                    storiesRequestDto,
+                    testOrNot,
+                    bankId,
+                    picturesSaveDirectory);
         }
         catch (IOException e) {
             throw new StaticContentException("Could not save files", "HTTP 500 - INTERNAL_SERVER_ERROR");
