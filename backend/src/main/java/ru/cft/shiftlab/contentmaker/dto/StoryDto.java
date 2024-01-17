@@ -21,6 +21,11 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @StoryValid(message = "Incorrect number of lines in the title")
 public class StoryDto {
+    /**
+     * Идентификатор истории.
+     */
+//    @NotBlank(message = "Id is not specified")
+    private Long id;
 
     /**
      * Заголовок превью.

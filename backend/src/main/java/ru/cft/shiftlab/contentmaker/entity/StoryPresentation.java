@@ -15,6 +15,11 @@ import java.util.ArrayList;
 public class StoryPresentation {
 
     /**
+     * Идентификатор истории.
+     */
+    private Long id;
+
+    /**
      * Код банка.
      */
     private String bankId;

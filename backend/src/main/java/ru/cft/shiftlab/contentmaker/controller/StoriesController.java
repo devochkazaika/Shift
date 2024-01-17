@@ -1,13 +1,11 @@
 package ru.cft.shiftlab.contentmaker.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.service.implementation.JsonAndImageSaverService;
+import ru.cft.shiftlab.contentmaker.util.FileNameCreator;
 
 import javax.validation.Valid;
 
@@ -21,20 +19,27 @@ import javax.validation.Valid;
 public class StoriesController {
     private final JsonAndImageSaverService storiesService;
 
+    private final FileNameCreator fileNameCreator;
+
     /**
      * Метод, который обрабатывает POST-запрос на сохранение историй.
      *
      * @param storiesRequestDto DTO, которая содержит информацию об историях.
      */
     @PostMapping("/add")
-    @Operation(summary = "Добавление истории на сервер.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "История добавлена на сервер.")
-    })
     @ResponseStatus(HttpStatus.CREATED)
     public void addStories(@Valid @RequestBody StoriesRequestDto storiesRequestDto) {
 
         storiesService.saveFiles(storiesRequestDto, false);
+    }
+
+    @GetMapping("/{bankId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void getStories(@PathVariable String bankId) {
+        String FileIos = fileNameCreator.createFileName(bankId, "IOS");
+        String FileAndroid = fileNameCreator.createFileName(bankId, "ANDROID");
+
+
     }
 
 }
