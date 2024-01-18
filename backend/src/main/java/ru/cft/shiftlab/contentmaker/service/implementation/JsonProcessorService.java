@@ -30,7 +30,7 @@ import java.util.*;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "files.save.directory")
-public class JsonAndImageSaverService implements FileSaverService {
+public class JsonProcessorService implements FileSaverService {
 
     private final FileNameCreator fileNameCreator;
     private final FileExtensionExtractor fileExtensionExtractor;
@@ -41,6 +41,22 @@ public class JsonAndImageSaverService implements FileSaverService {
     private String filesSaveDirectory =
             "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
     private String STORIES = "stories";
+
+    public Map<String, List<StoryPresentation>> getFilePlatform(String bankId, String platform){
+        String filePlatform = fileNameCreator.createFileName(bankId, platform);
+        Map<String, List<StoryPresentation>> resultMap = new HashMap<>();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        try {
+            resultMap = mapper.readValue(new File(filesSaveDirectory, filePlatform), new TypeReference<>(){});
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return resultMap;
+    }
 
     @Override
     public void saveFiles(StoriesRequestDto storiesRequestDto, boolean testOrNot){

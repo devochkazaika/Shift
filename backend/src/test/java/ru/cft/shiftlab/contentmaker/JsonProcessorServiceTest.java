@@ -9,7 +9,7 @@ import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
-import ru.cft.shiftlab.contentmaker.service.implementation.JsonAndImageSaverService;
+import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 import ru.cft.shiftlab.contentmaker.util.*;
 
 import javax.imageio.ImageIO;
@@ -25,7 +25,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class JsonAndImageSaverServiceTest {
+public class JsonProcessorServiceTest {
 
     private final FileExtensionExtractor fileExtensionExtractor = new FileExtensionExtractor();
 
@@ -36,7 +36,7 @@ public class JsonAndImageSaverServiceTest {
     private final DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
     private final ImageNameGenerator imageNameGenerator = new ImageNameGenerator();
 
-    private final JsonAndImageSaverService jsonAndImageSaverService = new JsonAndImageSaverService(
+    private final JsonProcessorService jsonProcessorService = new JsonProcessorService(
             fileNameCreator,
             fileExtensionExtractor,
             byteArrayToImageConverter,
@@ -75,7 +75,7 @@ public class JsonAndImageSaverServiceTest {
                 "IOS",
                 new ArrayList<>(Collections.singletonList(storyDto)));
 
-        jsonAndImageSaverService.saveFiles(storiesRequestDto, true);
+        jsonProcessorService.saveFiles(storiesRequestDto, true);
 
         DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
 

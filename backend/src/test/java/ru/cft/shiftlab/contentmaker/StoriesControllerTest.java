@@ -13,7 +13,7 @@ import ru.cft.shiftlab.contentmaker.controller.StoriesController;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
-import ru.cft.shiftlab.contentmaker.service.implementation.JsonAndImageSaverService;
+import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -33,7 +33,7 @@ public class StoriesControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    JsonAndImageSaverService jsonAndImageSaverService;
+    JsonProcessorService jsonProcessorService;
 
     @Test
     public void addStoriesTest() throws Exception {

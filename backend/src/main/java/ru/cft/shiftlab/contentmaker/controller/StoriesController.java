@@ -1,13 +1,19 @@
 package ru.cft.shiftlab.contentmaker.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
-import ru.cft.shiftlab.contentmaker.service.implementation.JsonAndImageSaverService;
+import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
+import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 import ru.cft.shiftlab.contentmaker.util.FileNameCreator;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Контроллер, обрабатывающий запросы для работы с Story.
@@ -17,9 +23,7 @@ import javax.validation.Valid;
 @RequestMapping("/stories")
 @RequiredArgsConstructor
 public class StoriesController {
-    private final JsonAndImageSaverService storiesService;
-
-    private final FileNameCreator fileNameCreator;
+    private final JsonProcessorService storiesService;
 
     /**
      * Метод, который обрабатывает POST-запрос на сохранение историй.
@@ -35,9 +39,13 @@ public class StoriesController {
 
     @GetMapping("/{bankId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void getStories(@PathVariable String bankId) {
-        String FileIos = fileNameCreator.createFileName(bankId, "IOS");
-        String FileAndroid = fileNameCreator.createFileName(bankId, "ANDROID");
+    public Map<String, List<StoryPresentation>> getStories(
+            @PathVariable String bankId,
+            @RequestParam String platform) {
+
+        return storiesService.getFilePlatform(bankId, platform);
+//        String FileIos = fileNameCreator.createFileName(bankId, "IOS");
+//        String FileAndroid = fileNameCreator.createFileName(bankId, "ANDROID");
 
 
     }
