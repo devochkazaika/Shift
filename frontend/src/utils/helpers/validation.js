@@ -56,6 +56,7 @@ const checkTitleLength = (value, { createError }) => {
 };
 
 const checkTitleStringsLength = (value, { createError}) => {
+  if (!value || !checkTitleStrings(value)) return true;
   const strings = getStrings(value);
   const rule = framesRules[NUMBER_CORRECT_FRAMES_RULE];
   for (const string of strings) {
