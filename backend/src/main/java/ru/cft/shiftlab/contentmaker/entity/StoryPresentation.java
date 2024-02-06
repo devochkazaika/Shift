@@ -45,16 +45,6 @@ public class StoryPresentation {
     private String previewGradient;
 
     /**
-     * Директория, в которой хранится JSON файл банка.
-     */
-    private String jsonDirectory;
-
-    /**
-     * Директория, в которой хранятся необходимые для банка картинки.
-     */
-    private String picturesDirectory;
-
-    /**
      * Список карточек истории.
      */
     @JsonProperty("storyFrames")
