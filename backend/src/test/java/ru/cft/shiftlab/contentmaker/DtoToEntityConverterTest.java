@@ -37,8 +37,6 @@ public class DtoToEntityConverterTest {
                 "FFFFFF",
                 null,
                 "NONE",
-                "link text",
-                "link url",
                 "Попробовать",
                 "FFFFFF",
                 "FFFFFF",
@@ -47,6 +45,7 @@ public class DtoToEntityConverterTest {
         );
 
         StoryDto storyDto = new StoryDto(
+                null,
                 "Конвертируй валюту",
                 "FFFFFF",
                 null,
@@ -54,7 +53,7 @@ public class DtoToEntityConverterTest {
                 new ArrayList<>(Collections.singletonList(storyFramesDto))
         );
 
-        storyPresentation = converterRequestDto.fromStoryDtoToStoryPresentation("id", storyDto, null, null, null);
+        storyPresentation = converterRequestDto.fromStoryDtoToStoryPresentation("id", storyDto, null);
 
 
         assertAll(

@@ -61,10 +61,9 @@ public class JsonProcessorServiceTest {
                 "",
                 "",
                 "",
-                "",
-                "",
                 "EMPTY");
         StoryDto storyDto = new StoryDto(
+                null,
                 "Заголовок превью",
                 "FF0000",
                 bytes,
@@ -75,7 +74,7 @@ public class JsonProcessorServiceTest {
                 "IOS",
                 new ArrayList<>(Collections.singletonList(storyDto)));
 
-        jsonProcessorService.saveFiles(storiesRequestDto, true);
+        jsonProcessorService.saveFiles(storiesRequestDto, null,/*images*/ true);
 
         DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
 
@@ -90,8 +89,6 @@ public class JsonProcessorServiceTest {
         storyPresentationList.add(dtoToEntityConverter.fromStoryDtoToStoryPresentation(
                 "absolutbank",
                 storyDto,
-                jsonDirectory,
-                picturesDirectory,
                 previewUrl));
 
         storyPresentationList.get(0).getStoryPresentationFrames().get(0)

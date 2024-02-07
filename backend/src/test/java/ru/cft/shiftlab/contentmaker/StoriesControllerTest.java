@@ -49,14 +49,13 @@ public class StoriesControllerTest {
                 "FFFFFF",
                 bytes,
                 "NONE",
-                "link url",
-                "link text",
                 "Попробовать",
                 "FFFFFF",
                 "FFFFFF",
                 "buttonurl",
                 "EMPTY");
         StoryDto storyDto = new StoryDto(
+                null,
                 "Конвертируй валюту",
                 "FFFFFF",
                 bytes,

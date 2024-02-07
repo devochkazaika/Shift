@@ -57,8 +57,6 @@ public class ValidationTest {
                 "FFFFFF",
                 bytes,
                 "NONE",
-                "link text",
-                "link url",
                 "Попробовать",
                 "FFFFFF",
                 "FFFFFF",
@@ -67,6 +65,7 @@ public class ValidationTest {
         );
 
         StoryDto storyDto = new StoryDto(
+                null,
                 "Конвертируй валюту",
                 "FFFFFF",
                 bytes,
@@ -101,8 +100,6 @@ public class ValidationTest {
                 "FFFFFF",
                 bytes,
                 "NONE",
-                "link text",
-                "link url",
                 "Попробовать",
                 "FFFFFF",
                 "FFFFFF",
@@ -110,6 +107,7 @@ public class ValidationTest {
                 "EMPTY"
         );
         StoryDto storyDto = new StoryDto(
+                null,
                 "Конвертируй\nвалюту\nонлайн", //titleMaxStringCount: 2
                 "FFFFFF",
                 bytes,
@@ -138,8 +136,6 @@ public class ValidationTest {
                 "FFFFFF",
                 bytes,
                 "NONE",
-                "link text",
-                "link url",
                 "Попробовать",
                 "FFFFFF",
                 "FFFFFF",
