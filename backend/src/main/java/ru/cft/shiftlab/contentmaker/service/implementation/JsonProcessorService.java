@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
@@ -34,7 +35,7 @@ public class JsonProcessorService implements FileSaverService {
 
     private final FileNameCreator fileNameCreator;
     private final FileExtensionExtractor fileExtensionExtractor;
-    private final ByteArrayToImageConverter byteArrayToImageConverter;
+    private final MultipartFileToImageConverter multipartFileToImageConverter;
     private final DtoToEntityConverter dtoToEntityConverter;
     private final ImageNameGenerator imageNameGenerator;
 
@@ -59,7 +60,7 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     @Override
-    public void saveFiles(StoriesRequestDto storiesRequestDto, boolean testOrNot){
+    public void saveFiles(StoriesRequestDto storiesRequestDto, MultipartFile[] images, boolean testOrNot){
         try {
             String bankId = storiesRequestDto.getBankId();
             String picturesSaveDirectory = filesSaveDirectory + bankId + "/";
@@ -73,7 +74,8 @@ public class JsonProcessorService implements FileSaverService {
 
             String platformType = storiesRequestDto.getPlatformType();
 
-            writeIntoFileJson(fileNameCreator.createFileName(bankId, platformType),
+            writeImagesAndJson(fileNameCreator.createFileName(bankId, platformType),
+                    images,
                     storiesRequestDto,
                     testOrNot,
                     bankId,
@@ -84,11 +86,12 @@ public class JsonProcessorService implements FileSaverService {
         }
     }
 
-    private void writeIntoFileJson(String fileName,
-                                   StoriesRequestDto storiesRequestDto,
-                                   boolean testOrNot,
-                                   String bankId,
-                                   String picturesSaveDirectory) throws IOException {
+    private void writeImagesAndJson(String fileName,
+                                    MultipartFile[] images,
+                                    StoriesRequestDto storiesRequestDto,
+                                    boolean testOrNot,
+                                    String bankId,
+                                    String picturesSaveDirectory) throws IOException {
         List<StoryPresentation> storyPresentationList = new ArrayList<>();
 
         checkFileInBankDir(filesSaveDirectory, fileName, storyPresentationList);
@@ -98,6 +101,7 @@ public class JsonProcessorService implements FileSaverService {
                 picturesSaveDirectory,
                 storiesRequestDto,
                 storyPresentationList,
+                images,
                 testOrNot
         );
 
@@ -108,6 +112,7 @@ public class JsonProcessorService implements FileSaverService {
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.writeValue(new File(filesSaveDirectory, fileName), resultMap);
+        mapper.writeValue(new File(filesSaveDirectory, "fff"), storiesRequestDto);
     }
 
     private void checkFileInBankDir(String filesSaveDirectory, String fileName, List<StoryPresentation> storyPresentationList) throws IOException {
@@ -130,12 +135,40 @@ public class JsonProcessorService implements FileSaverService {
             String picturesSaveDirectory,
             StoriesRequestDto storiesRequestDto,
             List<StoryPresentation> storyPresentationList,
+            MultipartFile[] images,
             boolean testOrNot
     ) throws IOException {
         int counterForPreview = 0;
         int counterForStoryFramePicture = 0;
+        int counterImages = 0;
 
         for (StoryDto story: storiesRequestDto.getStoryDtos()) {
+            String previewPictureName = story.getPreviewUrl();
+            if(story.getPreviewUrl() == null || story.getPreviewUrl().isEmpty()){
+                previewPictureName = imageNameGenerator.generateImageName();
+
+                previewPictureName = multipartFileToImageConverter.convertMultipartFileToImageAndSave(
+                        images[counterImages++],
+                        picturesSaveDirectory,
+                        previewPictureName
+                );
+//                counterImages++; если будет плохо работать, оставить строчку и убрать ++ сверху
+            }
+
+            String previewUrl = picturesSaveDirectory + previewPictureName;
+            storyPresentationList.add(dtoToEntityConverter.fromStoryDtoToStoryPresentation(
+                    bankId,
+                    story,
+                    previewUrl));
+
+
+
+
+
+
+//            if (testOrNot) {
+//                previewPictureName = "preview1";
+//            }//позже в тестах добавить внутри теста саму картинку,чтобы тут название не брать
             counterForPreview++;
 
             if(story.getPreviewUrl() == null) {
@@ -144,31 +177,10 @@ public class JsonProcessorService implements FileSaverService {
                                 .getStoryFramesDtos()
                                 .get(0)
                                 .getPictureUrl());
-            }
+            }//images
 
-            byte [] previewUrlBytes = story.getPreviewUrl();
 
-            String previewPictureName = imageNameGenerator.generateImageName();
 
-            if (testOrNot) {
-                previewPictureName = "preview1";
-            }
-
-            String previewFileExtension =
-                    fileExtensionExtractor.getFileExtensionFromByteArray(previewUrlBytes);
-            byteArrayToImageConverter.convertByteArrayToImageAndSave(
-                    previewUrlBytes,
-                    picturesSaveDirectory,
-                    previewPictureName,
-                    previewFileExtension);
-
-            String previewUrl = picturesSaveDirectory + previewPictureName + "." + previewFileExtension;
-            storyPresentationList.add(dtoToEntityConverter.fromStoryDtoToStoryPresentation(
-                    bankId,
-                    story,
-                    filesSaveDirectory,
-                    picturesSaveDirectory,
-                    previewUrl));
 
             for (StoryFramesDto storyFramesDto: story.getStoryFramesDtos()) {
                 counterForStoryFramePicture++;
@@ -182,7 +194,7 @@ public class JsonProcessorService implements FileSaverService {
 
                 String storyFramePictureFileExtension =
                         fileExtensionExtractor.getFileExtensionFromByteArray(storyFramePictureUrlBytes);
-                byteArrayToImageConverter.convertByteArrayToImageAndSave(
+                multipartFileToImageConverter.convertByteArrayToImageAndSave(
                         storyFramePictureUrlBytes,
                         picturesSaveDirectory,
                         storyFramePictureName,
@@ -197,5 +209,4 @@ public class JsonProcessorService implements FileSaverService {
             }
         }
     }
-
 }

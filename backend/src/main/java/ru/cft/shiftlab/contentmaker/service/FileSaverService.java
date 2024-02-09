@@ -1,5 +1,6 @@
 package ru.cft.shiftlab.contentmaker.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ public interface FileSaverService {
      * @param testOrNot         булевая переменная, которая указывает на то, вызывается метод в тесте или нет.
      * @throws RuntimeException исключение, которые может возникнуть во время работы приложения.
      */
-    default void saveFiles(StoriesRequestDto storiesRequestDto, boolean testOrNot) {
+    default void saveFiles(StoriesRequestDto storiesRequestDto, MultipartFile[] images, boolean testOrNot) {
         IOException e = new IOException();
         throw new RuntimeException(e);
     }

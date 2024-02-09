@@ -40,9 +40,9 @@ public class StoryDto {
     private String previewTitleColor;
 
     /**
-     * Картинка для превью, представленная в виде байтового массива.
+     * Название картинки для превью.
      */
-    private byte[] previewUrl;
+    private String previewUrl;
 
     /**
      * Градиент превью.

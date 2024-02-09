@@ -31,7 +31,6 @@ public class DtoToEntityConverter {
         storyPresentation.setBankId(bankId);
 
         for(StoryFramesDto storyFramesDto : storyDto.getStoryFramesDtos()) {
-            storyPresentation.setBankId(bankId);
             storyPresentation.getStoryPresentationFrames()
                     .add(fromStoryFramesDtoToStoryPresentationFrames(storyFramesDto));
             storyPresentation.setPreviewUrl(previewUrl);

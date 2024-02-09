@@ -29,7 +29,7 @@ public class JsonProcessorServiceTest {
 
     private final FileExtensionExtractor fileExtensionExtractor = new FileExtensionExtractor();
 
-    private final ByteArrayToImageConverter byteArrayToImageConverter = new ByteArrayToImageConverter();
+    private final MultipartFileToImageConverter multipartFileToImageConverter = new MultipartFileToImageConverter();
 
     private final FileNameCreator fileNameCreator = new FileNameCreator();
 
@@ -39,7 +39,7 @@ public class JsonProcessorServiceTest {
     private final JsonProcessorService jsonProcessorService = new JsonProcessorService(
             fileNameCreator,
             fileExtensionExtractor,
-            byteArrayToImageConverter,
+            multipartFileToImageConverter,
             dtoToEntityConverter,
             imageNameGenerator);
 

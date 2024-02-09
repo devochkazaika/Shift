@@ -37,10 +37,11 @@ public class StoryFramesDto {
     private String textColor;
 
     /**
-     * Картинка карточки истории, представленная в виде байтового массива.
+     * Название картинки карточки истории.
      */
-    @NotEmpty(message = "The picture of the story is not specified")
-    private byte[] pictureUrl;
+    private String pictureUrl;
+//    @NotEmpty(message = "The picture of the story is not specified")
+//    private byte[] pictureUrl;
 
     /**
      * Поле, показывающее необходимость либо ссылки, либо кнопки, либо ничего из этого.
