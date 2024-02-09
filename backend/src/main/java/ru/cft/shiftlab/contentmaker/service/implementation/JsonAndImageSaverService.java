@@ -1,6 +1,7 @@
 package ru.cft.shiftlab.contentmaker.service.implementation;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -98,7 +99,7 @@ public class JsonAndImageSaverService implements FileSaverService {
         File bankJsonFile = new File(filesSaveDirectory + fileName);
 
         if (bankJsonFile.exists()) {
-            ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             TypeReference<Map<String, List<StoryPresentation>>> typeReference = new TypeReference<>() {
             };
 
