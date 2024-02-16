@@ -1,7 +1,9 @@
 package ru.cft.shiftlab.contentmaker.util;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -14,7 +16,9 @@ import java.util.Objects;
  * которая в дальнейшем сохраняется в директорию.
  */
 @Component
+@RequiredArgsConstructor
 public class MultipartFileToImageConverter {
+    private final ImageNameGenerator imageNameGenerator;
 
     /**
      * Метод для конвертации MultipartFile в картинку и для ее сохранения в определенную директорию.
@@ -35,5 +39,20 @@ public class MultipartFileToImageConverter {
         File outputfile = new File(directory, fileName + "." + fileFormat);
         ImageIO.write(bufferedImage, fileFormat, outputfile);
         return fileName + "." + fileFormat;
+    }
+
+    public String parsePicture(String pictureUrl, ImageContainer imageContainer, String picturesSaveDirectory) throws IOException {
+        String previewPictureName = pictureUrl;
+        if(pictureUrl == null || pictureUrl.isEmpty()){
+            previewPictureName = imageNameGenerator.generateImageName();
+
+            previewPictureName = convertMultipartFileToImageAndSave(
+                    imageContainer.getNextImage(),
+                    picturesSaveDirectory,
+                    previewPictureName
+            );
+        }
+
+        return picturesSaveDirectory + previewPictureName;
     }
 }

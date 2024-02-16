@@ -37,7 +37,6 @@ public class JsonProcessorService implements FileSaverService {
     private final FileExtensionExtractor fileExtensionExtractor;
     private final MultipartFileToImageConverter multipartFileToImageConverter;
     private final DtoToEntityConverter dtoToEntityConverter;
-    private final ImageNameGenerator imageNameGenerator;
 
     private String filesSaveDirectory =
             "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
@@ -140,28 +139,25 @@ public class JsonProcessorService implements FileSaverService {
     ) throws IOException {
         int counterForPreview = 0;
         int counterForStoryFramePicture = 0;
-        int counterImages = 0;
-
+        Integer counterImages = 0;
+        ImageContainer imageContainer = new ImageContainer(images);
         for (StoryDto story: storiesRequestDto.getStoryDtos()) {
-            String previewPictureName = story.getPreviewUrl();
-            if(story.getPreviewUrl() == null || story.getPreviewUrl().isEmpty()){
-                previewPictureName = imageNameGenerator.generateImageName();
-
-                previewPictureName = multipartFileToImageConverter.convertMultipartFileToImageAndSave(
-                        images[counterImages++],
-                        picturesSaveDirectory,
-                        previewPictureName
-                );
-//                counterImages++; если будет плохо работать, оставить строчку и убрать ++ сверху
-            }
-
-            String previewUrl = picturesSaveDirectory + previewPictureName;
+            String previewUrl = multipartFileToImageConverter.parsePicture(
+                    story.getPreviewUrl(),
+                    imageContainer,
+                    picturesSaveDirectory);
             storyPresentationList.add(dtoToEntityConverter.fromStoryDtoToStoryPresentation(
                     bankId,
                     story,
                     previewUrl));
 
+            for (StoryFramesDto storyFramesDto: story.getStoryFramesDtos()) {
+                String presentationPictureUrl = multipartFileToImageConverter.parsePicture(
+                        storyFramesDto.getPictureUrl(),
+                        imageContainer,
+                        picturesSaveDirectory);
 
+            }
 
 
 
@@ -169,8 +165,10 @@ public class JsonProcessorService implements FileSaverService {
 //            if (testOrNot) {
 //                previewPictureName = "preview1";
 //            }//позже в тестах добавить внутри теста саму картинку,чтобы тут название не брать
-            counterForPreview++;
 
+//                if (testOrNot) {
+//                    storyFramePictureName = "storyFramePicture1";
+//                }
             if(story.getPreviewUrl() == null) {
                 story.setPreviewUrl(
                         story
@@ -182,31 +180,29 @@ public class JsonProcessorService implements FileSaverService {
 
 
 
-            for (StoryFramesDto storyFramesDto: story.getStoryFramesDtos()) {
-                counterForStoryFramePicture++;
-                byte [] storyFramePictureUrlBytes = storyFramesDto.getPictureUrl();
-
-                String storyFramePictureName = imageNameGenerator.generateImageName();
-
-                if (testOrNot) {
-                    storyFramePictureName = "storyFramePicture1";
-                }
-
-                String storyFramePictureFileExtension =
-                        fileExtensionExtractor.getFileExtensionFromByteArray(storyFramePictureUrlBytes);
-                multipartFileToImageConverter.convertByteArrayToImageAndSave(
-                        storyFramePictureUrlBytes,
-                        picturesSaveDirectory,
-                        storyFramePictureName,
-                        storyFramePictureFileExtension);
-
-                String storyFramePictureUrl = picturesSaveDirectory + storyFramePictureName + "." + storyFramePictureFileExtension;
-                storyPresentationList.get(counterForPreview - 1).
-                        getStoryPresentationFrames().
-                        get(counterForStoryFramePicture - 1).
-                        setPictureUrl(storyFramePictureUrl);
-
-            }
+//            for (StoryFramesDto storyFramesDto: story.getStoryFramesDtos()) {
+//                counterForStoryFramePicture++;
+//                byte [] storyFramePictureUrlBytes = storyFramesDto.getPictureUrl();
+//
+//                String storyFramePictureName = imageNameGenerator.generateImageName();
+//
+//
+//
+//                String storyFramePictureFileExtension =
+//                        fileExtensionExtractor.getFileExtensionFromByteArray(storyFramePictureUrlBytes);
+//                multipartFileToImageConverter.convertByteArrayToImageAndSave(
+//                        storyFramePictureUrlBytes,
+//                        picturesSaveDirectory,
+//                        storyFramePictureName,
+//                        storyFramePictureFileExtension);
+//
+//                String storyFramePictureUrl = picturesSaveDirectory + storyFramePictureName + "." + storyFramePictureFileExtension;
+//                storyPresentationList.get(counterForPreview - 1).
+//                        getStoryPresentationFrames().
+//                        get(counterForStoryFramePicture - 1).
+//                        setPictureUrl(storyFramePictureUrl);
+//
+//            }
         }
     }
 }
