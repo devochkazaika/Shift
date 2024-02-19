@@ -3,8 +3,12 @@ package ru.cft.shiftlab.contentmaker.controller;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
@@ -47,10 +51,14 @@ public class StoriesController {
      * @param images файлы с картинками.
      */
     @PostMapping("/add")
+    @Operation(summary = "Добавление истории на сервер.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "История добавлена на сервер.")
+    })
 //    @JsonIgnoreProperties(ignoreUnknown = true)
     @ResponseStatus(HttpStatus.CREATED)
-    public void addStories(@Valid @RequestBody StoriesRequestDto storiesRequestDto,
-                           @RequestParam("images") MultipartFile[] images) {
+    public void addStories(@RequestBody StoriesRequestDto storiesRequestDto,
+                           @Nullable @RequestParam(value = "images", required = false) MultipartFile[] images) {
 
         storiesService.saveFiles(storiesRequestDto, images, false);
     }
