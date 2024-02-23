@@ -21,8 +21,11 @@ const Stories = () => {
     setSend(false);
     setLoading(true);
     const payload = await convertToPayload(values);
+    let images = [];
+    images[0] = values.stories[0].previewUrl === null ? null : values.stories[0].previewUrl;
+    images[1] = values.stories[0].storyFrames[0].pictureUrl;
     const jsonPayload = JSON.stringify(payload, null, 2);
-    const uploadResult = await uploadStories(jsonPayload).finally(() => {
+    const uploadResult = await uploadStories(jsonPayload, images).finally(() => {
       setSend(true);
       setLoading(false);
     });
