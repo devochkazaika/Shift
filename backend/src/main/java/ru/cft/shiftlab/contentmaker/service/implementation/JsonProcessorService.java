@@ -15,6 +15,7 @@ import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
+import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 import ru.cft.shiftlab.contentmaker.util.*;
@@ -32,7 +33,10 @@ import java.util.*;
 @Setter
 @ConfigurationProperties(prefix = "files.save.directory")
 public class JsonProcessorService implements FileSaverService {
-
+    ObjectMapper mapper = new ObjectMapper();
+    {
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+    }
     private final FileNameCreator fileNameCreator;
     private final FileExtensionExtractor fileExtensionExtractor;
     private final MultipartFileToImageConverter multipartFileToImageConverter;
@@ -59,8 +63,9 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     @Override
-    public void saveFiles(StoriesRequestDto storiesRequestDto, MultipartFile[] images, boolean testOrNot){
+    public void saveFiles(String strStoriesRequestDto, MultipartFile[] images, boolean testOrNot){
         try {
+            StoriesRequestDto storiesRequestDto = mapper.readValue(strStoriesRequestDto, StoriesRequestDto.class);
             String bankId = storiesRequestDto.getBankId();
             String picturesSaveDirectory = filesSaveDirectory + bankId + "/";
 
@@ -108,8 +113,8 @@ public class JsonProcessorService implements FileSaverService {
 
         resultMap.put(STORIES, storyPresentationList);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+//        mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.writeValue(new File(filesSaveDirectory, fileName), resultMap);
         mapper.writeValue(new File(filesSaveDirectory, "fff"), storiesRequestDto);
     }
@@ -143,22 +148,26 @@ public class JsonProcessorService implements FileSaverService {
         ImageContainer imageContainer = new ImageContainer(images);
         for (StoryDto story: storiesRequestDto.getStoryDtos()) {
             String previewUrl = multipartFileToImageConverter.parsePicture(
-                    story.getPreviewUrl(),
                     imageContainer,
                     picturesSaveDirectory);
-            storyPresentationList.add(dtoToEntityConverter.fromStoryDtoToStoryPresentation(
+
+            var storyPresentation = dtoToEntityConverter.fromStoryDtoToStoryPresentation(
                     bankId,
                     story,
-                    previewUrl));
+                    previewUrl);
 
+            ArrayList<StoryPresentationFrames> storyPresentationFramesList = new ArrayList<>();
             for (StoryFramesDto storyFramesDto: story.getStoryFramesDtos()) {
+                var storyPresentationFrame = dtoToEntityConverter.fromStoryFramesDtoToStoryPresentationFrames(storyFramesDto);
                 String presentationPictureUrl = multipartFileToImageConverter.parsePicture(
-                        storyFramesDto.getPictureUrl(),
                         imageContainer,
                         picturesSaveDirectory);
-
+                storyPresentationFrame.setPictureUrl(presentationPictureUrl);
+                storyPresentationFramesList.add(storyPresentationFrame);
             }
+            storyPresentation.setStoryPresentationFrames(storyPresentationFramesList);
 
+            storyPresentationList.add(storyPresentation);
 
 
 

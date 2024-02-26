@@ -19,6 +19,11 @@ public class ImageNameGenerator {
      * @return наименование изображения.
      */
     public String generateImageName() {
+//        try{
+//            throw new Exception("сделать проверку на имя картинки");
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
         String uuid = UUID.randomUUID().toString();
         String imageName = uuid.replaceAll("-", "");
         imageName = imageName.replaceAll("[^\\p{L}\\d_\\.-]", "");
