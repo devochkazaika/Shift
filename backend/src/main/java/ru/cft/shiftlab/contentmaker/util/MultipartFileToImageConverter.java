@@ -1,6 +1,7 @@
 package ru.cft.shiftlab.contentmaker.util;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
@@ -33,25 +34,20 @@ public class MultipartFileToImageConverter {
             MultipartFile multipartFile,
             String directory,
             String name) throws IOException {
-        String fileFormat = Objects.requireNonNull(multipartFile.getOriginalFilename()).split("\\.")[1];
+        String fileFormat = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
         String fileName = name + "." + fileFormat;
         BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
-        File outputfile = new File(directory, fileName + "." + fileFormat);
+        File outputfile = new File(directory, fileName);
         ImageIO.write(bufferedImage, fileFormat, outputfile);
         return fileName + "." + fileFormat;
     }
 
-    public String parsePicture(String pictureUrl, ImageContainer imageContainer, String picturesSaveDirectory) throws IOException {
-        String previewPictureName = pictureUrl;
-        if(pictureUrl == null || pictureUrl.isEmpty()){
-            previewPictureName = imageNameGenerator.generateImageName();
-
-            previewPictureName = convertMultipartFileToImageAndSave(
-                    imageContainer.getNextImage(),
-                    picturesSaveDirectory,
-                    previewPictureName
-            );
-        }
+    public String parsePicture(ImageContainer imageContainer, String picturesSaveDirectory) throws IOException {
+        String previewPictureName = convertMultipartFileToImageAndSave(
+                imageContainer.getNextImage(),
+                picturesSaveDirectory,
+                imageNameGenerator.generateImageName()
+        );
 
         return picturesSaveDirectory + previewPictureName;
     }

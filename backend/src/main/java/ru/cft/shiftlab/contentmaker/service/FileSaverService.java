@@ -17,7 +17,7 @@ public interface FileSaverService {
      * @param testOrNot         булевая переменная, которая указывает на то, вызывается метод в тесте или нет.
      * @throws RuntimeException исключение, которые может возникнуть во время работы приложения.
      */
-    default void saveFiles(StoriesRequestDto storiesRequestDto, MultipartFile[] images, boolean testOrNot) {
+    default void saveFiles(String storiesRequestDto, MultipartFile[] images, boolean testOrNot) {
         IOException e = new IOException();
         throw new RuntimeException(e);
     }

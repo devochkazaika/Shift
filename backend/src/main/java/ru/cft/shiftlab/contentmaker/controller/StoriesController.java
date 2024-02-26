@@ -17,7 +17,6 @@ import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 import ru.cft.shiftlab.contentmaker.util.FileNameCreator;
 
 import javax.validation.Valid;
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -33,18 +32,6 @@ public class StoriesController {
 
     /**
      * Метод, который обрабатывает POST-запрос на сохранение историй.
-     *
-     * @param storiesRequestDto DTO, которая содержит информацию об историях.
-     */
-    @PostMapping("/addOld")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void addStories(@Valid @RequestBody StoriesRequestDto storiesRequestDto) {
-
-        storiesService.saveFiles(storiesRequestDto, null, false);
-    }
-
-    /**
-     * NEW Метод, который обрабатывает POST-запрос на сохранение историй.
      * Основан на js формате FormData
      *
      * @param storiesRequestDto DTO, которая содержит информацию об историях.
@@ -57,8 +44,8 @@ public class StoriesController {
     })
 //    @JsonIgnoreProperties(ignoreUnknown = true)
     @ResponseStatus(HttpStatus.CREATED)
-    public void addStories(@RequestBody StoriesRequestDto storiesRequestDto,
-                           @Nullable @RequestParam(value = "images", required = false) MultipartFile[] images) {
+    public void addStories(@RequestPart(value = "json") String storiesRequestDto,
+                           @RequestParam(value = "images",required = false) MultipartFile[] images) {
 
         storiesService.saveFiles(storiesRequestDto, images, false);
     }
