@@ -5,6 +5,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
+import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -35,6 +36,11 @@ public class MultipartFileToImageConverter {
             String directory,
             String name) throws IOException {
         String fileFormat = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+        if(fileFormat == null){
+            throw new StaticContentException(
+                    "Could not parse file extension on picture",
+                    "HTTP 500 - INTERNAL_SERVER_ERROR");
+        }
         String fileName = name + "." + fileFormat;
         BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
         File outputfile = new File(directory, fileName);
@@ -46,7 +52,7 @@ public class MultipartFileToImageConverter {
         String previewPictureName = convertMultipartFileToImageAndSave(
                 imageContainer.getNextImage(),
                 picturesSaveDirectory,
-                imageNameGenerator.generateImageName()
+                imageNameGenerator.generateImageName(picturesSaveDirectory)
         );
 
         return picturesSaveDirectory + previewPictureName;

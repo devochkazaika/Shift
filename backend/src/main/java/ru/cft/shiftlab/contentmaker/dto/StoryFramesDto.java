@@ -36,10 +36,11 @@ public class StoryFramesDto {
     @NotBlank(message = "Story color not specified")
     private String textColor;
 
-    /**
-     * Название картинки карточки истории.
-     */
-    private String pictureUrl;
+//    /**
+//     * Название картинки карточки истории.
+//     */
+//    private String pictureUrl;
+
 //    @NotEmpty(message = "The picture of the story is not specified")
 //    private byte[] pictureUrl;
 
