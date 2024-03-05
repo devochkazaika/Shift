@@ -3,18 +3,21 @@ import { defaultToastOptions, defaultUpdateToastOptions } from '../utils/constan
 import { toast } from "react-toastify";
 import { defaultToastMessages } from "../utils/constants/defaultToastMessages";
 
-export const uploadStories = async (jsonPayload, images) => {
+export const uploadStories = async (jsonPayload, previewImage, cardImages) => {
   const toastView = toast(defaultToastMessages.uploadingData, {
     ...defaultToastOptions,
     autoClose: false,
     isLoading: true,
   });
   const form = new FormData();
-  form.append("json", jsonPayload);
-  form.append("images", images);
+  form.append("json", JSON.stringify(jsonPayload));
+  form.append("previewImage", previewImage);
+  cardImages.map((image) => {
+      form.append("cardImages", image);
+  });
   try {
-    const response = await axios.post("/stories/add", jsonPayload, {
-      headers: { "Content-Type": "application/json" },
+    const response = await axios.post("/stories/add", form, {
+      headers: { "Content-Type": "multipart/form-data" },
     });
     toast.update(toastView, {
       ...defaultUpdateToastOptions,
