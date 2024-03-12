@@ -74,7 +74,7 @@ public class JsonProcessorServiceTest {
                 "IOS",
                 new ArrayList<>(Collections.singletonList(storyDto)));
 
-        jsonProcessorService.saveFiles(storiesRequestDto, null,/*images*/ true);
+        jsonProcessorService.saveFiles(storiesRequestDto, previewImage, images, null,/*images*/ true);
 
         DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
 

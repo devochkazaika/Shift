@@ -17,6 +17,11 @@ public class ImageContainer {
     public ImageContainer(MultipartFile[] images) {
         this.images = images;
     }
+    public ImageContainer(MultipartFile images) {
+
+        this.images = new MultipartFile[1];
+        this.images[0] = images;
+    }
 
     public MultipartFile getNextImage(){
         return images[counterImages++];
