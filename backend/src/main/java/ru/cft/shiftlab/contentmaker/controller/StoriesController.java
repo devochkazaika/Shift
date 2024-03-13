@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * Контроллер, обрабатывающий запросы для работы с Story.
  */
@@ -27,8 +28,9 @@ public class StoriesController {
      * Метод, который обрабатывает POST-запрос на сохранение историй.
      * Основан на js формате FormData
      *
-     * @param storiesRequestDto DTO, которая содержит информацию об историях.
-     * @param images файлы с картинками.
+     * @param storiesRequestDto DTO, которая содержит информацию об историях, в виде строки json.
+     * @param images файлы с картинкой превью.
+     * @param previewImage файлы с картинками карточек.
      */
     @PostMapping("/add")
     @Operation(summary = "Добавление истории на сервер.")
@@ -36,11 +38,11 @@ public class StoriesController {
             @ApiResponse(responseCode = "200", description = "История добавлена на сервер.")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    public void addStories(@RequestPart(value = "json") String storiesRequestDto,
+    public void addStories(@RequestParam(value = "json") String storiesRequestDto,
                            @RequestParam(value = "previewImage",required = false) MultipartFile previewImage,
                            @RequestParam(value = "cardImages",required = false) MultipartFile[] images) {
 
-        storiesService.saveFiles(storiesRequestDto, previewImage, images, false);
+        storiesService.saveFiles(storiesRequestDto, previewImage, images);
     }
 
     @GetMapping("/{bankId}")

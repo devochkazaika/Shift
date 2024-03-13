@@ -1,6 +1,7 @@
 package ru.cft.shiftlab.contentmaker;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
@@ -10,13 +11,7 @@ import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,18 +19,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 public class DtoToEntityConverterTest {
 
-    private ModelMapper modelMapper = new ModelMapper();
-    private DtoToEntityConverter converterRequestDto = new DtoToEntityConverter(modelMapper);
+    private final ModelMapper modelMapper = new ModelMapper();
+    private final DtoToEntityConverter converterRequestDto = new DtoToEntityConverter(modelMapper);
     private StoryPresentation storyPresentation = new StoryPresentation();
 
 
     @Test
-    public void whenConvertStoryRequestDtoToStoryPresentation_thenCorrect() throws IOException {
+    public void whenConvertStoryRequestDtoToStoryPresentation_thenCorrect(){
         StoryFramesDto storyFramesDto = new StoryFramesDto(
                 "Конвертируй",
                 "Обменивайте валюту онлайн по выгодному курсу",
                 "FFFFFF",
-                null,
                 "NONE",
                 "Попробовать",
                 "FFFFFF",
@@ -45,25 +39,31 @@ public class DtoToEntityConverterTest {
         );
 
         StoryDto storyDto = new StoryDto(
-                null,
                 "Конвертируй валюту",
                 "FFFFFF",
-                null,
                 "EMPTY",
                 new ArrayList<>(Collections.singletonList(storyFramesDto))
         );
 
         storyPresentation = converterRequestDto.fromStoryDtoToStoryPresentation("id", storyDto, null);
 
-
-        assertAll(
+        Assertions.assertAll(
                 () -> assertEquals(storyDto.getPreviewTitle(), storyPresentation.getPreviewTitle()),
                 () -> assertEquals(storyDto.getPreviewTitleColor(), storyPresentation.getPreviewTitleColor()),
-                () -> assertTrue(Arrays.equals(storyDto.getPreviewUrl(), null)),
                 () -> assertEquals(storyDto.getPreviewGradient(), storyPresentation.getPreviewGradient()),
 
-                () -> assertLinesMatch(Collections.singletonList(asJsonString(storyPresentation.getStoryPresentationFrames().get(0))),
-                        Collections.singletonList(asJsonString(storyFramesDto)))
+                () -> Assertions.assertEquals(storyPresentation.getPreviewTitle(), storyDto.getPreviewTitle()),
+                () -> Assertions.assertEquals(storyPresentation.getPreviewGradient(), storyDto.getPreviewGradient()),
+                () -> Assertions.assertEquals(storyPresentation.getPreviewTitleColor(), storyDto.getPreviewTitleColor()),
+                () -> Assertions.assertEquals(storyPresentation.getStoryPresentationFrames().get(0).getText(),
+                        storyDto.getStoryFramesDtos().get(0).getText()),
+                () -> Assertions.assertEquals(storyPresentation.getStoryPresentationFrames().get(0).getGradient(),
+                        storyDto.getStoryFramesDtos().get(0).getGradient()),
+                () -> Assertions.assertEquals(storyPresentation.getStoryPresentationFrames().get(0).getButtonUrl(),
+                        storyDto.getStoryFramesDtos().get(0).getButtonUrl()),
+                () -> Assertions.assertEquals(storyPresentation.getStoryPresentationFrames().get(0).getTitle(),
+                        storyDto.getStoryFramesDtos().get(0).getTitle()
+                )
         );
     }
 

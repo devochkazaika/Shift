@@ -78,7 +78,6 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
 
         if (visibleType.equals("BUTTON")) {
             return !(storyFramesDto.getButtonText().isBlank()) &&
-                    !(storyFramesDto.getButtonUrl()).isBlank() &&
                     !(storyFramesDto.getButtonTextColor().isBlank()) &&
                     !(storyFramesDto.getButtonBackgroundColor().isBlank());
         } else return visibleType.equals("NONE");

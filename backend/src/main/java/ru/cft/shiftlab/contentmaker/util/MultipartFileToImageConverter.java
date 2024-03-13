@@ -4,14 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 
 /**
  * Класс, предназначенный для конвертации массива байтов в картинку,
@@ -45,7 +43,7 @@ public class MultipartFileToImageConverter {
         BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
         File outputfile = new File(directory, fileName);
         ImageIO.write(bufferedImage, fileFormat, outputfile);
-        return fileName + "." + fileFormat;
+        return fileName;
     }
 
     public String parsePicture(ImageContainer imageContainer, String picturesSaveDirectory) throws IOException {

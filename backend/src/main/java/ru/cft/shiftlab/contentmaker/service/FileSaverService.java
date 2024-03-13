@@ -15,10 +15,9 @@ public interface FileSaverService {
      * @param strStoriesRequestDto DTO с информацией о Stories.
      * @param previewImage Картинка для preview
      * @param images Массив картинок для карточек
-     * @param testOrNot            булевая переменная, которая указывает на то, вызывается метод в тесте или нет.
      * @throws RuntimeException исключение, которые может возникнуть во время работы приложения.
      */
-    default void saveFiles(String strStoriesRequestDto, MultipartFile previewImage, MultipartFile[] images, boolean testOrNot) {
+    default void saveFiles(String strStoriesRequestDto, MultipartFile previewImage, MultipartFile[] images) {
         IOException e = new IOException();
         throw new RuntimeException(e);
     }

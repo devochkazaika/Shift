@@ -1,35 +1,39 @@
 package ru.cft.shiftlab.contentmaker;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
+import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 import ru.cft.shiftlab.contentmaker.util.*;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static ru.cft.shiftlab.contentmaker.util.Constants.*;
 
 @ExtendWith(MockitoExtension.class)
 public class JsonProcessorServiceTest {
 
-    private final FileExtensionExtractor fileExtensionExtractor = new FileExtensionExtractor();
-
-    private final MultipartFileToImageConverter multipartFileToImageConverter = new MultipartFileToImageConverter();
+    private final MultipartFileToImageConverter multipartFileToImageConverter = new MultipartFileToImageConverter(new ImageNameGenerator());
 
     private final FileNameCreator fileNameCreator = new FileNameCreator();
 
@@ -38,24 +42,18 @@ public class JsonProcessorServiceTest {
 
     private final JsonProcessorService jsonProcessorService = new JsonProcessorService(
             fileNameCreator,
-            fileExtensionExtractor,
             multipartFileToImageConverter,
-            dtoToEntityConverter,
-            imageNameGenerator);
+            dtoToEntityConverter);
 
     @Test
     void should_save_files() throws IOException {
-        BufferedImage bImage = ImageIO.read(
-                new File("/content-maker/backend/src/test/java/ru/cft/shiftlab/contentmaker/test_pictures",
-                        "sample.png"));
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ImageIO.write(bImage, "png", bos );
-        byte[] bytes = bos.toByteArray();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+
         StoryFramesDto storyFramesDto = new StoryFramesDto(
-                "Заголовок",
-                "Текст карточки",
+                "mainText",
+                "Text card",
                 "FF0000",
-                bytes,
                 "NONE",
                 "",
                 "",
@@ -63,62 +61,97 @@ public class JsonProcessorServiceTest {
                 "",
                 "EMPTY");
         StoryDto storyDto = new StoryDto(
-                null,
-                "Заголовок превью",
+                "MainTextPreview",
                 "FF0000",
-                bytes,
                 "EMPTY",
                 new ArrayList<>(Collections.singletonList(storyFramesDto)));
         StoriesRequestDto storiesRequestDto = new StoriesRequestDto(
-                "absolutbank",
+                "tkbbank",
                 "IOS",
                 new ArrayList<>(Collections.singletonList(storyDto)));
 
-        jsonProcessorService.saveFiles(storiesRequestDto, previewImage, images, null,/*images*/ true);
+        File img =  new File(
+                "/content-maker/backend/src/test/java/ru/cft/shiftlab/contentmaker/test_pictures",
+                "sample.png");
+        FileInputStream input = new FileInputStream(img);
+        Assertions.assertNotNull(input);
+        MultipartFile multipartFile = new MockMultipartFile("fileItem",
+                img.getName(), "image/png", IOUtils.toByteArray(input));
+        var arrImg = new MultipartFile[1];
+        arrImg[0] = multipartFile;
 
         DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
 
         String picturesDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
                 + storiesRequestDto.getBankId() + "/";
-        String fileName = "story_absolutbank_iOS.json";
+        String fileName = "story_tkbbank_iOS.json";
         String jsonDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
         String previewUrl = picturesDirectory + "/preview1.png";
 
         List<StoryPresentation> storyPresentationList = new ArrayList<>();
 
         storyPresentationList.add(dtoToEntityConverter.fromStoryDtoToStoryPresentation(
-                "absolutbank",
+                "tkbbank",
                 storyDto,
                 previewUrl));
-
-        storyPresentationList.get(0).getStoryPresentationFrames().get(0)
-                .setPictureUrl("/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/absolutbank/storyFramePicture1.png");
-        storyPresentationList.get(0).setPreviewUrl("/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/absolutbank/preview1.png");
 
         Map<String, List<StoryPresentation>> presentationList = new HashMap<>();
         presentationList.put("stories", storyPresentationList);
 
-        Path jsonFilePath = Paths.get(jsonDirectory + fileName);
-        Path previewPictureFilePath = Paths.get(picturesDirectory + "preview1.png");
-        Path storyFramePictureFilePath = Paths.get(picturesDirectory + "storyFramePicture1.png");
+        File jsonFile = Paths.get(jsonDirectory + fileName).toFile();
 
-        File jsonFile = jsonFilePath.toFile();
-        File previewPicture = previewPictureFilePath.toFile();
-        File storyFramePicture = storyFramePictureFilePath.toFile();
+        int countFiles = getCountFilesInDir(storiesRequestDto);
+        jsonProcessorService.saveFiles("\"" + StringEscapeUtils.escapeJson(objectMapper.writeValueAsString(storiesRequestDto)) + "\"",
+                multipartFile,
+                arrImg
+        );
+        Assertions.assertEquals(countFiles + 2, getCountFilesInDir(storiesRequestDto));
 
-        assertAll(
-                () -> assertTrue(Files.exists(jsonFile.toPath()), "File should exist"),
-                () -> assertTrue(Files.exists(previewPicture.toPath()), "File should exist"),
-                () -> assertTrue(Files.exists(storyFramePicture.toPath()), "File should exist"),
-                () -> assertLinesMatch(Collections.singletonList(asJsonString(presentationList)),
-                        Files.readAllLines(jsonFile.toPath())));
+        StringBuilder jsonStr = new StringBuilder();
+        Files.readAllLines(jsonFile.toPath()).forEach(jsonStr::append);
+        Map<String, List<StoryPresentation>> map = objectMapper.readValue(
+                jsonStr.toString(),
+                new TypeReference<Map<String, List<StoryPresentation>>>() {}
+        );
+
+        var storyFromJson = map.get(STORIES).get(0);
+        storyFromJson.setPreviewUrl(null);
+        for(StoryPresentationFrames card : storyFromJson.getStoryPresentationFrames()){
+            card.setPictureUrl(null);
+        }
+
+        try{
+            Assertions.assertAll(
+                    () -> Assertions.assertEquals(countFiles + 2, getCountFilesInDir(storiesRequestDto), "Images should be created"),
+                    () -> Assertions.assertTrue(Files.exists(jsonFile.toPath()), "File should exist"),
+                    () -> Assertions.assertEquals(storyFromJson.getPreviewTitle(), storyDto.getPreviewTitle()),
+                    () -> Assertions.assertEquals(storyFromJson.getPreviewGradient(), storyDto.getPreviewGradient()),
+                    () -> Assertions.assertEquals(storyFromJson.getPreviewTitleColor(), storyDto.getPreviewTitleColor()),
+                    () -> Assertions.assertEquals(storyFromJson.getStoryPresentationFrames().get(0).getText(),
+                            storyDto.getStoryFramesDtos().get(0).getText()),
+                    () -> Assertions.assertEquals(storyFromJson.getStoryPresentationFrames().get(0).getGradient(),
+                            storyDto.getStoryFramesDtos().get(0).getGradient()),
+                    () -> Assertions.assertEquals(storyFromJson.getStoryPresentationFrames().get(0).getButtonUrl(),
+                            storyDto.getStoryFramesDtos().get(0).getButtonUrl()),
+                    () -> Assertions.assertEquals(storyFromJson.getStoryPresentationFrames().get(0).getTitle(),
+                            storyDto.getStoryFramesDtos().get(0).getTitle())
+            );
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        FileUtils.deleteQuietly(jsonFile);
+        FileUtils.deleteDirectory(new File(picturesDirectory));
     }
 
-     public static String asJsonString(final Object obj) {
-         try {
-             return new ObjectMapper().writeValueAsString(obj);
-         } catch (Exception e) {
-             throw new RuntimeException(e);
-         }
-     }
+    private int getCountFilesInDir(StoriesRequestDto storiesRequestDto) {
+        File f = new File(
+                FILES_SAVE_DIRECTORY +
+                        storiesRequestDto.getBankId() + "/");
+        File[] files = f.listFiles();
+        if(files == null){
+            return 0;
+        }
+        return files.length;
+    }
  }
