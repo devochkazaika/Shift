@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.StoryFramesValid;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
 /**
@@ -35,14 +34,6 @@ public class StoryFramesDto {
      */
     @NotBlank(message = "Story color not specified")
     private String textColor;
-
-//    /**
-//     * Название картинки карточки истории.
-//     */
-//    private String pictureUrl;
-
-//    @NotEmpty(message = "The picture of the story is not specified")
-//    private byte[] pictureUrl;
 
     /**
      * Поле, показывающее необходимость либо ссылки, либо кнопки, либо ничего из этого.

@@ -21,10 +21,6 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @StoryValid(message = "Incorrect number of lines in the title")
 public class StoryDto {
-//    /**
-//     * Идентификатор истории.
-//     */
-//    private Long id;
 
     /**
      * Заголовок превью.
@@ -37,11 +33,6 @@ public class StoryDto {
      */
     @NotBlank(message = "Preview color not specified")
     private String previewTitleColor;
-
-//    /**
-//     * Название картинки для превью.
-//     */
-//    private String previewUrl;
 
     /**
      * Градиент превью.

@@ -52,9 +52,5 @@ public class StoriesController {
             @RequestParam(defaultValue="ALL PLATFORMS") String platform) {
 
         return storiesService.getFilePlatform(bankId, platform);
-//        String FileIos = fileNameCreator.createFileName(bankId, "IOS");
-//        String FileAndroid = fileNameCreator.createFileName(bankId, "ANDROID");
-
-
     }
 }
