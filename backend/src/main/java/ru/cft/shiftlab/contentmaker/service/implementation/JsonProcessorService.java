@@ -1,5 +1,6 @@
 package ru.cft.shiftlab.contentmaker.service.implementation;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,8 +9,13 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.*;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
@@ -23,6 +29,7 @@ import ru.cft.shiftlab.contentmaker.util.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 
 import static ru.cft.shiftlab.contentmaker.util.Constants.STORIES;
@@ -36,6 +43,7 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "files.save.directory")
+@Log4j2
 public class JsonProcessorService implements FileSaverService {
     ObjectMapper mapper = new ObjectMapper();
     {
@@ -50,20 +58,48 @@ public class JsonProcessorService implements FileSaverService {
 
 
 
-    public Map<String, List<StoryPresentation>> getFilePlatform(String bankId, String platform){
+    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getFilePlatform(String bankId, String platform) {
         String filePlatform = fileNameCreator.createFileName(bankId, platform);
         Map<String, List<StoryPresentation>> resultMap;
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
         try {
             resultMap = mapper.readValue(new File(FILES_SAVE_DIRECTORY, filePlatform), new TypeReference<>(){});
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return null;
         }
 
-        return resultMap;
+        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
+        try {
+            multipartBodyBuilder.part("json", mapper.writeValueAsString(resultMap.get("stories")));
+        } catch (JsonProcessingException e) {
+            throw new StaticContentException("Некорректный файл json на стороне сервера", "404");
+        }
+
+        resultMap.get("stories").forEach(
+                storyPresentation->{
+                    addInBuilderMultipart(storyPresentation.getPreviewUrl(), multipartBodyBuilder);
+                    storyPresentation.getStoryPresentationFrames().forEach(
+                            frame-> addInBuilderMultipart(frame.getPictureUrl(), multipartBodyBuilder)
+                    );
+                }
+        );
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        return new HttpEntity<>(multipartBodyBuilder.build(), headers);
+    }
+
+    void addInBuilderMultipart(String picture, MultipartBodyBuilder multipartBodyBuilder){
+        File file = new File(picture);
+        try {
+            byte[] fileBytes = Files.readAllBytes(file.toPath());
+            multipartBodyBuilder.part(file.getName(), new ByteArrayResource(fileBytes));
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw new StaticContentException("Сервер не может найти нужное изображение", "404");
+        }
     }
 
     @Override

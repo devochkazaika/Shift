@@ -4,16 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Map;
-
 
 /**
  * Контроллер, обрабатывающий запросы для работы с Story.
@@ -26,7 +24,7 @@ public class StoriesController {
 
     /**
      * Метод, который обрабатывает POST-запрос на сохранение историй.
-     * Основан на js формате FormData
+     * Основан на формате FormData
      *
      * @param storiesRequestDto DTO, которая содержит информацию об историях, в виде строки json.
      * @param images файлы с картинкой превью.
@@ -35,7 +33,7 @@ public class StoriesController {
     @PostMapping("/add")
     @Operation(summary = "Добавление истории на сервер.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "История добавлена на сервер.")
+            @ApiResponse(responseCode = "201", description = "История добавлена на сервер.")
     })
     @ResponseStatus(HttpStatus.CREATED)
     public void addStories(@RequestParam(value = "json") String storiesRequestDto,
@@ -45,11 +43,24 @@ public class StoriesController {
         storiesService.saveFiles(storiesRequestDto, previewImage, images);
     }
 
-    @GetMapping("/{bankId}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Map<String, List<StoryPresentation>> getStories(
-            @PathVariable String bankId,
-            @RequestParam(defaultValue="ALL PLATFORMS") String platform) {
+
+    /**
+     * Метод, который обрабатывает GET-запрос на чтение историй.
+     * Основан на формате FormData
+     *
+     * @param bankId название банка.
+     * @param platform платформа, для которой создана история.
+     */
+    @GetMapping("/bank/info")
+    @Operation(summary = "Чтение истории с сервера.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "302", description = "История прочтена с сервера.")
+    })
+    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseBody
+    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getStories(
+            @RequestParam(name = "bankId") String bankId,
+            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS") String platform) {
 
         return storiesService.getFilePlatform(bankId, platform);
     }
