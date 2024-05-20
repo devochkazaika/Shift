@@ -1,0 +1,4 @@
+POST http://localhost:8484/realms/content-maker/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=maker&client_secret=hTgqr1l2cyzNG0n76Okpwja5E9z7zahq&username=testUser&password=password&grant_type=password

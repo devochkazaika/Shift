@@ -24,6 +24,11 @@ files:
       filesSaveDirectory: "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8484/realms/maker
   h2:
     console:
       enabled: true

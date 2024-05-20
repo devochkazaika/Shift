@@ -23,15 +23,15 @@ configurations {
     }
 }
 repositories {
-    maven {
-        url "$artifactoryUrl/libs-release"
-    }
+//    maven {
+//        url "$artifactoryUrl/libs-release"
+//    }
     mavenCentral()
-    if (isSnapshot()) {
-        maven {
-            url "$artifactoryUrl/libs-snapshot"
-        }
-    }
+//    if (isSnapshot()) {
+//        maven {
+//            url "$artifactoryUrl/libs-snapshot"
+//        }
+//    }
 }
 
 private isSnapshot() {
@@ -48,6 +48,7 @@ sourceSets {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.apache.commons:commons-lang3:3.6'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.1'
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
@@ -59,6 +60,15 @@ dependencies {
     testImplementation 'junit:junit'
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.7.0'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j', version: '2.8.2', ext: 'pom'
+    implementation 'io.projectreactor:reactor-core:3.4.14'
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.security:spring-security-oauth2-jose'
+    implementation 'org.springframework.security:spring-security-oauth2-resource-server'
+    implementation 'commons-io:commons-io:2.6'
 }
 dependencyManagement {
     imports {
@@ -69,44 +79,44 @@ test {
     useJUnitPlatform()
 }
 
-publishing {
-    repositories {
-        maven {
-            url "$artifactoryUrl/distribution-${version.toUpperCase(Locale.ENGLISH).endsWith('-SNAPSHOT') ? 'snapshot' : 'release'}"
-            credentials {
-                username "$artifactoryUser"
-                password "$artifactoryPassword"
-            }
-        }
-    }
-    publications {
-        maven(MavenPublication) {
-            artifactId 'static-content'
-            artifact distZip
-        }
-    }
-}
+//publishing {
+//    repositories {
+//        maven {
+//            url "$artifactoryUrl/distribution-${version.toUpperCase(Locale.ENGLISH).endsWith('-SNAPSHOT') ? 'snapshot' : 'release'}"
+//            credentials {
+//                username "$artifactoryUser"
+//                password "$artifactoryPassword"
+//            }
+//        }
+//    }
+//    publications {
+//        maven(MavenPublication) {
+//            artifactId 'static-content'
+//            artifact distZip
+//        }
+//    }
+//}
 
-distributions {
-    main {
-        baseName = 'static-content'
-        contents {
-            from bootJar
-        }
-        contents {
-            from 'changelog.md'
-        }
-        contents {
-            into("docs") {
-                from asciidoctor {
-                    exclude '.asciidoctor'
-                }
-            }
-        }
-        contents {
-            from 'config/application.yml'
-        }
-    }
-}
-
-apply from: rootProject.file('docker/docker.gradle')
+//distributions {
+//    main {
+//        baseName = 'static-content'
+//        contents {
+//            from bootJar
+//        }
+//        contents {
+//            from 'changelog.md'
+//        }
+//        contents {
+//            into("docs") {
+//                from asciidoctor {
+//                    exclude '.asciidoctor'
+//                }
+//            }
+//        }
+//        contents {
+//            from 'config/application.yml'
+//        }
+//    }
+//}
+//
+//apply from: rootProject.file('docker/docker.gradle')
