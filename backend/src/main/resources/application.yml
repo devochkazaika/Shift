@@ -28,7 +28,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8484/realms/maker
+          issuer-uri: http://localhost:8484/realms/content-maker
   h2:
     console:
       enabled: true
