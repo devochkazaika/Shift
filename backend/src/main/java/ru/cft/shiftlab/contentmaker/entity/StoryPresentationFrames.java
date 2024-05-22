@@ -37,16 +37,6 @@ public class StoryPresentationFrames {
     private String visibleLinkOrButtonOrNone;
 
     /**
-     * Текст гиперссылки.
-     */
-    private String linkText;
-
-    /**
-     * Ссылка на внешний источник.
-     */
-    private String linkUrl;
-
-    /**
      * Текст кнопки.
      */
     private String buttonText;

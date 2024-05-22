@@ -35,15 +35,10 @@ public class StoryDto {
     private String previewTitleColor;
 
     /**
-     * Картинка для превью, представленная в виде байтового массива.
-     */
-    private byte[] previewUrl;
-
-    /**
      * Градиент превью.
      */
     @NotBlank(message = "The gradient for the preview is not specified")
-    @Pattern(regexp = "EMPTY|FULL", message = "Incorrect parameters. Possible: EMPTY, FULL")
+    @Pattern(regexp = "EMPTY|HALF|FULL", message = "Incorrect parameters. Possible: EMPTY, HALF, FULL")
     private String previewGradient;
 
     /**

@@ -3,6 +3,7 @@ package ru.cft.shiftlab.contentmaker.util.validation.validator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
@@ -10,7 +11,8 @@ import ru.cft.shiftlab.contentmaker.util.validation.annotation.StoryFramesValid;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.Arrays;
+
+import static ru.cft.shiftlab.contentmaker.util.validation.validator.util.checkTextConditional.checkTextCond;
 
 /**
  * Имлпементация валидации StoryFramesDto.
@@ -21,6 +23,10 @@ import java.util.Arrays;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StoryFramesValidator implements ConstraintValidator<StoryFramesValid, StoryFramesDto> {
+    private int titleMaxStringCount = 3;
+    private int textMaxLenOneString = 35;
+    private int titleMaxLenOneString = 17;
+
     private int titleMaxLenForOneString = 17;
     private int textMaxLenForOneString = 245;
     private int textMaxStringCountForOneString = 7;
@@ -70,19 +76,11 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
         StoryFramesDto storyFramesDto = (StoryFramesDto) object;
         String visibleType = storyFramesDto.getVisibleLinkOrButtonOrNone();
 
-        if (visibleType.equals("LINK")) {
-            return !(storyFramesDto.getLinkText().isBlank()) &&
-                    !(storyFramesDto.getLinkUrl().isBlank());
-        } else if (visibleType.equals("BUTTON")) {
+        if (visibleType.equals("BUTTON")) {
             return !(storyFramesDto.getButtonText().isBlank()) &&
-                    !(storyFramesDto.getButtonUrl()).isBlank() &&
                     !(storyFramesDto.getButtonTextColor().isBlank()) &&
                     !(storyFramesDto.getButtonBackgroundColor().isBlank());
-        } else if (visibleType.equals("NONE")) {
-            return true;
-        } else {
-            return false;
-        }
+        } else return visibleType.equals("NONE");
     }
 
     /**
@@ -95,27 +93,18 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
         if (object == null) {
             return false;
         }
+        var countLines = StringUtils.countMatches(object.getTitle(), "\n") + 1;
+        boolean isTitleValid = checkTextCond(object.getTitle(), titleMaxStringCount, titleMaxLenOneString);
 
-        StoryFramesDto storyFramesDto = (StoryFramesDto) object;
-        int countString = (int) Arrays.stream(storyFramesDto.getTitle().split("\n")).count();
-
-        if (countString == 1) {
-            return storyFramesDto.getTitle().length() <= titleMaxLenForOneString &&
-                    storyFramesDto.getText().length() <= textMaxLenForOneString &&
-                    Arrays.stream(storyFramesDto.getText().split("\n"))
-                            .count() <= textMaxStringCountForOneString;
-        } else if (countString == 2) {
-            return storyFramesDto.getTitle().length() <= titleMaxLenForTwoString &&
-                    storyFramesDto.getText().length() <= textMaxLenForTwoString &&
-                    Arrays.stream(storyFramesDto.getText().split("\n"))
-                            .count() <= textMaxStringCountForTwoString;
-        } else if (countString == 3) {
-            return storyFramesDto.getTitle().length() <= titleMaxLenForThreeString &&
-                    storyFramesDto.getText().length() <= textMaxLenForThreeString &&
-                    Arrays.stream(storyFramesDto.getText().split("\n"))
-                            .count() <= textMaxStringCountForThreeString;
-        } else {
-            return false;
+        String text = object.getText();
+        boolean isTextValid = false;
+        if (countLines == 1) {
+            isTextValid = checkTextCond(text, textMaxStringCountForOneString, textMaxLenOneString);
+        } else if (countLines == 2) {
+            isTextValid = checkTextCond(text, textMaxStringCountForTwoString, textMaxLenOneString);
+        } else if (countLines == 3) {
+            isTextValid = checkTextCond(text, textMaxStringCountForThreeString, textMaxLenOneString);
         }
+        return isTitleValid && isTextValid;
     }
 }

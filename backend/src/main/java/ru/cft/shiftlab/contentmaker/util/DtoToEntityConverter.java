@@ -22,22 +22,15 @@ public class DtoToEntityConverter {
      *
      * @param bankId            уникальный идентификатор банка, который отправил запрос.
      * @param storyDto          DTO, которую нужно конвертировать в Entity.
-     * @param jsonDirectory     директория, в которую будет записан итоговый JSON.
-     * @param picturesDirectory директория, в которую будут записаны картинки из DTO.
      * @return StoryPresentation, полученный после конвертации StoryDto.
      */
     public StoryPresentation fromStoryDtoToStoryPresentation(String bankId,
                                                              StoryDto storyDto,
-                                                             String jsonDirectory,
-                                                             String picturesDirectory,
                                                              String previewUrl) {
         StoryPresentation storyPresentation = modelMapper.map(storyDto, StoryPresentation.class);
         storyPresentation.setBankId(bankId);
 
         for(StoryFramesDto storyFramesDto : storyDto.getStoryFramesDtos()) {
-            storyPresentation.setBankId(bankId);
-            storyPresentation.setJsonDirectory(jsonDirectory);
-            storyPresentation.setPicturesDirectory(picturesDirectory);
             storyPresentation.getStoryPresentationFrames()
                     .add(fromStoryFramesDtoToStoryPresentationFrames(storyFramesDto));
             storyPresentation.setPreviewUrl(previewUrl);

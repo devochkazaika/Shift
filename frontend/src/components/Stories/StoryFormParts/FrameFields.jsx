@@ -82,9 +82,10 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
 
           <div role="group" aria-labelledby="my-radio-group">
             <div className="row">
-              <label>
+              <label htmlFor="ButtonIntarectiveType">
                 <FormField
                   labelTitle="Кнопка"
+                  id="ButtonIntarectiveType"
                   type="radio"
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
                   value="BUTTON"
@@ -93,9 +94,10 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
                 />
               </label>
 
-              <label>
+              <label htmlFor="LinkIntarectiveType">
                 <FormField
                   labelTitle="Ссылка"
+                  id="LinkIntarectiveType"
                   type="radio"
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
                   value="LINK"
@@ -104,9 +106,10 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
                 />
               </label>
 
-              <label>
+              <label htmlFor="NonIntarectiveType">
                 <FormField
                   labelTitle="Ничего"
+                  id="NonIntarectiveType"
                   type="radio"
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
                   value="NONE"
@@ -145,26 +148,6 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
                 <FormField
                   labelTitle={'Ссылка'}
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonUrl`}
-                  type="text"
-                  {...props}
-                />
-              </div>
-            </>
-          )}
-          {frameJson.visibleLinkOrButtonOrNone === 'LINK' && (
-            <>
-              <div className="input_field">
-                <FormField
-                  labelTitle={'Текст'}
-                  name={`stories.${storyIndex}.storyFrames.${frameIndex}.linkText`}
-                  type="text"
-                  {...props}
-                />
-              </div>
-              <div className="input_field">
-                <FormField
-                  labelTitle={'Ссылка'}
-                  name={`stories.${storyIndex}.storyFrames.${frameIndex}.linkUrl`}
                   type="text"
                   {...props}
                 />

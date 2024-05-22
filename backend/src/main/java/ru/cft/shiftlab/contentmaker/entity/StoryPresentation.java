@@ -1,5 +1,6 @@
 package ru.cft.shiftlab.contentmaker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -12,12 +13,23 @@ import java.util.ArrayList;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class StoryPresentation {
+    /**
+     * Идентификатор истории.
+     */
+    private Long id;
 
     /**
      * Код банка.
      */
     private String bankId;
+
+    /**
+     * Размер шрифта.
+     */
+    @JsonProperty("font-size")
+    private String fontSize;
 
     /**
      * Заголовок превью.
@@ -38,16 +50,6 @@ public class StoryPresentation {
      * Градиент превью.
      */
     private String previewGradient;
-
-    /**
-     * Директория, в которой хранится JSON файл банка.
-     */
-    private String jsonDirectory;
-
-    /**
-     * Директория, в которой хранятся необходимые для банка картинки.
-     */
-    private String picturesDirectory;
 
     /**
      * Список карточек истории.
