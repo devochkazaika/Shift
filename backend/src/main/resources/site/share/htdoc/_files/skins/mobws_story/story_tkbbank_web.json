@@ -59,5 +59,25 @@
       "buttonUrl" : "",
       "gradient" : "EMPTY"
     } ]
+  }, {
+    "id" : null,
+    "bankId" : "tkbbank",
+    "previewTitle" : "MainTextPreview",
+    "previewTitleColor" : "FF0000",
+    "previewUrl" : "backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/tkbbank/13c710ae2ea54b5ebdce6a16f3db199c.jpg",
+    "previewGradient" : "EMPTY",
+    "font-size" : null,
+    "storyFrames" : [ {
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "pictureUrl" : "backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/tkbbank/d6e1b3ae9a024f9aab66683984a3ac80.jpg",
+      "visibleLinkOrButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
   } ]
 }
