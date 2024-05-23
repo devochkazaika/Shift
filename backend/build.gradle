@@ -23,15 +23,15 @@ configurations {
     }
 }
 repositories {
-    maven {
-        url "$artifactoryUrl/libs-release"
-    }
+//    maven {
+//        url "$artifactoryUrl/libs-release"
+//    }
     mavenCentral()
-    if (isSnapshot()) {
-        maven {
-            url "$artifactoryUrl/libs-snapshot"
-        }
-    }
+//    if (isSnapshot()) {
+//        maven {
+//            url "$artifactoryUrl/libs-snapshot"
+//        }
+//    }
 }
 
 private isSnapshot() {
@@ -74,44 +74,44 @@ test {
     useJUnitPlatform()
 }
 
-publishing {
-    repositories {
-        maven {
-            url "$artifactoryUrl/distribution-${version.toUpperCase(Locale.ENGLISH).endsWith('-SNAPSHOT') ? 'snapshot' : 'release'}"
-            credentials {
-                username "$artifactoryUser"
-                password "$artifactoryPassword"
-            }
-        }
-    }
-    publications {
-        maven(MavenPublication) {
-            artifactId 'static-content'
-            artifact distZip
-        }
-    }
-}
-
-distributions {
-    main {
-        baseName = 'static-content'
-        contents {
-            from bootJar
-        }
-        contents {
-            from 'changelog.md'
-        }
-        contents {
-            into("docs") {
-                from asciidoctor {
-                    exclude '.asciidoctor'
-                }
-            }
-        }
-        contents {
-            from 'config/application.yml'
-        }
-    }
-}
-
-apply from: rootProject.file('docker/docker.gradle')
+//publishing {
+//    repositories {
+//        maven {
+//            url "$artifactoryUrl/distribution-${version.toUpperCase(Locale.ENGLISH).endsWith('-SNAPSHOT') ? 'snapshot' : 'release'}"
+//            credentials {
+//                username "$artifactoryUser"
+//                password "$artifactoryPassword"
+//            }
+//        }
+//    }
+//    publications {
+//        maven(MavenPublication) {
+//            artifactId 'static-content'
+//            artifact distZip
+//        }
+//    }
+//}
+//
+//distributions {
+//    main {
+//        baseName = 'static-content'
+//        contents {
+//            from bootJar
+//        }
+//        contents {
+//            from 'changelog.md'
+//        }
+//        contents {
+//            into("docs") {
+//                from asciidoctor {
+//                    exclude '.asciidoctor'
+//                }
+//            }
+//        }
+//        contents {
+//            from 'config/application.yml'
+//        }
+//    }
+//}
+//
+//apply from: rootProject.file('docker/docker.gradle')

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StoriesRequestDto {
-    public static final String platformsRegex = "IOS|ANDROID|ALL PLATFORMS";
+    public static final String platformsRegex = "IOS|ANDROID|ALL PLATFORMS|WEB";
 
     /**
      * Код банка.
@@ -29,7 +29,7 @@ public class StoriesRequestDto {
 
     @NotBlank(message = "platformType is not specified")
     @Pattern(regexp = platformsRegex,
-            message = "Incorrect parameters. Possible: IOS, ANDROID, ALL PLATFORMS")
+            message = "Incorrect parameters. Possible: IOS, ANDROID, ALL PLATFORMS, WEB")
     private String platformType;
 
     /**
