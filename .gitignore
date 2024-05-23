@@ -1,7 +1,7 @@
 HELP.md
 backend/target/
 backend/.gradle/
-backend/src/main/resources/site/**
+backend/src/main/resources/site/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
