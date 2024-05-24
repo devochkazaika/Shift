@@ -27,6 +27,9 @@ public class FileNameCreator {
         else if (Objects.equals(platformType, "ANDROID")) {
             return "story_" + bankId + "_android" + ".json";
         }
+        else if (Objects.equals(platformType, "WEB")) {
+            return "story_" + bankId + "_web" + ".json";
+        }
         return "story_" + bankId + ".json";
     }
 

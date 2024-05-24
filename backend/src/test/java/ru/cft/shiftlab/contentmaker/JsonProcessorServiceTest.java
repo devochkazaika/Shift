@@ -71,7 +71,7 @@ public class JsonProcessorServiceTest {
                 new ArrayList<>(Collections.singletonList(storyDto)));
 
         File img =  new File(
-                "/content-maker/backend/src/test/java/ru/cft/shiftlab/contentmaker/test_pictures",
+                FILES_SAVE_DIRECTORY,
                 "sample.png");
         FileInputStream input = new FileInputStream(img);
         Assertions.assertNotNull(input);
@@ -82,10 +82,10 @@ public class JsonProcessorServiceTest {
 
         DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
 
-        String picturesDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
+        String picturesDirectory = FILES_SAVE_DIRECTORY
                 + storiesRequestDto.getBankId() + "/";
         String fileName = "story_tkbbank_iOS.json";
-        String jsonDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
+        String jsonDirectory = FILES_SAVE_DIRECTORY;
         String previewUrl = picturesDirectory + "/preview1.png";
 
         List<StoryPresentation> storyPresentationList = new ArrayList<>();
@@ -142,6 +142,82 @@ public class JsonProcessorServiceTest {
 
         FileUtils.deleteQuietly(jsonFile);
         FileUtils.deleteDirectory(new File(picturesDirectory));
+    }
+
+    @Test
+    void should_save_filesWEB() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+        StoryFramesDto storyFramesDto = new StoryFramesDto(
+                "mainText",
+                "Text card",
+                "FF0000",
+                "NONE",
+                "",
+                "",
+                "",
+                "",
+                "EMPTY");
+        StoryDto storyDto = new StoryDto(
+                "MainTextPreview",
+                "FF0000",
+                "EMPTY",
+                new ArrayList<>(Collections.singletonList(storyFramesDto)));
+        StoriesRequestDto storiesRequestDto = new StoriesRequestDto(
+                "tkbbank",
+                "WEB",
+                new ArrayList<>(Collections.singletonList(storyDto)));
+        File img =  new File(
+                FILES_SAVE_DIRECTORY,
+                "sample.png");
+        FileInputStream input = new FileInputStream(img);
+        Assertions.assertNotNull(input);
+        MultipartFile multipartFile = new MockMultipartFile("fileItem",
+                img.getName(), "image/png", IOUtils.toByteArray(input));
+        var arrImg = new MultipartFile[1];
+        arrImg[0] = multipartFile;
+
+        DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
+
+        String picturesDirectory = FILES_SAVE_DIRECTORY
+                + storiesRequestDto.getBankId() + "/";
+        String fileName = "story_tkbbank_web.json";
+        String jsonDirectory = FILES_SAVE_DIRECTORY;
+        String previewUrl = picturesDirectory + "/preview1.png";
+
+        List<StoryPresentation> storyPresentationList = new ArrayList<>();
+
+        storyPresentationList.add(dtoToEntityConverter.fromStoryDtoToStoryPresentation(
+                "tkbbank",
+                storyDto,
+                previewUrl));
+
+        Map<String, List<StoryPresentation>> presentationList = new HashMap<>();
+        presentationList.put("web", storyPresentationList);
+
+        File jsonFile = Paths.get(jsonDirectory + fileName).toFile();
+
+        int countFiles = getCountFilesInDir(storiesRequestDto);
+        jsonProcessorService.saveFiles("\"" + StringEscapeUtils.escapeJson(objectMapper.writeValueAsString(storiesRequestDto)) + "\"",
+                multipartFile,
+                arrImg
+        );
+        Assertions.assertEquals(countFiles + 2, getCountFilesInDir(storiesRequestDto));
+
+        StringBuilder jsonStr = new StringBuilder();
+        System.out.println(jsonFile.toPath());
+        Files.readAllLines(jsonFile.toPath()).forEach(jsonStr::append);
+        Map<String, List<StoryPresentation>> map = objectMapper.readValue(
+                jsonStr.toString(),
+                new TypeReference<Map<String, List<StoryPresentation>>>() {}
+        );
+
+        var storyFromJson = map.get(STORIES).get(0);
+        storyFromJson.setPreviewUrl(null);
+        for(StoryPresentationFrames card : storyFromJson.getStoryPresentationFrames()){
+            card.setPictureUrl(null);
+        }
     }
 
     private int getCountFilesInDir(StoriesRequestDto storiesRequestDto) {

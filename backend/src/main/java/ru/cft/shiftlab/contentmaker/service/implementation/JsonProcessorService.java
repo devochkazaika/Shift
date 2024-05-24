@@ -61,7 +61,6 @@ public class JsonProcessorService implements FileSaverService {
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getFilePlatform(String bankId, String platform) {
         String filePlatform = fileNameCreator.createFileName(bankId, platform);
         Map<String, List<StoryPresentation>> resultMap;
-
         try {
             resultMap = mapper.readValue(new File(FILES_SAVE_DIRECTORY, filePlatform), new TypeReference<>(){});
         } catch (IOException e) {
