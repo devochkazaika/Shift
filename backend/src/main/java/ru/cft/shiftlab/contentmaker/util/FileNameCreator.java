@@ -3,6 +3,8 @@ package ru.cft.shiftlab.contentmaker.util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -20,7 +22,7 @@ public class FileNameCreator {
      * @param platformType тип платформы.
      * @return название JSON файла.
      */
-    public String createFileName(String bankId, String platformType) {
+    public static String createFileName(String bankId, String platformType) {
         if (Objects.equals(platformType, "IOS")) {
             return "story_" + bankId + "_iOS" + ".json";
         }
@@ -31,6 +33,14 @@ public class FileNameCreator {
             return "story_" + bankId + "_web" + ".json";
         }
         return "story_" + bankId + ".json";
+    }
+    public static void createFolders(String picturesSaveDirectory) throws IOException {
+        File newDirectory = new File(picturesSaveDirectory);
+        if (!newDirectory.exists()) {
+            if(!newDirectory.mkdirs()){
+                throw new IOException("Can't create dir: " + picturesSaveDirectory);
+            }
+        }
     }
 
 }

@@ -35,13 +35,11 @@ public class JsonProcessorServiceTest {
 
     private final MultipartFileToImageConverter multipartFileToImageConverter = new MultipartFileToImageConverter(new ImageNameGenerator());
 
-    private final FileNameCreator fileNameCreator = new FileNameCreator();
 
     private final DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
     private final ImageNameGenerator imageNameGenerator = new ImageNameGenerator();
 
     private final JsonProcessorService jsonProcessorService = new JsonProcessorService(
-            fileNameCreator,
             multipartFileToImageConverter,
             dtoToEntityConverter);
 
@@ -71,8 +69,9 @@ public class JsonProcessorServiceTest {
                 new ArrayList<>(Collections.singletonList(storyDto)));
 
         File img =  new File(
-                FILES_SAVE_DIRECTORY,
+                FILES_TEST_DIRECTORY,
                 "sample.png");
+        System.out.println(img.getAbsolutePath());
         FileInputStream input = new FileInputStream(img);
         Assertions.assertNotNull(input);
         MultipartFile multipartFile = new MockMultipartFile("fileItem",
@@ -169,8 +168,9 @@ public class JsonProcessorServiceTest {
                 "WEB",
                 new ArrayList<>(Collections.singletonList(storyDto)));
         File img =  new File(
-                FILES_SAVE_DIRECTORY,
+                FILES_TEST_DIRECTORY,
                 "sample.png");
+        System.out.println(img.getAbsolutePath());
         FileInputStream input = new FileInputStream(img);
         Assertions.assertNotNull(input);
         MultipartFile multipartFile = new MockMultipartFile("fileItem",
@@ -230,4 +230,4 @@ public class JsonProcessorServiceTest {
         }
         return files.length;
     }
- }
+}

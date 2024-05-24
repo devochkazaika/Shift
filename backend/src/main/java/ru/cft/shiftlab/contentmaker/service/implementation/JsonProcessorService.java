@@ -28,10 +28,7 @@ import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
-import ru.cft.shiftlab.contentmaker.util.DtoToEntityConverter;
-import ru.cft.shiftlab.contentmaker.util.FileNameCreator;
-import ru.cft.shiftlab.contentmaker.util.ImageContainer;
-import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
+import ru.cft.shiftlab.contentmaker.util.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,14 +56,11 @@ public class JsonProcessorService implements FileSaverService {
                         .FAIL_ON_UNKNOWN_PROPERTIES,
                 false);
     }
-    private final FileNameCreator fileNameCreator;
     private final MultipartFileToImageConverter multipartFileToImageConverter;
     private final DtoToEntityConverter dtoToEntityConverter;
 
-
-
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getFilePlatform(String bankId, String platform) {
-        String filePlatform = fileNameCreator.createFileName(bankId, platform);
+        String filePlatform = FileNameCreator.createFileName(bankId, platform);
         Map<String, List<StoryPresentation>> resultMap;
         try {
             resultMap = mapper.readValue(new File(FILES_SAVE_DIRECTORY, filePlatform), new TypeReference<>(){});
@@ -110,31 +104,18 @@ public class JsonProcessorService implements FileSaverService {
 
     @Override
     public void saveFiles(String strStoriesRequestDto, MultipartFile previewImage, MultipartFile[] images){
-        JsonHandler json = new JsonHandler();
         try {
             StoriesRequestDto storiesRequestDto = mapper.readValue(
                     mapper.readValue(strStoriesRequestDto, String.class)
                     , StoriesRequestDto.class);
             String bankId = storiesRequestDto.getBankId();
-            String picturesSaveDirectory = FILES_SAVE_DIRECTORY + bankId + "/";
-
-            File newDirectory = new File(picturesSaveDirectory);
-            if (!newDirectory.exists()) {
-                if(!newDirectory.mkdirs()){
-                    throw new IOException("Can't create dir: " + picturesSaveDirectory);
-                }
-            }
-
             String platformType = storiesRequestDto.getPlatformType();
 
-
-            List<StoryPresentation> storyPresentationList =json.writeImagesAndJson(fileNameCreator.createFileName(bankId, platformType),
-                    previewImage,
-                    images,
-                    storiesRequestDto,
-                    bankId,
-                    picturesSaveDirectory);
-
+            String picturesSaveDirectory = FILES_SAVE_DIRECTORY + bankId + "/";
+            //Создание пути для картинок, если его еще нет
+            FileNameCreator.createFolders(picturesSaveDirectory);
+            //Чтение сторис, которые уже находятся в хранилище
+            List<StoryPresentation> storyPresentationList = checkFileInBankDir(FileNameCreator.createFileName(bankId, platformType));
             storiesDtoToPresentations(
                     bankId,
                     picturesSaveDirectory,
@@ -143,13 +124,31 @@ public class JsonProcessorService implements FileSaverService {
                     previewImage,
                     images
             );
+
             Map<String, List<StoryPresentation>> resultMap = new HashMap<>();
             resultMap.put(STORIES, storyPresentationList);
-            mapper.writeValue(new File(FILES_SAVE_DIRECTORY, fileNameCreator.createFileName(bankId, platformType)), resultMap);
+            File file = new File(FILES_SAVE_DIRECTORY, FileNameCreator.createFileName(bankId, platformType));
+            mapper.writeValue(file, resultMap);
         }
         catch (IOException e) {
             throw new StaticContentException("Could not save files", "HTTP 500 - INTERNAL_SERVER_ERROR");
         }
+    }
+    private List<StoryPresentation> checkFileInBankDir(String fileName) throws IOException {
+        List<StoryPresentation> storyPresentationList = new ArrayList<StoryPresentation>();
+        File bankJsonFile = new File(FILES_SAVE_DIRECTORY + fileName);
+
+        if (bankJsonFile.exists()) {
+            ObjectMapper mapper = new ObjectMapper();
+            TypeReference<Map<String, List<StoryPresentation>>> typeReference = new TypeReference<>() {
+            };
+
+            storyPresentationList.addAll(mapper.readValue(
+                            new File(FILES_SAVE_DIRECTORY,fileName), typeReference)
+                    .get(STORIES)
+            );
+        }
+        return storyPresentationList;
     }
 
 
@@ -169,7 +168,7 @@ public class JsonProcessorService implements FileSaverService {
             }
             ImageContainer imageContainerPreview = new ImageContainer(previewImage);
             long lastId;
-            if (storyPresentationList.size() == 0){
+            if (storyPresentationList.isEmpty()){
                 lastId = 0;
             }
             else {
@@ -221,7 +220,7 @@ public class JsonProcessorService implements FileSaverService {
 
     public void deleteService(String bankId, String platform, String id) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        String fileName = fileNameCreator.createFileName(bankId, platform);
+        String fileName = FileNameCreator.createFileName(bankId, platform);
         ObjectNode node = (ObjectNode) mapper.readTree(new File(FILES_SAVE_DIRECTORY + fileName));
         if (node.has("stories")) {
             ArrayNode storiesNode = (ArrayNode) node.get("stories");
