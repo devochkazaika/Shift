@@ -71,7 +71,7 @@ public class JsonProcessorServiceTest {
                 new ArrayList<>(Collections.singletonList(storyDto)));
 
         File img =  new File(
-                "/src/test/java/ru/cft/shiftlab/contentmaker/test_pictures",
+                FILES_SAVE_DIRECTORY,
                 "sample.png");
         FileInputStream input = new FileInputStream(img);
         Assertions.assertNotNull(input);
@@ -82,10 +82,10 @@ public class JsonProcessorServiceTest {
 
         DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
 
-        String picturesDirectory = "/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
+        String picturesDirectory = FILES_SAVE_DIRECTORY
                 + storiesRequestDto.getBankId() + "/";
         String fileName = "story_tkbbank_iOS.json";
-        String jsonDirectory = "/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
+        String jsonDirectory = FILES_SAVE_DIRECTORY;
         String previewUrl = picturesDirectory + "/preview1.png";
 
         List<StoryPresentation> storyPresentationList = new ArrayList<>();
@@ -168,12 +168,10 @@ public class JsonProcessorServiceTest {
                 "tkbbank",
                 "WEB",
                 new ArrayList<>(Collections.singletonList(storyDto)));
-        System.out.println(System.getProperty("user.dir"));
         File img =  new File(
-                "./src/test/java/ru/cft/shiftlab/contentmaker/test_pictures",
+                FILES_SAVE_DIRECTORY,
                 "sample.png");
         FileInputStream input = new FileInputStream(img);
-//        System.out.println(img);
         Assertions.assertNotNull(input);
         MultipartFile multipartFile = new MockMultipartFile("fileItem",
                 img.getName(), "image/png", IOUtils.toByteArray(input));
@@ -182,10 +180,10 @@ public class JsonProcessorServiceTest {
 
         DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
 
-        String picturesDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
+        String picturesDirectory = FILES_SAVE_DIRECTORY
                 + storiesRequestDto.getBankId() + "/";
         String fileName = "story_tkbbank_web.json";
-        String jsonDirectory = "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
+        String jsonDirectory = FILES_SAVE_DIRECTORY;
         String previewUrl = picturesDirectory + "/preview1.png";
 
         List<StoryPresentation> storyPresentationList = new ArrayList<>();
