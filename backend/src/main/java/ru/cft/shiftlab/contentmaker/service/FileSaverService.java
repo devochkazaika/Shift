@@ -21,4 +21,8 @@ public interface FileSaverService {
         IOException e = new IOException();
         throw new RuntimeException(e);
     }
+    default void deleteService(String bankId, String platform, String id) throws Exception  {
+        IOException e = new IOException();
+        throw new RuntimeException(e);
+    }
 }
