@@ -111,7 +111,7 @@ public class JsonProcessorService implements FileSaverService {
             String bankId = storiesRequestDto.getBankId();
             String platformType = storiesRequestDto.getPlatformType();
 
-            String picturesSaveDirectory = FILES_SAVE_DIRECTORY + bankId + "/";
+            String picturesSaveDirectory = FILES_SAVE_DIRECTORY + bankId + "/" + platformType + "/";
             //Создание пути для картинок, если его еще нет
             FileNameCreator.createFolders(picturesSaveDirectory);
             //Чтение сторис, которые уже находятся в хранилище
@@ -189,7 +189,6 @@ public class JsonProcessorService implements FileSaverService {
                             newFile.delete();
                             x.renameTo(newFile);
                         }
-                        System.out.println(x.getAbsolutePath());
                     });
 
             previewUrl = multipartFileToImageConverter.parsePicture(

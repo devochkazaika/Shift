@@ -82,7 +82,7 @@ public class JsonProcessorServiceTest {
         DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
 
         String picturesDirectory = FILES_SAVE_DIRECTORY
-                + storiesRequestDto.getBankId() + "/";
+                + storiesRequestDto.getBankId() + "/" + storiesRequestDto.getPlatformType();
         String fileName = "story_tkbbank_iOS.json";
         String jsonDirectory = FILES_SAVE_DIRECTORY;
         String previewUrl = picturesDirectory + "/preview1.png";
@@ -181,7 +181,7 @@ public class JsonProcessorServiceTest {
         DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
 
         String picturesDirectory = FILES_SAVE_DIRECTORY
-                + storiesRequestDto.getBankId() + "/";
+                + storiesRequestDto.getBankId() + "/" + storiesRequestDto.getPlatformType();
         String fileName = "story_tkbbank_web.json";
         String jsonDirectory = FILES_SAVE_DIRECTORY;
         String previewUrl = picturesDirectory + "/preview1.png";
@@ -223,7 +223,7 @@ public class JsonProcessorServiceTest {
     private int getCountFilesInDir(StoriesRequestDto storiesRequestDto) {
         File f = new File(
                 FILES_SAVE_DIRECTORY +
-                        storiesRequestDto.getBankId() + "/");
+                        storiesRequestDto.getBankId() + "/" + storiesRequestDto.getPlatformType() + "/");
         File[] files = f.listFiles();
         if(files == null){
             return 0;
