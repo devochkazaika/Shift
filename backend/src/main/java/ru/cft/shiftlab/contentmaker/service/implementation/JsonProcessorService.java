@@ -237,5 +237,19 @@ public class JsonProcessorService implements FileSaverService {
         }
         JsonNode js = (JsonNode) node;
         mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILES_SAVE_DIRECTORY, fileName), js);
+        deleteFilesStories(bankId, platform, id);
+    }
+    private void deleteFilesStories(String bankId, String platform, String id){
+        File directory = new File(FILES_SAVE_DIRECTORY + "/" + bankId);
+        if (!directory.exists() || !directory.isDirectory()) {
+            System.out.println("Directory does not exist or is not a directory: " + directory.getAbsolutePath());
+            return;
+        }
+        File[] files = directory.listFiles();
+        System.out.println(directory.getAbsolutePath());
+        Stream.of(files)
+                .filter(x -> x.getName().startsWith(id))
+                .forEach(x -> x.delete());
+
     }
 }
