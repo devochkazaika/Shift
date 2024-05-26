@@ -219,6 +219,15 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     public void deleteService(String bankId, String platform, String id) throws Exception {
+        try {
+            deleteJsonStories(bankId, platform, id);
+        }
+        catch (IOException e){
+            throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR")
+        }
+        deleteFilesStories(bankId, platform, id);
+    }
+    public void deleteJsonStories(String bankId, String platform, String id) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         String fileName = FileNameCreator.createFileName(bankId, platform);
         ObjectNode node = (ObjectNode) mapper.readTree(new File(FILES_SAVE_DIRECTORY + fileName));
@@ -233,7 +242,7 @@ public class JsonProcessorService implements FileSaverService {
             }
         }
         else{
-            throw new Exception();
+            throw new IOException();
         }
         JsonNode js = (JsonNode) node;
         mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILES_SAVE_DIRECTORY, fileName), js);
