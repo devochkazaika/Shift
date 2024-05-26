@@ -71,7 +71,7 @@ public class JsonProcessorServiceTest {
         File img =  new File(
                 FILES_TEST_DIRECTORY,
                 "sample.png");
-        System.out.println(img.getAbsolutePath());
+
         FileInputStream input = new FileInputStream(img);
         Assertions.assertNotNull(input);
         MultipartFile multipartFile = new MockMultipartFile("fileItem",
@@ -170,7 +170,7 @@ public class JsonProcessorServiceTest {
         File img =  new File(
                 FILES_TEST_DIRECTORY,
                 "sample.png");
-        System.out.println(img.getAbsolutePath());
+
         FileInputStream input = new FileInputStream(img);
         Assertions.assertNotNull(input);
         MultipartFile multipartFile = new MockMultipartFile("fileItem",
@@ -206,7 +206,7 @@ public class JsonProcessorServiceTest {
         Assertions.assertEquals(countFiles + 2, getCountFilesInDir(storiesRequestDto));
 
         StringBuilder jsonStr = new StringBuilder();
-        System.out.println(jsonFile.toPath());
+
         Files.readAllLines(jsonFile.toPath()).forEach(jsonStr::append);
         Map<String, List<StoryPresentation>> map = objectMapper.readValue(
                 jsonStr.toString(),

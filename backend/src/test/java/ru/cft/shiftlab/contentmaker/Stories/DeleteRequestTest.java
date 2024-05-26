@@ -105,9 +105,7 @@ public class DeleteRequestTest {
         try {
             // Копируем файл из sourcePath в destinationPath
             Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
-            System.out.println("File copied successfully!");
         } catch (IOException e) {
-            System.err.println("Failed to copy file: " + e.getMessage());
             e.printStackTrace();
         }
     }

@@ -182,10 +182,7 @@ public class JsonProcessorService implements FileSaverService {
                     .forEach(x -> {
                         File newFile = new File(x.getParent(), x.getName().substring(0, x.getName().indexOf('.')) + "_old"+x.getName().substring(x.getName().indexOf('.')));
                         boolean b = x.renameTo(newFile);
-                        if (b){
-                            System.out.println("success");
-                        }
-                        else{
+                        if (!b){
                             newFile.delete();
                             x.renameTo(newFile);
                         }
@@ -226,6 +223,9 @@ public class JsonProcessorService implements FileSaverService {
         }
         deleteFilesStories(bankId, platform, id);
     }
+    /**
+     * Метод, предназначенный для удаления историй из JSON.
+     */
     public void deleteJsonStories(String bankId, String platform, String id) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         String fileName = FileNameCreator.createFileName(bankId, platform);
@@ -247,11 +247,14 @@ public class JsonProcessorService implements FileSaverService {
         mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILES_SAVE_DIRECTORY, fileName), js);
         deleteFilesStories(bankId, platform, id);
     }
+    /**
+     * Метод, предназначенный для удаления файлов историй из директории.
+     */
     private void deleteFilesStories(String bankId, String platform, String id){
         File directory = new File(FILES_SAVE_DIRECTORY + "/" + bankId + "/" + platform);
         if (!directory.exists() || !directory.isDirectory()) {
-            System.out.println("Directory does not exist or is not a directory: " + directory.getAbsolutePath());
-            return;
+            throw new StaticContentException("Directory does not exist or is not a directory: " + directory.getAbsolutePath(),
+                    "HTTP 500 - INTERNAL_SERVER_ERROR");
         }
         File[] files = directory.listFiles();
         Stream.of(files)
