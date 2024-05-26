@@ -223,14 +223,14 @@ public class JsonProcessorService implements FileSaverService {
             deleteJsonStories(bankId, platform, id);
         }
         catch (IOException e){
-            throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR")
+            throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
         }
         deleteFilesStories(bankId, platform, id);
     }
     public void deleteJsonStories(String bankId, String platform, String id) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         String fileName = FileNameCreator.createFileName(bankId, platform);
-        ObjectNode node = (ObjectNode) mapper.readTree(new File(FILES_SAVE_DIRECTORY + fileName));
+        ObjectNode node = (ObjectNode) mapper.readTree(new File(FILES_SAVE_DIRECTORY + "/" + fileName));
         if (node.has("stories")) {
             ArrayNode storiesNode = (ArrayNode) node.get("stories");
             Iterator<JsonNode> i = storiesNode.iterator();
@@ -249,13 +249,12 @@ public class JsonProcessorService implements FileSaverService {
         deleteFilesStories(bankId, platform, id);
     }
     private void deleteFilesStories(String bankId, String platform, String id){
-        File directory = new File(FILES_SAVE_DIRECTORY + "/" + bankId);
+        File directory = new File(FILES_SAVE_DIRECTORY + "/" + bankId + "/" + platform);
         if (!directory.exists() || !directory.isDirectory()) {
             System.out.println("Directory does not exist or is not a directory: " + directory.getAbsolutePath());
             return;
         }
         File[] files = directory.listFiles();
-        System.out.println(directory.getAbsolutePath());
         Stream.of(files)
                 .filter(x -> x.getName().startsWith(id))
                 .forEach(x -> x.delete());
