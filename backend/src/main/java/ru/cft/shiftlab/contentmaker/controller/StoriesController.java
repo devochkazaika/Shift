@@ -1,11 +1,15 @@
 package ru.cft.shiftlab.contentmaker.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,17 +30,31 @@ public class StoriesController {
      *
      * @param storiesRequestDto DTO, которая содержит информацию об историях, в виде строки json.
      * @param images файлы с картинкой превью.
-     * @param previewImage файлы с картинками карточек.
+     * @param previewImage главная картинка.
      */
-    @PostMapping("/add")
+    @PostMapping(path = "/add",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Добавление истории на сервер.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "История добавлена на сервер.")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    public void addStories(@RequestParam(value = "json") String storiesRequestDto,
-                           @RequestParam(value = "previewImage",required = false) MultipartFile previewImage,
-                           @RequestParam(value = "cardImages",required = false) MultipartFile[] images) {
+    public void addStories(
+            @RequestParam(value = "json")
+            @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
+            String storiesRequestDto,
+
+            @RequestPart(value = "previewImage",required = true)
+            @Parameter(description = "Главная картинка.",
+                    content = @Content(mediaType = "multipart/form-data",
+                            schema = @Schema(type = "array", format = "binary")))
+            MultipartFile previewImage,
+
+            @RequestPart(value = "cardImages",required = false)
+            @Parameter(description = "Файлы с картинками карточек.",
+                    content = @Content(mediaType = "multipart/form-data",
+                            schema = @Schema(type = "string", format = "binary")))
+            MultipartFile[] images) {
 
         storiesService.saveFiles(storiesRequestDto, previewImage, images);
     }

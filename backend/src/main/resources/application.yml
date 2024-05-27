@@ -35,3 +35,10 @@ spring:
   sql:
     init:
       platform: org.hibernate.dialect.H2Dialect
+  servlet:
+    multipart:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
+server:
+  tomcat:
+    max-http-form-post-size: 10485760
