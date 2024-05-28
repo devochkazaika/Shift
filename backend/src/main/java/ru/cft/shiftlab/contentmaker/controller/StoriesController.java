@@ -32,8 +32,7 @@ public class StoriesController {
      * @param images файлы с картинкой превью.
      * @param previewImage главная картинка.
      */
-    @PostMapping(path = "/add",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(path = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Добавление истории на сервер.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "История добавлена на сервер.")
@@ -46,14 +45,14 @@ public class StoriesController {
 
             @RequestPart(value = "previewImage",required = true)
             @Parameter(description = "Главная картинка.",
-                    content = @Content(mediaType = "multipart/form-data",
-                            schema = @Schema(type = "array", format = "binary")))
+                    schema = @Schema(type = "string", format = "binary"),
+                    content = @Content(mediaType = "multipart/form-data"))
             MultipartFile previewImage,
 
             @RequestPart(value = "cardImages",required = false)
             @Parameter(description = "Файлы с картинками карточек.",
-                    content = @Content(mediaType = "multipart/form-data",
-                            schema = @Schema(type = "string", format = "binary")))
+                    schema = @Schema(type = "array", format = "binary"),
+                    content = @Content(mediaType = "multipart/form-data"))
             MultipartFile[] images) {
 
         storiesService.saveFiles(storiesRequestDto, previewImage, images);
@@ -75,17 +74,44 @@ public class StoriesController {
     @ResponseStatus(HttpStatus.FOUND)
     @ResponseBody
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getStories(
-            @RequestParam(name = "bankId") String bankId,
-            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS") String platform) {
+            @RequestParam(name = "bankId")
+            @Parameter(description = "Название банка",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "tkkbank")
+            String bankId,
+
+            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+            @Parameter(description = "Тип платформы",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "WEB")
+            String platform){
 
         return storiesService.getFilePlatform(bankId, platform);
     }
 
     @DeleteMapping("/bank/info/delete")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "История успешно удалена")
+    })
+    @ResponseStatus(HttpStatus.OK)
     public void deleteStories(
-            @RequestParam(name = "bankId") String bankId,
-            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS") String platform,
-            @RequestParam(name = "id") String id) throws Exception {
+            @RequestParam(name = "bankId")
+            @Parameter(description = "Название банка",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "tkkbank")
+            String bankId,
+
+            @Parameter(description = "Тип платформы",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "ALL PLATFORMS")
+            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+            String platform,
+
+            @Parameter(description = "id истории",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "0")
+            @RequestParam(name = "id")
+            String id) throws Exception {
 
         storiesService.deleteService(bankId, platform, id);
     }

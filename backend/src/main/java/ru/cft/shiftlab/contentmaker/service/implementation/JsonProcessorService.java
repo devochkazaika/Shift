@@ -130,6 +130,9 @@ public class JsonProcessorService implements FileSaverService {
             File file = new File(FILES_SAVE_DIRECTORY, FileNameCreator.createFileName(bankId, platformType));
             mapper.writeValue(file, resultMap);
         }
+        catch (JsonProcessingException e){
+            throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
+        }
         catch (IOException e) {
             throw new StaticContentException("Could not save files", "HTTP 500 - INTERNAL_SERVER_ERROR");
         }
