@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
+import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 
 /**
  * Контроллер, обрабатывающий запросы для работы с Story.
@@ -22,7 +22,7 @@ import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 @RequestMapping("/stories")
 @RequiredArgsConstructor
 public class StoriesController {
-    private final JsonProcessorService storiesService;
+    private final FileSaverService storiesService;
 
     /**
      * Метод, который обрабатывает POST-запрос на сохранение историй.
