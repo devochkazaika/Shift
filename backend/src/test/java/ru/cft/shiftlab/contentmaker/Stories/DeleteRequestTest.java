@@ -12,9 +12,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
-import ru.cft.shiftlab.contentmaker.util.DtoToEntityConverter;
+import ru.cft.shiftlab.contentmaker.util.DirProcess;
+import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 import ru.cft.shiftlab.contentmaker.util.FileNameCreator;
-import ru.cft.shiftlab.contentmaker.util.ImageNameGenerator;
+import ru.cft.shiftlab.contentmaker.util.Image.ImageNameGenerator;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
 
 import java.io.File;
@@ -40,6 +41,7 @@ public class DeleteRequestTest {
     ObjectMapper objectMapper = new ObjectMapper();
     private final MultipartFileToImageConverter multipartFileToImageConverter = new MultipartFileToImageConverter(new ImageNameGenerator());
     private final DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
+    private final DirProcess dirProcess = new DirProcess();
     @Test
     void deleteFilesTest() throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException {
         Method method = JsonProcessorService.class.getDeclaredMethod("deleteFilesStories", String.class, String.class, String.class);
@@ -67,7 +69,9 @@ public class DeleteRequestTest {
                 img.getName(), "image/png", IOUtils.toByteArray(input));
 
         JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
-                dtoToEntityConverter);
+                dtoToEntityConverter,
+                dirProcess
+                );
 
 
         method.invoke(service, bankId, platform, "0");
@@ -82,7 +86,8 @@ public class DeleteRequestTest {
         copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_tkbbank_web.json");
         File json = new File(FILES_SAVE_DIRECTORY+"/story_tkbbank_web.json");
         JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
-                dtoToEntityConverter);
+                dtoToEntityConverter,
+                dirProcess);
 
         method.invoke(service, "tkbbank", "WEB", "0");
 

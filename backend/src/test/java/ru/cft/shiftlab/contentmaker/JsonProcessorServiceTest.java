@@ -20,6 +20,8 @@ import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 import ru.cft.shiftlab.contentmaker.util.*;
+import ru.cft.shiftlab.contentmaker.util.Image.ImageNameGenerator;
+import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,10 +40,12 @@ public class JsonProcessorServiceTest {
 
     private final DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
     private final ImageNameGenerator imageNameGenerator = new ImageNameGenerator();
+    private final DirProcess dirProcess = new DirProcess();
 
     private final JsonProcessorService jsonProcessorService = new JsonProcessorService(
             multipartFileToImageConverter,
-            dtoToEntityConverter);
+            dtoToEntityConverter,
+            dirProcess);
 
     @Test
     void should_save_files() throws IOException {
