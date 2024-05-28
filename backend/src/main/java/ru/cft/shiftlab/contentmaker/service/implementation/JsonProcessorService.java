@@ -27,8 +27,11 @@ import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
-import ru.cft.shiftlab.contentmaker.util.*;
+import ru.cft.shiftlab.contentmaker.util.DirProcess;
+import ru.cft.shiftlab.contentmaker.util.FileNameCreator;
 import ru.cft.shiftlab.contentmaker.util.Image.ImageContainer;
+import ru.cft.shiftlab.contentmaker.util.MultipartBodyProcess;
+import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
 import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 
 import java.io.File;
@@ -108,7 +111,7 @@ public class JsonProcessorService implements FileSaverService {
 
             String picturesSaveDirectory = FILES_SAVE_DIRECTORY + bankId + "/" + platformType + "/";
             //Создание пути для картинок, если его еще нет
-            FileNameCreator.createFolders(picturesSaveDirectory);
+            dirProcess.createFolders(picturesSaveDirectory);
             //Чтение сторис, которые уже находятся в хранилище
             List<StoryPresentation> storyPresentationList = dirProcess.checkFileInBankDir(
                     FileNameCreator.createFileName(bankId, platformType),
@@ -200,13 +203,20 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     public void deleteService(String bankId, String platform, String id) throws Exception {
-        try {
-            deleteJsonStories(bankId, platform, id);
-        }
-        catch (IOException e){
-            throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
-        }
-        deleteFilesStories(bankId, platform, id);
+        Runnable r = ()->{
+            try {
+                deleteJsonStories(bankId, platform, id);
+            }
+            catch (IOException e){
+                throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
+            }
+        };
+        Thread deleteJson = new Thread(r, "deleteJson");
+        Thread deleteImages = new Thread(() -> deleteFilesStories(bankId, platform, id), "deleteImages");
+        deleteJson.start();
+        deleteImages.start();
+        deleteJson.join();
+        deleteImages.join();
     }
     /**
      * Метод, предназначенный для удаления историй из JSON.

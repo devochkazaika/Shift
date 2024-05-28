@@ -39,4 +39,13 @@ public class DirProcess {
         }
         throw new IllegalArgumentException("Unsupported type: " + type);
     }
+
+    public void createFolders(String picturesSaveDirectory) throws IOException {
+        File newDirectory = new File(picturesSaveDirectory);
+        if (!newDirectory.exists()) {
+            if(!newDirectory.mkdirs()){
+                throw new IOException("Can't create dir: " + picturesSaveDirectory);
+            }
+        }
+    }
 }

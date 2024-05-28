@@ -13,10 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 import ru.cft.shiftlab.contentmaker.util.DirProcess;
-import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
-import ru.cft.shiftlab.contentmaker.util.FileNameCreator;
 import ru.cft.shiftlab.contentmaker.util.Image.ImageNameGenerator;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
+import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,7 +49,7 @@ public class DeleteRequestTest {
         String bankId = "TestBank";
         String platform = "WEB";
         String saveDirectory = FILES_SAVE_DIRECTORY + bankId + "/" + platform;
-        FileNameCreator.createFolders(saveDirectory);
+        dirProcess.createFolders(saveDirectory);
         File img =  new File(
                 FILES_TEST_DIRECTORY,
                 "sample.png");
@@ -62,7 +61,7 @@ public class DeleteRequestTest {
         FileInputStream input = new FileInputStream(img);
         Assertions.assertNotNull(input);
 
-        FileNameCreator.createFolders(saveDirectory);
+        dirProcess.createFolders(saveDirectory);
 
 
         MultipartFile multipartFile = new MockMultipartFile("fileItem",
