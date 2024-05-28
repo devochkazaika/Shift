@@ -35,13 +35,11 @@ public class JsonProcessorServiceTest {
 
     private final MultipartFileToImageConverter multipartFileToImageConverter = new MultipartFileToImageConverter(new ImageNameGenerator());
 
-    private final FileNameCreator fileNameCreator = new FileNameCreator();
 
     private final DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
     private final ImageNameGenerator imageNameGenerator = new ImageNameGenerator();
 
     private final JsonProcessorService jsonProcessorService = new JsonProcessorService(
-            fileNameCreator,
             multipartFileToImageConverter,
             dtoToEntityConverter);
 
@@ -71,8 +69,9 @@ public class JsonProcessorServiceTest {
                 new ArrayList<>(Collections.singletonList(storyDto)));
 
         File img =  new File(
-                FILES_SAVE_DIRECTORY,
+                FILES_TEST_DIRECTORY,
                 "sample.png");
+
         FileInputStream input = new FileInputStream(img);
         Assertions.assertNotNull(input);
         MultipartFile multipartFile = new MockMultipartFile("fileItem",
@@ -83,7 +82,7 @@ public class JsonProcessorServiceTest {
         DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
 
         String picturesDirectory = FILES_SAVE_DIRECTORY
-                + storiesRequestDto.getBankId() + "/";
+                + storiesRequestDto.getBankId() + "/" + storiesRequestDto.getPlatformType();
         String fileName = "story_tkbbank_iOS.json";
         String jsonDirectory = FILES_SAVE_DIRECTORY;
         String previewUrl = picturesDirectory + "/preview1.png";
@@ -169,8 +168,9 @@ public class JsonProcessorServiceTest {
                 "WEB",
                 new ArrayList<>(Collections.singletonList(storyDto)));
         File img =  new File(
-                FILES_SAVE_DIRECTORY,
+                FILES_TEST_DIRECTORY,
                 "sample.png");
+
         FileInputStream input = new FileInputStream(img);
         Assertions.assertNotNull(input);
         MultipartFile multipartFile = new MockMultipartFile("fileItem",
@@ -181,7 +181,7 @@ public class JsonProcessorServiceTest {
         DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
 
         String picturesDirectory = FILES_SAVE_DIRECTORY
-                + storiesRequestDto.getBankId() + "/";
+                + storiesRequestDto.getBankId() + "/" + storiesRequestDto.getPlatformType();
         String fileName = "story_tkbbank_web.json";
         String jsonDirectory = FILES_SAVE_DIRECTORY;
         String previewUrl = picturesDirectory + "/preview1.png";
@@ -206,7 +206,7 @@ public class JsonProcessorServiceTest {
         Assertions.assertEquals(countFiles + 2, getCountFilesInDir(storiesRequestDto));
 
         StringBuilder jsonStr = new StringBuilder();
-        System.out.println(jsonFile.toPath());
+
         Files.readAllLines(jsonFile.toPath()).forEach(jsonStr::append);
         Map<String, List<StoryPresentation>> map = objectMapper.readValue(
                 jsonStr.toString(),
@@ -223,11 +223,11 @@ public class JsonProcessorServiceTest {
     private int getCountFilesInDir(StoriesRequestDto storiesRequestDto) {
         File f = new File(
                 FILES_SAVE_DIRECTORY +
-                        storiesRequestDto.getBankId() + "/");
+                        storiesRequestDto.getBankId() + "/" + storiesRequestDto.getPlatformType() + "/");
         File[] files = f.listFiles();
         if(files == null){
             return 0;
         }
         return files.length;
     }
- }
+}

@@ -46,11 +46,11 @@ public class MultipartFileToImageConverter {
         return fileName;
     }
 
-    public String parsePicture(ImageContainer imageContainer, String picturesSaveDirectory) throws IOException {
+    public String parsePicture(ImageContainer imageContainer, String picturesSaveDirectory, Long id) throws IOException {
         String previewPictureName = convertMultipartFileToImageAndSave(
                 imageContainer.getNextImage(),
                 picturesSaveDirectory,
-                imageNameGenerator.generateImageName(picturesSaveDirectory)
+                imageNameGenerator.generateImageName(picturesSaveDirectory, id)
         );
 
         return picturesSaveDirectory + previewPictureName;

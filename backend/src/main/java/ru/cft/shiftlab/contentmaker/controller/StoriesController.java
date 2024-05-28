@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 
-import javax.validation.Valid;
-
 /**
  * Контроллер, обрабатывающий запросы для работы с Story.
  */
@@ -63,5 +61,14 @@ public class StoriesController {
             @RequestParam(name = "platform", defaultValue="ALL PLATFORMS") String platform) {
 
         return storiesService.getFilePlatform(bankId, platform);
+    }
+
+    @DeleteMapping("/bank/info/delete")
+    public void deleteStories(
+            @RequestParam(name = "bankId") String bankId,
+            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS") String platform,
+            @RequestParam(name = "id") String id) throws Exception {
+
+        storiesService.deleteService(bankId, platform, id);
     }
 }

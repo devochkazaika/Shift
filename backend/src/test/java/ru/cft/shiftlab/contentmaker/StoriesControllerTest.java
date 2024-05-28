@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_TEST_DIRECTORY;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(value = StoriesController.class)
@@ -67,9 +68,9 @@ public class StoriesControllerTest {
         StoriesRequestDto storiesRequestDto = new StoriesRequestDto("nskbl", "ALL PLATFORMS",
                 new ArrayList<>(Collections.singletonList(storyDto)));
 
-        String path = "/content-maker/backend/src/test/java/ru/cft/shiftlab/contentmaker/test_pictures/" + "sample.png";
+        String path = FILES_TEST_DIRECTORY + "sample.png";
         File img =  new File(
-                "/content-maker/backend/src/test/java/ru/cft/shiftlab/contentmaker/test_pictures",
+                FILES_TEST_DIRECTORY,
                 "sample.png");
         FileInputStream input = new FileInputStream(img);
         Assertions.assertNotNull(input);
