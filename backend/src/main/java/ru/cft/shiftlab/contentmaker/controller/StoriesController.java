@@ -89,9 +89,16 @@ public class StoriesController {
         return storiesService.getFilePlatform(bankId, platform);
     }
 
+    /**
+     * Метод, который обрабатывает DELETE-запрос на удаление историй.
+     *
+     * @param bankId название банка.
+     * @param platform платформа, для которой создана история.
+     * @param id id истории
+     */
     @DeleteMapping("/bank/info/delete")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "История успешно удалена")
+            @ApiResponse(responseCode = "200", description = "История успешно удалена")
     })
     @ResponseStatus(HttpStatus.OK)
     public void deleteStories(

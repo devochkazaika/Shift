@@ -160,21 +160,12 @@ public class JsonProcessorService implements FileSaverService {
                 lastId = 0;
             }
             else {
-                lastId = (storyPresentationList.get(storyPresentationList.size() - 1).getId()==null) ? 0 : storyPresentationList.get(storyPresentationList.size() - 1).getId()+1;
+                var lastOfList = storyPresentationList.get(storyPresentationList.size()-1);
+                lastId = (lastOfList.getId()==null) ? 0 : lastOfList.getId()+1;
             }
 
-            File file = new File(picturesSaveDirectory);
-            File[] files = file.listFiles();
-            Stream.of(files)
-                    .filter(x ->x.getName().startsWith(String.valueOf(lastId)))
-                    .forEach(x -> {
-                        File newFile = new File(x.getParent(), x.getName().substring(0, x.getName().indexOf('.')) + "_old"+x.getName().substring(x.getName().indexOf('.')));
-                        boolean b = x.renameTo(newFile);
-                        if (!b){
-                            newFile.delete();
-                            x.renameTo(newFile);
-                        }
-                    });
+            //Добавление к старым картинкам _old
+            FileNameCreator.renameOld(picturesSaveDirectory, lastId);
 
             previewUrl = multipartFileToImageConverter.parsePicture(
                     imageContainerPreview,
