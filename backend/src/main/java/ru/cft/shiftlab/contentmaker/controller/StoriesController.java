@@ -11,9 +11,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
+
 
 /**
  * Контроллер, обрабатывающий запросы для работы с Story.
@@ -21,6 +24,7 @@ import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 @RestController
 @RequestMapping("/stories")
 @RequiredArgsConstructor
+@Validated
 public class StoriesController {
     private final FileSaverService storiesService;
 
@@ -78,6 +82,7 @@ public class StoriesController {
             @Parameter(description = "Название банка",
                     schema = @Schema(type = "string", format = "string"),
                     example = "tkkbank")
+            @WhiteListValid(message = "bankId must match the allowed")
             String bankId,
 
             @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
@@ -106,6 +111,7 @@ public class StoriesController {
             @Parameter(description = "Название банка",
                     schema = @Schema(type = "string", format = "string"),
                     example = "tkkbank")
+            @WhiteListValid
             String bankId,
 
             @Parameter(description = "Тип платформы",

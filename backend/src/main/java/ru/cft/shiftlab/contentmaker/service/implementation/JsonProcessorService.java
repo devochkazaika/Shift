@@ -25,7 +25,7 @@ import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
-import ru.cft.shiftlab.contentmaker.exceptionhandling.JsonExceptionHandler;
+import ru.cft.shiftlab.contentmaker.exceptionhandling.JsonException;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 import ru.cft.shiftlab.contentmaker.util.DirProcess;
@@ -201,7 +201,7 @@ public class JsonProcessorService implements FileSaverService {
                 deleteJsonStories(bankId, platform, id);
             }
             catch (IOException e){
-                exception[0] = new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
+                throw  new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
             }
             catch (StaticContentException e){
                 throw e;
@@ -242,7 +242,7 @@ public class JsonProcessorService implements FileSaverService {
             }
         }
         else{
-            throw JsonExceptionHandler.readJsonException(fileName);
+            throw JsonException.readJsonException(fileName);
         }
         JsonNode js = (JsonNode) node;
         mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILES_SAVE_DIRECTORY, fileName), js);

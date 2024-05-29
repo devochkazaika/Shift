@@ -3,7 +3,6 @@ package ru.cft.shiftlab.contentmaker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,6 +15,7 @@ import ru.cft.shiftlab.contentmaker.controller.StoriesController;
 import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(value = StoriesController.class)
@@ -35,12 +35,13 @@ public class DeleteStoriesRequestTest {
 
     @Test
     public void deleteTest() throws Exception {
-
-        Mockito.doThrow(new Exception()).when(jsonProcessorService).getFilePlatform("testBank", "asdas");
+        String bank = "testBank";
+        String platform = "asdas";
 
         mockMvc.perform(get("/bank/info")
-                        .
                 .contentType(MediaType.MULTIPART_FORM_DATA)
-        );
+                .param("bankId", bank)
+                .param("platform", platform)
+        ).andExpect(status().isInternalServerError());
     }
 }

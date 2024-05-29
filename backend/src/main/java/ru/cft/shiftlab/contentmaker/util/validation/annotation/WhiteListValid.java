@@ -13,7 +13,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * Валидация идентификатора банка.
  */
-@Target({ ElementType.FIELD})
+@Target({ ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RUNTIME)
 @Constraint(validatedBy = BankIdValidator.class)
 public @interface WhiteListValid {
