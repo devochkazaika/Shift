@@ -1,17 +1,24 @@
-import React from 'react';
+import React from "react";
 
-import { gradientOptions } from '../../../utils/constants/gradient';
-import ColorPicker from '../../ColorPicker';
-import FormField from '../../FormField';
-import UploadImage from '../../UploadImage';
-import Bin from '../../ui/Bin';
+import { gradientOptions } from "../../../utils/constants/gradient";
+import ColorPicker from "../../ColorPicker";
+import FormField from "../../FormField";
+import UploadImage from "../../UploadImage";
+import Bin from "../../ui/Bin";
 
-import { ReactComponent as MinusIcon } from '../../../assets/icons/minus.svg';
-import { ReactComponent as PlusIcon } from '../../../assets/icons/plus.svg';
+import { ReactComponent as MinusIcon } from "../../../assets/icons/minus.svg";
+import { ReactComponent as PlusIcon } from "../../../assets/icons/plus.svg";
 
-import styles from './StoryFormParts.module.scss';
+import styles from "./StoryFormParts.module.scss";
 
-const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, ...props }) => {
+const FrameFields = ({
+  storyIndex,
+  frameIndex,
+  frameJson,
+  framesCount,
+  remove,
+  ...props
+}) => {
   const [open, setOpen] = React.useState(true);
 
   return (
@@ -20,7 +27,8 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
         className={`${styles.frame_header} ${
           frameIndex === framesCount - 1 && !open && styles.bordered
         }`}
-        onClick={() => setOpen(!open)}>
+        onClick={() => setOpen(!open)}
+      >
         <div className={styles.frame_title}>
           <span>
             {open ? (
@@ -39,23 +47,23 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
           <div className="input_field">
             <FormField
               className="title"
-              labelTitle={'Заголовок'}
+              labelTitle={"Заголовок"}
               name={`stories.${storyIndex}.storyFrames.${frameIndex}.title`}
-              as={'textarea'}
+              as={"textarea"}
               {...props}
             />
           </div>
           <div className="row">
             <div className="input_field">
               <FormField
-                labelTitle={'Текст'}
+                labelTitle={"Текст"}
                 name={`stories.${storyIndex}.storyFrames.${frameIndex}.text`}
-                as={'textarea'}
+                as={"textarea"}
                 {...props}
               />
             </div>
             <FormField
-              labelTitle={'Цвет текста'}
+              labelTitle={"Цвет текста"}
               name={`stories.${storyIndex}.storyFrames.${frameIndex}.textColor`}
               component={ColorPicker}
               {...props}
@@ -63,7 +71,7 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
           </div>
           <div className="input_field">
             <FormField
-              labelTitle={'Картинка'}
+              labelTitle={"Картинка"}
               name={`stories.${storyIndex}.storyFrames.${frameIndex}.pictureUrl`}
               component={UploadImage}
               {...props}
@@ -72,7 +80,7 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
 
           <div className="input_field">
             <FormField
-              labelTitle={'Градиент'}
+              labelTitle={"Градиент"}
               name={`stories.${storyIndex}.storyFrames.${frameIndex}.gradient`}
               as="select"
               options={gradientOptions}
@@ -89,19 +97,7 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
                   type="radio"
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
                   value="BUTTON"
-                  checked={frameJson.visibleLinkOrButtonOrNone === 'BUTTON'}
-                  {...props}
-                />
-              </label>
-
-              <label htmlFor="LinkIntarectiveType">
-                <FormField
-                  labelTitle="Ссылка"
-                  id="LinkIntarectiveType"
-                  type="radio"
-                  name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
-                  value="LINK"
-                  checked={frameJson.visibleLinkOrButtonOrNone === 'LINK'}
+                  checked={frameJson.visibleLinkOrButtonOrNone === "BUTTON"}
                   {...props}
                 />
               </label>
@@ -113,40 +109,40 @@ const FrameFields = ({ storyIndex, frameIndex, frameJson, framesCount, remove, .
                   type="radio"
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
                   value="NONE"
-                  checked={frameJson.visibleLinkOrButtonOrNone === 'NONE'}
+                  checked={frameJson.visibleLinkOrButtonOrNone === "NONE"}
                   {...props}
                 />
               </label>
             </div>
           </div>
 
-          {frameJson.visibleLinkOrButtonOrNone === 'BUTTON' && (
+          {frameJson.visibleLinkOrButtonOrNone === "BUTTON" && (
             <>
               <div className="row">
                 <div className="input_field">
                   <FormField
-                    labelTitle={'Текст'}
+                    labelTitle={"Текст"}
                     name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonText`}
-                    as={'textarea'}
+                    as={"textarea"}
                     {...props}
                   />
                 </div>
                 <FormField
-                  labelTitle={'Цвет текста'}
+                  labelTitle={"Цвет текста"}
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonTextColor`}
                   component={ColorPicker}
                   {...props}
                 />
               </div>
               <FormField
-                labelTitle={'Цвет кнопки'}
+                labelTitle={"Цвет кнопки"}
                 name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonBackgroundColor`}
                 component={ColorPicker}
                 {...props}
               />
               <div className="input_field">
                 <FormField
-                  labelTitle={'Ссылка'}
+                  labelTitle={"Ссылка"}
                   name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonUrl`}
                   type="text"
                   {...props}
