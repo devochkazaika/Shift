@@ -1,4 +1,4 @@
-package ru.cft.shiftlab.contentmaker.util;
+package ru.cft.shiftlab.contentmaker.util.Image;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package ru.cft.shiftlab.contentmaker.util;
+package ru.cft.shiftlab.contentmaker.util.Story;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;

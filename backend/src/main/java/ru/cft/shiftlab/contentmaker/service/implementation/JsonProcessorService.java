@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -28,16 +27,21 @@ import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
-import ru.cft.shiftlab.contentmaker.util.*;
+import ru.cft.shiftlab.contentmaker.util.DirProcess;
+import ru.cft.shiftlab.contentmaker.util.FileNameCreator;
+import ru.cft.shiftlab.contentmaker.util.Image.ImageContainer;
+import ru.cft.shiftlab.contentmaker.util.MultipartBodyProcess;
+import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
+import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Stream;
 
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
 import static ru.cft.shiftlab.contentmaker.util.Constants.STORIES;
+
 
 /**
  * Сервис предназначенный для сохранения JSON файла и картинок.
@@ -58,6 +62,7 @@ public class JsonProcessorService implements FileSaverService {
     }
     private final MultipartFileToImageConverter multipartFileToImageConverter;
     private final DtoToEntityConverter dtoToEntityConverter;
+    private final DirProcess dirProcess;
 
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getFilePlatform(String bankId, String platform) {
         String filePlatform = FileNameCreator.createFileName(bankId, platform);
@@ -65,22 +70,25 @@ public class JsonProcessorService implements FileSaverService {
         try {
             resultMap = mapper.readValue(new File(FILES_SAVE_DIRECTORY, filePlatform), new TypeReference<>(){});
         } catch (IOException e) {
-            log.error(e.getMessage());
-            return null;
-        }
-
-        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
-        try {
-            multipartBodyBuilder.part("json", mapper.writeValueAsString(resultMap.get("stories")));
-        } catch (JsonProcessingException e) {
             throw new StaticContentException("Некорректный файл json на стороне сервера", "404");
         }
 
+        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
+        //Добавление json из истории в multipartBodyBuilder
+        String jsonAsString;
+        try {
+            jsonAsString = mapper.writeValueAsString(resultMap.get("stories"));
+        } catch (JsonProcessingException e) {
+            throw new StaticContentException("Некорректный файл json на стороне сервера", "404");
+        }
+        MultipartBodyProcess.addJsonInBuilderMultipart(jsonAsString, multipartBodyBuilder);
+
+        //Добавление картинок из истории в multipartBodyBuilder
         resultMap.get("stories").forEach(
                 storyPresentation->{
-                    addInBuilderMultipart(storyPresentation.getPreviewUrl(), multipartBodyBuilder);
+                    MultipartBodyProcess.addImageInBuilderMultipart(storyPresentation.getPreviewUrl(), multipartBodyBuilder);
                     storyPresentation.getStoryPresentationFrames().forEach(
-                            frame-> addInBuilderMultipart(frame.getPictureUrl(), multipartBodyBuilder)
+                            frame-> MultipartBodyProcess.addImageInBuilderMultipart(frame.getPictureUrl(), multipartBodyBuilder)
                     );
                 }
         );
@@ -91,16 +99,6 @@ public class JsonProcessorService implements FileSaverService {
         return new HttpEntity<>(multipartBodyBuilder.build(), headers);
     }
 
-    void addInBuilderMultipart(String picture, MultipartBodyBuilder multipartBodyBuilder){
-        File file = new File(picture);
-        try {
-            byte[] fileBytes = Files.readAllBytes(file.toPath());
-            multipartBodyBuilder.part(file.getName(), new ByteArrayResource(fileBytes));
-        } catch (IOException e) {
-            log.error(e.getMessage());
-            throw new StaticContentException("Сервер не может найти нужное изображение", "404");
-        }
-    }
 
     @Override
     public void saveFiles(String strStoriesRequestDto, MultipartFile previewImage, MultipartFile[] images){
@@ -113,9 +111,12 @@ public class JsonProcessorService implements FileSaverService {
 
             String picturesSaveDirectory = FILES_SAVE_DIRECTORY + bankId + "/" + platformType + "/";
             //Создание пути для картинок, если его еще нет
-            FileNameCreator.createFolders(picturesSaveDirectory);
+            dirProcess.createFolders(picturesSaveDirectory);
             //Чтение сторис, которые уже находятся в хранилище
-            List<StoryPresentation> storyPresentationList = checkFileInBankDir(FileNameCreator.createFileName(bankId, platformType));
+            List<StoryPresentation> storyPresentationList = dirProcess.checkFileInBankDir(
+                    FileNameCreator.createFileName(bankId, platformType),
+                    STORIES
+            );
             storiesDtoToPresentations(
                     bankId,
                     picturesSaveDirectory,
@@ -130,25 +131,12 @@ public class JsonProcessorService implements FileSaverService {
             File file = new File(FILES_SAVE_DIRECTORY, FileNameCreator.createFileName(bankId, platformType));
             mapper.writeValue(file, resultMap);
         }
+        catch (JsonProcessingException e){
+            throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
+        }
         catch (IOException e) {
             throw new StaticContentException("Could not save files", "HTTP 500 - INTERNAL_SERVER_ERROR");
         }
-    }
-    private List<StoryPresentation> checkFileInBankDir(String fileName) throws IOException {
-        List<StoryPresentation> storyPresentationList = new ArrayList<StoryPresentation>();
-        File bankJsonFile = new File(FILES_SAVE_DIRECTORY + fileName);
-
-        if (bankJsonFile.exists()) {
-            ObjectMapper mapper = new ObjectMapper();
-            TypeReference<Map<String, List<StoryPresentation>>> typeReference = new TypeReference<>() {
-            };
-
-            storyPresentationList.addAll(mapper.readValue(
-                            new File(FILES_SAVE_DIRECTORY,fileName), typeReference)
-                    .get(STORIES)
-            );
-        }
-        return storyPresentationList;
     }
 
 
@@ -172,21 +160,12 @@ public class JsonProcessorService implements FileSaverService {
                 lastId = 0;
             }
             else {
-                lastId = (storyPresentationList.get(storyPresentationList.size() - 1).getId()==null) ? 0 : storyPresentationList.get(storyPresentationList.size() - 1).getId()+1;
+                var lastOfList = storyPresentationList.get(storyPresentationList.size()-1);
+                lastId = (lastOfList.getId()==null) ? 0 : lastOfList.getId()+1;
             }
 
-            File file = new File(picturesSaveDirectory);
-            File[] files = file.listFiles();
-            Stream.of(files)
-                    .filter(x ->x.getName().startsWith(String.valueOf(lastId)))
-                    .forEach(x -> {
-                        File newFile = new File(x.getParent(), x.getName().substring(0, x.getName().indexOf('.')) + "_old"+x.getName().substring(x.getName().indexOf('.')));
-                        boolean b = x.renameTo(newFile);
-                        if (!b){
-                            newFile.delete();
-                            x.renameTo(newFile);
-                        }
-                    });
+            //Добавление к старым картинкам _old
+            FileNameCreator.renameOld(picturesSaveDirectory, lastId);
 
             previewUrl = multipartFileToImageConverter.parsePicture(
                     imageContainerPreview,
@@ -215,13 +194,20 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     public void deleteService(String bankId, String platform, String id) throws Exception {
-        try {
-            deleteJsonStories(bankId, platform, id);
-        }
-        catch (IOException e){
-            throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
-        }
-        deleteFilesStories(bankId, platform, id);
+        Runnable r = ()->{
+            try {
+                deleteJsonStories(bankId, platform, id);
+            }
+            catch (IOException e){
+                throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
+            }
+        };
+        Thread deleteJson = new Thread(r, "deleteJson");
+        Thread deleteImages = new Thread(() -> deleteFilesStories(bankId, platform, id), "deleteImages");
+        deleteJson.start();
+        deleteImages.start();
+        deleteJson.join();
+        deleteImages.join();
     }
     /**
      * Метод, предназначенный для удаления историй из JSON.

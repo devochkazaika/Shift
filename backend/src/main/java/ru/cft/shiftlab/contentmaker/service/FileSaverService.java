@@ -1,5 +1,7 @@
 package ru.cft.shiftlab.contentmaker.service;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,7 +23,24 @@ public interface FileSaverService {
         IOException e = new IOException();
         throw new RuntimeException(e);
     }
+    /**
+     * Метод для удаления JSON файла и картинок.
+     *
+     * @param bankId Имя банка
+     * @param platform Тип платформы
+     * @param id Id истории
+     */
     default void deleteService(String bankId, String platform, String id) throws Exception  {
+        IOException e = new IOException();
+        throw new RuntimeException(e);
+    }
+    /**
+     * Метод для удаления JSON файла и картинок.
+     *
+     * @param bankId Имя банка
+     * @param platform Тип платформы
+     */
+    default HttpEntity<MultiValueMap<String, HttpEntity<?>>> getFilePlatform(String bankId, String platform){
         IOException e = new IOException();
         throw new RuntimeException(e);
     }
