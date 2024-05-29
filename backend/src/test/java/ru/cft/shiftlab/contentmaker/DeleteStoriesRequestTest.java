@@ -19,9 +19,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(value = StoriesController.class)
-public class DeleteStoriesTest {
+public class DeleteStoriesRequestTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
+
 
     @Autowired
     private MockMvc mockMvc;
@@ -38,6 +39,7 @@ public class DeleteStoriesTest {
         Mockito.doThrow(new Exception()).when(jsonProcessorService).getFilePlatform("testBank", "asdas");
 
         mockMvc.perform(get("/bank/info")
+                        .
                 .contentType(MediaType.MULTIPART_FORM_DATA)
         );
     }

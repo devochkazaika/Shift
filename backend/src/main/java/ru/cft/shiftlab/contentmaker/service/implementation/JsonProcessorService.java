@@ -25,6 +25,7 @@ import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
+import ru.cft.shiftlab.contentmaker.exceptionhandling.JsonExceptionHandler;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 import ru.cft.shiftlab.contentmaker.util.DirProcess;
@@ -194,20 +195,34 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     public void deleteService(String bankId, String platform, String id) throws Exception {
+        Exception[] exception = new Exception[1];
         Runnable r = ()->{
             try {
                 deleteJsonStories(bankId, platform, id);
             }
             catch (IOException e){
-                throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
+                exception[0] = new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
+            }
+            catch (StaticContentException e){
+                throw e;
             }
         };
         Thread deleteJson = new Thread(r, "deleteJson");
-        Thread deleteImages = new Thread(() -> deleteFilesStories(bankId, platform, id), "deleteImages");
+        Thread deleteImages = new Thread(() ->
+                deleteFilesStories(bankId, platform, id),
+                "deleteImages");
+        deleteJson.setUncaughtExceptionHandler((t, e) -> {
+            exception[0] = (StaticContentException) e;
+        });
+        deleteImages.setUncaughtExceptionHandler((t, e) -> {
+            exception[0] = (StaticContentException) e;
+        });
+
         deleteJson.start();
         deleteImages.start();
         deleteJson.join();
         deleteImages.join();
+        if (exception[0] != null) throw exception[0];
     }
     /**
      * Метод, предназначенный для удаления историй из JSON.
@@ -227,7 +242,7 @@ public class JsonProcessorService implements FileSaverService {
             }
         }
         else{
-            throw new IOException();
+            throw JsonExceptionHandler.readJsonException(fileName);
         }
         JsonNode js = (JsonNode) node;
         mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILES_SAVE_DIRECTORY, fileName), js);

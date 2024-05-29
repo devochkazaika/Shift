@@ -98,9 +98,9 @@ public class StoriesController {
      */
     @DeleteMapping("/bank/info/delete")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "История успешно удалена")
+            @ApiResponse(responseCode = "200", description = "История успешно удалена"),
+            @ApiResponse(responseCode = "500", description = "Ошибка на стороне сервера")
     })
-    @ResponseStatus(HttpStatus.OK)
     public void deleteStories(
             @RequestParam(name = "bankId")
             @Parameter(description = "Название банка",
