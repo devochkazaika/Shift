@@ -22,7 +22,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ValidationException handleValidationException(ConstraintViolationException ex) {
-        return new ValidationException(ex.getMessage(), "ASDASD");
+        return new ValidationException(ex.getMessage(), "404");
     }
     @ExceptionHandler(StaticContentException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -111,7 +111,7 @@ public class StoriesController {
             @Parameter(description = "Название банка",
                     schema = @Schema(type = "string", format = "string"),
                     example = "tkkbank")
-            @WhiteListValid
+            @WhiteListValid(message = "bankId must match the allowed")
             String bankId,
 
             @Parameter(description = "Тип платформы",
