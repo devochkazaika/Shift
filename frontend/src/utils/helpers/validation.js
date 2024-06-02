@@ -165,7 +165,7 @@ export const storyValidationSchema = Yup.object({
           }),
           buttonText: Yup.string().when('visibleLinkOrButtonOrNone', {
             is: 'BUTTON',
-            then: Yup.string().notRequired(),
+            then: Yup.string().required('Поле обязательно'),
           }),
           buttonUrl: Yup.string().when('visibleLinkOrButtonOrNone', {
             is: 'BUTTON',
