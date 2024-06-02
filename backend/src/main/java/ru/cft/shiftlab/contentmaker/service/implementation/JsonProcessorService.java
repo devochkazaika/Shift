@@ -222,7 +222,6 @@ public class JsonProcessorService implements FileSaverService {
         deleteImages.start();
         deleteJson.join();
         deleteImages.join();
-        if (exception[0] != null) throw exception[0];
     }
     /**
      * Метод, предназначенный для удаления историй из JSON.
@@ -231,6 +230,7 @@ public class JsonProcessorService implements FileSaverService {
         ObjectMapper mapper = new ObjectMapper();
         String fileName = FileNameCreator.createFileName(bankId, platform);
         ObjectNode node = (ObjectNode) mapper.readTree(new File(FILES_SAVE_DIRECTORY + "/" + fileName));
+        boolean t = false;
         if (node.has("stories")) {
             ArrayNode storiesNode = (ArrayNode) node.get("stories");
             Iterator<JsonNode> i = storiesNode.iterator();
@@ -238,6 +238,7 @@ public class JsonProcessorService implements FileSaverService {
                 JsonNode k = i.next();
                 if (id.equals(k.get("id").toString())) {
                     i.remove();
+                    t = true;
                 }
             }
         }
@@ -247,6 +248,7 @@ public class JsonProcessorService implements FileSaverService {
         JsonNode js = (JsonNode) node;
         mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILES_SAVE_DIRECTORY, fileName), js);
         deleteFilesStories(bankId, platform, id);
+        if (t == false) throw JsonException.notFound(id);
     }
     /**
      * Метод, предназначенный для удаления файлов историй из директории.
