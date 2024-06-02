@@ -95,9 +95,9 @@ const FrameFields = ({
                   labelTitle="Кнопка"
                   id="ButtonIntarectiveType"
                   type="radio"
-                  name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
+                  name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleButtonOrNone`}
                   value="BUTTON"
-                  checked={frameJson.visibleLinkOrButtonOrNone === "BUTTON"}
+                  checked={frameJson.visibleButtonOrNone === "BUTTON"}
                   {...props}
                 />
               </label>
@@ -107,16 +107,16 @@ const FrameFields = ({
                   labelTitle="Ничего"
                   id="NonIntarectiveType"
                   type="radio"
-                  name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleLinkOrButtonOrNone`}
+                  name={`stories.${storyIndex}.storyFrames.${frameIndex}.visibleButtonOrNone`}
                   value="NONE"
-                  checked={frameJson.visibleLinkOrButtonOrNone === "NONE"}
+                  checked={frameJson.visibleButtonOrNone === "NONE"}
                   {...props}
                 />
               </label>
             </div>
           </div>
 
-          {frameJson.visibleLinkOrButtonOrNone === "BUTTON" && (
+          {frameJson.visibleButtonOrNone === "BUTTON" && (
             <>
               <div className="row">
                 <div className="input_field">
