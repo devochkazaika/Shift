@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -103,10 +104,11 @@ public class StoriesController {
      */
     @DeleteMapping("/bank/info/delete")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "История успешно удалена"),
-            @ApiResponse(responseCode = "500", description = "Ошибка на стороне сервера")
+            @ApiResponse(responseCode = "202", description = "История успешно удалена"),
+            @ApiResponse(responseCode = "404", description = "История не найдена в JSON файле"),
+            @ApiResponse(responseCode = "500", description = "Ошибка на стороне сервера(нет JSON или нет директории с файлами)")
     })
-    public void deleteStories(
+    public ResponseEntity<?> deleteStories(
             @RequestParam(name = "bankId")
             @Parameter(description = "Название банка",
                     schema = @Schema(type = "string", format = "string"),
@@ -126,6 +128,6 @@ public class StoriesController {
             @RequestParam(name = "id")
             String id) throws Throwable {
 
-        storiesService.deleteService(bankId, platform, id);
+        return storiesService.deleteService(bankId, platform, id);
     }
 }
