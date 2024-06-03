@@ -1,4 +1,4 @@
-package ru.cft.shiftlab.contentmaker;
+package ru.cft.shiftlab.contentmaker.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
@@ -96,7 +96,6 @@ public class StoriesControllerTest {
                 .file(cardImages)
                 .param("json", asJsonString(storiesRequestDto))
                 .contentType(MediaType.MULTIPART_FORM_DATA)
-
         );
 
         andReturn.andExpect(status().isCreated());

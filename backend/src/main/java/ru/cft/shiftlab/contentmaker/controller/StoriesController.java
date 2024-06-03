@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.PlatformValid;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
 
 
@@ -90,6 +91,7 @@ public class StoriesController {
             @Parameter(description = "Тип платформы",
                     schema = @Schema(type = "string", format = "string"),
                     example = "WEB")
+            @PlatformValid
             String platform){
 
         return storiesService.getFilePlatform(bankId, platform);
@@ -120,6 +122,7 @@ public class StoriesController {
                     schema = @Schema(type = "string", format = "string"),
                     example = "ALL PLATFORMS")
             @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+            @PlatformValid
             String platform,
 
             @Parameter(description = "id истории",

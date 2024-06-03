@@ -1,6 +1,6 @@
 package ru.cft.shiftlab.contentmaker.util.validation.annotation;
 
-import ru.cft.shiftlab.contentmaker.util.validation.validator.BankIdValidator;
+import ru.cft.shiftlab.contentmaker.util.validation.validator.PlatformValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -10,14 +10,11 @@ import java.lang.annotation.Target;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-/**
- * Валидация идентификатора банка.
- */
 @Target({ ElementType.FIELD, ElementType.PARAMETER, ElementType.CONSTRUCTOR})
 @Retention(RUNTIME)
-@Constraint(validatedBy = BankIdValidator.class)
-public @interface WhiteListValid {
-    String message() default "{ru.cft.shiftlab.contentmaker.validation.annotation.WhitelistValid}";
+@Constraint(validatedBy = PlatformValidator.class)
+public @interface PlatformValid {
+    String message() default "{ru.cft.shiftlab.contentmaker.validation.annotation.PlatformValid}";
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default { };
 }

@@ -109,6 +109,7 @@ public class JsonProcessorService implements FileSaverService {
             StoriesRequestDto storiesRequestDto = mapper.readValue(
                     mapper.readValue(strStoriesRequestDto, String.class)
                     , StoriesRequestDto.class);
+
             String bankId = storiesRequestDto.getBankId();
             String platformType = storiesRequestDto.getPlatformType();
 
@@ -169,7 +170,6 @@ public class JsonProcessorService implements FileSaverService {
 
             //Добавление к старым картинкам _old
             FileNameCreator.renameOld(picturesSaveDirectory, lastId);
-
             previewUrl = multipartFileToImageConverter.parsePicture(
                     imageContainerPreview,
                     picturesSaveDirectory,

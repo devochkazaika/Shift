@@ -1,4 +1,4 @@
-package ru.cft.shiftlab.contentmaker.Stories;
+package ru.cft.shiftlab.contentmaker.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

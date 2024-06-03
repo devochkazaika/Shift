@@ -1,4 +1,4 @@
-package ru.cft.shiftlab.contentmaker;
+package ru.cft.shiftlab.contentmaker.Controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,7 +53,6 @@ public class GetStoriesRequestTest {
                 .param("platform", platform)
         ).andExpect(status().isBadRequest());
         for (Map.Entry<String, String> x : WhiteList.whitelistBank.entrySet()) {
-            System.out.println(x.getKey());
             HttpEntity<MultiValueMap<String, HttpEntity<?>>> testdata = new HttpEntity<>(new MultipartBodyBuilder().build());
             Mockito.when(jsonProcessorService.getFilePlatform(x.getKey(), platform))
                     .thenReturn(testdata);
