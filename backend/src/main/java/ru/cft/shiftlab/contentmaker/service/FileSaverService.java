@@ -1,6 +1,7 @@
 package ru.cft.shiftlab.contentmaker.service;
 
 import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,7 +31,7 @@ public interface FileSaverService {
      * @param platform Тип платформы
      * @param id Id истории
      */
-    default void deleteService(String bankId, String platform, String id) throws Throwable {
+    default ResponseEntity<?> deleteService(String bankId, String platform, String id) throws Throwable {
         IOException e = new IOException();
         throw new RuntimeException(e);
     }
