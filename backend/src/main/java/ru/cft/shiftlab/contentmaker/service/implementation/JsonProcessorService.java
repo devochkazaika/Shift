@@ -23,7 +23,6 @@ import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
-import ru.cft.shiftlab.contentmaker.exceptionhandling.JsonException;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 import ru.cft.shiftlab.contentmaker.util.DirProcess;
@@ -241,7 +240,7 @@ public class JsonProcessorService implements FileSaverService {
         }
         JsonNode js = (JsonNode) node;
         mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILES_SAVE_DIRECTORY, fileName), js);
-        if (!isFound) throw JsonException.notFound(id);
+        if (!isFound) log.error("the story with id = " + id + " does not exist");
     }
     /**
      * Метод, предназначенный для удаления файлов историй из директории.
@@ -255,7 +254,12 @@ public class JsonProcessorService implements FileSaverService {
         File[] files = directory.listFiles();
         Stream.of(files)
                 .filter(x -> x.getName().startsWith(id))
-                .forEach(x -> x.delete());
+                .forEach(x -> {
+                    if (x.exists()) {
+                        x.delete();
+                    }
+                    else log.error("File " + x.getName() + " is already deleted");
+                });
 
     }
 }
