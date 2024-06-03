@@ -198,7 +198,7 @@ public class JsonProcessorServiceTest {
                 previewUrl));
 
         Map<String, List<StoryPresentation>> presentationList = new HashMap<>();
-        presentationList.put("web", storyPresentationList);
+        presentationList.put("WEB", storyPresentationList);
 
         File jsonFile = Paths.get(jsonDirectory + fileName).toFile();
 

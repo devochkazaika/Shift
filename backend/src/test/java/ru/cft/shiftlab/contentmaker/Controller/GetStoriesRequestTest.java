@@ -44,7 +44,7 @@ public class GetStoriesRequestTest {
     @Test
     public void getTest() throws Exception {
         String bank = "testBanksad";
-        String platform = "asdas";
+        String platform = "WEB";
         Mockito.when(jsonProcessorService.getFilePlatform(bank, platform))
                 .thenThrow(new ValidationException());
         mockMvc.perform(get("/stories/bank/info")
