@@ -5,6 +5,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
+import ru.cft.shiftlab.contentmaker.util.Image.ImageContainer;
+import ru.cft.shiftlab.contentmaker.util.Image.ImageNameGenerator;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -46,11 +48,11 @@ public class MultipartFileToImageConverter {
         return fileName;
     }
 
-    public String parsePicture(ImageContainer imageContainer, String picturesSaveDirectory) throws IOException {
+    public String parsePicture(ImageContainer imageContainer, String picturesSaveDirectory, Long id) throws IOException {
         String previewPictureName = convertMultipartFileToImageAndSave(
                 imageContainer.getNextImage(),
                 picturesSaveDirectory,
-                imageNameGenerator.generateImageName(picturesSaveDirectory)
+                imageNameGenerator.generateImageName(picturesSaveDirectory, id)
         );
 
         return picturesSaveDirectory + previewPictureName;

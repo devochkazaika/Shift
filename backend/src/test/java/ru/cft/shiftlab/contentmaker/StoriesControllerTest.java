@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -17,8 +16,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
+import ru.cft.shiftlab.contentmaker.controller.StoriesController;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
+import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 
@@ -28,10 +28,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_TEST_DIRECTORY;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(value = StoriesControllerTest.class)
-@ComponentScan
+@WebMvcTest(value = StoriesController.class)
 public class StoriesControllerTest {
 
     @Autowired
@@ -68,9 +68,9 @@ public class StoriesControllerTest {
         StoriesRequestDto storiesRequestDto = new StoriesRequestDto("nskbl", "ALL PLATFORMS",
                 new ArrayList<>(Collections.singletonList(storyDto)));
 
-        String path = "./src/test/java/ru/cft/shiftlab/contentmaker/test_pictures/" + "sample.png";
+        String path = FILES_TEST_DIRECTORY + "sample.png";
         File img =  new File(
-                "./src/test/java/ru/cft/shiftlab/contentmaker/test_pictures/",
+                FILES_TEST_DIRECTORY,
                 "sample.png");
         FileInputStream input = new FileInputStream(img);
         Assertions.assertNotNull(input);
