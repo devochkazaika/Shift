@@ -38,6 +38,10 @@ import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
@@ -194,34 +198,27 @@ public class JsonProcessorService implements FileSaverService {
         }
     }
 
-    public void deleteService(String bankId, String platform, String id) throws Exception {
-        Exception[] exception = new Exception[1];
+    public void deleteService(String bankId, String platform, String id) throws Throwable {
         Runnable r = ()->{
             try {
                 deleteJsonStories(bankId, platform, id);
             }
             catch (IOException e){
-                throw  new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
-            }
-            catch (StaticContentException e){
-                throw e;
+                throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
             }
         };
         Thread deleteJson = new Thread(r, "deleteJson");
-        Thread deleteImages = new Thread(() ->
-                deleteFilesStories(bankId, platform, id),
-                "deleteImages");
-        deleteJson.setUncaughtExceptionHandler((t, e) -> {
-            exception[0] = (StaticContentException) e;
-        });
-        deleteImages.setUncaughtExceptionHandler((t, e) -> {
-            exception[0] = (StaticContentException) e;
-        });
-
-        deleteJson.start();
-        deleteImages.start();
-        deleteJson.join();
-        deleteImages.join();
+        Thread deleteImages = new Thread(() -> deleteFilesStories(bankId, platform, id), "deleteImages");
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+        Future<?> future = executor.submit(deleteJson);
+        Future<?> future2 = executor.submit(deleteImages);
+        try {
+            future.get();
+            future2.get();
+        } catch (ExecutionException ex) {
+            Throwable cause = ex.getCause();
+            throw cause;
+        }
     }
     /**
      * Метод, предназначенный для удаления историй из JSON.
@@ -230,7 +227,7 @@ public class JsonProcessorService implements FileSaverService {
         ObjectMapper mapper = new ObjectMapper();
         String fileName = FileNameCreator.createFileName(bankId, platform);
         ObjectNode node = (ObjectNode) mapper.readTree(new File(FILES_SAVE_DIRECTORY + "/" + fileName));
-        boolean t = false;
+        boolean isFound = false;
         if (node.has("stories")) {
             ArrayNode storiesNode = (ArrayNode) node.get("stories");
             Iterator<JsonNode> i = storiesNode.iterator();
@@ -238,17 +235,16 @@ public class JsonProcessorService implements FileSaverService {
                 JsonNode k = i.next();
                 if (id.equals(k.get("id").toString())) {
                     i.remove();
-                    t = true;
+                    isFound = true;
                 }
             }
         }
         else{
-            throw JsonException.readJsonException(fileName);
+            throw new IOException();
         }
         JsonNode js = (JsonNode) node;
         mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILES_SAVE_DIRECTORY, fileName), js);
-        deleteFilesStories(bankId, platform, id);
-        if (t == false) throw JsonException.notFound(id);
+        if (!isFound) throw JsonException.notFound(id);
     }
     /**
      * Метод, предназначенный для удаления файлов историй из директории.

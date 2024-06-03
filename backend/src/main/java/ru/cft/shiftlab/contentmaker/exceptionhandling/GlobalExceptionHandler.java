@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(JsonException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<?> JsonHandler(ConstraintViolationException ex) {
+    public ResponseEntity<?> JsonHandler(JsonException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(ConstraintViolationException.class)
