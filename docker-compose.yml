@@ -9,16 +9,44 @@ services:
       - '8080:8080'
     environment:
       - SPRING_PROFILES_ACTIVE=default
+
+  postgres:
+    hostname: database
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    networks:
+      - keycloak-network
+
   keycloak:
     image: quay.io/keycloak/keycloak:latest
     container_name: keycloak
     environment:
       KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin_password
+      KEYCLOAK_ADMIN_PASSWORD: password
+      KC_DB_URL: jdbc:postgresql://database:5432/keycloak
+      KC_DB_USERNAME: admin
+      KC_DB_PASSWORD: password
+      KC_DB_SCHEMA: public
+#      KEYCLOAK_FRONTEND_URL: https://localhost:8081/
     ports:
-      - "8484:8080"
+      - "8282:8080"
     command:
-      - start-dev
+      - "start-dev"
+      - "--db"
+      - "postgres"
+      - "--db-url"
+      - "jdbc:postgresql://database:5432/keycloak"
+    depends_on:
+      - postgres
+    networks:
+      - keycloak-network
+
+
   frontend:
     build: 'frontend/'
     container_name: static-content-frontend
@@ -26,3 +54,7 @@ services:
       - '3232:80'
     links:
       - backend
+
+networks:
+  keycloak-network:
+    driver: bridge
