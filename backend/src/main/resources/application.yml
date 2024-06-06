@@ -18,12 +18,23 @@ preview:
     validator:
       titleMaxStringCount: 2
 
+keycloak:
+  realm: master
+  resource: maker
+  public-client: true
+  auth-server-url: http://localhost:8081/auth
+
 files:
   save:
     directory:
       filesSaveDirectory: "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/auth/realms/master
   h2:
     console:
       enabled: true

@@ -9,6 +9,7 @@ plugins {
 }
 
 sourceCompatibility = '11'
+targetCompatibility = '11'
 
 idea {
     module {
@@ -63,11 +64,25 @@ dependencies {
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.7.0'
     implementation group: 'org.apache.logging.log4j', name: 'log4j', version: '2.8.2', ext: 'pom'
     implementation 'io.projectreactor:reactor-core:3.4.14'
-    implementation 'commons-io:commons-io:2.6'
+
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.data:spring-data-commons'
+    implementation "org.keycloak:keycloak-spring-boot-starter:19.0.0"
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'org.postgresql:postgresql'
+    implementation "org.keycloak:keycloak-admin-client:19.0.0"
+
 }
+
+ext {
+    set('keycloakVersion', '15.0.2')  // укажите необходимую версию Keycloak
+}
+
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:2021.0.1"
+        mavenBom "org.keycloak.bom:keycloak-adapter-bom:12.0.3"
     }
 }
 test {
