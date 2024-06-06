@@ -1,6 +1,6 @@
-FROM artifactory.bankplus.ru:443/docker-registry/ext/adoptopenjdk/openjdk11:alpine
+FROM openjdk:11
 
-ARG JAR_FILE
+ARG JAR_FILE=build/libs/backend-0.0.1-SNAPSHOT.jar
 
 COPY ${JAR_FILE} /home/app/static-content-backend.jar
 
@@ -8,7 +8,7 @@ RUN mkdir -p /home/app/config
 
 WORKDIR /home/app
 
-COPY config/ config/
+COPY docker/config/ config/
 
 
 

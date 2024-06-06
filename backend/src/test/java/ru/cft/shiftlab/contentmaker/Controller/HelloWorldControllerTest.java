@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -15,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(value = HelloWorldController.class)
+@ComponentScan
 public class HelloWorldControllerTest {
 
     @Autowired
@@ -22,10 +24,12 @@ public class HelloWorldControllerTest {
 
     @Test
     public void GetMappingOfHelloWorld() throws Exception {
+
         mockMvc.perform(MockMvcRequestBuilders
                 .get("/")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Hello, World!"));
+                .andExpect(content().string("Hello, World!")
+                );
     }
 }
