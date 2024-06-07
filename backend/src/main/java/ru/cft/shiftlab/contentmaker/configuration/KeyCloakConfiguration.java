@@ -16,13 +16,13 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class KeyCloakConfiguration {
     @Value("${keycloak.realm}")
-    public String realm;
+    public String REALM;
     @Value("${keycloak.resource}")
-    public String clientId;
+    public String CLIENTID;
     @Value("${spring.security.user.name}")
-    public String user;
+    private String user;
     @Value("${spring.security.user.password}")
-    public String password;
+    private String password;
     @Bean
     public KeycloakSpringBootConfigResolver keycloakConfigResolver() {
         return new KeycloakSpringBootConfigResolver();
@@ -33,16 +33,18 @@ public class KeyCloakConfiguration {
         return KeycloakBuilder.builder()
                 .serverUrl("http://localhost:8081")
                 .grantType(OAuth2Constants.PASSWORD)
-                .realm(realm)
-                .clientId(clientId)
+                .realm(REALM)
+                .clientId(CLIENTID)
                 .username(user)
                 .password(password)
                 .build();
     }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        return http.authorizeHttpRequests(authorizaHttpRequest -> authorizaHttpRequest
-                        .anyRequest().permitAll()).build();
+        return http.csrf().disable().authorizeHttpRequests(authorizaHttpRequest -> authorizaHttpRequest
+                        .anyRequest().permitAll()
+
+//                        .antMatchers("/createUser").permitAll())
+        ).build();
     }
 }
