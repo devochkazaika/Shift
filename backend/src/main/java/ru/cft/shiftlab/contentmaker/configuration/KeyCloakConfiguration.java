@@ -38,8 +38,8 @@ public class KeyCloakConfiguration {
                 .realm(REALM)
                 .clientId(CLIENTID)
                 .clientSecret(secret)
-                .username("admin")
-                .password("password")
+                .username(user)
+                .password(password)
                 .build();
         return t;
     }
