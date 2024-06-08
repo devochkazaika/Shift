@@ -19,6 +19,8 @@ public class KeyCloakConfiguration {
     public String REALM;
     @Value("${keycloak.resource}")
     public String CLIENTID;
+    @Value("${spring.security.oauth2.client.registration.keycloak.client-secret}")
+    private String secret;
     @Value("${spring.security.user.name}")
     private String user;
     @Value("${spring.security.user.password}")
@@ -30,14 +32,16 @@ public class KeyCloakConfiguration {
 
     @Bean
     public Keycloak getAdminKeycloakUser() {
-        return KeycloakBuilder.builder()
+        var t = KeycloakBuilder.builder()
                 .serverUrl("http://localhost:8081")
                 .grantType(OAuth2Constants.PASSWORD)
                 .realm(REALM)
                 .clientId(CLIENTID)
-                .username(user)
-                .password(password)
+                .clientSecret(secret)
+                .username("admin")
+                .password("password")
                 .build();
+        return t;
     }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{

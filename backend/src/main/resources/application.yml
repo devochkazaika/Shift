@@ -19,10 +19,12 @@ preview:
       titleMaxStringCount: 2
 
 keycloak:
-  realm: master
+  realm: content-maker
   resource: maker
   public-client: true
   auth-server-url: http://localhost:8081/auth
+  use-resource-role-mappings: true
+  principal-attribute: preferred_username
 
 files:
   save:
@@ -34,7 +36,12 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8081/auth/realms/master
+          issuer-uri: http://localhost:8081/auth/realms/content-maker
+      client:
+        registration:
+          keycloak:
+            client-id: maker
+            client-secret: dM0n3JQteH7Yhg4WN1Z4sCGAOfmFdIEk
     user:
       name: admin
       password: password

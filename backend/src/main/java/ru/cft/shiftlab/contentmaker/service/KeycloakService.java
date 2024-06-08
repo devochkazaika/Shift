@@ -26,7 +26,7 @@ public class KeycloakService {
     private final Keycloak keycloak;
 
     public RealmResource getRealm(){
-        return keycloak.realm("master");
+        return keycloak.realm("content-maker");
     }
     public void createUser(UserDto user) throws Exception {
         UserRepresentation userRepresentation = new UserRepresentation();

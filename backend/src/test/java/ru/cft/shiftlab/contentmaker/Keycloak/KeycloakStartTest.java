@@ -17,6 +17,6 @@ public class KeycloakStartTest {
     private final Keycloak keycloak;
     @Test
     public void createBeanTest(){
-        keycloak.realm("master").getClientSessionStats();
+        keycloak.realm("content-maker").getClientSessionStats();
     }
 }

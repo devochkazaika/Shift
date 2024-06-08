@@ -1,7 +1,6 @@
 package ru.cft.shiftlab.contentmaker.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.keycloak.admin.client.Keycloak;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -16,7 +15,6 @@ import ru.cft.shiftlab.contentmaker.service.KeycloakService;
 public class HelloWorldController {
     private final KeycloakService keycloakService;
 
-    private final Keycloak keycloak;
 
     /**
      * Данный end-point обрабатывает HTTP GET-запросы.
