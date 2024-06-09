@@ -21,7 +21,10 @@ services:
       - keycloak_demo
   keycloak:
     image: quay.io/keycloak/keycloak:latest
-    command: start-dev
+    build:
+      context: .
+    command:
+      - start-dev
     environment:
       KC_DB: postgres
       KC_DB_URL_HOST: postgres
@@ -31,6 +34,9 @@ services:
       KC_DB_SCHEMA: public
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: password
+      KEYCLOAK_IMPORT: /opt/jboss/keycloak/standalone/configuration/realm-export.json
+    volumes:
+        - ./config/realm-export.json:/opt/jboss/keycloak/standalone/configuration/realm-export.json
     ports:
       - 8081:8080
     depends_on:
