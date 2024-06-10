@@ -33,7 +33,7 @@ public class HelloWorldController {
      */
     @GetMapping("/check-keycloak")
     public String checkKeycloak() {
-        System.out.println(keycloakService.getRealm().getClientSessionStats());
+        keycloakService.getRealm().getClientSessionStats();
         return "Keycloak bean is working!";
     }
 }

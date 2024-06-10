@@ -37,12 +37,12 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8081/auth/realms/content-maker
+          issuer-uri: http://localhost:8081/realms/content-maker
       client:
         registration:
           keycloak:
             client-id: maker
-            client-secret: dM0n3JQteH7Yhg4WN1Z4sCGAOfmFdIEk
+            client-secret: "**********"
     user:
       name: admin
       password: password
@@ -64,3 +64,9 @@ spring:
 server:
   tomcat:
     max-http-form-post-size: 10485760
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
