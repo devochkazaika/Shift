@@ -17,6 +17,7 @@ import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
+
 @Service
 @RequiredArgsConstructor
 @Getter
@@ -40,6 +41,7 @@ public class KeycloakServiceImpl {
         userRepresentation.setUsername(user.getFirstName());
         userRepresentation.setFirstName(user.getFirstName());
         userRepresentation.setLastName(user.getLastName());
+        userRepresentation.setEnabled(true);
         userRepresentation.setEmail(user.getEmail());
         try {
             response = getRealm().users().create(userRepresentation);

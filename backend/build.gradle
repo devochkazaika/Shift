@@ -70,11 +70,11 @@ dependencies {
     implementation 'org.springframework.security:spring-security-oauth2-resource-server'
     implementation 'org.springframework.security:spring-security-oauth2-jose:5.7.0'
     implementation 'org.springframework.data:spring-data-commons'
-    implementation "org.keycloak:keycloak-spring-boot-starter:19.0.0"
+    implementation "org.keycloak:keycloak-spring-boot-starter:20.0.0"
     implementation 'io.jsonwebtoken:jjwt:0.2'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'org.postgresql:postgresql'
-    implementation "org.keycloak:keycloak-admin-client:19.0.0"
+    implementation "org.keycloak:keycloak-admin-client:20.0.0"
 
     testImplementation 'org.springframework.security:spring-security-test'
 

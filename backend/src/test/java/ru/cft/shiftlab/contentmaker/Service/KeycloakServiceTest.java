@@ -1,20 +1,21 @@
 package ru.cft.shiftlab.contentmaker.Service;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
+import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import ru.cft.shiftlab.contentmaker.dto.UserDto;
 import ru.cft.shiftlab.contentmaker.service.implementation.KeycloakServiceImpl;
 
 @SpringBootTest
 public class KeycloakServiceTest {
-    @TestConfiguration
     public class KeycloakTestConfiguration {
         @Value("${keycloak.realm}")
         public String REALM;
@@ -42,16 +43,39 @@ public class KeycloakServiceTest {
     }
     @Autowired
     KeycloakServiceImpl keycloakService;
+    @Autowired
+    Keycloak keycloak;
 
     @Test
     public void createUserFirst() throws Exception {
+        //Тест создания юзера
+        RealmResource realm = keycloak.realm("content-maker");
+        String username = "tesaasdsdt";
         UserDto user = UserDto.builder()
                 .firstName("tesaasdsdt")
-                .lastName("tesasdasdt")
+                .lastName("tesaasdsdt")
                 .email("panarinforwork@gmail.com")
                 .password("2219")
                 .build();
         keycloakService.createUser(user);
+        Assertions.assertTrue(
+                realm.users().search("tesaasdsdt").size() == 1
+        );
+        //его удаление
+        realm.users().delete(realm.users().search(username, true).get(0).getId());
+    }
 
+    @Test
+    public void deleteUserFirst() throws Exception {
+        RealmResource realm = keycloak.realm("content-maker");
+        //создание юзера
+        UserRepresentation userRepresentation = new UserRepresentation();
+        userRepresentation.setUsername("tesaasdsdt");
+        realm.users().create(userRepresentation);
+        //тест удаления
+        keycloakService.deleteUser("tesaasdsdt");
+        Assertions.assertTrue(
+                realm.users().search("tesaasdsdt").isEmpty()
+        );
     }
 }
