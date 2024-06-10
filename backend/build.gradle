@@ -76,6 +76,8 @@ dependencies {
     implementation 'org.postgresql:postgresql'
     implementation "org.keycloak:keycloak-admin-client:19.0.0"
 
+    testImplementation 'org.springframework.security:spring-security-test'
+
 }
 
 ext {
