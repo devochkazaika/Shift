@@ -36,13 +36,21 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_TEST_DIRECTORY;
 
 @ExtendWith(MockitoExtension.class)
-public class DeleteRequestTest {
+public class DeleteStoriesServiceTest {
     ObjectMapper objectMapper = new ObjectMapper();
     private final MultipartFileToImageConverter multipartFileToImageConverter = new MultipartFileToImageConverter(new ImageNameGenerator());
     private final DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
     private final DirProcess dirProcess = new DirProcess();
+
+    /**
+     * Тест для метода Закрытого deleteFilesStories
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
     @Test
-    void deleteFilesTest() throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException {
+    void deleteStoriesFilesTest() throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException {
         Method method = JsonProcessorService.class.getDeclaredMethod("deleteFilesStories", String.class, String.class, String.class);
 
         method.setAccessible(true);
@@ -78,8 +86,16 @@ public class DeleteRequestTest {
         File[] files = file.listFiles();
         Assertions.assertEquals(0, files.length);
     }
+
+    /**
+     * Тест для метода Закрытого deleteJsonStories
+     * @throws NoSuchMethodException
+     * @throws IOException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
     @Test
-    void deleteJsonTest() throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException {
+    void deleteStoriesJsonTest() throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException {
         Method method = JsonProcessorService.class.getDeclaredMethod("deleteJsonStories", String.class, String.class, String.class);
         File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_tkbbank_web.json");
         copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_tkbbank_web.json");
@@ -112,5 +128,58 @@ public class DeleteRequestTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Тест для проверки закрытого метода deleteJsonFrame
+     */
+    @Test
+    public void deleteJsonFrame() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException {
+        Method method = JsonProcessorService.class.getDeclaredMethod("deleteJsonFrame",
+                String.class, String.class, String.class, String.class);
+        method.setAccessible(true);
+        File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_tkbbank_web.json");
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_test_web.json");
+        JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
+                dtoToEntityConverter,
+                dirProcess);
+        method.invoke(service, "test", "WEB", "0", "0");
+        method.invoke(service, "test", "WEB", "1", "0");
+        File json = new File(FILES_SAVE_DIRECTORY+"/story_test_web.json");
+        StringBuilder jsonStr = new StringBuilder();
+        Files.readAllLines(json.toPath()).forEach(jsonStr::append);
+        Map<String, List<StoryPresentation>> map = objectMapper.readValue(
+                jsonStr.toString(),
+                new TypeReference<Map<String, List<StoryPresentation>>>() {}
+        );
+        map.get("stories").stream()
+                .forEach(i -> Assertions.assertEquals(0, i.getStoryPresentationFrames().size()));
+        json.delete();
+    }
+    /**
+     * Тест для проверки закрытого метода deleteJsonFrame
+     * Тест для удаления только одного frame и сохранении предыдущих
+     */
+    @Test
+    public void deleteJson_OnlyOne_Frame() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException {
+        Method method = JsonProcessorService.class.getDeclaredMethod("deleteJsonFrame",
+                String.class, String.class, String.class, String.class);
+        method.setAccessible(true);
+        File jsonFile = new File(FILES_TEST_DIRECTORY + "/testDeleteJson.json");
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_test_web.json");
+        JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
+                dtoToEntityConverter,
+                dirProcess);
+        method.invoke(service, "test", "WEB", "0", "0");
+        File json = new File(FILES_SAVE_DIRECTORY+"/story_test_web.json");
+        StringBuilder jsonStr = new StringBuilder();
+        Files.readAllLines(json.toPath()).forEach(jsonStr::append);
+        Map<String, List<StoryPresentation>> map = objectMapper.readValue(
+                jsonStr.toString(),
+                new TypeReference<Map<String, List<StoryPresentation>>>() {}
+        );
+        map.get("stories").stream()
+                .forEach(i -> Assertions.assertEquals(1, i.getStoryPresentationFrames().size()));
+        json.delete();
     }
 }

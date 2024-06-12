@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 
+import java.io.IOException;
+
 /**
  * Контроллер, обрабатывающий запросы для работы с Story.
  */
@@ -121,5 +123,14 @@ public class StoriesController {
             String id) throws Exception {
 
         storiesService.deleteService(bankId, platform, id);
+    }
+
+    @DeleteMapping("/bank/info/delete/{bankId}/{platform}/{storyId}/{frameId}")
+    public void deleteFrame(@PathVariable String bankId,
+                            @PathVariable String platform,
+                            @PathVariable String storyId,
+                            @PathVariable String frameId) throws IOException {
+        storiesService.deleteStoryFrame(bankId, platform, storyId, frameId);
+
     }
 }

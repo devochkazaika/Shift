@@ -221,6 +221,7 @@ public class JsonProcessorService implements FileSaverService {
             Iterator<JsonNode> i = storiesNode.iterator();
             while (i.hasNext()){
                 JsonNode k = i.next();
+                //именно такая проверка, а не по индексу, так как элемент может удалиться и id будут 3, 8, 10, например
                 if (id.equals(k.get("id").toString())) {
                     i.remove();
                 }
@@ -248,4 +249,47 @@ public class JsonProcessorService implements FileSaverService {
                 .forEach(x -> x.delete());
 
     }
+
+    /**
+     * Метод, предназначенный для удаления карточки из историй из директории.
+     */
+    public void deleteStoryFrame(String bankId, String platform, String id, String frameId) throws IOException {
+//        File directory = new File(FILES_SAVE_DIRECTORY + "/" + bankId + "/" + platform);
+        deleteJsonFrame(bankId, platform, id, frameId);
+    }
+
+    private void deleteFileFrame(String bankId, String platform, String id, String frameId){
+        File directory = new File(FILES_SAVE_DIRECTORY + "/" + bankId + "/" + platform);
+        if (!directory.exists() || !directory.isDirectory()) {
+            throw new StaticContentException("Directory does not exist or is not a directory: " + directory.getAbsolutePath(),
+                    "HTTP 500 - INTERNAL_SERVER_ERROR");
+        }
+        File[] files = directory.listFiles();
+        Stream.of(files)
+                .filter(x -> x.getName().startsWith(id.concat("_").concat(frameId)))
+                .forEach(x -> x.delete());
+    }
+
+    private void deleteJsonFrame(String bankId, String platform, String id, String frameId) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        String fileName = FileNameCreator.createFileName(bankId, platform);
+        ObjectNode node = (ObjectNode) mapper.readTree(new File(FILES_SAVE_DIRECTORY + "/" + fileName));
+        if (node.has("stories")) {
+            ArrayNode storiesNode = (ArrayNode) node.get("stories");
+            Iterator<JsonNode> i = storiesNode.iterator();
+            while (i.hasNext()){
+                JsonNode k = i.next();
+                if (id.equals(k.get("id").toString())) {
+                    ArrayNode listFrames = (ArrayNode) k.get("storyFrames");
+                    listFrames.remove(Integer.parseInt(frameId));
+                }
+            }
+        }
+        else{
+            throw new IOException();
+        }
+        JsonNode js = (JsonNode) node;
+        mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILES_SAVE_DIRECTORY, fileName), js);
+    }
+
 }
