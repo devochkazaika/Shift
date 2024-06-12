@@ -117,7 +117,7 @@ public class DeleteStoriesServiceTest {
                 .forEach(x -> set.add(x.get(0).getId()));
         Assertions.assertTrue(!set.contains(0L));
     }
-    public static void copyFile(String sourcePathStr, String destinationPathStr) {
+    public static File copyFile(String sourcePathStr, String destinationPathStr) {
         // Преобразуем строки в Path объекты
         Path sourcePath = Paths.get(sourcePathStr);
         Path destinationPath = Paths.get(destinationPathStr);
@@ -128,6 +128,7 @@ public class DeleteStoriesServiceTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return new File(String.valueOf(destinationPath));
     }
 
     /**
@@ -181,5 +182,55 @@ public class DeleteStoriesServiceTest {
         map.get("stories").stream()
                 .forEach(i -> Assertions.assertEquals(1, i.getStoryPresentationFrames().size()));
         json.delete();
+    }
+    /**
+     * Тест для проверки закрытого метода deleteFileFrame
+     * Тест для удаления файла для frame и сохранении предыдущих
+     */
+    @Test
+    public void deleteFileFrame() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException {
+        Method method = JsonProcessorService.class.getDeclaredMethod("deleteFileFrame",
+                String.class, String.class, String.class, String.class);
+        method.setAccessible(true);
+        File file = new File(FILES_TEST_DIRECTORY + "/sample.png");
+        File directory = new File(FILES_SAVE_DIRECTORY + "/test" + "/WEB");
+        directory.mkdirs();
+        copyFile(file.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/test" + "/WEB" + "/0_1.png");
+        JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
+                dtoToEntityConverter,
+                dirProcess);
+        method.invoke(service, "test", "WEB", "0", "1");
+        File files = new File(FILES_SAVE_DIRECTORY + "/test" + "/WEB");
+        List<File> fileList = List.of(files.listFiles());
+        Assertions.assertEquals(0, fileList.size());
+        directory.delete();
+    }
+    /**
+     * Тест для проверки закрытого метода deleteFileFrame
+     * Тест для удаления только одного файла и сохранении предыдущийх для frame и сохранении предыдущих
+     */
+    @Test
+    public void delete_OnlyOne_FileFrame() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException {
+        Method method = JsonProcessorService.class.getDeclaredMethod("deleteFileFrame",
+                String.class, String.class, String.class, String.class);
+        method.setAccessible(true);
+        File file = new File(FILES_TEST_DIRECTORY + "/sample.png");
+        File directory = new File(FILES_SAVE_DIRECTORY + "/test" + "/WEB");
+        directory.mkdirs();
+        List<File> listFiles = List.of(
+                copyFile(file.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/test" + "/WEB" + "/0_1.png"),
+                copyFile(file.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/test" + "/WEB" + "/0_2.png"),
+                copyFile(file.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/test" + "/WEB" + "/0_3.png"),
+                copyFile(file.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/test" + "/WEB" + "/0_4.png")
+        );
+        JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
+                dtoToEntityConverter,
+                dirProcess);
+        method.invoke(service, "test", "WEB", "0", "2");
+        File files = new File(FILES_SAVE_DIRECTORY + "/test" + "/WEB");
+        List<File> fileList = List.of(files.listFiles());
+        Assertions.assertEquals(3, fileList.size());
+        listFiles.forEach(x -> x.delete());
+        directory.delete();
     }
 }

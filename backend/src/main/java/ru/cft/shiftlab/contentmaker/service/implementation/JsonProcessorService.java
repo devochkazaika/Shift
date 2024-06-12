@@ -252,22 +252,16 @@ public class JsonProcessorService implements FileSaverService {
 
     /**
      * Метод, предназначенный для удаления карточки из историй из директории.
+     * deleteJsonFrame - удаляет frame из JSON
+     * deleteFileFrame - удаляет файл из директории
      */
     public void deleteStoryFrame(String bankId, String platform, String id, String frameId) throws IOException {
-//        File directory = new File(FILES_SAVE_DIRECTORY + "/" + bankId + "/" + platform);
         deleteJsonFrame(bankId, platform, id, frameId);
+        deleteFileFrame(bankId, platform, id, frameId);
     }
 
     private void deleteFileFrame(String bankId, String platform, String id, String frameId){
-        File directory = new File(FILES_SAVE_DIRECTORY + "/" + bankId + "/" + platform);
-        if (!directory.exists() || !directory.isDirectory()) {
-            throw new StaticContentException("Directory does not exist or is not a directory: " + directory.getAbsolutePath(),
-                    "HTTP 500 - INTERNAL_SERVER_ERROR");
-        }
-        File[] files = directory.listFiles();
-        Stream.of(files)
-                .filter(x -> x.getName().startsWith(id.concat("_").concat(frameId)))
-                .forEach(x -> x.delete());
+        deleteFilesStories(bankId, platform, id.concat("_").concat(frameId));
     }
 
     private void deleteJsonFrame(String bankId, String platform, String id, String frameId) throws IOException {
