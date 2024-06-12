@@ -122,13 +122,12 @@ export const storyValidationSchema = Yup.object({
             )
             .test("titleLength", checkTitleLength)
             .test("titleStringsLength", checkTitleStringsLength),
-          text: Yup.string()
-            .required("Поле обязательно")
-            .when("title", (titleValue, textSchema) => {
-              if (!titleValue || !checkTitleStrings(titleValue))
-                return textSchema;
-              const titleStringsCount = getStrings(titleValue).length;
-              const rule = framesRules[titleStringsCount - 1];
+          text: Yup.string()        
+          .notRequired()
+          .when('title', (titleValue, textSchema) => {
+            if (!titleValue || !checkTitleStrings(titleValue)) return textSchema;
+            const titleStringsCount = getStrings(titleValue).length;
+            const rule = framesRules[titleStringsCount - 1];
 
               return textSchema.test(
                 "textValidation",
