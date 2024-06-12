@@ -212,18 +212,33 @@ public class JsonProcessorService implements FileSaverService {
     /**
      * Метод, предназначенный для удаления историй из JSON.
      */
-    public void deleteJsonStories(String bankId, String platform, String id) throws IOException {
+    private void deleteJsonStories(String bankId, String platform, String id) throws IOException {
+        deleteFromJson(bankId, platform, id);
+    }
+    private void deleteFromJson(String bankId, String platform, String id) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         String fileName = FileNameCreator.createFileName(bankId, platform);
         ObjectNode node = (ObjectNode) mapper.readTree(new File(FILES_SAVE_DIRECTORY + "/" + fileName));
         if (node.has("stories")) {
             ArrayNode storiesNode = (ArrayNode) node.get("stories");
             Iterator<JsonNode> i = storiesNode.iterator();
+            String IdBank;
+            String IdFrame;
             while (i.hasNext()){
                 JsonNode k = i.next();
-                //именно такая проверка, а не по индексу, так как элемент может удалиться и id будут 3, 8, 10, например
-                if (id.equals(k.get("id").toString())) {
-                    i.remove();
+                if (id.indexOf("_") > 0) {
+                    IdBank = id.substring(0, id.indexOf("_"));
+                    IdFrame = id.substring(id.indexOf("_") + 1);
+                    //именно такая проверка, а не по индексу, так как элемент может удалиться и id будут 3, 8, 10, например
+                    if (IdBank.equals(k.get("id").toString())) {
+                        ArrayNode listFrames = (ArrayNode) k.get("storyFrames");
+                        listFrames.remove(Integer.parseInt(IdFrame));
+                    }
+                }
+                else{
+                    if (id.equals(k.get("id").toString())) {
+                       i.remove();
+                    }
                 }
             }
         }
@@ -232,7 +247,6 @@ public class JsonProcessorService implements FileSaverService {
         }
         JsonNode js = (JsonNode) node;
         mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILES_SAVE_DIRECTORY, fileName), js);
-        deleteFilesStories(bankId, platform, id);
     }
     /**
      * Метод, предназначенный для удаления файлов историй из директории.
@@ -251,7 +265,7 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     /**
-     * Метод, предназначенный для удаления карточки из историй из директории.
+     * Метод, предназначенный для удаления одной карточки из историй.
      * deleteJsonFrame - удаляет frame из JSON
      * deleteFileFrame - удаляет файл из директории
      */
@@ -265,25 +279,7 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     private void deleteJsonFrame(String bankId, String platform, String id, String frameId) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        String fileName = FileNameCreator.createFileName(bankId, platform);
-        ObjectNode node = (ObjectNode) mapper.readTree(new File(FILES_SAVE_DIRECTORY + "/" + fileName));
-        if (node.has("stories")) {
-            ArrayNode storiesNode = (ArrayNode) node.get("stories");
-            Iterator<JsonNode> i = storiesNode.iterator();
-            while (i.hasNext()){
-                JsonNode k = i.next();
-                if (id.equals(k.get("id").toString())) {
-                    ArrayNode listFrames = (ArrayNode) k.get("storyFrames");
-                    listFrames.remove(Integer.parseInt(frameId));
-                }
-            }
-        }
-        else{
-            throw new IOException();
-        }
-        JsonNode js = (JsonNode) node;
-        mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILES_SAVE_DIRECTORY, fileName), js);
+        deleteFromJson(bankId, platform, id.concat("_").concat(frameId));
     }
 
 }

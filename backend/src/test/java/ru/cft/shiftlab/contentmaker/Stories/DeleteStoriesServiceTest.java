@@ -103,7 +103,7 @@ public class DeleteStoriesServiceTest {
         JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
                 dtoToEntityConverter,
                 dirProcess);
-
+        method.setAccessible(true);
         method.invoke(service, "tkbbank", "WEB", "0");
 
         StringBuilder jsonStr = new StringBuilder();
