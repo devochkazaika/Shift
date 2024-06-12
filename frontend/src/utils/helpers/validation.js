@@ -115,7 +115,7 @@ export const storyValidationSchema = Yup.object({
             .test('titleLength', checkTitleLength)
             .test('titleStringsLength', checkTitleStringsLength),
           text: Yup.string()
-            .required('Поле обязательно')
+            .notRequired()
             .when('title', (titleValue, textSchema) => {
               if (!titleValue || !checkTitleStrings(titleValue)) return textSchema;
               const titleStringsCount = getStrings(titleValue).length;
