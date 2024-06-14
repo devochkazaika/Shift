@@ -4,7 +4,7 @@ CREATE TABLE test_bank (
 );
 
 CREATE TABLE test_banner (
-    id BIGINT PRIMARY KEY,
+    id BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     code VARCHAR(255) UNIQUE,
     name VARCHAR(255),
     picture VARCHAR(255),
@@ -18,6 +18,6 @@ CREATE TABLE test_banner (
     color VARCHAR(255),
     available BOOLEAN,
     platform VARCHAR(255),
-    FOREIGN KEY (bank) REFERENCES test_bank(id),
-    FOREIGN KEY (main_banner) REFERENCES test_banner(id),
+    CONSTRAINT fk_bank FOREIGN KEY (bank) REFERENCES test_bank(id),
+    CONSTRAINT fk_main_banner FOREIGN KEY (main_banner) REFERENCES test_banner(id)
 );

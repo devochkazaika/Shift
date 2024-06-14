@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 import ru.cft.shiftlab.contentmaker.dto.BannerRequestDto;
+import ru.cft.shiftlab.contentmaker.entity.Banner;
+import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 
 @Service
 @RequiredArgsConstructor
@@ -12,7 +14,10 @@ import ru.cft.shiftlab.contentmaker.dto.BannerRequestDto;
 @Setter
 public class BannerProcessorService {
 
-    public void addBanner(BannerRequestDto bannerRequestDto){
+    private final DtoToEntityConverter dtoToEntityConverter;
 
+    public void addBanner(BannerRequestDto bannerRequestDto){
+        Banner banner = dtoToEntityConverter.fromBannerDtoToBanner(bannerRequestDto);
+        System.out.println(banner);
     }
 }
