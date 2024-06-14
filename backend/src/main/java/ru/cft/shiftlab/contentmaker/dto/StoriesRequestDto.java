@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.PlatformValid;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 
 /**
@@ -17,8 +18,8 @@ import java.util.ArrayList;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Validated
 public class StoriesRequestDto {
-    public static final String platformsRegex = "IOS|ANDROID|ALL PLATFORMS|WEB";
 
     /**
      * Код банка.
@@ -28,8 +29,7 @@ public class StoriesRequestDto {
     private String bankId;
 
     @NotBlank(message = "platformType is not specified")
-    @Pattern(regexp = platformsRegex,
-            message = "Incorrect parameters. Possible: IOS, ANDROID, ALL PLATFORMS, WEB")
+    @PlatformValid
     private String platformType;
 
     /**

@@ -1,4 +1,4 @@
-package ru.cft.shiftlab.contentmaker;
+package ru.cft.shiftlab.contentmaker.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
@@ -20,7 +20,7 @@ import ru.cft.shiftlab.contentmaker.controller.StoriesController;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
-import ru.cft.shiftlab.contentmaker.service.implementation.StoriesProcessorService;
+import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,7 +43,7 @@ public class StoriesControllerTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
     @MockBean
-    StoriesProcessorService storiesProcessorService;
+    JsonProcessorService jsonProcessorService;
 
 
 
@@ -96,7 +96,6 @@ public class StoriesControllerTest {
                 .file(cardImages)
                 .param("json", asJsonString(storiesRequestDto))
                 .contentType(MediaType.MULTIPART_FORM_DATA)
-
         );
 
         andReturn.andExpect(status().isCreated());

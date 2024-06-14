@@ -1,4 +1,4 @@
-package ru.cft.shiftlab.contentmaker.Stories;
+package ru.cft.shiftlab.contentmaker.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,7 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
-import ru.cft.shiftlab.contentmaker.service.implementation.StoriesProcessorService;
+import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 import ru.cft.shiftlab.contentmaker.util.DirProcess;
 import ru.cft.shiftlab.contentmaker.util.Image.ImageNameGenerator;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
@@ -36,14 +36,14 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_TEST_DIRECTORY;
 
 @ExtendWith(MockitoExtension.class)
-public class DeleteRequestTest {
+public class DeleteServiceTest {
     ObjectMapper objectMapper = new ObjectMapper();
     private final MultipartFileToImageConverter multipartFileToImageConverter = new MultipartFileToImageConverter(new ImageNameGenerator());
     private final DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
     private final DirProcess dirProcess = new DirProcess();
     @Test
     void deleteFilesTest() throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException {
-        Method method = StoriesProcessorService.class.getDeclaredMethod("deleteFilesStories", String.class, String.class, String.class);
+        Method method = JsonProcessorService.class.getDeclaredMethod("deleteFilesStories", String.class, String.class, String.class);
 
         method.setAccessible(true);
         String bankId = "TestBank";
@@ -67,7 +67,7 @@ public class DeleteRequestTest {
         MultipartFile multipartFile = new MockMultipartFile("fileItem",
                 img.getName(), "image/png", IOUtils.toByteArray(input));
 
-        StoriesProcessorService service = new StoriesProcessorService(multipartFileToImageConverter,
+        JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
                 dtoToEntityConverter,
                 dirProcess
                 );
@@ -80,11 +80,11 @@ public class DeleteRequestTest {
     }
     @Test
     void deleteJsonTest() throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException {
-        Method method = StoriesProcessorService.class.getDeclaredMethod("deleteJsonStories", String.class, String.class, String.class);
+        Method method = JsonProcessorService.class.getDeclaredMethod("deleteJsonStories", String.class, String.class, String.class);
         File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_tkbbank_web.json");
         copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_tkbbank_web.json");
         File json = new File(FILES_SAVE_DIRECTORY+"/story_tkbbank_web.json");
-        StoriesProcessorService service = new StoriesProcessorService(multipartFileToImageConverter,
+        JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
                 dtoToEntityConverter,
                 dirProcess);
 

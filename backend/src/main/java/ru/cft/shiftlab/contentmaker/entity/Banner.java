@@ -15,7 +15,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "VW_RPT_BANNER")
+@Table(name = "test_banner")
 public class Banner {
 
     @Id
