@@ -2,10 +2,14 @@ package ru.cft.shiftlab.contentmaker;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import ru.cft.shiftlab.contentmaker.repository.BannerRepository;
 import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
@@ -18,9 +22,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 public class DtoToEntityConverterTest {
+    private DtoToEntityConverter converterRequestDto;
 
-    private final ModelMapper modelMapper = new ModelMapper();
-    private final DtoToEntityConverter converterRequestDto = new DtoToEntityConverter(modelMapper);
+    @Mock
+    private BannerRepository bannerRepository;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        converterRequestDto = new DtoToEntityConverter(bannerRepository, new ModelMapper());
+    }
     private StoryPresentation storyPresentation = new StoryPresentation();
 
 

@@ -8,8 +8,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.mock.web.MockMultipartFile;
@@ -19,6 +22,7 @@ import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
+import ru.cft.shiftlab.contentmaker.repository.BannerRepository;
 import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 import ru.cft.shiftlab.contentmaker.util.*;
 import ru.cft.shiftlab.contentmaker.util.Image.ImageNameGenerator;
@@ -39,7 +43,15 @@ public class JsonProcessorServiceTest {
     private final MultipartFileToImageConverter multipartFileToImageConverter = new MultipartFileToImageConverter(new ImageNameGenerator());
 
 
-    private final DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
+    private DtoToEntityConverter dtoToEntityConverter;
+    @Mock
+    private BannerRepository bannerRepository;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        dtoToEntityConverter = new DtoToEntityConverter(bannerRepository, new ModelMapper());
+    }
     private final ImageNameGenerator imageNameGenerator = new ImageNameGenerator();
     private final DirProcess dirProcess = new DirProcess();
 
@@ -84,7 +96,7 @@ public class JsonProcessorServiceTest {
         var arrImg = new MultipartFile[1];
         arrImg[0] = multipartFile;
 
-        DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
+        DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(bannerRepository, new ModelMapper());
 
         String picturesDirectory = FILES_SAVE_DIRECTORY
                 + storiesRequestDto.getBankId() + "/" + storiesRequestDto.getPlatformType();
@@ -183,7 +195,8 @@ public class JsonProcessorServiceTest {
         var arrImg = new MultipartFile[1];
         arrImg[0] = multipartFile;
 
-        DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
+        DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(bannerRepository,
+                new ModelMapper());
 
         String picturesDirectory = FILES_SAVE_DIRECTORY
                 + storiesRequestDto.getBankId() + "/" + storiesRequestDto.getPlatformType();

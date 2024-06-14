@@ -1,9 +1,6 @@
 package ru.cft.shiftlab.contentmaker.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -14,6 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@ToString
 @Setter
 @Table(name = "test_banner")
 public class Banner {
@@ -26,80 +24,80 @@ public class Banner {
     /**
      * Код баннера.
      */
-    @Column(name = "C_CODE")
+    @Column(name = "code")
     private String code;
 
     /**
      * Название.
      */
-    @Column(name = "C_NAME")
+    @Column(name = "name")
     private String name;
 
     /**
      * Название картинки.
      */
-    @Column(name = "C_PICTURE")
+    @Column(name = "picture")
     private String picture;
 
     /**
      * Банк владельца баннера.
      */
     @ManyToOne
-    @JoinColumn(name = "C_BANK")
+    @JoinColumn(name = "bank")
     private Bank bank;
 
     /**
      * Основной баннер.
      */
     @ManyToOne
-    @JoinColumn(name = "C_MAIN_BANNER")
+    @JoinColumn(name = "main_banner")
     private Banner mainBanner;
 
     /**
      * Название иконки.
      */
-    @Column(name = "C_ICON")
+    @Column(name = "icon")
     private String icon;
 
     /**
      * Текст баннера.
      */
-    @Column(name = "C_TEXT")
+    @Column(name = "text")
     private String text;
 
     /**
      * Ссылка для перехода при клике на баннер.
      */
-    @Column(name = "C_URL")
+    @Column(name = "url")
     private String url;
 
     /**
      * Текст ссылки.
      */
-    @Column(name = "C_URL_TEXT")
+    @Column(name = "url_text")
     private String urlText;
 
     /**
      * Приоритет отображения баннера.
      */
-    @Column(name = "C_PRIORITY")
+    @Column(name = "priority")
     private Integer priority;
 
     /**
      * Код цвета кнопки.
      */
-    @Column(name = "C_COLOR")
+    @Column(name = "color")
     private String color;
 
     /**
      * Признак Доступен всем.
      */
-    @Column(name = "C_AVAILABLE_TO_ALL")
+    @Column(name = "available")
     private boolean availableForAll;
 
     /**
      * Тип платформы для отображения Банера.
      */
-    @Column(name = "C_PLATFORM")
+    @Column(name = "platform")
     private String platformType;
 }
