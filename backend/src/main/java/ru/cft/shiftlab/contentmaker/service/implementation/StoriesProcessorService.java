@@ -52,7 +52,7 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.STORIES;
 @Setter
 @ConfigurationProperties(prefix = "files.save.directory")
 @Log4j2
-public class JsonProcessorService implements FileSaverService {
+public class StoriesProcessorService implements FileSaverService {
     ObjectMapper mapper = new ObjectMapper();
     {
         mapper.enable(SerializationFeature.INDENT_OUTPUT);

@@ -20,7 +20,7 @@ import ru.cft.shiftlab.contentmaker.controller.StoriesController;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
-import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
+import ru.cft.shiftlab.contentmaker.service.implementation.StoriesProcessorService;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,7 +43,7 @@ public class StoriesControllerTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
     @MockBean
-    JsonProcessorService jsonProcessorService;
+    StoriesProcessorService storiesProcessorService;
 
 
 

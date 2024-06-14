@@ -53,7 +53,7 @@ public class Banner {
      */
     @ManyToOne
     @JoinColumn(name = "C_MAIN_BANNER")
-    private MainBanner mainBanner;
+    private Banner mainBanner;
 
     /**
      * Название иконки.

@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ru.cft.shiftlab.contentmaker.controller.StoriesController;
-import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
+import ru.cft.shiftlab.contentmaker.service.implementation.StoriesProcessorService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -30,12 +30,12 @@ public class DeleteStoriesTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
     @MockBean
-    JsonProcessorService jsonProcessorService;
+    StoriesProcessorService storiesProcessorService;
 
     @Test
     public void deleteTest() throws Exception {
 
-        Mockito.doThrow(new Exception()).when(jsonProcessorService).getFilePlatform("testBank", "asdas");
+        Mockito.doThrow(new Exception()).when(storiesProcessorService).getFilePlatform("testBank", "asdas");
 
         mockMvc.perform(get("/bank/info")
                 .contentType(MediaType.MULTIPART_FORM_DATA)
