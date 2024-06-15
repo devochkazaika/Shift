@@ -64,6 +64,10 @@ public class DtoToEntityConverter {
         mainBanner.setName(mainBannerDto.getName());
         mainBanner.setCode(mainBannerDto.getCode());
         mainBanner.setUrl(mainBannerDto.getUrl());
+        mainBanner.setPlatformType(bannerDto.getPlatform());
+        mainBanner.setPriority(bannerDto.getPriority());
+        mainBanner.setAvailableForAll(bannerDto.getAvailable());
+
 
         mainBanner = bannerRepository.save(mainBanner);
         banner.setMainBanner(mainBanner);
