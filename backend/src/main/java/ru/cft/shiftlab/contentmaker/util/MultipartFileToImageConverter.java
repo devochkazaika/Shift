@@ -57,4 +57,5 @@ public class MultipartFileToImageConverter {
 
         return picturesSaveDirectory + previewPictureName;
     }
+
 }
