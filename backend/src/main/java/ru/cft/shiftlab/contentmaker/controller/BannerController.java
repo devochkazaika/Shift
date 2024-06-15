@@ -2,7 +2,7 @@ package ru.cft.shiftlab.contentmaker.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.cft.shiftlab.contentmaker.dto.BannerRequestDto;
+import ru.cft.shiftlab.contentmaker.dto.BannerDto;
 import ru.cft.shiftlab.contentmaker.service.implementation.BannerProcessorService;
 
 @RestController
@@ -14,9 +14,7 @@ public class BannerController {
     @ResponseBody
     public void addBanner(
             @RequestBody
-            BannerRequestDto bannerDto){
+            BannerDto bannerDto){
         bannerProcessorService.addBanner(bannerDto);
-//
-//        bannerRepository.save(bannerDto)
     }
 }

@@ -3,10 +3,13 @@ package ru.cft.shiftlab.contentmaker.util.Story;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-import ru.cft.shiftlab.contentmaker.dto.*;
+import ru.cft.shiftlab.contentmaker.dto.BannerDto;
+import ru.cft.shiftlab.contentmaker.dto.StoryDto;
+import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.Banner;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
+import ru.cft.shiftlab.contentmaker.repository.BankRepository;
 import ru.cft.shiftlab.contentmaker.repository.BannerRepository;
 
 /**
@@ -17,6 +20,7 @@ import ru.cft.shiftlab.contentmaker.repository.BannerRepository;
 public class DtoToEntityConverter {
 
     private final BannerRepository bannerRepository;
+    private final BankRepository bankRepository;
 
     private final ModelMapper modelMapper;
 
@@ -53,32 +57,43 @@ public class DtoToEntityConverter {
         return modelMapper.map(storyFramesDto, StoryPresentationFrames.class);
     }
 
-    public Banner fromBannerDtoToBanner(BannerRequestDto bannerDto) {
-        Banner banner = new Banner();
-        banner.setPlatformType(bannerDto.getPlatform());
-        banner.setPriority(bannerDto.getPriority());
-        banner.setAvailableForAll(bannerDto.getAvailable());
-
-        Banner mainBanner = new Banner();
-        MainBannerDto mainBannerDto = bannerDto.getMainBannerDto();
-        mainBanner.setName(mainBannerDto.getName());
-        mainBanner.setCode(mainBannerDto.getCode());
-        mainBanner.setUrl(mainBannerDto.getUrl());
-        mainBanner.setPlatformType(bannerDto.getPlatform());
-        mainBanner.setPriority(bannerDto.getPriority());
-        mainBanner.setAvailableForAll(bannerDto.getAvailable());
-
-
-        mainBanner = bannerRepository.save(mainBanner);
-        banner.setMainBanner(mainBanner);
-
-        OpenBannerDto openBannerDto = bannerDto.getOpenBannerDto();
-        banner.setName(openBannerDto.getName());
-        banner.setCode(openBannerDto.getCode());
-        banner.setText(openBannerDto.getText());
-
+//    public Banner fromBannerDtoToBanner(BannerRequestDto bannerDto) {
+//        Banner banner = new Banner();
+//        banner.setPlatformType(bannerDto.getPlatform());
+//        banner.setPriority(bannerDto.getPriority());
+//        banner.setAvailableForAll(bannerDto.getAvailable());
+//        Bank bank = bankRepository.findById(bannerDto.getBank()).orElse(null);
+//        banner.setBank(bank);
+//
+//        Banner mainBanner = new Banner();
+//        MainBannerDto mainBannerDto = bannerDto.getMainBannerDto();
+//        mainBanner.setName(mainBannerDto.getName());
+//        mainBanner.setCode(mainBannerDto.getCode());
+//        mainBanner.setUrl(mainBannerDto.getUrl());
+//        mainBanner.setPlatformType(bannerDto.getPlatform());
+//        mainBanner.setPriority(bannerDto.getPriority());
+//        mainBanner.setAvailableForAll(bannerDto.getAvailable());
+//
+//        mainBanner.setBank(bank);
+//
+//
+//
+//        mainBanner = bannerRepository.save(mainBanner);
+//        banner.setMainBanner(mainBanner);
+//
+//        OpenBannerDto openBannerDto = bannerDto.getOpenBannerDto();
+//        banner.setName(openBannerDto.getName());
+//        banner.setCode(openBannerDto.getCode());
+//        banner.setText(openBannerDto.getText());
+//
+//        banner = bannerRepository.save(banner);
+//        banner.setMainBanner(mainBanner);
+//        return banner;
+//    }
+    public Banner fromBannerDtoToBanner(BannerDto bannerDto){
+        Banner banner = modelMapper.map(bannerDto, Banner.class);
+        banner.setBank(bankRepository.findBankByName(bannerDto.getBankName()));
         banner = bannerRepository.save(banner);
-        banner.setMainBanner(mainBanner);
         return banner;
     }
 

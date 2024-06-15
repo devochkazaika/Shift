@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "VW_RPT_4_CLIENT")
+@Table(name = "test_bank")
 public class Bank {
 
     @Id
@@ -28,7 +28,10 @@ public class Bank {
     /**
      * Название.
      */
-    @Column(name = "C_NAME")
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "full_name")
+    private String fullName;
 
 }
