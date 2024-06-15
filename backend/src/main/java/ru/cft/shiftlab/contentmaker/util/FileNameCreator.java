@@ -34,6 +34,18 @@ public class FileNameCreator {
         }
         return "story_" + bankId + ".json";
     }
+//    public static String createFileBannerName(String bankId, String ) {
+//        if (Objects.equals(platformType, "IOS")) {
+//            return "story_" + bankId + "_iOS" + ".json";
+//        }
+//        else if (Objects.equals(platformType, "ANDROID")) {
+//            return "story_" + bankId + "_android" + ".json";
+//        }
+//        else if (Objects.equals(platformType, "WEB")) {
+//            return "story_" + bankId + "_web" + ".json";
+//        }
+//        return "story_" + bankId + ".json";
+//    }
     public static void renameOld(String picturesSaveDirectory, long lastId){
         File file = new File(picturesSaveDirectory);
         File[] files = file.listFiles();

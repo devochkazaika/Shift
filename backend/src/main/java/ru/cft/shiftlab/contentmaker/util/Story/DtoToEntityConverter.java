@@ -90,9 +90,13 @@ public class DtoToEntityConverter {
 //        banner.setMainBanner(mainBanner);
 //        return banner;
 //    }
-    public Banner fromBannerDtoToBanner(BannerDto bannerDto){
+    public Banner fromBannerDtoToBanner(BannerDto bannerDto,
+                                        String pictureUrl,
+                                        String iconUrl){
         Banner banner = modelMapper.map(bannerDto, Banner.class);
         banner.setBank(bankRepository.findBankByName(bannerDto.getBankName()));
+        banner.setPicture(pictureUrl);
+        banner.setIcon(iconUrl);
         banner = bannerRepository.save(banner);
         return banner;
     }

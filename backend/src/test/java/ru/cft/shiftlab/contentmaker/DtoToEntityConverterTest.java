@@ -4,37 +4,37 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.cft.shiftlab.contentmaker.repository.BannerRepository;
-import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit4.SpringRunner;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
+import ru.cft.shiftlab.contentmaker.repository.BankRepository;
+import ru.cft.shiftlab.contentmaker.repository.BannerRepository;
+import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(SpringExtension.class)
+@RunWith(SpringRunner.class)
+@Import(TestConfigurationMaker.class)
 public class DtoToEntityConverterTest {
-    private DtoToEntityConverter converterRequestDto;
-
     @Mock
     private BannerRepository bannerRepository;
-
+    @Mock
+    private BankRepository bankRepository;
+    private DtoToEntityConverter converterRequestDto;
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        converterRequestDto = new DtoToEntityConverter(bannerRepository, new ModelMapper());
+        converterRequestDto = new DtoToEntityConverter(bannerRepository, bankRepository, new ModelMapper());
     }
-    private StoryPresentation storyPresentation = new StoryPresentation();
-
-
     @Test
     public void whenConvertStoryRequestDtoToStoryPresentation_thenCorrect(){
         StoryFramesDto storyFramesDto = new StoryFramesDto(
@@ -56,7 +56,7 @@ public class DtoToEntityConverterTest {
                 new ArrayList<>(Collections.singletonList(storyFramesDto))
         );
 
-        storyPresentation = converterRequestDto.fromStoryDtoToStoryPresentation("id", storyDto, null);
+        StoryPresentation storyPresentation = converterRequestDto.fromStoryDtoToStoryPresentation("id", storyDto, null);
 
         Assertions.assertAll(
                 () -> assertEquals(storyDto.getPreviewTitle(), storyPresentation.getPreviewTitle()),

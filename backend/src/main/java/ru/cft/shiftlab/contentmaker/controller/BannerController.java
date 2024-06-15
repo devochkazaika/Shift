@@ -2,6 +2,7 @@ package ru.cft.shiftlab.contentmaker.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.BannerDto;
 import ru.cft.shiftlab.contentmaker.service.implementation.BannerProcessorService;
 
@@ -14,7 +15,11 @@ public class BannerController {
     @ResponseBody
     public void addBanner(
             @RequestBody
-            BannerDto bannerDto){
-        bannerProcessorService.addBanner(bannerDto);
+            BannerDto bannerDto,
+            MultipartFile picture,
+            MultipartFile icon){
+        bannerProcessorService.addBanner(bannerDto,
+                picture,
+                icon);
     }
 }

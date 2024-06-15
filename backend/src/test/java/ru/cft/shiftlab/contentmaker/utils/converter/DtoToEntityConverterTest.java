@@ -2,38 +2,21 @@ package ru.cft.shiftlab.contentmaker.utils.converter;
 
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.modelmapper.ModelMapper;
-import ru.cft.shiftlab.contentmaker.dto.BannerRequestDto;
-import ru.cft.shiftlab.contentmaker.dto.MainBannerDto;
-import ru.cft.shiftlab.contentmaker.dto.OpenBannerDto;
-import ru.cft.shiftlab.contentmaker.entity.Banner;
-import ru.cft.shiftlab.contentmaker.repository.BannerRepository;
-import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @RequiredArgsConstructor
 public class DtoToEntityConverterTest {
 
-    @Mock
-    private BannerRepository bannerRepository;
-
-    @InjectMocks
-    private DtoToEntityConverter dtoToEntityConverter;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-        dtoToEntityConverter = new DtoToEntityConverter(bannerRepository, new ModelMapper());
-    }
+//    @Mock
+//    private BannerRepository bannerRepository;
+//
+//    @InjectMocks
+//    private DtoToEntityConverter dtoToEntityConverter;
+//
+//    @BeforeEach
+//    public void setUp() {
+//        MockitoAnnotations.openMocks(this);
+//        dtoToEntityConverter
+//    }
 
 //    @Test
 //    public void fromOpenBannerDtoToBanner() {
