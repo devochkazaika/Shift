@@ -60,7 +60,7 @@ public class BannerProcessorService {
             throw new StaticContentException("Could not save file", "500");
         }
         catch (IllegalArgumentException e){
-            throw e;
+            throw new StaticContentException(e.getMessage(), "500");
         }
     }
 
