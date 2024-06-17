@@ -59,6 +59,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'junit:junit'
     testImplementation 'com.h2database:h2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
 //    testImplementation 'org.springframework.boot:spring-boot-test-autoconfigure'
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
