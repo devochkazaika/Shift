@@ -13,3 +13,11 @@ spring:
 
   flyway:
     enabled: false
+
+  servlet:
+    multipart:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
+server:
+  tomcat:
+    max-http-form-post-size: 10485760

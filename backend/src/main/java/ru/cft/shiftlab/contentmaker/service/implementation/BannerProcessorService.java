@@ -98,8 +98,8 @@ public class BannerProcessorService {
      */
     private String[] saveImage(BannerDto bannerDto, MultipartFile picture,
                             MultipartFile icon) throws IOException {
-        String picturesSaveDirectory = BANNERS_SAVE_DIRECTORY;
         String bankId = bannerDto.getBankName();
+        String picturesSaveDirectory = BANNERS_SAVE_DIRECTORY;
         dirProcess.createFolders(picturesSaveDirectory+bankId+"/");
         String pictureName = multipartFileToImageConverter.convertMultipartFileToImageAndSave(
                 picture,
