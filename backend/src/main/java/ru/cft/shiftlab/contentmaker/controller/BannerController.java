@@ -13,7 +13,6 @@ import java.io.IOException;
 public class BannerController {
     private final BannerProcessorService bannerProcessorService;
     @PostMapping(value = "/add")
-    @ResponseBody
     public void addBanner(
             @RequestParam(value = "json")
             String bannerDto,
@@ -24,5 +23,15 @@ public class BannerController {
         bannerProcessorService.addBanner(bannerDto,
                 picture,
                 icon);
+    }
+
+    @PostMapping(value = "/setMainBanner")
+    public void setMainBanner(
+            @RequestParam(value = "code")
+            String code,
+            @RequestParam(value = "code_mainBanner")
+            String codeMainBanner
+    ){
+        bannerProcessorService.setMainBanner(code, codeMainBanner);
     }
 }

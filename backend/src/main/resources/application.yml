@@ -24,11 +24,9 @@ files:
       filesSaveDirectory: "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
 
 spring:
-  h2:
-    console:
-      enabled: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/content_maker
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5430/content_maker
     username: admin
     password: password
     #    driverClassName: org.postgresql.Driver
@@ -39,9 +37,9 @@ spring:
     validate:
       -off
       -migrate=false
-  sql:
-    init:
-      platform: org.hibernate.dialect.H2Dialect
+  jpa:
+   database-platform: org.hibernate.dialect.PostgreSQLDialect
+
   servlet:
     multipart:
       max-file-size: 1000MB

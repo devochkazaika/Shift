@@ -97,7 +97,6 @@ public class DtoToEntityConverter {
         banner.setBank(bankRepository.findBankByName(bannerDto.getBankName()));
         banner.setPicture(pictureUrl);
         banner.setIcon(iconUrl);
-        banner = bannerRepository.save(banner);
         return banner;
     }
 

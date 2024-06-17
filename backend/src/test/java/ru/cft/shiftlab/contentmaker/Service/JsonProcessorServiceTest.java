@@ -238,6 +238,8 @@ public class JsonProcessorServiceTest {
         for(StoryPresentationFrames card : storyFromJson.getStoryPresentationFrames()){
             card.setPictureUrl(null);
         }
+        FileUtils.deleteQuietly(jsonFile);
+        FileUtils.deleteDirectory(new File(picturesDirectory));
     }
 
     private int getCountFilesInDir(StoriesRequestDto storiesRequestDto) {

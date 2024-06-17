@@ -5,7 +5,7 @@ CREATE TABLE test_bank (
 );
 
 CREATE TABLE test_banner (
-    id BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    id Serial PRIMARY KEY NOT NULL,
     code VARCHAR(255) UNIQUE,
     name VARCHAR(255),
     picture VARCHAR(255),
