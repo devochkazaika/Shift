@@ -16,6 +16,7 @@ import ru.cft.shiftlab.contentmaker.util.DirProcess;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
 import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 
 import static ru.cft.shiftlab.contentmaker.util.Constants.BANNERS_SAVE_DIRECTORY;
@@ -43,10 +44,12 @@ public class BannerProcessorService {
      * @param code
      * @param codeMainBanner
      */
+    @Transactional
     public void setMainBanner(String code, String codeMainBanner){
         Banner banner = bannerRepository.findBannerByCode(code);
         Banner mainBanner = bannerRepository.findBannerByCode(codeMainBanner);
         banner.setMainBanner(mainBanner);
+        bannerRepository.updateBannerByMainBanner(banner.getId(), mainBanner.getId());
     }
     public void addBanner(String bannerRequestDto,
                           MultipartFile picture,
@@ -60,7 +63,7 @@ public class BannerProcessorService {
             throw new StaticContentException("Could not save file", "500");
         }
         catch (IllegalArgumentException e){
-            throw new StaticContentException(e.getMessage(), "500");
+            throw e;
         }
     }
 
