@@ -1,11 +1,9 @@
 package ru.cft.shiftlab.contentmaker.service.implementation;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
@@ -191,6 +189,41 @@ public class JsonProcessorService implements FileSaverService {
 
             storyPresentationList.add(storyPresentation);
         }
+    }
+
+    public void change(String storiesRequestDto, String platform, Long id) throws IOException {
+        ObjectMapper mapperWithoutNull = new ObjectMapper();
+        {
+            mapperWithoutNull.enable(SerializationFeature.INDENT_OUTPUT);
+            mapperWithoutNull.configure(DeserializationFeature
+                            .FAIL_ON_UNKNOWN_PROPERTIES,
+                    false);
+            mapperWithoutNull.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        }
+        StoriesRequestDto storiesDto = mapperWithoutNull.readValue(
+                mapperWithoutNull.readValue(storiesRequestDto, String.class)
+                , StoriesRequestDto.class);
+
+        String bankId = storiesDto.getBankId();
+        //Чтение сторис, которые уже находятся в хранилище
+        String FileName = FileNameCreator.createFileName(bankId, platform);
+
+        List<StoryPresentation> storyPresentationList = dirProcess.checkFileInBankDir(
+                FileNameCreator.createFileName(bankId, platform),
+                STORIES
+        );
+
+        Map<String, List<StoryPresentation>> resultMap = new HashMap<>();
+        final StoryPresentation storyPresentation = storyPresentationList.stream()
+                .filter(x-> x.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Could not find the story with id=" + id));
+//        storyPresentation.setPreviewTitle("222");
+        String json = mapperWithoutNull.writeValueAsString(storiesRequestDto);
+        mapperWithoutNull.readerForUpdating(storyPresentation).readValue(json);
+        resultMap.put(STORIES, storyPresentationList);
+        File file = new File(FILES_SAVE_DIRECTORY, FileNameCreator.createFileName(bankId, platform));
+        mapperWithoutNull.writeValue(file, resultMap);
     }
 
     public void deleteService(String bankId, String platform, String id) throws Exception {

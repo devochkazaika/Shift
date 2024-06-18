@@ -13,6 +13,7 @@ import java.util.ArrayList;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StoryPresentation {
     /**

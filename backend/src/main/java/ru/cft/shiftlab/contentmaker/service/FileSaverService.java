@@ -44,4 +44,6 @@ public interface FileSaverService {
         IOException e = new IOException();
         throw new RuntimeException(e);
     }
+
+    void change(String storiesRequestDto, String platform, Long id) throws IOException;
 }

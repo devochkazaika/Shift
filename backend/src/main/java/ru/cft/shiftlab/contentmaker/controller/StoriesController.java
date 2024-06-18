@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 
+import java.io.IOException;
+
 /**
  * Контроллер, обрабатывающий запросы для работы с Story.
  */
@@ -57,8 +59,6 @@ public class StoriesController {
 
         storiesService.saveFiles(storiesRequestDto, previewImage, images);
     }
-
-
     /**
      * Метод, который обрабатывает GET-запрос на чтение историй.
      * Основан на формате FormData
@@ -88,7 +88,6 @@ public class StoriesController {
 
         return storiesService.getFilePlatform(bankId, platform);
     }
-
     /**
      * Метод, который обрабатывает DELETE-запрос на удаление историй.
      *
@@ -121,5 +120,24 @@ public class StoriesController {
             String id) throws Exception {
 
         storiesService.deleteService(bankId, platform, id);
+    }
+
+    @PatchMapping("/bank/info/change")
+    public void changeStory(@RequestParam(value = "json")
+                            @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
+                            String storiesRequestDto,
+
+                            @Parameter(description = "Тип платформы",
+                                    schema = @Schema(type = "string", format = "string"),
+                                    example = "ALL PLATFORMS")
+                            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+                            String platform,
+
+                            @Parameter(description = "id истории",
+                                    schema = @Schema(type = "string", format = "string"),
+                                    example = "0")
+                            @RequestParam(name = "id")
+                            Long id) throws IOException {
+        storiesService.change(storiesRequestDto, platform, id);
     }
 }
