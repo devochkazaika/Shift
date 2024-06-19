@@ -93,7 +93,7 @@ public class BannerProcessorService {
             return banner;
         }
         catch (Exception e){
-            if (bannerRepository.findBannerByCode(banner.getCode()) == null){
+            if (bannerRepository.findBannerByCode(banner.getCode()).orElse(null) == null){
                 throw new StaticContentException("Banner with code " + banner.getCode() + " is already exist",
                         "500");
             }
@@ -134,8 +134,4 @@ public class BannerProcessorService {
         List<Banner> banners = bannerRepository.findBannerByBank(bank);
         return new ResponseEntity<>(banners, HttpStatus.OK);
     }
-
-//    public void deleteBanner(String code){
-//        bannerRepository.deleteBannerByCode(code);
-//    }
 }

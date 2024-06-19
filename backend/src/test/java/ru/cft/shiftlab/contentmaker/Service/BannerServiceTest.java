@@ -308,5 +308,38 @@ public class BannerServiceTest {
             bannerProcessorService.setMainBanner(code, codeMainBanner);
         });
     }
+
+    /**
+     * Для начала нужно дописать гет запрос(
+     */
+    @Test
+    public void getBanners(){
+        String codeFirst = "test_codeFirst";
+        String codeSecond = "test_codeSecond";
+        Banner bannerFirst = Banner.builder()
+                .code(codeFirst)
+                .bank(bankRepository.findBankByName("tkbbank").orElse(null))
+                .name("test_banner_name")
+                .url("http://asdasdasd")
+                .text("any text")
+                .color("green")
+                .priority(2)
+                .build();
+        Banner bannerSecond = Banner.builder()
+                .code(codeSecond)
+                .bank(bankRepository.findBankByName("tkbbank").orElse(null))
+                .name("test_banner_name")
+                .url("http://asdasdasd")
+                .text("any text")
+                .color("green")
+                .priority(2)
+                .build();
+        bannerRepository.save(bannerFirst);
+        bannerRepository.save(bannerSecond);
+//        Assertions.assertEquals(
+//                bannerProcessorService.getBanners("tkbbank").getBody(),
+//
+//        );
+    }
 }
 
