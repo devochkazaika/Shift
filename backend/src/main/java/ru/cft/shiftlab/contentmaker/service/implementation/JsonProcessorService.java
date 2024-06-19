@@ -13,9 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
@@ -37,6 +35,10 @@ import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
@@ -106,6 +108,7 @@ public class JsonProcessorService implements FileSaverService {
             StoriesRequestDto storiesRequestDto = mapper.readValue(
                     mapper.readValue(strStoriesRequestDto, String.class)
                     , StoriesRequestDto.class);
+
             String bankId = storiesRequestDto.getBankId();
             String platformType = storiesRequestDto.getPlatformType();
 
@@ -193,7 +196,8 @@ public class JsonProcessorService implements FileSaverService {
         }
     }
 
-    public void deleteService(String bankId, String platform, String id) throws Exception {
+    public ResponseEntity<?> deleteService(String bankId, String platform, String id) throws Throwable {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
         Runnable r = ()->{
             try {
                 deleteJsonStories(bankId, platform, id);
@@ -202,12 +206,15 @@ public class JsonProcessorService implements FileSaverService {
                 throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
             }
         };
-        Thread deleteJson = new Thread(r, "deleteJson");
-        Thread deleteImages = new Thread(() -> deleteFilesStories(bankId, platform, id), "deleteImages");
-        deleteJson.start();
-        deleteImages.start();
-        deleteJson.join();
-        deleteImages.join();
+        Future<?> deleteJson = executor.submit(r);
+        Future<?> deleteImages = executor.submit(() -> deleteFilesStories(bankId, platform, id));
+        try {
+            deleteJson.get();
+            deleteImages.get();
+        } catch (ExecutionException ex) {
+            throw ex.getCause();
+        }
+        return new ResponseEntity<>(HttpStatus.valueOf(202));
     }
     /**
      * Метод, предназначенный для удаления историй из JSON.
@@ -243,10 +250,12 @@ public class JsonProcessorService implements FileSaverService {
             }
         }
         else{
-            throw new IOException();
+            throw new StaticContentException("Field stories not created",
+                    "HTTP 500 - INTERNAL_SERVER_ERROR");
         }
         JsonNode js = (JsonNode) node;
         mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILES_SAVE_DIRECTORY, fileName), js);
+        deleteFilesStories(bankId, platform, id);
     }
     /**
      * Метод, предназначенный для удаления файлов историй из директории.
@@ -260,7 +269,12 @@ public class JsonProcessorService implements FileSaverService {
         File[] files = directory.listFiles();
         Stream.of(files)
                 .filter(x -> x.getName().startsWith(id))
-                .forEach(x -> x.delete());
+                .forEach(x -> {
+                    if (x.exists()) {
+                        x.delete();
+                    }
+                    else log.error("File " + x.getName() + " is already deleted");
+                });
 
     }
 
