@@ -63,6 +63,12 @@ public class BannerServiceTest {
         );
     }
 
+    /**
+     * Для удобной конвертации из файла в Multipart
+     * @param path
+     * @return
+     * @throws IOException
+     */
     private MultipartFile fromFileToMultipartFile(String path) throws IOException {
         File file = new File(path);
         FileInputStream input = new FileInputStream(file);
@@ -71,6 +77,12 @@ public class BannerServiceTest {
         return multipartFile;
     }
 
+    /**
+     * Тест для приватного метода save_to_db для добавления банера в bd
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
     @Test
     public void save_to_db_test() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = BannerProcessorService.class.getDeclaredMethod("saveToDb", BannerDto.class, String[].class);
@@ -115,6 +127,12 @@ public class BannerServiceTest {
                 () -> assertEquals(banner.getPriority(), bannerFromDb.getPriority())
         );
     }
+    /**
+     * Тест для приватного метода save_images для сохранения банера в bd
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
     @Test
     public void save_images_banners() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException {
         Method method = BannerProcessorService.class.getDeclaredMethod("saveImage",
@@ -161,6 +179,10 @@ public class BannerServiceTest {
 
         directory.delete();
     }
+    /**
+     * Тест для добавления банера, вызываемого контроллером
+     * @throws IOException
+     */
     @Test
     public void addBanner_test() throws IOException {
         BannerDto bannerDto = BannerDto.builder()
@@ -199,6 +221,54 @@ public class BannerServiceTest {
                 () -> assertEquals(bannerExpected.getText(), bannerActual.getText()),
                 () -> assertEquals(bannerExpected.getColor(), bannerActual.getColor()),
                 () -> assertEquals(bannerExpected.getPicture(), bannerExpected.getPicture())
+        );
+    }
+    /**
+     * Тест для назначения банеру - mainBanner
+     */
+    @Test
+    public void setMainBanner_test(){
+        String code = "test_code";
+        String codeMainBanner = "test_MainBanner_code";
+        Banner banner = Banner.builder()
+                .code(code)
+                .bank(null)
+                .name("test_banner_name")
+                .url("http://asdasdasd")
+                .text("any text")
+                .color("green")
+                .priority(2)
+                .build();
+        Banner mainBanner = Banner.builder()
+                .code(codeMainBanner)
+                .bank(null)
+                .name("test_mainBanner_name")
+                .url("http://mainBanner")
+                .text("any text for mainBanner")
+                .color("green")
+                .priority(2)
+                .build();
+        bannerRepository.save(banner);
+        bannerRepository.save(mainBanner);
+        bannerProcessorService.setMainBanner(code, codeMainBanner);
+        Banner bannerActual = bannerRepository.findBannerByCode(code);
+        Banner bannerExpected = Banner.builder()
+                .code(code)
+                .bank(null)
+                .name("test_banner_name")
+                .url("http://asdasdasd")
+                .text("any text")
+                .color("green")
+                .priority(2)
+                .mainBanner(mainBanner)
+                .build();
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(bannerExpected.getMainBanner(), bannerActual.getMainBanner()),
+                () -> Assertions.assertEquals(bannerExpected.getName(), bannerActual.getName()),
+                () -> Assertions.assertEquals(bannerExpected.getUrl(), bannerActual.getUrl()),
+                () -> Assertions.assertEquals(bannerExpected.getText(), bannerActual.getText()),
+                () -> Assertions.assertEquals(bannerExpected.getColor(), bannerActual.getColor())
+
         );
     }
 }
