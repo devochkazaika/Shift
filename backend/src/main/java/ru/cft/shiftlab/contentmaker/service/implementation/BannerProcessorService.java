@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.BannerDto;
 import ru.cft.shiftlab.contentmaker.entity.Bank;
 import ru.cft.shiftlab.contentmaker.entity.Banner;
+import ru.cft.shiftlab.contentmaker.exceptionhandling.ResourceNotFoundException;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 import ru.cft.shiftlab.contentmaker.repository.BankRepository;
 import ru.cft.shiftlab.contentmaker.repository.BannerRepository;
@@ -124,8 +125,13 @@ public class BannerProcessorService {
     }
 
     public ResponseEntity<?> getBanners(String bankName){
-        Bank bank = bankRepository.findBankByName(bankName);
+        Bank bank = bankRepository.findBankByName(bankName)
+                .orElseThrow(() -> new ResourceNotFoundException("Bank not found"));
         List<Banner> banners = bannerRepository.findBannerByBank(bank);
         return new ResponseEntity<>(banners, HttpStatus.OK);
     }
+
+//    public void deleteBanner(String code){
+//        bannerRepository.deleteBannerByCode(code);
+//    }
 }

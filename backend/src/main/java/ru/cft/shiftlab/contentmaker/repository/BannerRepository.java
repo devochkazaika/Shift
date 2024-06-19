@@ -22,4 +22,8 @@ public interface BannerRepository extends CrudRepository<Banner, Long> {
 
     @Query(value = "SELECT b FROM Banner as b where b.bank = :bank")
     ArrayList<Banner> findBannerByBank(@Param("bank") Bank bank);
+
+    @Modifying
+    @Query(value = "DELETE FROM Banner as b where b.code = :code")
+    void deleteBannerByCode(@Param("code") String code);
 }

@@ -20,10 +20,15 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<?> IllegalArgumentHandler(ResourceNotFoundException ex) {
+        return new ResponseEntity<>(ex, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> IllegalArgumentHandler(IllegalArgumentException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ex, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(JsonException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

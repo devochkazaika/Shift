@@ -94,7 +94,7 @@ public class DtoToEntityConverter {
                                         String pictureUrl,
                                         String iconUrl){
         Banner banner = modelMapper.map(bannerDto, Banner.class);
-        banner.setBank(bankRepository.findBankByName(bannerDto.getBankName()));
+        banner.setBank(bankRepository.findBankByName(bannerDto.getBankName()).orElse(null));
         banner.setPicture(pictureUrl);
         banner.setIcon(iconUrl);
         return banner;

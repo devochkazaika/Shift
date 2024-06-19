@@ -52,6 +52,12 @@ public class BannerController {
     }
 
     @GetMapping(value = "/get/{id}")
+    @Operation(summary = "Возврат всех банеров с нужным банком.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Банк найден"),
+            @ApiResponse(responseCode = "404", description = "Банк не найден")
+    })
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> getAllBannersByBank(@PathVariable(value = "id") String bankId){
         return bannerProcessorService.getBanners(bankId);
     }
