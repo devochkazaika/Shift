@@ -1,14 +1,16 @@
 package ru.cft.shiftlab.contentmaker.service.implementation;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.BannerDto;
 import ru.cft.shiftlab.contentmaker.entity.Bank;
@@ -18,12 +20,13 @@ import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 import ru.cft.shiftlab.contentmaker.repository.BankRepository;
 import ru.cft.shiftlab.contentmaker.repository.BannerRepository;
 import ru.cft.shiftlab.contentmaker.util.DirProcess;
+import ru.cft.shiftlab.contentmaker.util.MultipartBodyProcess;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
 import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.List;
+import java.util.ArrayList;
 
 import static ru.cft.shiftlab.contentmaker.util.Constants.BANNERS_SAVE_DIRECTORY;
 
@@ -128,10 +131,22 @@ public class BannerProcessorService {
         return new String[]{pictureName, iconName};
     }
 
-    public ResponseEntity<?> getBanners(String bankName){
+    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getBanners(String bankName) throws JsonProcessingException {
         Bank bank = bankRepository.findBankByName(bankName)
                 .orElseThrow(() -> new ResourceNotFoundException("Bank not found"));
-        List<Banner> banners = bannerRepository.findBannerByBank(bank);
-        return new ResponseEntity<>(banners, HttpStatus.OK);
+        ArrayList<Banner> banners = bannerRepository.findBannerByBank(bank);
+        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
+        String jsonAsString = mapper.writeValueAsString(banners);
+
+        MultipartBodyProcess.addJsonInBuilderMultipart(jsonAsString, multipartBodyBuilder);
+        banners.forEach(
+                x -> MultipartBodyProcess.addImageInBuilderMultipart(
+                        BANNERS_SAVE_DIRECTORY+x.getPicture(),
+                        multipartBodyBuilder)
+        );
+
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.MULTIPART_FORM_DATA);
+        return new HttpEntity<>(multipartBodyBuilder.build(), header);
     }
 }

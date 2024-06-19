@@ -1,12 +1,14 @@
 package ru.cft.shiftlab.contentmaker.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.service.implementation.BannerProcessorService;
@@ -58,7 +60,7 @@ public class BannerController {
             @ApiResponse(responseCode = "404", description = "Банк не найден")
     })
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> getAllBannersByBank(@PathVariable(value = "id") String bankId){
+    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getAllBannersByBank(@PathVariable(value = "id") String bankId) throws JsonProcessingException {
         return bannerProcessorService.getBanners(bankId);
     }
 }
