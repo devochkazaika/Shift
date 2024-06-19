@@ -1,7 +1,11 @@
 package ru.cft.shiftlab.contentmaker.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -54,7 +58,8 @@ public class BannerServiceTest {
                 dtoToEntityConverter,
                 new MultipartFileToImageConverter(new ImageNameGenerator()),
                 new DirProcess(),
-                bannerRepository
+                bannerRepository,
+                bankRepository
         );
     }
 
@@ -156,5 +161,44 @@ public class BannerServiceTest {
 
         directory.delete();
     }
-
+    @Test
+    public void addBanner_test() throws IOException {
+        BannerDto bannerDto = BannerDto.builder()
+                .code("test_code")
+                .bankName("test")
+                .name("test_banner_name")
+                .url("http://asdasdasd")
+                .text("any text")
+                .color("green")
+                .priority(2)
+                .build();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonString = "";
+        try {
+            jsonString = objectMapper.writeValueAsString(bannerDto);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        MultipartFile pictFile = fromFileToMultipartFile(FILES_TEST_DIRECTORY+"sample.png");
+        MultipartFile iconFile = fromFileToMultipartFile(FILES_TEST_DIRECTORY+"sample.png");
+        bannerProcessorService.addBanner(jsonString, pictFile, iconFile);
+        Banner bannerExpected = Banner.builder()
+                .code("test_code")
+                .bank(null)
+                .name("test_banner_name")
+                .url("http://asdasdasd")
+                .text("any text")
+                .color("green")
+                .priority(2)
+                .build();
+        Banner bannerActual = bannerRepository.findBannerByCode("test_code");
+        Assertions.assertAll(
+                () -> assertEquals(bannerExpected.getCode(), bannerActual.getCode()),
+                () -> assertEquals(bannerExpected.getName(), bannerActual.getName()),
+                () -> assertEquals(bannerExpected.getUrl(), bannerExpected.getUrl()),
+                () -> assertEquals(bannerExpected.getText(), bannerActual.getText()),
+                () -> assertEquals(bannerExpected.getColor(), bannerActual.getColor()),
+                () -> assertEquals(bannerExpected.getPicture(), bannerExpected.getPicture())
+        );
+    }
 }

@@ -11,6 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@ToString
 @Builder
 @Setter
 @Table(name = "test_banner")
