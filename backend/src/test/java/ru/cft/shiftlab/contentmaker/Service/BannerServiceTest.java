@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.BannerDto;
 import ru.cft.shiftlab.contentmaker.entity.Bank;
 import ru.cft.shiftlab.contentmaker.entity.Banner;
+import ru.cft.shiftlab.contentmaker.exceptionhandling.ResourceNotFoundException;
 import ru.cft.shiftlab.contentmaker.repository.BankRepository;
 import ru.cft.shiftlab.contentmaker.repository.BannerRepository;
 import ru.cft.shiftlab.contentmaker.service.implementation.BannerProcessorService;
@@ -117,7 +118,7 @@ public class BannerServiceTest {
                 () -> assertEquals(banner.getPriority(), bannerActual.getPriority())
         );
 
-        Banner bannerFromDb = bannerRepository.findBannerByCode("test_code");
+        Banner bannerFromDb = bannerRepository.findBannerByCode("test_code").orElse(null);
         assertAll(
                 () -> assertEquals(banner.getCode(), bannerFromDb.getCode()),
                 () -> assertEquals(banner.getName(), bannerFromDb.getName()),
@@ -213,7 +214,7 @@ public class BannerServiceTest {
                 .color("green")
                 .priority(2)
                 .build();
-        Banner bannerActual = bannerRepository.findBannerByCode("test_code");
+        Banner bannerActual = bannerRepository.findBannerByCode("test_code").orElse(null);
         Assertions.assertAll(
                 () -> assertEquals(bannerExpected.getCode(), bannerActual.getCode()),
                 () -> assertEquals(bannerExpected.getName(), bannerActual.getName()),
@@ -251,7 +252,7 @@ public class BannerServiceTest {
         bannerRepository.save(banner);
         bannerRepository.save(mainBanner);
         bannerProcessorService.setMainBanner(code, codeMainBanner);
-        Banner bannerActual = bannerRepository.findBannerByCode(code);
+        Banner bannerActual = bannerRepository.findBannerByCode(code).orElse(null);
         Banner bannerExpected = Banner.builder()
                 .code(code)
                 .bank(null)
@@ -268,7 +269,44 @@ public class BannerServiceTest {
                 () -> Assertions.assertEquals(bannerExpected.getUrl(), bannerActual.getUrl()),
                 () -> Assertions.assertEquals(bannerExpected.getText(), bannerActual.getText()),
                 () -> Assertions.assertEquals(bannerExpected.getColor(), bannerActual.getColor())
-
         );
     }
+
+    @Test
+    public void setMainBanner_test_throwResourceNotFoundException(){
+        String code = "test_code";
+        String codeMainBanner = "test_MainBanner_code";
+        Banner banner = Banner.builder()
+                .code(code)
+                .bank(null)
+                .name("test_banner_name")
+                .url("http://asdasdasd")
+                .text("any text")
+                .color("green")
+                .priority(2)
+                .build();
+        Banner mainbanner = Banner.builder()
+                .code(codeMainBanner)
+                .bank(null)
+                .name("test_banner_name")
+                .url("http://asdasdasd")
+                .text("any text")
+                .color("green")
+                .priority(2)
+                .build();
+        ResourceNotFoundException thrown = Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            bannerProcessorService.setMainBanner(code, codeMainBanner);
+        });
+        Assertions.assertEquals(String.format("banner with code= %s not found", code), thrown.getMessage());
+        bannerRepository.save(banner);
+        thrown = Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            bannerProcessorService.setMainBanner(code, codeMainBanner);
+        });
+        Assertions.assertEquals(String.format("banner with code= %s not found", codeMainBanner), thrown.getMessage());
+        bannerRepository.save(mainbanner);
+        Assertions.assertDoesNotThrow(() -> {
+            bannerProcessorService.setMainBanner(code, codeMainBanner);
+        });
+    }
 }
+

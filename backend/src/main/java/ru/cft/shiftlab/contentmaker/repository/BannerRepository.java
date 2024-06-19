@@ -9,11 +9,12 @@ import ru.cft.shiftlab.contentmaker.entity.Bank;
 import ru.cft.shiftlab.contentmaker.entity.Banner;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Repository
 public interface BannerRepository extends CrudRepository<Banner, Long> {
     @Query(value = "SELECT b FROM Banner as b where b.code = :code")
-    Banner findBannerByCode(@Param("code") String code);
+    Optional<Banner> findBannerByCode(@Param("code") String code);
 
     @Modifying
     @Query("UPDATE Banner b SET b.mainBanner.id = :mainCodeId WHERE b.id = :bannerId")

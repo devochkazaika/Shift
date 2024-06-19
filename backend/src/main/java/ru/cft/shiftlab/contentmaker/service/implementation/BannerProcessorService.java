@@ -53,8 +53,12 @@ public class BannerProcessorService {
      */
     @Transactional
     public void setMainBanner(String code, String codeMainBanner){
-        Banner banner = bannerRepository.findBannerByCode(code);
-        Banner mainBanner = bannerRepository.findBannerByCode(codeMainBanner);
+        Banner banner = bannerRepository.findBannerByCode(code).orElseThrow(
+                () -> new ResourceNotFoundException(String.format("banner with code= %s not found", code))
+        );
+        Banner mainBanner = bannerRepository.findBannerByCode(codeMainBanner).orElseThrow(
+                () -> new ResourceNotFoundException(String.format("banner with code= %s not found", codeMainBanner))
+        );
         banner.setMainBanner(mainBanner);
         bannerRepository.updateBannerByMainBanner(banner.getId(), mainBanner.getId());
     }
