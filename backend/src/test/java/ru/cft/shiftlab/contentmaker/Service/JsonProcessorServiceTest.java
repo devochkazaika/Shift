@@ -1,4 +1,4 @@
-package ru.cft.shiftlab.contentmaker;
+package ru.cft.shiftlab.contentmaker.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -198,7 +198,7 @@ public class JsonProcessorServiceTest {
                 previewUrl));
 
         Map<String, List<StoryPresentation>> presentationList = new HashMap<>();
-        presentationList.put("web", storyPresentationList);
+        presentationList.put("WEB", storyPresentationList);
 
         File jsonFile = Paths.get(jsonDirectory + fileName).toFile();
 

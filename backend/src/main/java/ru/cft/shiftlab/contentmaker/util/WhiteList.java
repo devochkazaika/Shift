@@ -12,7 +12,7 @@ import static java.util.Map.entry;
 @Component
 public class WhiteList {
 
-    static Map<String, String> whitelistBank = Map.ofEntries(
+    public static Map<String, String> whitelistBank = Map.ofEntries(
             entry("absolutbank", "АКБ \"Абсолют Банк\" (ПАО)"),
             entry("agroros","АО \"БАНК \"АГРОРОС\""),
             entry("akcept", "АО \"БАНК АКЦЕПТ\""),

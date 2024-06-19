@@ -1,4 +1,4 @@
-package ru.cft.shiftlab.contentmaker;
+package ru.cft.shiftlab.contentmaker.Controller;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
