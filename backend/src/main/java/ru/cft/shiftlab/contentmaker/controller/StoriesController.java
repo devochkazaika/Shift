@@ -20,6 +20,8 @@ import ru.cft.shiftlab.contentmaker.util.validation.annotation.PlatformValid;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
 
 
+import java.io.IOException;
+
 /**
  * Контроллер, обрабатывающий запросы для работы с Story.
  */
@@ -132,5 +134,14 @@ public class StoriesController {
             String id) throws Throwable {
 
         return storiesService.deleteService(bankId, platform, id);
+    }
+
+    @DeleteMapping("/bank/info/delete/{bankId}/{platform}/{storyId}/{frameId}")
+    public void deleteFrame(@PathVariable String bankId,
+                            @PathVariable String platform,
+                            @PathVariable String storyId,
+                            @PathVariable String frameId) throws IOException {
+        storiesService.deleteStoryFrame(bankId, platform, storyId, frameId);
+
     }
 }
