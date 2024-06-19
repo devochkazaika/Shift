@@ -6,11 +6,15 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.BannerDto;
+import ru.cft.shiftlab.contentmaker.entity.Bank;
 import ru.cft.shiftlab.contentmaker.entity.Banner;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
+import ru.cft.shiftlab.contentmaker.repository.BankRepository;
 import ru.cft.shiftlab.contentmaker.repository.BannerRepository;
 import ru.cft.shiftlab.contentmaker.util.DirProcess;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
@@ -18,6 +22,7 @@ import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.List;
 
 import static ru.cft.shiftlab.contentmaker.util.Constants.BANNERS_SAVE_DIRECTORY;
 
@@ -38,6 +43,7 @@ public class BannerProcessorService {
     private final MultipartFileToImageConverter multipartFileToImageConverter;
     private final DirProcess dirProcess;
     private final BannerRepository bannerRepository;
+    private final BankRepository bankRepository;
 
     /**
      * Метод для назначения mainBanner для банера
@@ -115,5 +121,11 @@ public class BannerProcessorService {
                 bankId  + "/" + bannerDto.getCode() + "_" + "icon"
         );
         return new String[]{pictureName, iconName};
+    }
+
+    public ResponseEntity<?> getBanners(String bankName){
+        Bank bank = bankRepository.findBankByName(bankName);
+        List<Banner> banners = bannerRepository.findBannerByBank(bank);
+        return new ResponseEntity<>(banners, HttpStatus.OK);
     }
 }
