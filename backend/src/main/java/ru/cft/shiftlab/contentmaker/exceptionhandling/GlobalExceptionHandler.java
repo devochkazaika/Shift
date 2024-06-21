@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,9 +19,19 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    @ExceptionHandler
+    @ExceptionHandler(JsonException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<?> JsonHandler(JsonException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationException handleValidationException(ConstraintViolationException ex) {
+        return new ValidationException(ex.getMessage(), "404");
+    }
+    @ExceptionHandler(StaticContentException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public StaticContentException handleStaticContentExceptionException(StaticContentException staticContentException) {
+    public StaticContentException handleStaticContentException(StaticContentException staticContentException) {
         return staticContentException;
     }
 

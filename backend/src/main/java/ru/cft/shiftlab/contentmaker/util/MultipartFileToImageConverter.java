@@ -5,6 +5,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
+import ru.cft.shiftlab.contentmaker.util.Image.ImageContainer;
+import ru.cft.shiftlab.contentmaker.util.Image.ImageNameGenerator;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

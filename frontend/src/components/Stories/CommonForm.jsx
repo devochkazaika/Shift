@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
-import FormField from '../FormField';
+import FormField from "../FormField";
 
-import { banks } from '../../utils/constants/banks';
+import { banks } from "../../utils/constants/banks";
 
 const CommonForm = (props) => {
   return (
@@ -29,7 +29,7 @@ const CommonForm = (props) => {
               type="radio"
               name={`platformType`}
               value="ALL PLATFORMS"
-              checked={props.values.platformType === 'ALL PLATFORMS'}
+              checked={props.values.platformType === "ALL PLATFORMS"}
               {...props}
             />
           </label>
@@ -41,7 +41,7 @@ const CommonForm = (props) => {
               type="radio"
               name={`platformType`}
               value="ANDROID"
-              checked={props.values.platformType === 'ANDROID'}
+              checked={props.values.platformType === "ANDROID"}
               {...props}
             />
           </label>
@@ -53,7 +53,18 @@ const CommonForm = (props) => {
               type="radio"
               name={`platformType`}
               value="IOS"
-              checked={props.values.platformType === 'IOS'}
+              checked={props.values.platformType === "IOS"}
+              {...props}
+            />
+          </label>
+          <label htmlFor="WebPlatformType">
+            <FormField
+              labelTitle="Web"
+              id="WebPlatformType"
+              type="radio"
+              name={`platformType`}
+              value="WEB"
+              checked={props.values.platformType === "WEB"}
               {...props}
             />
           </label>

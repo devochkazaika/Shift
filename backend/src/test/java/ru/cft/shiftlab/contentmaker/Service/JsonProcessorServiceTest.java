@@ -1,4 +1,4 @@
-package ru.cft.shiftlab.contentmaker;
+package ru.cft.shiftlab.contentmaker.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,14 +19,22 @@ import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
-import ru.cft.shiftlab.contentmaker.util.*;
+import ru.cft.shiftlab.contentmaker.util.DirProcess;
+import ru.cft.shiftlab.contentmaker.util.Image.ImageNameGenerator;
+import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
+import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static ru.cft.shiftlab.contentmaker.util.Constants.*;
 
@@ -38,10 +46,13 @@ public class JsonProcessorServiceTest {
 
     private final DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
     private final ImageNameGenerator imageNameGenerator = new ImageNameGenerator();
+    private final DirProcess dirProcess = new DirProcess();
+    ObjectMapper objectMapper = new ObjectMapper();
 
     private final JsonProcessorService jsonProcessorService = new JsonProcessorService(
             multipartFileToImageConverter,
-            dtoToEntityConverter);
+            dtoToEntityConverter,
+            dirProcess);
 
     @Test
     void should_save_files() throws IOException {
@@ -194,7 +205,7 @@ public class JsonProcessorServiceTest {
                 previewUrl));
 
         Map<String, List<StoryPresentation>> presentationList = new HashMap<>();
-        presentationList.put("web", storyPresentationList);
+        presentationList.put("WEB", storyPresentationList);
 
         File jsonFile = Paths.get(jsonDirectory + fileName).toFile();
 
@@ -229,5 +240,78 @@ public class JsonProcessorServiceTest {
             return 0;
         }
         return files.length;
+    }
+
+    @Test
+    void deleteFilesTest() throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException {
+        Method method = JsonProcessorService.class.getDeclaredMethod("deleteFilesStories", String.class, String.class, String.class);
+
+        method.setAccessible(true);
+        String bankId = "TestBank";
+        String platform = "WEB";
+        String saveDirectory = FILES_SAVE_DIRECTORY + bankId + "/" + platform;
+        dirProcess.createFolders(saveDirectory);
+        File img =  new File(
+                FILES_TEST_DIRECTORY,
+                "sample.png");
+        copyFile(img.getAbsolutePath(), saveDirectory + "/" + "0_0.png");
+
+        // Проверяем, что файл скопирован
+        Assertions.assertTrue(new File(saveDirectory).exists());
+
+        FileInputStream input = new FileInputStream(img);
+        Assertions.assertNotNull(input);
+
+        dirProcess.createFolders(saveDirectory);
+
+
+        MultipartFile multipartFile = new MockMultipartFile("fileItem",
+                img.getName(), "image/png", IOUtils.toByteArray(input));
+
+        JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
+                dtoToEntityConverter,
+                dirProcess
+        );
+
+
+        method.invoke(service, bankId, platform, "0");
+        File file = new File(saveDirectory);
+        File[] files = file.listFiles();
+        Assertions.assertEquals(0, files.length);
+    }
+    @Test
+    void deleteJsonTest() throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException {
+        Method method = JsonProcessorService.class.getDeclaredMethod("deleteJsonStories", String.class, String.class, String.class);
+        File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_tkbbank_web.json");
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_tkbbank_web.json");
+        File json = new File(FILES_SAVE_DIRECTORY+"/story_tkbbank_web.json");
+        JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
+                dtoToEntityConverter,
+                dirProcess);
+
+        method.invoke(service, "tkbbank", "WEB", "0");
+
+        StringBuilder jsonStr = new StringBuilder();
+        Files.readAllLines(json.toPath()).forEach(jsonStr::append);
+        Map<String, List<StoryPresentation>> map = objectMapper.readValue(
+                jsonStr.toString(),
+                new TypeReference<Map<String, List<StoryPresentation>>>() {}
+        );
+        Set<Long> set = new HashSet<>();
+        Stream.of(map.get("stories"))
+                .forEach(x -> set.add(x.get(0).getId()));
+        Assertions.assertTrue(!set.contains(0L));
+    }
+    public static void copyFile(String sourcePathStr, String destinationPathStr) {
+        // Преобразуем строки в Path объекты
+        Path sourcePath = Paths.get(sourcePathStr);
+        Path destinationPath = Paths.get(destinationPathStr);
+
+        try {
+            // Копируем файл из sourcePath в destinationPath
+            Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

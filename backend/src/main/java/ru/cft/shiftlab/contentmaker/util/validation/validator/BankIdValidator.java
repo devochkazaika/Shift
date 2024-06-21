@@ -39,7 +39,6 @@ public class BankIdValidator implements ConstraintValidator<WhiteListValid, Stri
         if (object == null) {
             return false;
         }
-
         return whiteList.checkContainsKeyOrNot(object);
     }
 

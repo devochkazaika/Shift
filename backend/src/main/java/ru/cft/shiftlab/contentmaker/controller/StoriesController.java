@@ -1,15 +1,26 @@
 package ru.cft.shiftlab.contentmaker.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
+import ru.cft.shiftlab.contentmaker.service.FileSaverService;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.PlatformValid;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
+
+
+import java.io.IOException;
 
 /**
  * Контроллер, обрабатывающий запросы для работы с Story.
@@ -17,8 +28,9 @@ import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 @RestController
 @RequestMapping("/stories")
 @RequiredArgsConstructor
+@Validated
 public class StoriesController {
-    private final JsonProcessorService storiesService;
+    private final FileSaverService storiesService;
 
     /**
      * Метод, который обрабатывает POST-запрос на сохранение историй.
@@ -26,17 +38,30 @@ public class StoriesController {
      *
      * @param storiesRequestDto DTO, которая содержит информацию об историях, в виде строки json.
      * @param images файлы с картинкой превью.
-     * @param previewImage файлы с картинками карточек.
+     * @param previewImage главная картинка.
      */
-    @PostMapping("/add")
+    @PostMapping(path = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Добавление истории на сервер.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "История добавлена на сервер.")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    public void addStories(@RequestParam(value = "json") String storiesRequestDto,
-                           @RequestParam(value = "previewImage",required = false) MultipartFile previewImage,
-                           @RequestParam(value = "cardImages",required = false) MultipartFile[] images) {
+    public void addStories(
+            @RequestParam(value = "json")
+            @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
+            String storiesRequestDto,
+
+            @RequestPart(value = "previewImage",required = true)
+            @Parameter(description = "Главная картинка.",
+                    schema = @Schema(type = "string", format = "binary"),
+                    content = @Content(mediaType = "multipart/form-data"))
+            MultipartFile previewImage,
+
+            @RequestPart(value = "cardImages",required = false)
+            @Parameter(description = "Файлы с картинками карточек.",
+                    schema = @Schema(type = "array", format = "binary"),
+                    content = @Content(mediaType = "multipart/form-data"))
+            MultipartFile[] images) {
 
         storiesService.saveFiles(storiesRequestDto, previewImage, images);
     }
@@ -57,18 +82,66 @@ public class StoriesController {
     @ResponseStatus(HttpStatus.FOUND)
     @ResponseBody
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getStories(
-            @RequestParam(name = "bankId") String bankId,
-            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS") String platform) {
+            @RequestParam(name = "bankId")
+            @Parameter(description = "Название банка",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "tkkbank")
+            @WhiteListValid(message = "bankId must match the allowed")
+            String bankId,
+
+            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+            @Parameter(description = "Тип платформы",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "WEB")
+            @PlatformValid
+            String platform){
 
         return storiesService.getFilePlatform(bankId, platform);
     }
 
+    /**
+     * Метод, который обрабатывает DELETE-запрос на удаление историй.
+     *
+     * @param bankId название банка.
+     * @param platform платформа, для которой создана история.
+     * @param id id истории
+     */
     @DeleteMapping("/bank/info/delete")
-    public void deleteStories(
-            @RequestParam(name = "bankId") String bankId,
-            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS") String platform,
-            @RequestParam(name = "id") String id) throws Exception {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "История успешно удалена"),
+            @ApiResponse(responseCode = "404", description = "История не найдена в JSON файле"),
+            @ApiResponse(responseCode = "500", description = "Ошибка на стороне сервера(нет JSON или нет директории с файлами)")
+    })
+    public ResponseEntity<?> deleteStories(
+            @RequestParam(name = "bankId")
+            @Parameter(description = "Название банка",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "tkkbank")
+            @WhiteListValid(message = "bankId must match the allowed")
+            String bankId,
 
-        storiesService.deleteService(bankId, platform, id);
+            @Parameter(description = "Тип платформы",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "ALL PLATFORMS")
+            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+            @PlatformValid
+            String platform,
+
+            @Parameter(description = "id истории",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "0")
+            @RequestParam(name = "id")
+            String id) throws Throwable {
+
+        return storiesService.deleteService(bankId, platform, id);
+    }
+
+    @DeleteMapping("/bank/info/delete/{bankId}/{platform}/{storyId}/{frameId}")
+    public void deleteFrame(@PathVariable String bankId,
+                            @PathVariable String platform,
+                            @PathVariable String storyId,
+                            @PathVariable String frameId) throws IOException {
+        storiesService.deleteStoryFrame(bankId, platform, storyId, frameId);
+
     }
 }
