@@ -6,11 +6,13 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.BannerDto;
@@ -313,9 +315,10 @@ public class BannerServiceTest {
      * Для начала нужно дописать гет запрос(
      */
     @Test
-    public void getBanners(){
+    public void getBanners() throws JsonProcessingException {
         String codeFirst = "test_codeFirst";
         String codeSecond = "test_codeSecond";
+        ObjectMapper mapper = new ObjectMapper();
         Banner bannerFirst = Banner.builder()
                 .code(codeFirst)
                 .bank(bankRepository.findBankByName("tkbbank").orElse(null))
@@ -336,10 +339,29 @@ public class BannerServiceTest {
                 .build();
         bannerRepository.save(bannerFirst);
         bannerRepository.save(bannerSecond);
-//        Assertions.assertEquals(
-//                bannerProcessorService.getBanners("tkbbank").getBody(),
-//
-//        );
+        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
+        String jsonAsString = mapper.writeValueAsString(Arrays.asList(bannerFirst, bannerSecond));
+        multipartBodyBuilder.part("json", jsonAsString);
+        multipartBodyBuilder.part("test_codeFirst_pict.png", FILES_TEST_DIRECTORY+"sample.png");
+        multipartBodyBuilder.part("test_codeFirst_icon.png", FILES_TEST_DIRECTORY+"sample.png");
+        multipartBodyBuilder.part("test_codeSecond_pict.png", FILES_TEST_DIRECTORY+"sample.png");
+        multipartBodyBuilder.part("test_codeSecond_icon.png", FILES_TEST_DIRECTORY+"sample.png");
+        String spyString = Mockito.spy(new String());
+        Mockito.doReturn(FILES_TEST_DIRECTORY+"sample.png")
+                .when(spyString)
+                .equals(BANNERS_SAVE_DIRECTORY.concat("test_codeFirst_pict"));
+        Mockito.doReturn(FILES_TEST_DIRECTORY+"sample.png")
+                .when(spyString)
+                .equals(BANNERS_SAVE_DIRECTORY.concat("test_codeFirst_icon"));
+        Mockito.doReturn(FILES_TEST_DIRECTORY+"sample.png")
+                .when(spyString)
+                .equals(BANNERS_SAVE_DIRECTORY.concat("test_codeSecond_pict"));
+        Mockito.doReturn(FILES_TEST_DIRECTORY+"sample.png")
+                .when(spyString)
+                .equals(BANNERS_SAVE_DIRECTORY.concat("test_codeSecond_icon"));
+        Assertions.assertEquals(
+                bannerProcessorService.getBanners("tkbbank"),multipartBodyBuilder.build()
+        );
     }
 }
 

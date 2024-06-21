@@ -134,14 +134,19 @@ public class BannerProcessorService {
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getBanners(String bankName) throws JsonProcessingException {
         Bank bank = bankRepository.findBankByName(bankName)
                 .orElseThrow(() -> new ResourceNotFoundException("Bank not found"));
-        ArrayList<Banner> banners = bannerRepository.findBannerByBank(bank);
+
+        ArrayList<Banner> banners = bannerRepository.findBannerByBank(bank)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException(String.format("bank with name= %s not found", bank.getName()))
+                );
+
         MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
         String jsonAsString = mapper.writeValueAsString(banners);
 
         MultipartBodyProcess.addJsonInBuilderMultipart(jsonAsString, multipartBodyBuilder);
         banners.forEach(
                 x -> MultipartBodyProcess.addImageInBuilderMultipart(
-                        BANNERS_SAVE_DIRECTORY+x.getPicture(),
+                        BANNERS_SAVE_DIRECTORY.concat(x.getPicture()),
                         multipartBodyBuilder)
         );
 

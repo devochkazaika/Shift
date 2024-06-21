@@ -22,7 +22,7 @@ public interface BannerRepository extends CrudRepository<Banner, Long> {
                                   @Param("mainCodeId") Long mainCodeId);
 
     @Query(value = "SELECT b FROM Banner as b where b.bank = :bank")
-    ArrayList<Banner> findBannerByBank(@Param("bank") Bank bank);
+    Optional<ArrayList<Banner>> findBannerByBank(@Param("bank") Bank bank);
 
     @Modifying
     @Query(value = "DELETE FROM Banner as b where b.code = :code")
