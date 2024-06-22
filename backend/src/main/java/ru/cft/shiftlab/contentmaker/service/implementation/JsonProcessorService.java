@@ -255,7 +255,6 @@ public class JsonProcessorService implements FileSaverService {
         }
         JsonNode js = (JsonNode) node;
         mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILES_SAVE_DIRECTORY, fileName), js);
-        deleteFilesStories(bankId, platform, id);
     }
     /**
      * Метод, предназначенный для удаления файлов историй из директории.

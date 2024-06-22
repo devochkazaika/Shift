@@ -283,13 +283,14 @@ public class JsonProcessorServiceTest {
     void deleteJsonTest() throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException {
         Method method = JsonProcessorService.class.getDeclaredMethod("deleteJsonStories", String.class, String.class, String.class);
         File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_tkbbank_web.json");
-        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_tkbbank_web.json");
-        File json = new File(FILES_SAVE_DIRECTORY+"/story_tkbbank_web.json");
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_test_web.json");
+        File json = new File(FILES_SAVE_DIRECTORY + "/story_test_web.json");
         JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
                 dtoToEntityConverter,
                 dirProcess);
 
-        method.invoke(service, "tkbbank", "WEB", "0");
+        method.setAccessible(true);
+        method.invoke(service, "test", "WEB", "0");
 
         StringBuilder jsonStr = new StringBuilder();
         Files.readAllLines(json.toPath()).forEach(jsonStr::append);
