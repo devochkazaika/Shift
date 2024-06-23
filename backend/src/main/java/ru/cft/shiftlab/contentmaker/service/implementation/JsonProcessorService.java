@@ -1,9 +1,11 @@
 package ru.cft.shiftlab.contentmaker.service.implementation;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
+import ru.cft.shiftlab.contentmaker.dto.StoryPatchDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
@@ -124,10 +127,7 @@ public class JsonProcessorService implements FileSaverService {
                     images
             );
 
-            Map<String, List<StoryPresentation>> resultMap = new HashMap<>();
-            resultMap.put(STORIES, storyPresentationList);
-            File file = new File(FILES_SAVE_DIRECTORY, FileNameCreator.createFileName(bankId, platformType));
-            mapper.writeValue(file, resultMap);
+            putStoryToJson(storyPresentationList, bankId, platformType);
         }
         catch (JsonProcessingException e){
             throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
@@ -191,39 +191,54 @@ public class JsonProcessorService implements FileSaverService {
         }
     }
 
-    public void change(String storiesRequestDto, String platform, Long id) throws IOException {
-        ObjectMapper mapperWithoutNull = new ObjectMapper();
-        {
-            mapperWithoutNull.enable(SerializationFeature.INDENT_OUTPUT);
-            mapperWithoutNull.configure(DeserializationFeature
-                            .FAIL_ON_UNKNOWN_PROPERTIES,
-                    false);
-            mapperWithoutNull.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        }
-        StoriesRequestDto storiesDto = mapperWithoutNull.readValue(
-                mapperWithoutNull.readValue(storiesRequestDto, String.class)
-                , StoriesRequestDto.class);
-
-        String bankId = storiesDto.getBankId();
-        //Чтение сторис, которые уже находятся в хранилище
-        String FileName = FileNameCreator.createFileName(bankId, platform);
-
-        List<StoryPresentation> storyPresentationList = dirProcess.checkFileInBankDir(
+    private List<StoryPresentation> getStoryList(String bankId, String platform) throws IOException {
+        return dirProcess.checkFileInBankDir(
                 FileNameCreator.createFileName(bankId, platform),
                 STORIES
         );
-
-        Map<String, List<StoryPresentation>> resultMap = new HashMap<>();
-        final StoryPresentation storyPresentation = storyPresentationList.stream()
+    }
+    private StoryPresentation getStoryModel(List<StoryPresentation> storyPresentationList,
+                                            Long id) throws IOException {
+        return storyPresentationList.stream()
                 .filter(x-> x.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Could not find the story with id=" + id));
-//        storyPresentation.setPreviewTitle("222");
-        String json = mapperWithoutNull.writeValueAsString(storiesRequestDto);
-        mapperWithoutNull.readerForUpdating(storyPresentation).readValue(json);
+    }
+    private void putStoryToJson(List<StoryPresentation> storyPresentationList, String bankId, String platform) throws IOException {
+        Map<String, List<StoryPresentation>> resultMap = new HashMap<>();
         resultMap.put(STORIES, storyPresentationList);
         File file = new File(FILES_SAVE_DIRECTORY, FileNameCreator.createFileName(bankId, platform));
-        mapperWithoutNull.writeValue(file, resultMap);
+        mapper.writerWithDefaultPrettyPrinter().writeValue(file, resultMap);
+    }
+
+    public void changeStory(String storiesRequestDto, String bankId, String platform, Long id) throws IOException {
+        StoryPatchDto story = mapper.readValue(
+                storiesRequestDto
+                , StoryPatchDto.class);
+
+        List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
+        StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
+
+        String json = mapper.writeValueAsString(story);
+        mapper.readerForUpdating(storyPresentation).readValue(json);
+
+        putStoryToJson(storyPresentationList, bankId, platform);
+    }
+    public void changeFrameStory(String storyFramesRequestDt, String bankId, String platform,
+                                 Long id,
+                                 Integer frameId) throws IOException {
+        StoryFramesDto story = mapper.readValue(
+                storyFramesRequestDt
+                , StoryFramesDto.class);
+
+        List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
+        StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
+        StoryPresentationFrames storyPresentationFrames = storyPresentation.getStoryPresentationFrames().get(frameId);
+
+        String json = mapper.writeValueAsString(story);
+        mapper.readerForUpdating(storyPresentationFrames).readValue(json);
+
+        putStoryToJson(storyPresentationList, bankId, platform);
     }
 
     public void deleteService(String bankId, String platform, String id) throws Exception {

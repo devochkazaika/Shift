@@ -127,6 +127,9 @@ public class StoriesController {
                             @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
                             String storiesRequestDto,
 
+                            @RequestParam(value = "bankId")
+                            String bankId,
+
                             @Parameter(description = "Тип платформы",
                                     schema = @Schema(type = "string", format = "string"),
                                     example = "ALL PLATFORMS")
@@ -138,6 +141,37 @@ public class StoriesController {
                                     example = "0")
                             @RequestParam(name = "id")
                             Long id) throws IOException {
-        storiesService.change(storiesRequestDto, platform, id);
+        storiesService.changeStory(storiesRequestDto, bankId, platform, id);
+    }
+    @PatchMapping("/bank/info/change/frame")
+    public void changeStoryFrame(@RequestParam(value = "json")
+                            @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
+                            String storiesRequestDto,
+
+                            @RequestParam(value = "bankId")
+                            String bankId,
+
+                            @Parameter(description = "Тип платформы",
+                                    schema = @Schema(type = "string", format = "string"),
+                                    example = "ALL PLATFORMS")
+                            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+                            String platform,
+
+                            @Parameter(description = "id истории",
+                                    schema = @Schema(type = "string", format = "string"),
+                                    example = "0")
+                            @RequestParam(name = "id")
+                            Long id,
+
+                            @Parameter(description = "id истории",
+                                     schema = @Schema(type = "string", format = "string"),
+                                     example = "0")
+                            @RequestParam(name = "frameId")
+                            Integer frameId) throws IOException {
+        storiesService.changeFrameStory(storiesRequestDto,
+                bankId,
+                platform,
+                id,
+                frameId);
     }
 }

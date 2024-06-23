@@ -45,5 +45,10 @@ public interface FileSaverService {
         throw new RuntimeException(e);
     }
 
-    void change(String storiesRequestDto, String platform, Long id) throws IOException;
+    void changeStory(String bankId, String storiesRequestDto, String platform, Long id) throws IOException;
+    void changeFrameStory(String storyFramesRequestDt,
+                          String bankId,
+                          String platform,
+                          Long id,
+                          Integer frameId) throws IOException;
 }
