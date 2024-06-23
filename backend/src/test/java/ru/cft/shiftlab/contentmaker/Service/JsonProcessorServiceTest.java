@@ -1,6 +1,7 @@
 package ru.cft.shiftlab.contentmaker.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.commons.io.FileUtils;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
+import ru.cft.shiftlab.contentmaker.dto.StoryPatchDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
@@ -48,6 +50,12 @@ public class JsonProcessorServiceTest {
     private final ImageNameGenerator imageNameGenerator = new ImageNameGenerator();
     private final DirProcess dirProcess = new DirProcess();
     ObjectMapper objectMapper = new ObjectMapper();
+    {
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        objectMapper.configure(DeserializationFeature
+                        .FAIL_ON_UNKNOWN_PROPERTIES,
+                false);
+    }
 
     private final JsonProcessorService jsonProcessorService = new JsonProcessorService(
             multipartFileToImageConverter,
@@ -313,5 +321,61 @@ public class JsonProcessorServiceTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void changeStory_methdo_test() throws Exception{
+        StoryPatchDto storyPatchDto = StoryPatchDto.builder()
+//                .previewTitle("test_previewTitle")
+                .previewGradient("gradient_test")
+                .previewTitleColor("color_test")
+                .build();
+        String bankId = "test_bank";
+        String platform = "WEB";
+        String json = objectMapper.writeValueAsString(storyPatchDto);
+        copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json", FILES_SAVE_DIRECTORY+"story_test_bank_web.json");
+//        File file = new File(FILES_TEST_DIRECTORY+"story_test_bank_web.json");
+        jsonProcessorService.changeStory(json, bankId, platform, 0L);
+        Map<String, List<StoryPresentation>> resultMap = objectMapper.readValue(new File(FILES_SAVE_DIRECTORY, "story_test_bank_web.json"),
+                new TypeReference<>(){});
+        StoryPresentation storyPresentation = resultMap.get("stories").get(0);
+        Assertions.assertAll(
+//                () -> Assertions.assertEquals(storyPresentation.getPreviewTitle(), storyPatchDto.getPreviewTitle()),
+                () -> Assertions.assertEquals(storyPresentation.getPreviewGradient(), storyPatchDto.getPreviewGradient()),
+                () -> Assertions.assertEquals(storyPresentation.getPreviewTitleColor(), storyPatchDto.getPreviewTitleColor())
+        );
+    }
+    @Test
+    public void changeStoryFrame__method_test() throws Exception{
+        StoryFramesDto storyPatchDto = StoryFramesDto.builder()
+                .text("Sample text for the story.")
+                .textColor("FF0000")
+                .visibleLinkOrButtonOrNone("BUTTON")
+                .buttonText("Click Here")
+                .buttonTextColor("FFFFFF")
+                .buttonBackgroundColor("0000FF")
+                .buttonUrl("https://example.com")
+                .build();
+        String bankId = "test_bank";
+        String platform = "WEB";
+        String json = objectMapper.writeValueAsString(storyPatchDto);
+        copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json", FILES_SAVE_DIRECTORY+"story_test_bank_web.json");
+
+        jsonProcessorService.changeFrameStory(json, bankId, platform,
+                0L,
+                0);
+        Map<String, List<StoryPresentation>> resultMap = objectMapper.readValue(new File(FILES_SAVE_DIRECTORY, "story_test_bank_web.json"),
+                new TypeReference<>(){});
+        StoryPresentationFrames storyPresentation = resultMap.get("stories").get(0).getStoryPresentationFrames().get(0);
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("mainText", storyPresentation.getTitle()),
+                () -> Assertions.assertEquals(storyPatchDto.getText(), storyPresentation.getText()),
+                () -> Assertions.assertEquals(storyPatchDto.getTextColor(), storyPresentation.getTextColor()),
+                () -> Assertions.assertEquals(storyPatchDto.getButtonText(), storyPresentation.getButtonText()),
+                () -> Assertions.assertEquals(storyPatchDto.getButtonUrl(), storyPresentation.getButtonUrl())
+//                () -> Assertions.assertEquals(storyPresentation.getPreviewTitle(), storyPatchDto.getPreviewTitle()),
+//                () -> Assertions.assertEquals(storyPresentation.getPreviewGradient(), storyPatchDto.getPreviewGradient()),
+//                () -> Assertions.assertEquals(storyPresentation.getPreviewTitleColor(), storyPatchDto.getPreviewTitleColor())
+        );
     }
 }

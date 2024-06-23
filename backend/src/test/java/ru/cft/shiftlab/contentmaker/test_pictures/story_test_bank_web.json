@@ -1,0 +1,36 @@
+{
+  "stories" : [ {
+    "id" : 0,
+    "bankId" : "tkbbank",
+    "previewTitle" : "MainTextPreview",
+    "previewTitleColor" : "FF0000",
+    "previewUrl" : "/F:\\JAVA\\CWT\\content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/tkbbank/0_0.jpg",
+    "previewGradient" : "EMPTY",
+    "font-size" : null,
+    "storyFrames" : [ {
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/F:\\JAVA\\CWT\\content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/tkbbank/0_1.png",
+      "visibleLinkOrButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    },
+      {
+        "title" : "mainText",
+        "text" : "Text card",
+        "textColor" : "FF0000",
+        "pictureUrl" : "/F:\\JAVA\\CWT\\content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/tkbbank/0_1.png",
+        "visibleLinkOrButtonOrNone" : "NONE",
+        "buttonText" : "",
+        "buttonTextColor" : "",
+        "buttonBackgroundColor" : "",
+        "buttonUrl" : "",
+        "gradient" : "EMPTY"
+      }
+    ]
+  }]
+}

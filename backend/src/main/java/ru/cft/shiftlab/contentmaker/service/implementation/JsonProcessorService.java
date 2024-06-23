@@ -1,5 +1,6 @@
 package ru.cft.shiftlab.contentmaker.service.implementation;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -59,6 +60,7 @@ public class JsonProcessorService implements FileSaverService {
     ObjectMapper mapper = new ObjectMapper();
     {
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         mapper.configure(DeserializationFeature
                         .FAIL_ON_UNKNOWN_PROPERTIES,
                 false);
@@ -220,7 +222,7 @@ public class JsonProcessorService implements FileSaverService {
                 , StoryPatchDto.class);
 
         List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
-        StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
+        final StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
 
         String json = mapper.writeValueAsString(story);
         mapper.readerForUpdating(storyPresentation).readValue(json);
@@ -236,7 +238,7 @@ public class JsonProcessorService implements FileSaverService {
 
         List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
         StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
-        StoryPresentationFrames storyPresentationFrames = storyPresentation.getStoryPresentationFrames().get(frameId);
+        final StoryPresentationFrames storyPresentationFrames = storyPresentation.getStoryPresentationFrames().get(frameId);
 
         String json = mapper.writeValueAsString(story);
         mapper.readerForUpdating(storyPresentationFrames).readValue(json);
