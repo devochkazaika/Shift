@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Информация об ошибке.")
-public class StaticContentException extends RuntimeException{
+public class ValidationException extends RuntimeException{
 
     @Schema(description = "Сообщение с информацией об ошибке.",
             example = "История не добавлена.")

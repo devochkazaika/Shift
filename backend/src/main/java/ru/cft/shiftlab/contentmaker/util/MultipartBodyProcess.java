@@ -21,7 +21,7 @@ public class MultipartBodyProcess {
             multipartBodyBuilder.part(file.getName(), new ByteArrayResource(fileBytes));
         } catch (IOException e) {
             log.error(e.getMessage());
-            throw new StaticContentException("Сервер не может найти нужное изображение", "404");
+            throw new StaticContentException("Сервер не может найти нужное изображение = " + picture, "404");
         }
     }
     public static void addJsonInBuilderMultipart(String json, MultipartBodyBuilder multipartBodyBuilder){

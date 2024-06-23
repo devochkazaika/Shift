@@ -10,10 +10,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.PlatformValid;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
+
+
+import java.io.IOException;
 
 import java.io.IOException;
 
@@ -23,6 +30,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/stories")
 @RequiredArgsConstructor
+@Validated
 public class StoriesController {
     private final FileSaverService storiesService;
 
@@ -78,12 +86,14 @@ public class StoriesController {
             @Parameter(description = "Название банка",
                     schema = @Schema(type = "string", format = "string"),
                     example = "tkkbank")
+            @WhiteListValid(message = "bankId must match the allowed")
             String bankId,
 
             @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
             @Parameter(description = "Тип платформы",
                     schema = @Schema(type = "string", format = "string"),
                     example = "WEB")
+            @PlatformValid
             String platform){
 
         return storiesService.getFilePlatform(bankId, platform);
@@ -97,29 +107,41 @@ public class StoriesController {
      */
     @DeleteMapping("/bank/info/delete")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "История успешно удалена")
+            @ApiResponse(responseCode = "202", description = "История успешно удалена"),
+            @ApiResponse(responseCode = "404", description = "История не найдена в JSON файле"),
+            @ApiResponse(responseCode = "500", description = "Ошибка на стороне сервера(нет JSON или нет директории с файлами)")
     })
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteStories(
+    public ResponseEntity<?> deleteStories(
             @RequestParam(name = "bankId")
             @Parameter(description = "Название банка",
                     schema = @Schema(type = "string", format = "string"),
                     example = "tkkbank")
+            @WhiteListValid(message = "bankId must match the allowed")
             String bankId,
 
             @Parameter(description = "Тип платформы",
                     schema = @Schema(type = "string", format = "string"),
                     example = "ALL PLATFORMS")
             @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+            @PlatformValid
             String platform,
 
             @Parameter(description = "id истории",
                     schema = @Schema(type = "string", format = "string"),
                     example = "0")
             @RequestParam(name = "id")
-            String id) throws Exception {
+            String id) throws Throwable {
 
-        storiesService.deleteService(bankId, platform, id);
+        return storiesService.deleteService(bankId, platform, id);
+    }
+
+    @DeleteMapping("/bank/info/delete/{bankId}/{platform}/{storyId}/{frameId}")
+    public void deleteFrame(@PathVariable String bankId,
+                            @PathVariable String platform,
+                            @PathVariable String storyId,
+                            @PathVariable String frameId) throws IOException {
+        storiesService.deleteStoryFrame(bankId, platform, storyId, frameId);
+
     }
 
     @PatchMapping("/bank/info/change")
