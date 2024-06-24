@@ -281,10 +281,28 @@ public class JsonProcessorService implements FileSaverService {
      * Метод, предназначенный для удаления одной карточки из историй.
      * deleteJsonFrame - удаляет frame из JSON
      * deleteFileFrame - удаляет файл из директории
+     *
+     * @return
      */
-    public void deleteStoryFrame(String bankId, String platform, String id, String frameId) throws IOException {
-        deleteJsonFrame(bankId, platform, id, frameId);
-        deleteFileFrame(bankId, platform, id, frameId);
+    public ResponseEntity deleteStoryFrame(String bankId, String platform, String id, String frameId) throws Throwable {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        Runnable r = ()->{
+            try {
+                deleteJsonFrame(bankId, platform, id, frameId);
+            }
+            catch (IOException e){
+                throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
+            }
+        };
+        Future<?> deleteJson = executor.submit(r);
+        Future<?> deleteImages = executor.submit(() -> deleteFileFrame(bankId, platform, id, frameId));
+        try {
+            deleteJson.get();
+            deleteImages.get();
+        } catch (ExecutionException ex) {
+            throw ex.getCause();
+        }
+        return new ResponseEntity<>(HttpStatus.valueOf(202));
     }
 
     private void deleteFileFrame(String bankId, String platform, String id, String frameId){

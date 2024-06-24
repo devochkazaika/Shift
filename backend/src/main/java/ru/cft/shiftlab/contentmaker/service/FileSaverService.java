@@ -45,5 +45,5 @@ public interface FileSaverService {
         IOException e = new IOException();
         throw new RuntimeException(e);
     }
-    void deleteStoryFrame(String bankId, String platform, String id, String frameId) throws IOException;
+    ResponseEntity deleteStoryFrame(String bankId, String platform, String id, String frameId) throws Throwable;
 }
