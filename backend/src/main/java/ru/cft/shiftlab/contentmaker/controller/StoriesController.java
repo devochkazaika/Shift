@@ -19,9 +19,6 @@ import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.PlatformValid;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
 
-
-import java.io.IOException;
-
 /**
  * Контроллер, обрабатывающий запросы для работы с Story.
  */
@@ -147,7 +144,7 @@ public class StoriesController {
             String platform,
 
             @RequestParam String storyId,
-            @RequestParam String frameId) throws IOException {
+            @RequestParam String frameId) throws Throwable {
         storiesService.deleteStoryFrame(bankId, platform, storyId, frameId);
 
     }

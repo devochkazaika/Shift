@@ -3,6 +3,8 @@ package ru.cft.shiftlab.contentmaker.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -314,5 +316,46 @@ public class JsonProcessorServiceTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void delete_JsonFrame_test() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException {
+        Method method = JsonProcessorService.class.getDeclaredMethod("deleteJsonFrame",
+                String.class, String.class, String.class, String.class);
+        File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_tkbbank_web.json");
+        File storyDir = new File(FILES_SAVE_DIRECTORY + "/story_test_web.json");
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_test_web.json");
+
+        JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
+                dtoToEntityConverter,
+                dirProcess);
+
+        method.setAccessible(true);
+        method.invoke(service, "test", "WEB", "1", "0");
+        ObjectNode node = (ObjectNode) objectMapper.readTree(new File(FILES_SAVE_DIRECTORY + "/story_tkbbank_web.json"));
+        ArrayNode arrayNode = (ArrayNode) node.get("stories").get(1).get("storyFrames");
+        Assertions.assertEquals(arrayNode.size(), 1);
+
+        storyDir.delete();
+    }
+    @Test
+    public void delete_FileFrame_test() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException {
+        Method method = JsonProcessorService.class.getDeclaredMethod("deleteFileFrame",
+                String.class, String.class, String.class, String.class);
+        File jsonFile = new File(FILES_TEST_DIRECTORY + "/sample.png");
+        dirProcess.createFolders(FILES_SAVE_DIRECTORY + "test/WEB");
+        File storyDir = new File(FILES_SAVE_DIRECTORY + "/story_test_web.json");
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/1_0.png");
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/1_1.png");
+
+        JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
+                dtoToEntityConverter,
+                dirProcess);
+
+        method.setAccessible(true);
+        method.invoke(service, "test", "WEB", "1", "0");
+        File[] directory = new File(FILES_SAVE_DIRECTORY+"test"+"/WEB").listFiles();
+        Assertions.assertEquals(directory.length, 1);
+        storyDir.delete();
     }
 }
