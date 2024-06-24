@@ -341,22 +341,23 @@ public class JsonProcessorServiceTest {
     @Test
     public void delete_FileFrame_test() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException {
         Method method = JsonProcessorService.class.getDeclaredMethod("deleteFileFrame",
-                String.class, String.class, String.class, String.class);
+                String.class, String.class, String.class, UUID.class);
         File jsonFile = new File(FILES_TEST_DIRECTORY + "/sample.png");
         dirProcess.createFolders(FILES_SAVE_DIRECTORY + "test/WEB");
-        File storyDir = new File(FILES_SAVE_DIRECTORY + "/story_test_web.json");
-        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/1_0.png");
-        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/1_1.png");
+        File storyDir = new File(FILES_SAVE_DIRECTORY + "test");
+        UUID uuid = UUID.randomUUID();
+//        UUID uuid2 = UUID.randomUUID();
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/1_"+0+".png");
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/1_"+uuid+".png");
 
         JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
                 dtoToEntityConverter,
                 dirProcess);
-
         method.setAccessible(true);
-        method.invoke(service, "test", "WEB", "1", "0");
+        method.invoke(service, "test", "WEB", "1", uuid);
         File[] directory = new File(FILES_SAVE_DIRECTORY+"test"+"/WEB").listFiles();
         Assertions.assertEquals(directory.length, 1);
-        storyDir.delete();
+        FileUtils.deleteDirectory(storyDir);
     }
 
     //Надо дописать для всего удаления
