@@ -358,4 +358,13 @@ public class JsonProcessorServiceTest {
         Assertions.assertEquals(directory.length, 1);
         storyDir.delete();
     }
+
+    //Надо дописать для всего удаления
+    @Test
+    public void delete_Frame_test(){
+
+//        jsonProcessorService.deleteStoryFrame()
+    }
+
+
 }

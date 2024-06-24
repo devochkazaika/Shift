@@ -15,6 +15,7 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StoryPresentation {
+
     /**
      * Идентификатор истории.
      */
