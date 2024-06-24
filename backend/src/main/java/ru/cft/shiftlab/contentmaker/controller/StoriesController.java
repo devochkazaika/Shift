@@ -136,11 +136,18 @@ public class StoriesController {
         return storiesService.deleteService(bankId, platform, id);
     }
 
-    @DeleteMapping("/bank/info/delete/{bankId}/{platform}/{storyId}/{frameId}")
-    public void deleteFrame(@PathVariable String bankId,
-                            @PathVariable String platform,
-                            @PathVariable String storyId,
-                            @PathVariable String frameId) throws IOException {
+    @DeleteMapping("/bank/info/delete/frame/")
+    public void deleteFrame(
+            @RequestParam
+            @WhiteListValid(message = "bankId must match the allowed")
+            String bankId,
+
+            @RequestParam
+            @PlatformValid
+            String platform,
+
+            @RequestParam String storyId,
+            @RequestParam String frameId) throws IOException {
         storiesService.deleteStoryFrame(bankId, platform, storyId, frameId);
 
     }

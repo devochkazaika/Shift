@@ -32,6 +32,9 @@ public class FileNameCreator {
         else if (Objects.equals(platformType, "WEB")) {
             return "story_" + bankId + "_web" + ".json";
         }
+        else if (Objects.equals(platformType, "ALL PLATFORMS")) {
+            return "story_" + bankId + "_all" + ".json";
+        }
         return "story_" + bankId + ".json";
     }
     public static void renameOld(String picturesSaveDirectory, long lastId){
