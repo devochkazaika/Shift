@@ -191,12 +191,18 @@ public class JsonProcessorService implements FileSaverService {
         }
     }
 
+    /**
+     * Метод возвращает все истории в виде списка
+     */
     private List<StoryPresentation> getStoryList(String bankId, String platform) throws IOException {
         return dirProcess.checkFileInBankDir(
                 FileNameCreator.createJsonName(bankId, platform),
                 STORIES
         );
     }
+    /**
+     * Метод возвращает конкретную историю
+     */
     private StoryPresentation getStoryModel(List<StoryPresentation> storyPresentationList,
                                             Long id) throws IOException {
         return storyPresentationList.stream()
@@ -265,22 +271,19 @@ public class JsonProcessorService implements FileSaverService {
      * Метод, предназначенный для удаления историй из JSON.
      */
     private void deleteJsonStories(String bankId, String platform, String id) throws IOException {
-        deleteFromJson(bankId, platform, id);
-    }
-    private void deleteFromJson(String bankId, String platform, String id) throws IOException {
+        //Берем список историй
         List<StoryPresentation> list = getStoryList(bankId, platform);
+        //удаляем нужную историю
         list.removeIf(k -> id.equals(k.getId().toString()));
+        //кладем в json
         putStoryToJson(list, bankId, platform);
     }
+
     /**
      * Метод, предназначенный для удаления файлов историй из директории.
      */
     private void deleteFilesStories(String bankId, String platform, String id){
-        File directory = new File(FILES_SAVE_DIRECTORY + "/" + bankId + "/" + platform);
-        if (!directory.exists() || !directory.isDirectory()) {
-            throw new StaticContentException("Directory does not exist or is not a directory: " + directory.getAbsolutePath(),
-                    "HTTP 500 - INTERNAL_SERVER_ERROR");
-        }
+        File directory = dirProcess.checkDirectoryBankAndPlatformIsExist(bankId, platform);
         File[] files = directory.listFiles();
         Stream.of(files)
                 .filter(x -> x.getName().startsWith(id))
@@ -331,33 +334,27 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     private void deleteFileFrame(String bankId, String platform, String id, UUID frameId){
-        File directory = new File(FILES_SAVE_DIRECTORY + "/" + bankId + "/" + platform);
-        if (!directory.exists() || !directory.isDirectory()) {
-            throw new StaticContentException("Directory does not exist or is not a directory: " + directory.getAbsolutePath(),
-                    "HTTP 500 - INTERNAL_SERVER_ERROR");
-        }
+        File directory = dirProcess.checkDirectoryBankAndPlatformIsExist(bankId, platform);
         File[] files = directory.listFiles();
         Stream.of(files)
-                .filter(x -> x.getName().startsWith(id))
-                .forEach(x -> {
-                    if (x.getName().startsWith(id+"_"+frameId)) {
-                        x.delete();
-                    }
-                }
-                );
+                .filter(x -> x.getName().startsWith(id+"_"+frameId))
+                .findFirst()
+                .map(x -> x.delete());
     }
 
     private UUID deleteJsonFrame(String bankId, String platform, String id, String frameId) throws IOException {
         UUID uuid = null;
+        //Берем историю из списка историй
         List<StoryPresentation> list = getStoryList(bankId, platform);
-        putStoryToJson(list, bankId, platform);
-        for (StoryPresentation i : list){
-            if (i.getId().equals(Long.parseLong(id))){
-                uuid = i.getStoryPresentationFrames().get(Integer.parseInt(frameId)).getId();
-                i.getStoryPresentationFrames().remove(Integer.parseInt(frameId));
-                break;
-            }
-        }
+        StoryPresentation story = getStoryModel(list, Long.parseLong(id));
+
+        //Берем все карточки историй
+        List<StoryPresentationFrames> frames = story.getStoryPresentationFrames();
+        //Получаем UUID нужной истории и удаляем ее
+        uuid = frames.get(Integer.parseInt(frameId)).getId();
+        frames.remove(Integer.parseInt(frameId));
+
+        //Записываем в JSON
         putStoryToJson(list, bankId, platform);
         return uuid;
     }
