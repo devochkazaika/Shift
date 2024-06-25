@@ -8,6 +8,8 @@ import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 
+import java.util.UUID;
+
 /**
  * Класс, предназначенный для конвертации StoriesRequestDto в StoryPresentation.
  */
@@ -46,8 +48,9 @@ public class DtoToEntityConverter {
      * @return StoryPresentationFrames, полученный после конвертации из StoryFramesDto.
      */
     public StoryPresentationFrames fromStoryFramesDtoToStoryPresentationFrames(StoryFramesDto storyFramesDto) {
-
-        return modelMapper.map(storyFramesDto, StoryPresentationFrames.class);
+        StoryPresentationFrames storyPresentationFrames = modelMapper.map(storyFramesDto, StoryPresentationFrames.class);
+        storyPresentationFrames.setId(UUID.randomUUID());
+        return storyPresentationFrames;
     }
 
 }

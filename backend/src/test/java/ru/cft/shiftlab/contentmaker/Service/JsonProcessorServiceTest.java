@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -291,13 +293,14 @@ public class JsonProcessorServiceTest {
     void deleteJsonTest() throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException {
         Method method = JsonProcessorService.class.getDeclaredMethod("deleteJsonStories", String.class, String.class, String.class);
         File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_tkbbank_web.json");
-        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_tkbbank_web.json");
-        File json = new File(FILES_SAVE_DIRECTORY+"/story_tkbbank_web.json");
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_test_web.json");
+        File json = new File(FILES_SAVE_DIRECTORY + "/story_test_web.json");
         JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
                 dtoToEntityConverter,
                 dirProcess);
 
-        method.invoke(service, "tkbbank", "WEB", "0");
+        method.setAccessible(true);
+        method.invoke(service, "test", "WEB", "0");
 
         StringBuilder jsonStr = new StringBuilder();
         Files.readAllLines(json.toPath()).forEach(jsonStr::append);
@@ -374,5 +377,52 @@ public class JsonProcessorServiceTest {
                 () -> Assertions.assertEquals(storyPatchDto.getButtonText(), storyPresentation.getButtonText()),
                 () -> Assertions.assertEquals(storyPatchDto.getButtonUrl(), storyPresentation.getButtonUrl())
         );
+    }
+    public void delete_JsonFrame_test() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException {
+        Method method = JsonProcessorService.class.getDeclaredMethod("deleteJsonFrame",
+                String.class, String.class, String.class, String.class);
+        File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_tkbbank_web.json");
+        File storyDir = new File(FILES_SAVE_DIRECTORY + "/story_test_web.json");
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_test_web.json");
+
+        JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
+                dtoToEntityConverter,
+                dirProcess);
+
+        method.setAccessible(true);
+        method.invoke(service, "test", "WEB", "1", "0");
+        ObjectNode node = (ObjectNode) objectMapper.readTree(new File(FILES_SAVE_DIRECTORY + "/story_tkbbank_web.json"));
+        ArrayNode arrayNode = (ArrayNode) node.get("stories").get(1).get("storyFrames");
+        Assertions.assertEquals(arrayNode.size(), 1);
+
+        storyDir.delete();
+    }
+    @Test
+    public void delete_FileFrame_test() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException {
+        Method method = JsonProcessorService.class.getDeclaredMethod("deleteFileFrame",
+                String.class, String.class, String.class, UUID.class);
+        File jsonFile = new File(FILES_TEST_DIRECTORY + "/sample.png");
+        dirProcess.createFolders(FILES_SAVE_DIRECTORY + "test/WEB");
+        File storyDir = new File(FILES_SAVE_DIRECTORY + "test");
+        UUID uuid = UUID.randomUUID();
+//        UUID uuid2 = UUID.randomUUID();
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/1_"+0+".png");
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/1_"+uuid+".png");
+
+        JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
+                dtoToEntityConverter,
+                dirProcess);
+        method.setAccessible(true);
+        method.invoke(service, "test", "WEB", "1", uuid);
+        File[] directory = new File(FILES_SAVE_DIRECTORY+"test"+"/WEB").listFiles();
+        Assertions.assertEquals(directory.length, 1);
+        FileUtils.deleteDirectory(storyDir);
+    }
+
+    //Надо дописать для всего удаления
+    @Test
+    public void delete_Frame_test(){
+
+//        jsonProcessorService.deleteStoryFrame()
     }
 }

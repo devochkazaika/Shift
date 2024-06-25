@@ -1,6 +1,14 @@
 package ru.cft.shiftlab.contentmaker.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.util.UUID;
 
 /**
  * Вспомогательная сущность для хранения данных о каждой карточке.
@@ -10,7 +18,13 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StoryPresentationFrames {
-
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    private UUID id;
     /**
      * Подзаголовок карточки истории.
      */

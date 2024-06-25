@@ -36,10 +36,7 @@ import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.stream.Stream;
 
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
@@ -69,7 +66,7 @@ public class JsonProcessorService implements FileSaverService {
     private final DirProcess dirProcess;
 
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getFilePlatform(String bankId, String platform) {
-        String filePlatform = FileNameCreator.createFileName(bankId, platform);
+        String filePlatform = FileNameCreator.createJsonName(bankId, platform);
         Map<String, List<StoryPresentation>> resultMap;
         try {
             resultMap = mapper.readValue(new File(FILES_SAVE_DIRECTORY, filePlatform), new TypeReference<>(){});
@@ -119,7 +116,7 @@ public class JsonProcessorService implements FileSaverService {
             dirProcess.createFolders(picturesSaveDirectory);
             //Чтение сторис, которые уже находятся в хранилище
             List<StoryPresentation> storyPresentationList = dirProcess.checkFileInBankDir(
-                    FileNameCreator.createFileName(bankId, platformType),
+                    FileNameCreator.createJsonName(bankId, platformType),
                     STORIES
             );
             storiesDtoToPresentations(
@@ -177,15 +174,16 @@ public class JsonProcessorService implements FileSaverService {
                     bankId,
                     story,
                     previewUrl);
-
             storyPresentation.setId(lastId);
+
             ArrayList<StoryPresentationFrames> storyPresentationFramesList = new ArrayList<>();
             for (StoryFramesDto storyFramesDto: story.getStoryFramesDtos()) {
                 var storyPresentationFrame = dtoToEntityConverter.fromStoryFramesDtoToStoryPresentationFrames(storyFramesDto);
                 String presentationPictureUrl = multipartFileToImageConverter.parsePicture(
                         imageContainer,
                         picturesSaveDirectory,
-                        storyPresentation.getId());
+                        storyPresentation.getId(),
+                        storyPresentationFrame.getId());
                 storyPresentationFrame.setPictureUrl(presentationPictureUrl);
                 storyPresentationFramesList.add(storyPresentationFrame);
             }
@@ -197,7 +195,7 @@ public class JsonProcessorService implements FileSaverService {
 
     private List<StoryPresentation> getStoryList(String bankId, String platform) throws IOException {
         return dirProcess.checkFileInBankDir(
-                FileNameCreator.createFileName(bankId, platform),
+                FileNameCreator.createJsonName(bankId, platform),
                 STORIES
         );
     }
@@ -211,7 +209,7 @@ public class JsonProcessorService implements FileSaverService {
     private void putStoryToJson(List<StoryPresentation> storyPresentationList, String bankId, String platform) throws IOException {
         Map<String, List<StoryPresentation>> resultMap = new HashMap<>();
         resultMap.put(STORIES, storyPresentationList);
-        File file = new File(FILES_SAVE_DIRECTORY, FileNameCreator.createFileName(bankId, platform));
+        File file = new File(FILES_SAVE_DIRECTORY, FileNameCreator.createJsonName(bankId, platform));
         mapper.writerWithDefaultPrettyPrinter().writeValue(file, resultMap);
     }
 
@@ -273,7 +271,7 @@ public class JsonProcessorService implements FileSaverService {
     }
     private void deleteFromJson(String bankId, String platform, String id) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        String fileName = FileNameCreator.createFileName(bankId, platform);
+        String fileName = FileNameCreator.createJsonName(bankId, platform);
         ObjectNode node = (ObjectNode) mapper.readTree(new File(FILES_SAVE_DIRECTORY + "/" + fileName));
         if (node.has("stories")) {
             ArrayNode storiesNode = (ArrayNode) node.get("stories");
@@ -304,7 +302,6 @@ public class JsonProcessorService implements FileSaverService {
         }
         JsonNode js = (JsonNode) node;
         mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILES_SAVE_DIRECTORY, fileName), js);
-        deleteFilesStories(bankId, platform, id);
     }
     /**
      * Метод, предназначенный для удаления файлов историй из директории.
@@ -331,18 +328,89 @@ public class JsonProcessorService implements FileSaverService {
      * Метод, предназначенный для удаления одной карточки из историй.
      * deleteJsonFrame - удаляет frame из JSON
      * deleteFileFrame - удаляет файл из директории
+     *
+     * @return
      */
-    public void deleteStoryFrame(String bankId, String platform, String id, String frameId) throws IOException {
-        deleteJsonFrame(bankId, platform, id, frameId);
-        deleteFileFrame(bankId, platform, id, frameId);
+    public ResponseEntity deleteStoryFrame(String bankId, String platform, String id, String frameId) throws Throwable {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        Exchanger<UUID> exchanger = new Exchanger<>();
+        Runnable r = ()->{
+            try {
+                exchanger.exchange(deleteJsonFrame(bankId, platform, id, frameId));
+            }
+            catch (IOException e){
+                throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        };
+        Future<?> deleteJson = executor.submit(r);
+        Future<?> deleteImages = executor.submit(() -> {
+            try {
+                deleteFileFrame(bankId, platform, id, exchanger.exchange(null));
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        try {
+            deleteJson.get();
+            deleteImages.get();
+        } catch (ExecutionException ex) {
+            throw ex.getCause();
+        }
+        return new ResponseEntity<>(HttpStatus.valueOf(202));
     }
 
-    private void deleteFileFrame(String bankId, String platform, String id, String frameId){
-        deleteFilesStories(bankId, platform, id.concat("_").concat(frameId));
+    private void deleteFileFrame(String bankId, String platform, String id, UUID frameId){
+        File directory = new File(FILES_SAVE_DIRECTORY + "/" + bankId + "/" + platform);
+        if (!directory.exists() || !directory.isDirectory()) {
+            throw new StaticContentException("Directory does not exist or is not a directory: " + directory.getAbsolutePath(),
+                    "HTTP 500 - INTERNAL_SERVER_ERROR");
+        }
+        File[] files = directory.listFiles();
+        Stream.of(files)
+                .filter(x -> x.getName().startsWith(id))
+                .forEach(x -> {
+                    if (x.getName().startsWith(id+"_"+frameId)) {
+                        x.delete();
+                    }
+                }
+                );
     }
 
-    private void deleteJsonFrame(String bankId, String platform, String id, String frameId) throws IOException {
-        deleteFromJson(bankId, platform, id.concat("_").concat(frameId));
+    private UUID deleteJsonFrame(String bankId, String platform, String id, String frameId) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        String fileName = FileNameCreator.createJsonName(bankId, platform);
+        UUID uuid = null;
+        ObjectNode node = (ObjectNode) mapper.readTree(new File(FILES_SAVE_DIRECTORY + "/" + fileName));
+        if (node.has("stories")) {
+            ArrayNode storiesNode = (ArrayNode) node.get("stories");
+            Iterator<JsonNode> i = storiesNode.iterator();
+            while (i.hasNext()){
+                JsonNode k = i.next();
+                if (id.indexOf("_") > 0) {
+                    //именно такая проверка, а не по индексу, так как элемент может удалиться и id будут 3, 8, 10, например
+                    if (bankId.equals(k.get("id").toString())) {
+                        ArrayNode listFrames = (ArrayNode) k.get("storyFrames");
+                        String json = mapper.writeValueAsString(listFrames.get(Integer.parseInt(frameId)).get("id"));
+                        uuid = mapper.readValue(json, UUID.class);
+                        listFrames.remove(Integer.parseInt(frameId));
+                    }
+                }
+                else{
+                    if (id.equals(k.get("id").toString())) {
+                        i.remove();
+                    }
+                }
+            }
+        }
+        else{
+            throw new StaticContentException("Field stories not created",
+                    "HTTP 500 - INTERNAL_SERVER_ERROR");
+        }
+        JsonNode js = (JsonNode) node;
+        mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILES_SAVE_DIRECTORY, fileName), js);
+        return uuid;
     }
 
 }
