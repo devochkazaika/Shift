@@ -4,11 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -22,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
+import ru.cft.shiftlab.contentmaker.dto.StoryPatchDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
@@ -214,9 +212,9 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     public void changeStory(String storiesRequestDto, String bankId, String platform, Long id) throws IOException {
-        StoryDto story = mapper.readValue(
+        StoryPatchDto story = mapper.readValue(
                 storiesRequestDto
-                , StoryDto.class);
+                , StoryPatchDto.class);
 
         List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
         final StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
@@ -270,38 +268,9 @@ public class JsonProcessorService implements FileSaverService {
         deleteFromJson(bankId, platform, id);
     }
     private void deleteFromJson(String bankId, String platform, String id) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        String fileName = FileNameCreator.createJsonName(bankId, platform);
-        ObjectNode node = (ObjectNode) mapper.readTree(new File(FILES_SAVE_DIRECTORY + "/" + fileName));
-        if (node.has("stories")) {
-            ArrayNode storiesNode = (ArrayNode) node.get("stories");
-            Iterator<JsonNode> i = storiesNode.iterator();
-            String IdBank;
-            String IdFrame;
-            while (i.hasNext()){
-                JsonNode k = i.next();
-                if (id.indexOf("_") > 0) {
-                    IdBank = id.substring(0, id.indexOf("_"));
-                    IdFrame = id.substring(id.indexOf("_") + 1);
-                    //именно такая проверка, а не по индексу, так как элемент может удалиться и id будут 3, 8, 10, например
-                    if (IdBank.equals(k.get("id").toString())) {
-                        ArrayNode listFrames = (ArrayNode) k.get("storyFrames");
-                        listFrames.remove(Integer.parseInt(IdFrame));
-                    }
-                }
-                else{
-                    if (id.equals(k.get("id").toString())) {
-                       i.remove();
-                    }
-                }
-            }
-        }
-        else{
-            throw new StaticContentException("Field stories not created",
-                    "HTTP 500 - INTERNAL_SERVER_ERROR");
-        }
-        JsonNode js = (JsonNode) node;
-        mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILES_SAVE_DIRECTORY, fileName), js);
+        List<StoryPresentation> list = getStoryList(bankId, platform);
+        list.removeIf(k -> id.equals(k.getId().toString()));
+        putStoryToJson(list, bankId, platform);
     }
     /**
      * Метод, предназначенный для удаления файлов историй из директории.
@@ -379,37 +348,17 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     private UUID deleteJsonFrame(String bankId, String platform, String id, String frameId) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        String fileName = FileNameCreator.createJsonName(bankId, platform);
         UUID uuid = null;
-        ObjectNode node = (ObjectNode) mapper.readTree(new File(FILES_SAVE_DIRECTORY + "/" + fileName));
-        if (node.has("stories")) {
-            ArrayNode storiesNode = (ArrayNode) node.get("stories");
-            Iterator<JsonNode> i = storiesNode.iterator();
-            while (i.hasNext()){
-                JsonNode k = i.next();
-                if (id.indexOf("_") > 0) {
-                    //именно такая проверка, а не по индексу, так как элемент может удалиться и id будут 3, 8, 10, например
-                    if (bankId.equals(k.get("id").toString())) {
-                        ArrayNode listFrames = (ArrayNode) k.get("storyFrames");
-                        String json = mapper.writeValueAsString(listFrames.get(Integer.parseInt(frameId)).get("id"));
-                        uuid = mapper.readValue(json, UUID.class);
-                        listFrames.remove(Integer.parseInt(frameId));
-                    }
-                }
-                else{
-                    if (id.equals(k.get("id").toString())) {
-                        i.remove();
-                    }
-                }
+        List<StoryPresentation> list = getStoryList(bankId, platform);
+        putStoryToJson(list, bankId, platform);
+        for (StoryPresentation i : list){
+            if (i.getId().equals(Long.parseLong(id))){
+                uuid = i.getStoryPresentationFrames().get(Integer.parseInt(frameId)).getId();
+                i.getStoryPresentationFrames().remove(Integer.parseInt(frameId));
+                break;
             }
         }
-        else{
-            throw new StaticContentException("Field stories not created",
-                    "HTTP 500 - INTERNAL_SERVER_ERROR");
-        }
-        JsonNode js = (JsonNode) node;
-        mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILES_SAVE_DIRECTORY, fileName), js);
+        putStoryToJson(list, bankId, platform);
         return uuid;
     }
 
