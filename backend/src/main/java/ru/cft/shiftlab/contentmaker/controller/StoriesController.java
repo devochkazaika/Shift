@@ -133,6 +133,14 @@ public class StoriesController {
         return storiesService.deleteService(bankId, platform, id);
     }
 
+    /**
+     * Запрос, предназначенный для удаления истории
+     * @param bankId
+     * @param platform
+     * @param storyId
+     * @param frameId
+     * @throws Throwable
+     */
     @DeleteMapping("/bank/info/delete/frame/")
     public void deleteFrame(
             @RequestParam
@@ -149,6 +157,14 @@ public class StoriesController {
 
     }
 
+    /**
+     * Patch-Запрос, предназначенный для изменения истории
+     * @param storiesRequestDto
+     * @param bankId
+     * @param platform
+     * @param id
+     * @throws IOException
+     */
     @PatchMapping("/bank/info/change")
     public void changeStory(@RequestParam(value = "json")
                             @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
@@ -170,6 +186,16 @@ public class StoriesController {
                             Long id) throws IOException {
         storiesService.changeStory(storiesRequestDto, bankId, platform, id);
     }
+
+    /**
+     * Patch-Запрос, предназначенный для изменения карточки внутри истории
+     * @param storiesRequestDto
+     * @param bankId
+     * @param platform
+     * @param id
+     * @param frameId
+     * @throws IOException
+     */
     @PatchMapping("/bank/info/change/frame")
     public void changeStoryFrame(@RequestParam(value = "json")
                             @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")

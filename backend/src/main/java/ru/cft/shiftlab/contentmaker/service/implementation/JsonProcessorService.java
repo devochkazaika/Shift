@@ -210,6 +210,9 @@ public class JsonProcessorService implements FileSaverService {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Could not find the story with id=" + id));
     }
+    /**
+     * Положить истории из списка в JSON
+     */
     private void putStoryToJson(List<StoryPresentation> storyPresentationList, String bankId, String platform) throws IOException {
         Map<String, List<StoryPresentation>> resultMap = new HashMap<>();
         resultMap.put(STORIES, storyPresentationList);
@@ -217,6 +220,14 @@ public class JsonProcessorService implements FileSaverService {
         mapper.writerWithDefaultPrettyPrinter().writeValue(file, resultMap);
     }
 
+    /**
+     * Изменение общих параметров истории, а именно previewTitle, previewTitleColor, previewGradient
+     * @param storiesRequestDto
+     * @param bankId
+     * @param platform
+     * @param id
+     * @throws IOException
+     */
     public void changeStory(String storiesRequestDto, String bankId, String platform, Long id) throws IOException {
         StoryPatchDto story = mapper.readValue(
                 storiesRequestDto
@@ -305,6 +316,7 @@ public class JsonProcessorService implements FileSaverService {
      */
     public ResponseEntity deleteStoryFrame(String bankId, String platform, String id, String frameId) throws Throwable {
         ExecutorService executor = Executors.newFixedThreadPool(2);
+        //для передачи UUID между потоками
         Exchanger<UUID> exchanger = new Exchanger<>();
         Runnable r = ()->{
             try {
@@ -335,15 +347,15 @@ public class JsonProcessorService implements FileSaverService {
         return new ResponseEntity<>(HttpStatus.valueOf(202));
     }
 
-    private void deleteFileFrame(String bankId, String platform, String id, UUID frameId){
-        File directory = dirProcess.checkDirectoryBankAndPlatformIsExist(bankId, platform);
-        File[] files = directory.listFiles();
-        Stream.of(files)
-                .filter(x -> x.getName().startsWith(id+"_"+frameId))
-                .findFirst()
-                .map(x -> x.delete());
-    }
-
+    /**
+     * Метод предназначенный для удаления карточки внутри JSON
+     * @param bankId
+     * @param platform
+     * @param id
+     * @param frameId
+     * @return
+     * @throws IOException
+     */
     private UUID deleteJsonFrame(String bankId, String platform, String id, String frameId) throws IOException {
         UUID uuid = null;
         //Берем историю из списка историй
@@ -360,5 +372,21 @@ public class JsonProcessorService implements FileSaverService {
         putStoryToJson(list, bankId, platform);
         return uuid;
     }
+    /**
+     * Метод, предназначенный для удаления файлов при удалении карточки
+     * @param bankId
+     * @param platform
+     * @param id
+     * @param frameId
+     */
+    private void deleteFileFrame(String bankId, String platform, String id, UUID frameId){
+        File directory = dirProcess.checkDirectoryBankAndPlatformIsExist(bankId, platform);
+        File[] files = directory.listFiles();
+        Stream.of(files)
+                .filter(x -> x.getName().startsWith(id+"_"+frameId))
+                .findFirst()
+                .map(x -> x.delete());
+    }
+
 
 }

@@ -452,4 +452,38 @@ public class JsonProcessorServiceTest {
         dirProcess.deleteFolders(FILES_SAVE_DIRECTORY+"test/");
         storyDir.delete();
     }
+
+    /**
+     * Тест для ловли ошибки в JsonDelete
+     * @throws Throwable
+     */
+    @Test
+    public void deleteStoryFrame_IndexOutOfBoundsException_test() throws Throwable {
+        String bankId = "test";
+        String platform = "WEB";
+        String id = "0";
+        String frameId = "123";
+
+        File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_tkbbank_web.json");
+        File storyDir = new File(FILES_SAVE_DIRECTORY + "/story_test_web.json");
+        //копирую json file
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_test_web.json");
+
+        //копирую изображения
+        File file = new File(FILES_TEST_DIRECTORY + "/sample.png");
+        dirProcess.createFolders(FILES_SAVE_DIRECTORY + "test/WEB");
+        UUID uuid = UUID.fromString("72f250d4-2fea-4f00-a0b2-3259555ceb81");
+
+        copyFile(file.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/0_"+0+".png");
+        copyFile(file.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/0_"+uuid+".png");
+
+        Assertions.assertThrows(
+                IllegalArgumentException.class,
+                ()->jsonProcessorService.deleteStoryFrame(bankId, platform, id, frameId)
+        );
+        dirProcess.deleteFolders(FILES_SAVE_DIRECTORY+"test/");
+        storyDir.delete();
+    }
+
+
 }
