@@ -378,6 +378,7 @@ public class JsonProcessorServiceTest {
                 () -> Assertions.assertEquals(storyPatchDto.getButtonUrl(), storyPresentation.getButtonUrl())
         );
     }
+    @Test
     public void delete_JsonFrame_test() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException {
         Method method = JsonProcessorService.class.getDeclaredMethod("deleteJsonFrame",
                 String.class, String.class, String.class, String.class);
@@ -421,16 +422,34 @@ public class JsonProcessorServiceTest {
 
 //    Надо дописать для всего удаления
     @Test
-    public void delete_Frame_test() throws IOException {
-        File jsonFile = new File(FILES_TEST_DIRECTORY + "/sample.png");
+    public void delete_Frame_test() throws Throwable {
+        String bankId = "test";
+        String platform = "WEB";
+        String id = "0";
+        String frameId = "0";
+
+        File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_tkbbank_web.json");
+        File storyDir = new File(FILES_SAVE_DIRECTORY + "/story_test_web.json");
+        //копирую json file
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_test_web.json");
+
+        //копирую изображения
+        File file = new File(FILES_TEST_DIRECTORY + "/sample.png");
         dirProcess.createFolders(FILES_SAVE_DIRECTORY + "test/WEB");
-        File storyDir = new File(FILES_SAVE_DIRECTORY + "test");
-        UUID uuid = UUID.randomUUID();
+        UUID uuid = UUID.fromString("72f250d4-2fea-4f00-a0b2-3259555ceb81");
 
-        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/1_"+0+".png");
-        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/1_"+uuid+".png");
+        copyFile(file.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/0_"+0+".png");
+        copyFile(file.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/0_"+uuid+".png");
 
-        jsonProcessorService.deleteStoryFrame()
-//        jsonProcessorService.deleteStoryFrame()
+        jsonProcessorService.deleteStoryFrame(bankId, platform, id, frameId);
+        ObjectNode node = (ObjectNode) objectMapper.readTree(new File(FILES_SAVE_DIRECTORY + "/story_test_web.json"));
+        ArrayNode arrayNode = (ArrayNode) node.get("stories").get(0).get("storyFrames");
+        Assertions.assertEquals(arrayNode.size(), 0);
+
+        File[] directoryPict = new File(FILES_SAVE_DIRECTORY+"test/WEB/").listFiles();
+        Assertions.assertEquals(directoryPict.length, 1);
+
+        dirProcess.deleteFolders(FILES_SAVE_DIRECTORY+"test/");
+        storyDir.delete();
     }
 }

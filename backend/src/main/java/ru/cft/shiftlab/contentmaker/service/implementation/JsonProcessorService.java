@@ -314,6 +314,8 @@ public class JsonProcessorService implements FileSaverService {
                 throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
+            } catch (IndexOutOfBoundsException e){
+                throw new IllegalArgumentException(String.format("Frame with id=%s doesnt exist", frameId));
             }
         };
         Future<?> deleteJson = executor.submit(r);
