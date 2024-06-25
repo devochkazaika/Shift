@@ -419,10 +419,18 @@ public class JsonProcessorServiceTest {
         FileUtils.deleteDirectory(storyDir);
     }
 
-    //Надо дописать для всего удаления
+//    Надо дописать для всего удаления
     @Test
-    public void delete_Frame_test(){
+    public void delete_Frame_test() throws IOException {
+        File jsonFile = new File(FILES_TEST_DIRECTORY + "/sample.png");
+        dirProcess.createFolders(FILES_SAVE_DIRECTORY + "test/WEB");
+        File storyDir = new File(FILES_SAVE_DIRECTORY + "test");
+        UUID uuid = UUID.randomUUID();
 
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/1_"+0+".png");
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/1_"+uuid+".png");
+
+        jsonProcessorService.deleteStoryFrame()
 //        jsonProcessorService.deleteStoryFrame()
     }
 }
