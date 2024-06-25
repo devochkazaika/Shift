@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
-import ru.cft.shiftlab.contentmaker.dto.StoryPatchDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
@@ -217,9 +216,9 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     public void changeStory(String storiesRequestDto, String bankId, String platform, Long id) throws IOException {
-        StoryPatchDto story = mapper.readValue(
+        StoryDto story = mapper.readValue(
                 storiesRequestDto
-                , StoryPatchDto.class);
+                , StoryDto.class);
 
         List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
         final StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);

@@ -373,9 +373,6 @@ public class JsonProcessorServiceTest {
                 () -> Assertions.assertEquals(storyPatchDto.getTextColor(), storyPresentation.getTextColor()),
                 () -> Assertions.assertEquals(storyPatchDto.getButtonText(), storyPresentation.getButtonText()),
                 () -> Assertions.assertEquals(storyPatchDto.getButtonUrl(), storyPresentation.getButtonUrl())
-//                () -> Assertions.assertEquals(storyPresentation.getPreviewTitle(), storyPatchDto.getPreviewTitle()),
-//                () -> Assertions.assertEquals(storyPresentation.getPreviewGradient(), storyPatchDto.getPreviewGradient()),
-//                () -> Assertions.assertEquals(storyPresentation.getPreviewTitleColor(), storyPatchDto.getPreviewTitleColor())
         );
     }
 }
