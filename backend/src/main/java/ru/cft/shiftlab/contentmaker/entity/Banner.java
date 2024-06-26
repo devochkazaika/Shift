@@ -1,6 +1,7 @@
 package ru.cft.shiftlab.contentmaker.entity;
 
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 
@@ -31,6 +32,7 @@ public class Banner {
      * Название.
      */
     @Column(name = "name")
+    @Length(max = 100)
     private String name;
 
     /**
@@ -63,6 +65,7 @@ public class Banner {
      * Текст баннера.
      */
     @Column(name = "text")
+    @Length(max = 1900)
     private String text;
 
     /**
