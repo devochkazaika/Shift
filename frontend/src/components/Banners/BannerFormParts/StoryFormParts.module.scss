@@ -1,0 +1,35 @@
+@use '../../../styles/variables';
+
+@mixin frame-border {
+  margin: 0 -30px;
+  padding: 0 30px;
+  border-top: variables.$border;
+}
+
+.frame_header {
+  @include frame-border();
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+
+  &.bordered {
+    border-bottom: variables.$border;
+    margin-bottom: variables.$distance-between-blocks;
+  }
+
+  .frame_title {
+    display: flex;
+
+    span {
+      display: flex;
+      align-items: center;
+      margin-right: 10px;
+    }
+  }
+}
+
+.frame_content {
+  @include frame-border();
+  padding-top: variables.$distance-between-blocks;
+}

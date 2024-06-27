@@ -34,3 +34,19 @@ export const initialStoryValues = {
     },
   ],
 };
+
+export const initialBannerFrame = {
+  title: '',
+  text: '',
+  textColor: '#000',
+  gradient: 'EMPTY',
+  visibleLinkOrButtonOrNone: 'BUTTON',
+  pictureUrl: null,
+  linkText: '',
+  linkUrl: '',
+  buttonText: '',
+  buttonTextColor: '#000',
+  buttonBackgroundColor: '#fff',
+  buttonUrl: '',
+};
+
