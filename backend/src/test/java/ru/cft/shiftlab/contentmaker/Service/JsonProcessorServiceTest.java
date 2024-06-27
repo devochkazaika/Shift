@@ -392,10 +392,9 @@ public class JsonProcessorServiceTest {
 
         method.setAccessible(true);
         method.invoke(service, "test", "WEB", "1", "0");
-        ObjectNode node = (ObjectNode) objectMapper.readTree(new File(FILES_SAVE_DIRECTORY + "/story_tkbbank_web.json"));
+        ObjectNode node = (ObjectNode) objectMapper.readTree(new File(FILES_SAVE_DIRECTORY + "/story_test_web.json"));
         ArrayNode arrayNode = (ArrayNode) node.get("stories").get(1).get("storyFrames");
         Assertions.assertEquals(arrayNode.size(), 1);
-
         storyDir.delete();
     }
     @Test

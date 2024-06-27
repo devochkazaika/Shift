@@ -98,7 +98,6 @@ public class JsonProcessorService implements FileSaverService {
         return new HttpEntity<>(multipartBodyBuilder.build(), headers);
     }
 
-
     @Override
     public void saveFiles(String strStoriesRequestDto, MultipartFile previewImage, MultipartFile[] images){
         try {
@@ -113,10 +112,7 @@ public class JsonProcessorService implements FileSaverService {
             //Создание пути для картинок, если его еще нет
             dirProcess.createFolders(picturesSaveDirectory);
             //Чтение сторис, которые уже находятся в хранилище
-            List<StoryPresentation> storyPresentationList = dirProcess.checkFileInBankDir(
-                    FileNameCreator.createJsonName(bankId, platformType),
-                    STORIES
-            );
+            List<StoryPresentation> storyPresentationList = getStoryList(bankId, platformType);
             storiesDtoToPresentations(
                     bankId,
                     picturesSaveDirectory,
@@ -152,17 +148,10 @@ public class JsonProcessorService implements FileSaverService {
                 previewImage = images[0];
             }
             ImageContainer imageContainerPreview = new ImageContainer(previewImage);
-            long lastId;
-            if (storyPresentationList.isEmpty()){
-                lastId = 0;
-            }
-            else {
-                var lastOfList = storyPresentationList.get(storyPresentationList.size()-1);
-                lastId = (lastOfList.getId()==null) ? 0 : lastOfList.getId()+1;
-            }
-
-            //Добавление к старым картинкам _old
-            FileNameCreator.renameOld(picturesSaveDirectory, lastId);
+            //находим максимальный id
+            long lastId = storyPresentationList.stream()
+                    .mapToLong(StoryPresentation::getId)
+                    .max().orElse(0L)+1;
 
             previewUrl = multipartFileToImageConverter.parsePicture(
                     imageContainerPreview,
@@ -232,15 +221,25 @@ public class JsonProcessorService implements FileSaverService {
         StoryPatchDto story = mapper.readValue(
                 storiesRequestDto
                 , StoryPatchDto.class);
-
+        //Берем нужную историю из списка
         List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
         final StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
 
+        //обновляем значение и записываем в JSON
         String json = mapper.writeValueAsString(story);
         mapper.readerForUpdating(storyPresentation).readValue(json);
-
         putStoryToJson(storyPresentationList, bankId, platform);
     }
+
+    /**
+     * Метод для изменения карточки в историях
+     * @param storyFramesRequestDt
+     * @param bankId
+     * @param platform
+     * @param id
+     * @param frameId
+     * @throws IOException
+     */
     public void changeFrameStory(String storyFramesRequestDt, String bankId, String platform,
                                  Long id,
                                  Integer frameId) throws IOException {
@@ -258,6 +257,14 @@ public class JsonProcessorService implements FileSaverService {
         putStoryToJson(storyPresentationList, bankId, platform);
     }
 
+    /**
+     * Метод для удаления истории
+     * @param bankId Имя банка
+     * @param platform Тип платформы
+     * @param id Id истории
+     * @return
+     * @throws Throwable
+     */
     public ResponseEntity<?> deleteService(String bankId, String platform, String id) throws Throwable {
         ExecutorService executor = Executors.newFixedThreadPool(2);
         Runnable r = ()->{
