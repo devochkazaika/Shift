@@ -24,6 +24,8 @@ files:
       filesSaveDirectory: "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
 
 spring:
+  resources:
+    cache-period: 0
   h2:
     console:
       enabled: true
@@ -39,9 +41,6 @@ spring:
     multipart:
       max-file-size: 1000MB
       max-request-size: 1000MB
-  web:
-    resources:
-      static-locations: classpath:/static/
 server:
   tomcat:
     max-http-form-post-size: 10485760
