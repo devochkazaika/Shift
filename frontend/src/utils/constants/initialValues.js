@@ -35,8 +35,8 @@ export const initialStoryValues = {
   ],
 };
 
-export const initialBannerFrame = {
-  title: '',
+export const initialBannerValues = {
+  title: 'asdasd',
   text: '',
   textColor: '#000',
   gradient: 'EMPTY',

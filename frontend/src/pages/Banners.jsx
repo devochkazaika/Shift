@@ -2,7 +2,7 @@ import { FieldArray, Form, Formik } from "formik";
 import React from "react";
 
 import { uploadStories } from "../api/stories";
-import { initialBannerFrame } from "../utils/constants/initialValues";
+import { initialBannerValues } from "../utils/constants/initialValues";
 import { convertToPayload } from "../utils/helpers/byteArrayFunctions";
 import { storyValidationSchema } from "../utils/helpers/validation";
 
@@ -32,7 +32,7 @@ const Banners = () => {
     });
     setSuccess(uploadResult);
     if (uploadResult) {
-      resetForm(initialBannerFrame);
+      resetForm(initialBannerValues);
     }
   };
 
@@ -43,24 +43,24 @@ const Banners = () => {
       <div className="stories">
         <Formik
           enableReinitialize
-          initialValues={initialBannerFrame}
+          initialValues={initialBannerValues}
           validationSchema={storyValidationSchema}
           onSubmit={handleOnSubmit}
         >
           {(props) => (
             <Form>
               <CommonForm {...props} />
-              <FieldArray name="stories">
+              <FieldArray name="banners">
                 {() => (
                   <>
-                    {props.values.stories.map((story, storyIndex) => (
+                  {props.values.map((banner, bannerIndex) => (
                       <BannerForm
-                        key={storyIndex}
-                        storyIndex={storyIndex}
-                        storyJson={story}
-                        {...props}
+                        key = {bannerIndex}
+                        banner = {banner}
+                        bannerIndex={bannerIndex}
                       />
-                    ))}
+                    ))
+                  }
                   </>
                 )}
               </FieldArray>
