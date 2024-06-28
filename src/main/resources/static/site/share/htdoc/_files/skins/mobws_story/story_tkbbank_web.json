@@ -1,0 +1,23 @@
+{
+  "stories" : [ {
+    "id" : 1,
+    "bankId" : "tkbbank",
+    "previewTitle" : "MainTextPreview",
+    "previewTitleColor" : "FF0000",
+    "previewUrl" : "F:\\JAVA\\CWT\\content-maker\\src\\main\\resources\\static/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/1_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "a2c8a734-0fdd-4018-a27d-a3a72364b816",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "pictureUrl" : "F:\\JAVA\\CWT\\content-maker\\src\\main\\resources\\static/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/1_a2c8a734-0fdd-4018-a27d-a3a72364b816.jpg",
+      "visibleLinkOrButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  } ]
+}

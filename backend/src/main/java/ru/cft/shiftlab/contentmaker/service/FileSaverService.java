@@ -4,8 +4,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
+import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Интерфейс, предназначенный для сохранения файлов в определенную директорию.
@@ -41,10 +43,11 @@ public interface FileSaverService {
      * @param bankId Имя банка
      * @param platform Тип платформы
      */
-    default HttpEntity<MultiValueMap<String, HttpEntity<?>>> getFilePlatform(String bankId, String platform){
+    default HttpEntity<MultiValueMap<String, HttpEntity<?>>> getFilePlatform(String bankId, String platform) throws IOException {
         IOException e = new IOException();
         throw new RuntimeException(e);
     }
+    public HttpEntity<List<StoryPresentation>> getFilePlatformJson(String bankId, String platform) throws IOException;
 
     void changeStory(String bankId, String storiesRequestDto, String platform, Long id) throws IOException;
     void changeFrameStory(String storyFramesRequestDt,

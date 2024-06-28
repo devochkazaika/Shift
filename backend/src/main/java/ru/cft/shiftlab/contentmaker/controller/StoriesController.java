@@ -15,12 +15,13 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.PlatformValid;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
 
-
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Контроллер, обрабатывающий запросы для работы с Story.
@@ -92,9 +93,34 @@ public class StoriesController {
                     schema = @Schema(type = "string", format = "string"),
                     example = "WEB")
             @PlatformValid
-            String platform){
+            String platform) throws IOException {
 
         return storiesService.getFilePlatform(bankId, platform);
+    }
+
+    @GetMapping("/bank/info/getJson")
+    @Operation(summary = "Чтение истории с сервера.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "302", description = "История прочтена с сервера.")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public HttpEntity<List<StoryPresentation>> getStoriesJson(
+            @RequestParam(name = "bankId")
+            @Parameter(description = "Название банка",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "tkkbank")
+            @WhiteListValid(message = "bankId must match the allowed")
+            String bankId,
+
+            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+            @Parameter(description = "Тип платформы",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "WEB")
+            @PlatformValid
+            String platform) throws IOException {
+
+        return storiesService.getFilePlatformJson(bankId, platform);
     }
     /**
      * Метод, который обрабатывает DELETE-запрос на удаление историй.

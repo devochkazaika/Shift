@@ -4,14 +4,21 @@ import FormField from "../FormField";
 
 import { banks } from "../../utils/constants/banks";
 
-const CommonForm = (props) => {
+const CommonForm = ( {setBankId, setPlatform, ...props }) => {
+
   return (
     <>
       <h2>Банк</h2>
       <div className="input_field">
+        {setBankId(props.values.bankId)}
         <FormField
           name={`bankId`}
           as="select"
+          onChange={(event) => {
+            const selectedBankId = event.target.value;
+            setBankId(selectedBankId); // Устанавливаем выбранный bankId в состояние
+            props.handleChange(event); // Передаем событие изменения в Formik
+          }}
           options={banks.map((bank) => {
             return { value: bank.id, name: bank.name };
           })}
@@ -22,6 +29,7 @@ const CommonForm = (props) => {
       <h2>Платформа</h2>
       <div role="group" aria-labelledby="my-radio-group">
         <div className="row">
+          {setPlatform(props.values.platformType)}
           <label htmlFor="AllPlatformType">
             <FormField
               labelTitle="Все платформы"
@@ -30,40 +38,63 @@ const CommonForm = (props) => {
               name={`platformType`}
               value="ALL PLATFORMS"
               checked={props.values.platformType === "ALL PLATFORMS"}
+              onChange={(event) => {
+                const selectedBankId = event.target.value;
+                setPlatform(selectedBankId); // Устанавливаем выбранный bankId в состояние
+                props.handleChange(event); // Передаем событие изменения в Formik
+              }}
               {...props}
             />
           </label>
 
           <label htmlFor="AndroidPlatformType">
+            {setPlatform(props.values.platformType)}
             <FormField
               labelTitle="Android"
               id="AndroidPlatformType"
               type="radio"
               name={`platformType`}
               value="ANDROID"
+              onChange={(event) => {
+                const selectedBankId = event.target.value;
+                setPlatform(selectedBankId); // Устанавливаем выбранный bankId в состояние
+                props.handleChange(event); // Передаем событие изменения в Formik
+              }}
               checked={props.values.platformType === "ANDROID"}
               {...props}
             />
           </label>
 
           <label htmlFor="IOSPlatformType">
+            {setPlatform(props.values.platformType)}
             <FormField
               labelTitle="IOS"
               id="IOSPlatformType"
               type="radio"
               name={`platformType`}
               value="IOS"
+              onChange={(event) => {
+                const selectedBankId = event.target.value;
+                setPlatform(selectedBankId); // Устанавливаем выбранный bankId в состояние
+                props.handleChange(event); // Передаем событие изменения в Formik
+              }}
               checked={props.values.platformType === "IOS"}
               {...props}
             />
           </label>
           <label htmlFor="WebPlatformType">
+            {setPlatform(props.values.platformType)}
             <FormField
               labelTitle="Web"
               id="WebPlatformType"
               type="radio"
               name={`platformType`}
               value="WEB"
+              onChange={(event) => {
+                const selectedBankId = event.target.value;
+                setPlatform(selectedBankId); // Устанавливаем выбранный bankId в состояние
+                props.handleChange(event); // Передаем событие изменения в Formik
+              }}
               checked={props.values.platformType === "WEB"}
               {...props}
             />

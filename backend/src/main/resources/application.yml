@@ -39,6 +39,9 @@ spring:
     multipart:
       max-file-size: 1000MB
       max-request-size: 1000MB
+  web:
+    resources:
+      static-locations: classpath:/static/
 server:
   tomcat:
     max-http-form-post-size: 10485760

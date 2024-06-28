@@ -98,6 +98,10 @@ public class JsonProcessorService implements FileSaverService {
         return new HttpEntity<>(multipartBodyBuilder.build(), headers);
     }
 
+    public HttpEntity<List<StoryPresentation>> getFilePlatformJson(String bankId, String platform) throws IOException {
+        return new HttpEntity<>(getStoryList(bankId, platform));
+    }
+
     @Override
     public void saveFiles(String strStoriesRequestDto, MultipartFile previewImage, MultipartFile[] images){
         try {
@@ -108,7 +112,8 @@ public class JsonProcessorService implements FileSaverService {
             String bankId = storiesRequestDto.getBankId();
             String platformType = storiesRequestDto.getPlatformType();
 
-            String picturesSaveDirectory = FILES_SAVE_DIRECTORY + bankId + "/" + platformType + "/";
+            String picturesSaveDirectory = FILES_SAVE_DIRECTORY+bankId+"/"+platformType+"/";
+            System.out.println(picturesSaveDirectory);
             //Создание пути для картинок, если его еще нет
             dirProcess.createFolders(picturesSaveDirectory);
             //Чтение сторис, которые уже находятся в хранилище
