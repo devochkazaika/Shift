@@ -11,9 +11,9 @@ import StoryForm from "../components/Stories/StoryForm";
 import AlertMessage from "../components/ui/AlertMessage";
 import Button from "../components/ui/Button";
 import Loader from "../components/ui/Loader/index";
-import fetchData from './StoryArray'; // Предполагая, что это функция для загрузки данных
+import fetchData from '../components/Stories/ExistStory/StoryArray'; // Предполагая, что это функция для загрузки данных
 // import StoryCard from "./StoryCard";
-import StoryPanel from "./StoryPanel";
+import StoryPanel from "../components/Stories/ExistStory/StoryPanel";
 
 const Stories = () => {
   const [send, setSend] = useState(false);
@@ -61,7 +61,6 @@ const Stories = () => {
 
   return (
     <>
-      {console.log(storyArray)}
       <StoryPanel storyArray={storyArray} />
       {loading && <Loader />}
       <h1>Добавить Story</h1>

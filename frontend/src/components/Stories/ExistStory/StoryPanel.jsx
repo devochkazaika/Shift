@@ -1,15 +1,16 @@
 import React from 'react';
 import StoryCard from './StoryCard';
 import  './StoryPanelStyle.css';
+// import styles from "../StoryFormParts/StoryFormParts.module.scss";
 
 const StoryPanel = ({ storyArray }) => {
     return(
-        <div className='tag-list'>
-            <ul>
+        <div className="tag-list">
+            <ul className="stories">
             {storyArray.map((story, index) => (
                 <li key={index}>
                 <details>
-                <summary>{story.previewTitle+" " +index}</summary>
+                <summary>{story.previewTitle+" " +story.id}</summary>
                 <StoryCard key={index} story={story} />
                 </details>
                 </li>

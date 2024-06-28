@@ -1,0 +1,50 @@
+
+.tag-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .tag-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    left: 0;
+    color: #000000;
+    list-style: none;
+    margin: 4px 0;
+    transition: 0.5s;
+  }
+  .tag-list p {
+    
+    margin: 4px 0;
+    transition: 0.5s;
+  }
+
+.frames{
+  display: inline-block;
+}
+  
+.preview {
+  width: 30%;
+  height: 30%;
+}
+
+.pict {
+  width: 100%;
+  height: 100%;
+}
+
+.image:hover img {
+  transform: scale(1.1); 
+}
+
+.card ul {
+  margin: 10px 10px;
+  display: inline-block;
+  width: 33%;
+}
+.card li{
+   margin: 10px 10px;
+  border: solid;
+}
