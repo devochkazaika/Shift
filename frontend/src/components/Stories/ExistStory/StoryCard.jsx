@@ -28,6 +28,7 @@ const StoryCard = ({ story }) => {
                           <p>Банк</p>
                           <div style={{ width: "100%" }}>
                             <FormField
+                              value = {initialStoryValues.bankId}
                               name="fee"
                               change
                               as={"input"}
@@ -37,9 +38,10 @@ const StoryCard = ({ story }) => {
                           </div>
                         </div>
                         <div className='frame'>
-                          <p>Preview Title:</p>
+                          <p>Платформа</p>
                           <div>
                             <FormField
+                              value = {initialStoryValues.platformType}
                               change
                               as={"input"}
                               type="text"
