@@ -1,18 +1,84 @@
 import React from 'react';
+import {FieldArray, Form, Formik } from 'formik';
+import FormField from "../../FormField";
+// import AlertMessage from './../../ui/AlertMessage/index';
+// import Button from './../../ui/Button/index';
+import { initialStoryValues } from "../../../utils/constants/initialValues";
+import styles from "../StoryFormParts/StoryFormParts.module.scss";
+import ColorPicker from './../../ColorPicker/index';
+
 
 const StoryFrame = ({ frame }) => {
   return (
-    <li className="frames">
-      <p>Title: {frame.title}</p>
-      <p>Text: {frame.text}</p>
-      <p>Text Color: {frame.textColor}</p>
-      <p>Visible Link or Button or None: {frame.visibleLinkOrButtonOrNone}</p>
-      <p>Button Text: {frame.buttonText}</p>
-      <p>Button Text Color: {frame.buttonTextColor}</p>
-      <p>Button Background Color: {frame.buttonBackgroundColor}</p>
-      <img className='pict' src={"http://localhost:8080"+frame.pictureUrl} alt="Story Frame" />
-      {console.log("http://localhost:8080"+frame.pictureUrl)}
-    </li>
+    <div>
+      <Formik
+          enableReinitialize
+          initialValues={initialStoryValues}
+        >
+          {() => (
+            <Form>
+              <FieldArray name="stories">
+              {(props) => (
+                <div>
+                  <div className={styles.frame_content}>
+                     <FormField
+                            labelTitle={"Tittle"}
+                            change
+                            as={"input"}
+                            type="text"
+                            {...props}
+                            />
+                     <FormField
+                            labelTitle={"Text"}
+                            change
+                            as={"input"}
+                            type="text"
+                            {...props}
+                            />
+                      <FormField
+                        labelTitle={"Цвет текста"}
+                        component={ColorPicker}
+                        {...props}
+                      />
+                      <FormField
+                            labelTitle={"Visible Link or Button or None:"}
+                            change
+                            as={"input"}
+                            type="text"
+                            {...props}
+                            />
+                      <FormField
+                            labelTitle={"Button Text: "}
+                            change
+                            as={"input"}
+                            type="text"
+                            {...props}
+                      />
+                       <FormField
+                            labelTitle={"Button Text Color:"}
+                            change
+                            as={"input"}
+                            type="text"
+                            {...props}
+                      />
+                      <FormField
+                            labelTitle={"Button Background Color:"}
+                            change
+                            as={"input"}
+                            type="text"
+                            {...props}
+                      />
+                        
+                      <img className='pict' src={"http://localhost:8080"+frame.pictureUrl} alt="Story Frame" />
+                  </div>
+                </div>
+                )}
+              </FieldArray>
+            </Form>
+          )}
+        </Formik>
+
+    </div>
   );
 }
 
