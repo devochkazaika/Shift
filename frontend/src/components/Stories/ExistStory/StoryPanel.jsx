@@ -5,7 +5,7 @@ import  './StoryPanelStyle.css';
 
 const StoryPanel = ({ storyArray }) => {
     return(
-        <div className="tag-list">
+        <div>
             <ul className="stories">
             {storyArray.map((story, index) => (
                 <li className='stories' key={index}>

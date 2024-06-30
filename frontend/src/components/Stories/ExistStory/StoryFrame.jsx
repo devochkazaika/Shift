@@ -4,7 +4,7 @@ import FormField from "../../FormField";
 // import AlertMessage from './../../ui/AlertMessage/index';
 // import Button from './../../ui/Button/index';
 import { initialStoryValues } from "../../../utils/constants/initialValues";
-import styles from "../StoryFormParts/StoryFormParts.module.scss";
+// import styles from "../StoryFormParts/StoryFormParts.module.scss";
 import ColorPicker from './../../ColorPicker/index';
 
 
@@ -16,67 +16,69 @@ const StoryFrame = ({ frame }) => {
           initialValues={initialStoryValues}
         >
           {() => (
-            <Form>
-              <FieldArray name="stories">
-              {(props) => (
-                <div>
-                  <div className={styles.frame_content}>
-                     <FormField
-                            labelTitle={"Tittle"}
-                            change
-                            as={"input"}
-                            type="text"
-                            {...props}
-                            />
-                     <FormField
-                            labelTitle={"Text"}
-                            change
-                            as={"input"}
-                            type="text"
-                            {...props}
-                            />
+            <div>
+              <Form>
+                <FieldArray name="stories">
+                {(props) => (
+                  <div>
+                    <div>
                       <FormField
-                        labelTitle={"Цвет текста"}
-                        component={ColorPicker}
-                        {...props}
-                      />
+                              labelTitle={"Tittle"}
+                              change
+                              as={"input"}
+                              type="text"
+                              {...props}
+                              />
                       <FormField
-                            labelTitle={"Visible Link or Button or None:"}
-                            change
-                            as={"input"}
-                            type="text"
-                            {...props}
-                            />
-                      <FormField
-                            labelTitle={"Button Text: "}
-                            change
-                            as={"input"}
-                            type="text"
-                            {...props}
-                      />
-                       <FormField
-                            labelTitle={"Button Text Color:"}
-                            change
-                            as={"input"}
-                            type="text"
-                            {...props}
-                      />
-                      <FormField
-                            labelTitle={"Button Background Color:"}
-                            change
-                            as={"input"}
-                            type="text"
-                            {...props}
-                      />
-                        
-                      <img className='pict' src={"http://localhost:8080"+frame.pictureUrl} alt="Story Frame" />
+                              labelTitle={"Text"}
+                              change
+                              as={"input"}
+                              type="text"
+                              {...props}
+                              />
+                        <FormField
+                          labelTitle={"Цвет текста"}
+                          component={ColorPicker}
+                          {...props}
+                        />
+                        <FormField
+                              labelTitle={"Visible Link or Button or None:"}
+                              change
+                              as={"input"}
+                              type="text"
+                              {...props}
+                              />
+                        <FormField
+                              labelTitle={"Button Text: "}
+                              change
+                              as={"input"}
+                              type="text"
+                              {...props}
+                        />
+                        <FormField
+                              labelTitle={"Button Text Color:"}
+                              change
+                              as={"input"}
+                              type="text"
+                              {...props}
+                        />
+                        <FormField
+                              labelTitle={"Button Background Color:"}
+                              change
+                              as={"input"}
+                              type="text"
+                              {...props}
+                        />
+                          
+                        <img className='pict' src={"http://localhost:8080"+frame.pictureUrl} alt="Story Frame" />
+                    </div>
                   </div>
-                </div>
-                )}
-              </FieldArray>
-            </Form>
-          )}
-        </Formik>
+                  )}
+                </FieldArray>
+              </Form>
+            </div>
+            )}
+          </Formik>
 
     </div>
   );

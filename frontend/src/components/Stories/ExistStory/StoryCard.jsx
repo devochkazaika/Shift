@@ -38,10 +38,10 @@ const StoryCard = ({ story }) => {
                           </div>
                         </div>
                         <div className='frame'>
-                          <p>Платформа</p>
+                          <p>Preview Title:</p>
                           <div>
                             <FormField
-                              value = {initialStoryValues.platformType}
+                              value = {initialStoryValues.bankId}
                               change
                               as={"input"}
                               type="text"
@@ -53,7 +53,7 @@ const StoryCard = ({ story }) => {
                       <div style={{ width: "25%", marginLeft: "auto", float: "right" }}> {/* Правая часть контейнера с картинкой */}
                         <img src={"http://localhost:8080" + story.previewUrl} alt="Story Frame" style={{ width: "100%" }} />
                       </div>
-                  </div>
+                    </div>
                   )}
                 </FieldArray>
               </Form>
