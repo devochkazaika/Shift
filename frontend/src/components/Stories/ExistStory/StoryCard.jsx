@@ -108,7 +108,7 @@ const StoryCard = ({ storyIndex, story, platform}) => {
                   </div>
                 </summary>
                 <div className="item-card__content">
-                <StoryFrame key={index} frame={value} frameIndex={index} storyIndex={storyIndex} />
+                <StoryFrame key={index} frame={value} frameIndex={index} storyIndex={storyIndex} platform={platform} />
                 </div>
               </details>
             </li>

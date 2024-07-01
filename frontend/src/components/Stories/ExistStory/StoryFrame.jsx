@@ -9,11 +9,12 @@ import Button from '../.././ui/Button';
 import ColorPicker from './../../ColorPicker/index';
 import { gradientOptions } from './../../../utils/constants/gradient';
 import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg';
+import { updateFrame } from '../../../api/stories';
 
-const StoryFrame = ({ frame, frameIndex, storyIndex }) => {
-  // const handleOnSubmit = async (story, frameId, platform) => {
-  //   deleteFrame(story, frameId, platform)
-  // };
+const StoryFrame = ({ frame, frameIndex, storyIndex, platform }) => {
+  const handleOnSubmit = async (story, platform, storyIndex, frameIndex) => {
+    updateFrame(story, platform, storyIndex, frameIndex)
+  };
 
   return (
     <div>
@@ -143,7 +144,9 @@ const StoryFrame = ({ frame, frameIndex, storyIndex }) => {
                       <div className='item-card__summary'>
                         <img className='pict' src={`http://localhost:8080${frame.pictureUrl}`} alt="Story Frame" />
                         <div className='item-card__button--change'>
+                          {console.log(frameIndex)}
                           <Button
+                            handleOnClick={() => handleOnSubmit(frame, platform, storyIndex, frameIndex)}
                             text="Изменить"
                             type="button"
                             color="green"
