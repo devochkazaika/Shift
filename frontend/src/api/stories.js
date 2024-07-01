@@ -66,3 +66,60 @@ export const deleteStory = async (value, platform) => {
     }
   }
 };
+
+export const updateStory = async (story, jsonStory, platform) => {
+  const toastView = toast(defaultToastMessages.uploadingData, {
+    ...defaultToastOptions,
+    autoClose: false,
+    isLoading: true,
+  });
+  const form = new FormData();
+  form.append("json", JSON.stringify(jsonStory));
+  form.append("platform", platform);
+  form.append("id", story.id);
+  form.append("bankId", story.bankId);
+  try {
+    const response = await axios.patch(`/stories/bank/info/change`, form, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    toast.update(toastView, {
+      ...defaultUpdateToastOptions,
+      render: response.message,
+    });
+    return true;
+  } catch (error) {
+    if (error.response.status === 500) {
+      toast.update(toastView, {
+        ...defaultUpdateToastOptions,
+        render: defaultToastMessages.connectionError,
+        type: "warning"
+      });
+      return false;
+    }
+  }
+};
+
+export const deleteFrame = async (story, frameId, platform) => {
+  const toastView = toast(defaultToastMessages.uploadingData, {
+    ...defaultToastOptions,
+    autoClose: false,
+    isLoading: true,
+  });
+  try {
+    const response = await axios.delete(`/stories/bank/info/delete/frame?bankId=${story.bankId}&platform=${platform}&storyId=${story.id}&frameId=${frameId}`);
+    toast.update(toastView, {
+      ...defaultUpdateToastOptions,
+      render: response.message,
+    });
+    return true;
+  } catch (error) {
+    if (error.response.status === 500) {
+      toast.update(toastView, {
+        ...defaultUpdateToastOptions,
+        render: defaultToastMessages.connectionError,
+        type: "warning"
+      });
+      return false;
+    }
+  }
+};

@@ -5,23 +5,28 @@ import {FieldArray, Form, Field, Formik } from 'formik';
 import FormField from "../../FormField";
 // import AlertMessage from './../../ui/AlertMessage/index';
 // import Button from './../../ui/Button/index';
-import { initialStoryValues } from "../../../utils/constants/initialValues";
+// import { initialStoryValues } from "../../../utils/constants/initialValues";
 // import styles from "../StoryFormParts/StoryFormParts.module.scss";
 import { gradientOptions } from './../../../utils/constants/gradient';
 import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg';
 import Button from '../.././ui/Button';
+import ColorPicker from './../../ColorPicker/index';
+import { deleteFrame, updateStory } from './../../../api/stories';
 
-const StoryCard = ({ storyIndex, story}) => {
+const StoryCard = ({ storyIndex, story, platform}) => {
   // const [success, setSuccess] = React.useState(true)
+  const handleOnSubmit = async (story, frameId, platform) => {
+    deleteFrame(story, frameId, platform)
+  };
   return (
     <div>
       <div>
         <Formik
           enableReinitialize
           initialValues={{
-            previewTitle: initialStoryValues.previewTitle,
-            previewTitleColor: initialStoryValues.previewTitleColor,
-            previewGradient: initialStoryValues.previewGradient,
+            previewTitle: story.previewTitle,
+            previewTitleColor: story.previewTitleColor,
+            previewGradient: story.previewGradient,
           }}
           onSubmit={(values) => {
             console.log(values);
@@ -31,13 +36,13 @@ const StoryCard = ({ storyIndex, story}) => {
             <Form>
               <FieldArray name={`stories.${storyIndex}.storyFrames`}>
                 {() => (
-                  <div style={{ display: "flex", alignItems: "center" }}>
+                  <div className='row' style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ width: "70%" }}> {/* Левая часть контейнера с полями ввода */}
                       <div className='frame' style={{ marginBottom: "10px" }}>
-                        <p>Заголовок</p>
+                        <h3 style={{paddingRight: "10px"}}>Заголовок</h3>
                         <div style={{ width: "100%" }}>
                           <Field
-                            name="previewTitle"
+                            name={`previewTitle`}
                             as={FormField}
                             type="text"
                             value={values.previewTitle}
@@ -45,23 +50,18 @@ const StoryCard = ({ storyIndex, story}) => {
                           />
                         </div>
                       </div>
+                      <FormField
+                          name={`textColor`}
+                          labelTitle={"Цвет заголовка"}
+                          value={values.textColor}
+                          component={ColorPicker}
+                          onChange={handleChange}
+                        />
                       <div className='frame'>
-                        <p>previewTitleColor</p>
-                        <div>
-                          <Field
-                            name="previewTitleColor"
-                            as={FormField}
-                            type="text"
-                            value={values.previewTitleColor}
-                            onChange={handleChange}
-                          />
-                        </div>
-                      </div>
-                      <div className='frame'>
-                        <p>previewGradient</p>
                         <div>
                           <FormField
                             name={`previewGradient`}
+                            labelTitle="Градиент"
                             value={values.previewGradient}
                             onChange={handleChange}
                             as="select"
@@ -70,9 +70,10 @@ const StoryCard = ({ storyIndex, story}) => {
                         </div>
                       </div>
                     </div>
-                    <div style={{width: "25%", marginLeft: "auto", float: "right" }}> {/* Правая часть контейнера с картинкой */}
+                    <div style={{width: "30%", marginLeft: "auto", float: "right" }}> {/* Правая часть контейнера с картинкой */}
                       <img src={"http://localhost:8080" + story.previewUrl} alt="Story Frame" style={{ width: "100%" }} />
                       <Button
+                        handleOnClick={() => updateStory(story, values, platform)}
                         text="Изменить"
                         type="button"
                         color="green"
@@ -101,6 +102,7 @@ const StoryCard = ({ storyIndex, story}) => {
                             type="button"
                             color="red"
                             icon={<ArrowIcon width="12px" height="12px" />}
+                            handleOnClick={() => handleOnSubmit(story, index, platform)}
                           />
                     </div>
                   </div>

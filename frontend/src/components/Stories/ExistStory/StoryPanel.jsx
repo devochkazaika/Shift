@@ -33,7 +33,7 @@ const StoryPanel = ({ storyArray, platform }) => {
                     </div>
                   </summary>
                   <div className="item-card__content">
-                     <StoryCard key={index} story={story} storyIndex={index} />
+                     <StoryCard key={index} story={story} storyIndex={index} platform={platform}/>
                   </div>
                 </details>
                 </li>

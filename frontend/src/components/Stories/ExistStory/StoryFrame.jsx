@@ -11,7 +11,9 @@ import { gradientOptions } from './../../../utils/constants/gradient';
 import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg';
 
 const StoryFrame = ({ frame, frameIndex, storyIndex }) => {
-  // const [patchFrame, setFrame] = React.useState(frame)
+  // const handleOnSubmit = async (story, frameId, platform) => {
+  //   deleteFrame(story, frameId, platform)
+  // };
 
   return (
     <div>
@@ -23,12 +25,9 @@ const StoryFrame = ({ frame, frameIndex, storyIndex }) => {
           visibleButtonOrNone: frame.visibleButtonOrNone,
           gradient: frame.gradient,
           textColor: frame.textColor
-          // Другие начальные значения
-        }}
-        onSubmit={(values) => {
-          // Обработка отправки формы
-          console.log(values);
-        }}
+          // onSubmit={(values) => {
+          // 
+          }}
       >
         {({ values, handleChange }) => (
           <div>
