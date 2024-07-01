@@ -8,10 +8,10 @@ const StoryPanel = ({ storyArray }) => {
         <div>
             <ul className="stories">
             {storyArray.map((story, index) => (
-                <li className='stories' key={index}>
+                <li className='stories listFrame' key={index}>
                 <details>
                 <summary>{story.previewTitle+" " +story.id}</summary>
-                <StoryCard key={index} story={story} />
+                <StoryCard key={index} story={story} storyIndex={index} />
                 </details>
                 </li>
             ))}

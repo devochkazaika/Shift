@@ -1,29 +1,10 @@
-
-.tag-list {
-    list-style: none;
-    padding: 0;
-  }
-
-  .tag-list li {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
-    left: 0;
-    color: #000000;
-    list-style: none;
-    margin: 4px 0;
-    transition: 0.5s;
-  }
-  .tag-list p {
-    
-    margin: 4px 0;
-    transition: 0.5s;
-  }
-
 .frames{
   display: inline-block;
   width: 70%;
+}
+
+.listFrame{
+  list-style-type: none;
 }
 
 .frame {
@@ -48,8 +29,8 @@
   
 
 .pict {
-  width: auto;
-  height: auto;
+  width: 50%;
+  height: 50%;
 }
 
 .image:hover img {
