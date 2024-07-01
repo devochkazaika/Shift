@@ -42,7 +42,7 @@ public class StoryFramesDto {
      */
     @NotBlank(message = "Button and link display is not specified")
     @Pattern(regexp = "BUTTON|NONE", message = "Incorrect parameters. Possible: BUTTON, NONE")
-    private String visibleLinkOrButtonOrNone;
+    private String visibleButtonOrNone;
 
     /**
      * Текст кнопки.

@@ -48,7 +48,7 @@ public class StoryPresentationFrames {
     /**
      * Поле, показывающее необходимость либо ссылки, либо кнопки, либо ничего из этого.
      */
-    private String visibleLinkOrButtonOrNone;
+    private String visibleButtonOrNone;
 
     /**
      * Текст кнопки.

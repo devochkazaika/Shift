@@ -1,52 +1,30 @@
 {
   "stories" : [ {
-    "id" : 1,
+    "id" : 3,
     "bankId" : "tkbbank",
-    "previewTitle" : "MainTextPreview",
-    "previewTitleColor" : "FF0000",
-    "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/1_0.jpg",
-    "previewGradient" : "EMPTY",
-    "storyFrames" : [ {
-      "id" : "16d35fc5-be06-4fe6-96cd-74f7b8140a2f",
-      "title" : "mainText",
-      "text" : "Text card",
-      "textColor" : "FF0000",
-      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/1_16d35fc5-be06-4fe6-96cd-74f7b8140a2f.jpg",
-      "visibleLinkOrButtonOrNone" : "NONE",
-      "buttonText" : "",
-      "buttonTextColor" : "",
-      "buttonBackgroundColor" : "",
-      "buttonUrl" : "",
-      "gradient" : "EMPTY"
-    } ]
-  }, {
-    "id" : 2,
-    "bankId" : "tkbbank",
-    "previewTitle" : "asdasd",
+    "previewTitle" : "s",
     "previewTitleColor" : "#000",
-    "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/2_0.jpg",
-    "previewGradient" : "EMPTY",
+    "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/3_0.jpg",
+    "previewGradient" : "HALF",
+    "storyFrames" : [ ]
+  }, {
+    "id" : 4,
+    "bankId" : "tkbbank",
+    "previewTitle" : "a",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/4_0.jpg",
+    "previewGradient" : "FULL",
     "storyFrames" : [ {
-      "id" : "208eda7e-caaa-40e0-b24a-be705e6122e6",
-      "title" : "asdasda",
-      "text" : "asdasdasd",
-      "textColor" : "#000",
-      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/2_208eda7e-caaa-40e0-b24a-be705e6122e6.jpg",
-      "buttonText" : "",
-      "buttonTextColor" : "#000",
-      "buttonBackgroundColor" : "#fff",
-      "buttonUrl" : "",
-      "gradient" : "EMPTY"
-    }, {
-      "id" : "50fc5aad-ae2a-4b77-ac03-38053a1360a1",
-      "title" : "asdasd",
-      "text" : "sadasdasd",
-      "textColor" : "#000",
-      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/2_50fc5aad-ae2a-4b77-ac03-38053a1360a1.jpg",
-      "buttonText" : "asdasdasd",
-      "buttonTextColor" : "#000",
-      "buttonBackgroundColor" : "#fff",
-      "buttonUrl" : "",
+      "id" : "cf28cf14-aac0-467e-9661-e939a63c44be",
+      "title" : "Sample Title",
+      "text" : "Sample text for the story.",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/4_cf28cf14-aac0-467e-9661-e939a63c44be.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "Click Here",
+      "buttonTextColor" : "FFFFFF",
+      "buttonBackgroundColor" : "0000FF",
+      "buttonUrl" : "https://example.com",
       "gradient" : "EMPTY"
     } ]
   } ]

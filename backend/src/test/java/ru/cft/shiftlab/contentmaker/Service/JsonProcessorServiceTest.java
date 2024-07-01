@@ -353,7 +353,7 @@ public class JsonProcessorServiceTest {
         StoryFramesDto storyPatchDto = StoryFramesDto.builder()
                 .text("Sample text for the story.")
                 .textColor("FF0000")
-                .visibleLinkOrButtonOrNone("BUTTON")
+                .visibleButtonOrNone("BUTTON")
                 .buttonText("Click Here")
                 .buttonTextColor("FFFFFF")
                 .buttonBackgroundColor("0000FF")

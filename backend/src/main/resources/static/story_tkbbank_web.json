@@ -12,7 +12,7 @@
       "text" : "Text card",
       "textColor" : "FF0000",
       "pictureUrl" : "1_f1383797-f5b5-4ad1-8c29-0d298824e1bc.jpg",
-      "visibleLinkOrButtonOrNone" : "NONE",
+      "visibleButtonOrNone" : "NONE",
       "buttonText" : "",
       "buttonTextColor" : "",
       "buttonBackgroundColor" : "",

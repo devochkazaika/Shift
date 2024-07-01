@@ -167,18 +167,18 @@ public class StoriesController {
      * @param frameId
      * @throws Throwable
      */
-    @DeleteMapping("/bank/info/delete/frame/")
+    @DeleteMapping("/bank/info/delete/frame")
     public void deleteFrame(
-            @RequestParam
+            @RequestParam(name = "bankId")
             @WhiteListValid(message = "bankId must match the allowed")
             String bankId,
 
-            @RequestParam
+            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
             @PlatformValid
             String platform,
 
-            @RequestParam String storyId,
-            @RequestParam String frameId) throws Throwable {
+            @RequestParam(name = "storyId") String storyId,
+            @RequestParam(name = "frameId") String frameId) throws Throwable {
         storiesService.deleteStoryFrame(bankId, platform, storyId, frameId);
 
     }
