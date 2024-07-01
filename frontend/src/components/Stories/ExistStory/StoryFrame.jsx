@@ -5,7 +5,10 @@ import FormField from "../../FormField";
 // import Button from './../../ui/Button/index';
 // import { initialStoryValues } from "../../../utils/constants/initialValues";
 // import styles from "../StoryFormParts/StoryFormParts.module.scss";
+import Button from '../.././ui/Button';
 import ColorPicker from './../../ColorPicker/index';
+import { gradientOptions } from './../../../utils/constants/gradient';
+import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg';
 
 const StoryFrame = ({ frame, frameIndex, storyIndex }) => {
   // const [patchFrame, setFrame] = React.useState(frame)
@@ -18,6 +21,8 @@ const StoryFrame = ({ frame, frameIndex, storyIndex }) => {
           title: frame.title,
           text: frame.text,
           visibleButtonOrNone: frame.visibleButtonOrNone,
+          gradient: frame.gradient,
+          textColor: frame.textColor
           // Другие начальные значения
         }}
         onSubmit={(values) => {
@@ -50,13 +55,23 @@ const StoryFrame = ({ frame, frameIndex, storyIndex }) => {
                           onChange={handleChange}
                         />
                         <FormField
-                          name={`stories.${storyIndex}.storyFrames.${frameIndex}.textColor`}
+                          name={`textColor`}
                           labelTitle={"Цвет текста"}
+                          value={values.textColor}
                           component={ColorPicker}
                           onChange={handleChange}
                           {...props}
                         />
                       </div>
+                      <FormField
+                          name={`gradient`}
+                          labelTitle={"Градиент"}
+                          value={values.gradient}
+                          onChange={handleChange}
+                          as="select"
+                          options={gradientOptions}
+                          {...props}
+                        />
                       <div role="group" aria-labelledby="my-radio-group">
                         <div className="row">
                           <label htmlFor="ButtonIntarectiveType">
@@ -98,21 +113,23 @@ const StoryFrame = ({ frame, frameIndex, storyIndex }) => {
                                 {...props}
                               />
                             </div>
-                            <FormField
-                              name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonTextColor`}
-                              labelTitle={"Цвет текста"}
-                              component={ColorPicker}
-                              onChange={handleChange}
-                              {...props}
-                            />
+                            <div className='column'>
+                              <FormField
+                                name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonTextColor`}
+                                labelTitle={"Цвет текста"}
+                                component={ColorPicker}
+                                onChange={handleChange}
+                                {...props}
+                              />
+                                <FormField
+                                name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonColor`}
+                                labelTitle={"Цвет кнопки"}
+                                component={ColorPicker}
+                                onChange={handleChange}
+                                {...props}
+                              />
+                            </div>
                           </div>
-                          <FormField
-                            name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonColor`}
-                            labelTitle={"Цвет кнопки"}
-                            component={ColorPicker}
-                            onChange={handleChange}
-                            {...props}
-                          />
                           <div className="input_field">
                             <FormField
                               name={`stories.${storyIndex}.storyFrames.${frameIndex}.buttonLink`}
@@ -124,7 +141,17 @@ const StoryFrame = ({ frame, frameIndex, storyIndex }) => {
                           </div>
                         </>
                       )}
-                      <img className='pict' src={`http://localhost:8080${frame.pictureUrl}`} alt="Story Frame" />
+                      <div className='item-card__summary'>
+                        <img className='pict' src={`http://localhost:8080${frame.pictureUrl}`} alt="Story Frame" />
+                        <div className='item-card__button--change'>
+                          <Button
+                            text="Изменить"
+                            type="button"
+                            color="green"
+                            icon={<ArrowIcon width="12px" height="12px" />}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}

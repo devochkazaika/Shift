@@ -41,3 +41,64 @@
 .card{
  border: #858585;
 }
+
+
+.item-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  background-color: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.item-card__summary {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.item-card__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.item-card__title {
+  flex-grow: 1;
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.item-card__buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.item-card__button {
+  padding: 5px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.item-card__button--change{
+  float: right;
+  transform: scale(auto);
+  padding: 0 0px;
+  /* padding-right: 20px; */
+}
+
+.item-card__button--delete {
+  transform: scale(0.7);
+}
+
+.item-card__content {
+  margin-top: 10px;
+  padding: 10px;
+  border-top: 1px solid #e0e0e0;
+}

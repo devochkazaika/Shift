@@ -41,3 +41,28 @@ export const uploadStories = async (jsonPayload, previewImage, cardImages) => {
     return false;
   }
 };
+
+export const deleteStory = async (value, platform) => {
+  const toastView = toast(defaultToastMessages.uploadingData, {
+    ...defaultToastOptions,
+    autoClose: false,
+    isLoading: true,
+  });
+  try {
+    const response = await axios.delete(`/stories/bank/info/delete?bankId=${value.bankId}&platform=${platform}&id=${value.id}`);
+    toast.update(toastView, {
+      ...defaultUpdateToastOptions,
+      render: response.message,
+    });
+    return true;
+  } catch (error) {
+    if (error.response.status === 500) {
+      toast.update(toastView, {
+        ...defaultUpdateToastOptions,
+        render: defaultToastMessages.connectionError,
+        type: "warning"
+      });
+      return false;
+    }
+  }
+};
