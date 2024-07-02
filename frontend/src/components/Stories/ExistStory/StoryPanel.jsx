@@ -1,6 +1,5 @@
 import StoryCard from './StoryCard';
 import  './StoryPanelStyle.css';
-// import styles from "../StoryFormParts/StoryFormParts.module.scss";
 import Button from './../../ui/Button/index';
 import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg';
 import { deleteStory } from './../../../api/stories';
@@ -10,19 +9,20 @@ import { useState, useEffect, React } from 'react';
 
 const StoryPanel = ({ storyArray, platform }) => {
   const [stories, setStories] = useState(storyArray);
-  
+  //Для обновления после удаления
   useEffect(() => {
     if (storyArray && storyArray.length) {
       setStories(storyArray);
     }
   }, [storyArray]);
-
+  //Для удаления истории
   const handleOnSubmit = async (story, platform) => {
     const success = await deleteStory(story, platform);
     if (success) {
       setStories(prevStories => prevStories.filter(item => item.id !== story.id));
     }
   };
+
     return(
         <div>
             <ul className="stories">

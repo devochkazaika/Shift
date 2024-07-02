@@ -27,7 +27,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
           buttonBackgroundColor: frame.buttonBackgroundColor,
           buttonUrl: frame.buttonUrl
         }}
-        onSubmit={(values) => handleOnSubmit(values, platform, frameIndex)}
+        onSubmit={(values) => handleOnSubmit(values, platform, frame, frameIndex)}
       >
         {({ values, handleChange }) => (
           <Form>

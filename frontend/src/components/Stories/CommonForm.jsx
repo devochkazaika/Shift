@@ -1,7 +1,5 @@
 import React from "react";
-
 import FormField from "../FormField";
-
 import { banks } from "../../utils/constants/banks";
 
 const CommonForm = ( {setBankId, setPlatform, ...props }) => {
@@ -16,8 +14,8 @@ const CommonForm = ( {setBankId, setPlatform, ...props }) => {
           as="select"
           onChange={(event) => {
             const selectedBankId = event.target.value;
-            setBankId(selectedBankId); // Устанавливаем выбранный bankId в состояние
-            props.handleChange(event); // Передаем событие изменения в Formik
+            setBankId(selectedBankId);
+            props.handleChange(event);
           }}
           options={banks.map((bank) => {
             return { value: bank.id, name: bank.name };
@@ -40,8 +38,8 @@ const CommonForm = ( {setBankId, setPlatform, ...props }) => {
               checked={props.values.platformType === "ALL PLATFORMS"}
               onChange={(event) => {
                 const selectedBankId = event.target.value;
-                setPlatform(selectedBankId); // Устанавливаем выбранный bankId в состояние
-                props.handleChange(event); // Передаем событие изменения в Formik
+                setPlatform(selectedBankId);
+                props.handleChange(event);
               }}
               {...props}
             />
@@ -57,8 +55,8 @@ const CommonForm = ( {setBankId, setPlatform, ...props }) => {
               value="ANDROID"
               onChange={(event) => {
                 const selectedBankId = event.target.value;
-                setPlatform(selectedBankId); // Устанавливаем выбранный bankId в состояние
-                props.handleChange(event); // Передаем событие изменения в Formik
+                setPlatform(selectedBankId);
+                props.handleChange(event);
               }}
               checked={props.values.platformType === "ANDROID"}
               {...props}
@@ -75,8 +73,8 @@ const CommonForm = ( {setBankId, setPlatform, ...props }) => {
               value="IOS"
               onChange={(event) => {
                 const selectedBankId = event.target.value;
-                setPlatform(selectedBankId); // Устанавливаем выбранный bankId в состояние
-                props.handleChange(event); // Передаем событие изменения в Formik
+                setPlatform(selectedBankId);
+                props.handleChange(event);
               }}
               checked={props.values.platformType === "IOS"}
               {...props}
@@ -92,8 +90,8 @@ const CommonForm = ( {setBankId, setPlatform, ...props }) => {
               value="WEB"
               onChange={(event) => {
                 const selectedBankId = event.target.value;
-                setPlatform(selectedBankId); // Устанавливаем выбранный bankId в состояние
-                props.handleChange(event); // Передаем событие изменения в Formik
+                setPlatform(selectedBankId);
+                props.handleChange(event);
               }}
               checked={props.values.platformType === "WEB"}
               {...props}
