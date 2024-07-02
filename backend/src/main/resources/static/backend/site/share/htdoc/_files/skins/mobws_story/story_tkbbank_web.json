@@ -2,10 +2,10 @@
   "stories" : [ {
     "id" : 1,
     "bankId" : "tkbbank",
-    "previewTitle" : "asdasd",
-    "previewTitleColor" : "#000",
+    "previewTitle" : "asdaasdasdsdasd",
+    "previewTitleColor" : "#d72727ff",
     "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/1_0.jpg",
-    "previewGradient" : "EMPTY",
+    "previewGradient" : "HALF",
     "storyFrames" : [ ]
   } ]
 }

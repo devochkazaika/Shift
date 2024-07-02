@@ -131,7 +131,7 @@ export const updateFrame = async (story, platform, frame, frameIndex) => {
     isLoading: true,
   });
   const form = new FormData();
-  form.append("json", JSON.stringify(story));
+  form.append("json", JSON.stringify(frame));
   form.append("platform", platform);
   form.append("id", story.id);
   form.append("bankId", story.bankId);

@@ -36,7 +36,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                 <div>
                   <Field
                     labelTitle="Заголовок"
-                    name={`frames[${frameIndex}].title`}
+                    name={`title`}
                     value={values.title}
                     as={FormField}
                     type="text"
@@ -44,7 +44,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                   />
                   <div className='row'>
                     <Field
-                      name={`frames[${frameIndex}].text`}
+                      name={`text`}
                       value={values.text}
                       labelTitle="Текст"
                       as={FormField}
@@ -52,7 +52,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                       onChange={handleChange}
                     />
                     <FormField
-                      name={`frames[${frameIndex}].textColor`}
+                      name={`textColor`}
                       labelTitle="Цвет текста"
                       value={values.textColor}
                       component={ColorPicker}
@@ -60,7 +60,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                     />
                   </div>
                   <FormField
-                    name={`frames[${frameIndex}].gradient`}
+                    name={`gradient`}
                     labelTitle="Градиент"
                     value={values.gradient}
                     as="select"
@@ -72,7 +72,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                       <label htmlFor={`ButtonIntarectiveType-${frameIndex}`}>
                         Кнопка
                         <Field
-                          name={`frames[${frameIndex}].visibleButtonOrNone`}
+                          name={`visibleButtonOrNone`}
                           value="BUTTON"
                           as={FormField}
                           id={`ButtonIntarectiveType-${frameIndex}`}
@@ -84,7 +84,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                       <label htmlFor={`NonIntarectiveType-${frameIndex}`}>
                         Ничего
                         <Field
-                          name={`frames[${frameIndex}].visibleButtonOrNone`}
+                          name={`visibleButtonOrNone`}
                           value="NONE"
                           as={FormField}
                           id={`NonIntarectiveType-${frameIndex}`}
@@ -100,7 +100,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                       <div className="row">
                         <div className="input_field">
                           <FormField
-                            name={`frames[${frameIndex}].buttonText`}
+                            name={`buttonText`}
                             labelTitle="Текст"
                             as="textarea"
                             value={values.buttonText}
@@ -109,14 +109,14 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                         </div>
                         <div className='column'>
                           <FormField
-                            name={`frames[${frameIndex}].buttonTextColor`}
+                            name={`buttonTextColor`}
                             labelTitle="Цвет текста"
                             component={ColorPicker}
                             value={values.buttonTextColor}
                             onChange={handleChange}
                           />
                           <FormField
-                            name={`frames[${frameIndex}].buttonBackgroundColor`}
+                            name={`buttonBackgroundColor`}
                             labelTitle="Цвет кнопки"
                             component={ColorPicker}
                             value={values.buttonBackgroundColor}
@@ -126,7 +126,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                       </div>
                       <div className="input_field">
                         <FormField
-                          name={`frames[${frameIndex}].buttonUrl`}
+                          name={`buttonUrl`}
                           labelTitle="Ссылка"
                           type="text"
                           value={values.buttonUrl}
