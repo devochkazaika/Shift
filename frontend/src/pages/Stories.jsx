@@ -19,8 +19,8 @@ const Stories = () => {
   const [success, setSuccess] = useState(true);
   const [loading, setLoading] = useState(false);
   const [storyArray, setStoryArray] = useState([]);
-  const [bankId, setBankId] = useState('tkbbank');
-  const [platform, setPlatform] = useState('WEB');
+  const [bankId, setBankId] = useState('absolutbank');
+  const [platform, setPlatform] = useState('ALL PLATFORMS');
 
   const fetchData = async (bankId, platform) => {
     try {

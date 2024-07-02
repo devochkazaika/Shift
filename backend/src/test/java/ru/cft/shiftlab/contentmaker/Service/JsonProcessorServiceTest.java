@@ -362,11 +362,11 @@ public class JsonProcessorServiceTest {
         String bankId = "test_bank";
         String platform = "WEB";
         String json = objectMapper.writeValueAsString(storyPatchDto);
-        copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json", FILES_SAVE_DIRECTORY+"story_test_bank_web.json");
+        copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json", System.getProperty("user.dir") + "/src/main/resources/static/backend/site/share/htdoc/_files/skins/mobws_story/"+"story_test_bank_web.json");
 
         jsonProcessorService.changeFrameStory(json, bankId, platform,
                 0L,
-                0);
+                "dc430619-a772-4f80-81e5-bc66218ddd0c");
         Map<String, List<StoryPresentation>> resultMap = objectMapper.readValue(new File(FILES_SAVE_DIRECTORY, "story_test_bank_web.json"),
                 new TypeReference<>(){});
         StoryPresentationFrames storyPresentation = resultMap.get("stories").get(0).getStoryPresentationFrames().get(0);
@@ -391,7 +391,7 @@ public class JsonProcessorServiceTest {
                 dirProcess);
 
         method.setAccessible(true);
-        method.invoke(service, "test", "WEB", "1", "0");
+        method.invoke(service, "test", "WEB", "1", "edfb9afb-d795-4979-b7cf-b60923d3f266");
         ObjectNode node = (ObjectNode) objectMapper.readTree(new File(FILES_SAVE_DIRECTORY + "/story_test_web.json"));
         ArrayNode arrayNode = (ArrayNode) node.get("stories").get(1).get("storyFrames");
         Assertions.assertEquals(arrayNode.size(), 1);
@@ -425,7 +425,7 @@ public class JsonProcessorServiceTest {
         String bankId = "test";
         String platform = "WEB";
         String id = "0";
-        String frameId = "0";
+        String frameId = "72f250d4-2fea-4f00-a0b2-3259555ceb81";
 
         File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_tkbbank_web.json");
         File storyDir = new File(FILES_SAVE_DIRECTORY + "/story_test_web.json");

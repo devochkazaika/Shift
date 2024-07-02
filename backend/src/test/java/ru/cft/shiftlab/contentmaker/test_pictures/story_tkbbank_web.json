@@ -28,6 +28,7 @@
     "previewGradient" : "EMPTY",
     "font-size" : null,
     "storyFrames" : [ {
+      "id": "edfb9afb-d795-4979-b7cf-b60923d3f266",
       "title" : "mainText",
       "text" : "Text card",
       "textColor" : "FF0000",
@@ -40,6 +41,7 @@
       "gradient" : "EMPTY"
     },
       {
+        "id": "d5249b7a-a4f6-4a11-b690-22bf3518fcff",
         "title" : "mainText",
         "text" : "Text card",
         "textColor" : "FF0000",
