@@ -67,14 +67,14 @@ export const deleteStory = async (value, platform) => {
   }
 };
 
-export const deleteFrame = async (story, frameId, platform) => {
+export const deleteFrame = async (story, frame, platform) => {
   const toastView = toast(defaultToastMessages.uploadingData, {
     ...defaultToastOptions,
     autoClose: false,
     isLoading: true,
   });
   try {
-    const response = await axios.delete(`/stories/bank/info/delete/frame?bankId=${story.bankId}&platform=${platform}&storyId=${story.id}&frameId=${frameId}`);
+    const response = await axios.delete(`/stories/bank/info/delete/frame?bankId=${story.bankId}&platform=${platform}&storyId=${story.id}&frameId=${frame.id}`);
     toast.update(toastView, {
       ...defaultUpdateToastOptions,
       render: response.message,
@@ -124,7 +124,7 @@ export const updateStory = async (story, jsonStory, platform) => {
   }
 };
 
-export const updateFrame = async (story, platform, frameIndex) => {
+export const updateFrame = async (story, platform, frame, frameIndex) => {
   const toastView = toast(defaultToastMessages.uploadingData, {
     ...defaultToastOptions,
     autoClose: false,

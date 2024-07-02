@@ -167,7 +167,7 @@ public class StoriesController {
      * @param frameId
      * @throws Throwable
      */
-    @DeleteMapping("/bank/info/delete/frame/")
+    @DeleteMapping("/bank/info/delete/frame")
     public void deleteFrame(
             @RequestParam
             @WhiteListValid(message = "bankId must match the allowed")
