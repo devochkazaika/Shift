@@ -1,12 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import StoryFrame from './StoryFrame';
-// import styles from "./StoryFormParts/StoryFormParts.module.scss";
 import {FieldArray, Form, Field, Formik } from 'formik';
 import FormField from "../../FormField";
-// import AlertMessage from './../../ui/AlertMessage/index';
-// import Button from './../../ui/Button/index';
-// import { initialStoryValues } from "../../../utils/constants/initialValues";
-// import styles from "../StoryFormParts/StoryFormParts.module.scss";
 import { gradientOptions } from './../../../utils/constants/gradient';
 import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg';
 import Button from '../.././ui/Button';
@@ -14,10 +9,21 @@ import ColorPicker from './../../ColorPicker/index';
 import { deleteFrame, updateStory } from './../../../api/stories';
 
 const StoryCard = ({ storyIndex, story, platform}) => {
-  // const [success, setSuccess] = React.useState(true)
-  const handleOnSubmit = async (story, frameId, platform) => {
-    deleteFrame(story, frameId, platform)
+   const [frames, setFrames] = useState(story.storyFrames);
+
+  const handleOnSubmit = async (story, frame, platform) => {
+    const success = await deleteFrame(story, frame, platform);
+    if (success) {
+      setFrames(prevFrames => prevFrames.filter(item => item.id !== frame.id));
+    }
   };
+
+  useEffect(() => {
+    if (story && story.storyFrames) {
+      setFrames(story.storyFrames);
+    }
+  }, [story]);
+
   return (
     <div>
       <div>
@@ -27,9 +33,6 @@ const StoryCard = ({ storyIndex, story, platform}) => {
             previewTitle: story.previewTitle,
             previewTitleColor: story.previewTitleColor,
             previewGradient: story.previewGradient,
-          }}
-          onSubmit={(values) => {
-            console.log(values);
           }}
         >
           {({ values, handleChange }) => (
@@ -51,9 +54,9 @@ const StoryCard = ({ storyIndex, story, platform}) => {
                         </div>
                       </div>
                       <FormField
-                          name={`textColor`}
+                          name={`previewTitleColor`}
                           labelTitle={"Цвет заголовка"}
-                          value={values.textColor}
+                          value={values.previewTitleColor}
                           component={ColorPicker}
                           onChange={handleChange}
                         />
@@ -90,7 +93,7 @@ const StoryCard = ({ storyIndex, story, platform}) => {
       <div>
         <h3>Story Frames:</h3>
         <ul>
-          {story.storyFrames.map((value, index) => (
+          {frames.map((value, index) => (
             <li className='listFrame' key={index}>
               <details className="item-card">
                 <summary className="item-card__summary">
@@ -102,13 +105,20 @@ const StoryCard = ({ storyIndex, story, platform}) => {
                             type="button"
                             color="red"
                             icon={<ArrowIcon width="12px" height="12px" />}
-                            handleOnClick={() => handleOnSubmit(story, index, platform)}
+                            handleOnClick={() => handleOnSubmit(story, value, platform)}
                           />
                     </div>
                   </div>
                 </summary>
                 <div className="item-card__content">
-                <StoryFrame key={index} frame={value} frameIndex={index} storyIndex={storyIndex} platform={platform} />
+                <StoryFrame
+                 key={index}
+                 frame={value}
+                 frameIndex={index}
+                 storyIndex={storyIndex}
+                 story={story}
+                 platform={platform} 
+                />
                 </div>
               </details>
             </li>

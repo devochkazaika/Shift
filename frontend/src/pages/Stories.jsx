@@ -11,9 +11,8 @@ import StoryForm from "../components/Stories/StoryForm";
 import AlertMessage from "../components/ui/AlertMessage";
 import Button from "../components/ui/Button";
 import Loader from "../components/ui/Loader/index";
-import fetchData from '../components/Stories/ExistStory/StoryArray'; // Предполагая, что это функция для загрузки данных
-// import StoryCard from "./StoryCard";
 import StoryPanel from "../components/Stories/ExistStory/StoryPanel";
+import axios from "axios";
 
 const Stories = () => {
   const [send, setSend] = useState(false);
@@ -22,6 +21,20 @@ const Stories = () => {
   const [storyArray, setStoryArray] = useState([]);
   const [bankId, setBankId] = useState('tkbbank');
   const [platform, setPlatform] = useState('WEB');
+
+  const fetchData = async (bankId, platform) => {
+    try {
+      const response = await axios.get('/stories/bank/info/getJson/?bankId='+bankId+'&platform='+platform, {
+        headers: {
+        },
+        responseType: 'json'
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      return null;
+    }
+  };
 
   useEffect(() => {
     const fetchDataAsync = async () => {

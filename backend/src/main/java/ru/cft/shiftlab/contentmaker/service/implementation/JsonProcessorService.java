@@ -214,6 +214,13 @@ public class JsonProcessorService implements FileSaverService {
         mapper.writerWithDefaultPrettyPrinter().writeValue(file, resultMap);
     }
 
+    private StoryPresentationFrames getFrameFromStory(StoryPresentation storyPresentation, String id){
+        final StoryPresentationFrames storyPresentationFrames = storyPresentation
+                .getStoryPresentationFrames()
+                .stream().filter(x -> x.getId().equals(UUID.fromString(id)))
+                .findFirst().orElse(null);
+        return storyPresentationFrames;
+    }
     /**
      * Изменение общих параметров истории, а именно previewTitle, previewTitleColor, previewGradient
      * @param storiesRequestDto
@@ -247,14 +254,14 @@ public class JsonProcessorService implements FileSaverService {
      */
     public void changeFrameStory(String storyFramesRequestDt, String bankId, String platform,
                                  Long id,
-                                 Integer frameId) throws IOException {
+                                 String frameId) throws IOException {
         StoryFramesDto story = mapper.readValue(
                 storyFramesRequestDt
                 , StoryFramesDto.class);
 
         List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
         StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
-        final StoryPresentationFrames storyPresentationFrames = storyPresentation.getStoryPresentationFrames().get(frameId);
+        final StoryPresentationFrames storyPresentationFrames = getFrameFromStory(storyPresentation, frameId);
 
         String json = mapper.writeValueAsString(story);
         mapper.readerForUpdating(storyPresentationFrames).readValue(json);
@@ -377,8 +384,8 @@ public class JsonProcessorService implements FileSaverService {
         //Берем все карточки историй
         List<StoryPresentationFrames> frames = story.getStoryPresentationFrames();
         //Получаем UUID нужной истории и удаляем ее
-        uuid = frames.get(Integer.parseInt(frameId)).getId();
-        frames.remove(Integer.parseInt(frameId));
+        uuid = UUID.fromString(frameId);
+        frames.removeIf(x -> x.getId().equals(UUID.fromString(frameId)));
 
         //Записываем в JSON
         putStoryToJson(list, bankId, platform);
