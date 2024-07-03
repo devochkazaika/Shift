@@ -366,7 +366,8 @@ public class JsonProcessorServiceTest {
 
         jsonProcessorService.changeFrameStory(json, bankId, platform,
                 0L,
-                "dc430619-a772-4f80-81e5-bc66218ddd0c");
+                "dc430619-a772-4f80-81e5-bc66218ddd0c",
+                null);
         Map<String, List<StoryPresentation>> resultMap = objectMapper.readValue(new File(FILES_SAVE_DIRECTORY, "story_test_bank_web.json"),
                 new TypeReference<>(){});
         StoryPresentationFrames storyPresentation = resultMap.get("stories").get(0).getStoryPresentationFrames().get(0);
