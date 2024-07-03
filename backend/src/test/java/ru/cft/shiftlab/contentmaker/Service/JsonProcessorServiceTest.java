@@ -338,7 +338,7 @@ public class JsonProcessorServiceTest {
         String json = objectMapper.writeValueAsString(storyPatchDto);
         copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json", FILES_SAVE_DIRECTORY+"story_test_bank_web.json");
 //        File file = new File(FILES_TEST_DIRECTORY+"story_test_bank_web.json");
-        jsonProcessorService.changeStory(json, bankId, platform, 0L);
+        jsonProcessorService.changeStory(json, null, bankId, platform, 0L);
         Map<String, List<StoryPresentation>> resultMap = objectMapper.readValue(new File(FILES_SAVE_DIRECTORY, "story_test_bank_web.json"),
                 new TypeReference<>(){});
         StoryPresentation storyPresentation = resultMap.get("stories").get(0);

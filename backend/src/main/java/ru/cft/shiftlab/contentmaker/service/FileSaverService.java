@@ -49,7 +49,7 @@ public interface FileSaverService {
     }
     public HttpEntity<List<StoryPresentation>> getFilePlatformJson(String bankId, String platform) throws IOException;
 
-    void changeStory(String bankId, String storiesRequestDto, String platform, Long id) throws IOException;
+    void changeStory(String storiesRequestDto, MultipartFile file, String bankId, String platform, Long id) throws IOException;
     void changeFrameStory(String storyFramesRequestDt,
                           String bankId,
                           String platform,

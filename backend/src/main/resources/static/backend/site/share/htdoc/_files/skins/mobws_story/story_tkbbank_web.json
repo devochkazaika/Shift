@@ -1,3 +1,23 @@
 {
-  "stories" : [ ]
+  "stories" : [ {
+    "id" : 1,
+    "bankId" : "tkbbank",
+    "previewTitle" : "nasady",
+    "previewTitleColor" : "previewTitleColor",
+    "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/1_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "e7c8cdb4-8032-4c82-a754-46b014cbadb1",
+      "title" : "asdasdasd",
+      "text" : "sadasdasd",
+      "textColor" : "#000",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/1_e7c8cdb4-8032-4c82-a754-46b014cbadb1.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  } ]
 }

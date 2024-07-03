@@ -209,8 +209,10 @@ public class StoriesController {
                                     schema = @Schema(type = "string", format = "string"),
                                     example = "0")
                             @RequestParam(name = "id")
-                            Long id) throws IOException {
-        storiesService.changeStory(storiesRequestDto, bankId, platform, id);
+                            Long id,
+                            @RequestPart(value = "image",required = false)
+                            MultipartFile file) throws IOException {
+        storiesService.changeStory(storiesRequestDto, file, bankId, platform, id);
     }
 
     /**

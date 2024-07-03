@@ -113,7 +113,6 @@ public class JsonProcessorService implements FileSaverService {
             String platformType = storiesRequestDto.getPlatformType();
 
             String picturesSaveDirectory = FILES_SAVE_DIRECTORY+bankId+"/"+platformType+"/";
-            System.out.println(picturesSaveDirectory);
             //Создание пути для картинок, если его еще нет
             dirProcess.createFolders(picturesSaveDirectory);
             //Чтение сторис, которые уже находятся в хранилище
@@ -229,10 +228,19 @@ public class JsonProcessorService implements FileSaverService {
      * @param id
      * @throws IOException
      */
-    public void changeStory(String storiesRequestDto, String bankId, String platform, Long id) throws IOException {
+    public void changeStory(String storiesRequestDto, MultipartFile file, String bankId, String platform, Long id) throws IOException {
         StoryPatchDto story = mapper.readValue(
                 storiesRequestDto
                 , StoryPatchDto.class);
+
+        //Меняем картинку
+        if (file != null) {
+            multipartFileToImageConverter.parsePicture(
+                    new ImageContainer(file),
+                    FILES_SAVE_DIRECTORY + bankId + "/" + platform + "/",
+                    id);
+        }
+
         //Берем нужную историю из списка
         List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
         final StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
