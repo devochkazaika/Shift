@@ -262,10 +262,20 @@ public class JsonProcessorService implements FileSaverService {
      */
     public void changeFrameStory(String storyFramesRequestDt, String bankId, String platform,
                                  Long id,
-                                 String frameId) throws IOException {
+                                 String frameId,
+                                 MultipartFile file) throws IOException {
         StoryFramesDto story = mapper.readValue(
                 storyFramesRequestDt
                 , StoryFramesDto.class);
+
+        //Меняем картинку
+        if (file != null) {
+            multipartFileToImageConverter.parsePicture(
+                    new ImageContainer(file),
+                    FILES_SAVE_DIRECTORY + bankId + "/" + platform + "/",
+                    id,
+                    UUID.fromString(frameId));
+        }
 
         List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
         StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);

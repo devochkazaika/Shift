@@ -248,11 +248,15 @@ public class StoriesController {
                                      schema = @Schema(type = "string", format = "string"),
                                      example = "0")
                             @RequestParam(name = "frameId")
-                            String frameId) throws IOException {
+                            String frameId,
+                            @RequestPart(value = "image",required = false)
+                            MultipartFile file
+                            ) throws IOException {
         storiesService.changeFrameStory(storiesRequestDto,
                 bankId,
                 platform,
                 id,
-                frameId);
+                frameId,
+                file);
     }
 }
