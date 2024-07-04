@@ -232,18 +232,18 @@ public class JsonProcessorService implements FileSaverService {
         StoryPatchDto story = mapper.readValue(
                 storiesRequestDto
                 , StoryPatchDto.class);
-
-        //Меняем картинку
-        if (file != null) {
-            multipartFileToImageConverter.parsePicture(
-                    new ImageContainer(file),
-                    FILES_SAVE_DIRECTORY + bankId + "/" + platform + "/",
-                    id);
-        }
-
         //Берем нужную историю из списка
         List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
         final StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
+
+        //Меняем картинку
+        if (file != null) {
+            String pictureUrl = multipartFileToImageConverter.parsePicture(
+                    new ImageContainer(file),
+                    FILES_SAVE_DIRECTORY + bankId + "/" + platform + "/",
+                    id);
+            storyPresentation.setPreviewUrl(pictureUrl);
+        }
 
         //обновляем значение и записываем в JSON
         String json = mapper.writeValueAsString(story);
