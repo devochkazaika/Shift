@@ -9,9 +9,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.mock.web.MockMultipartFile;
@@ -24,6 +27,7 @@ import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 import ru.cft.shiftlab.contentmaker.util.DirProcess;
+import ru.cft.shiftlab.contentmaker.util.Image.ImageContainer;
 import ru.cft.shiftlab.contentmaker.util.Image.ImageNameGenerator;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
 import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
@@ -38,8 +42,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.mockito.ArgumentMatchers.*;
 import static ru.cft.shiftlab.contentmaker.util.Constants.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,7 +64,14 @@ public class JsonProcessorServiceTest {
                         .FAIL_ON_UNKNOWN_PROPERTIES,
                 false);
     }
-
+    @AfterEach
+    public void deleteFolderBackend() throws IOException {
+        dirProcess.deleteFolders(String.valueOf(Paths.get("backend")));
+    }
+    @BeforeEach
+    public void createFolders() throws IOException {
+        dirProcess.createFolders(FILES_SAVE_DIRECTORY);
+    }
     private final JsonProcessorService jsonProcessorService = new JsonProcessorService(
             multipartFileToImageConverter,
             dtoToEntityConverter,
@@ -257,6 +270,7 @@ public class JsonProcessorServiceTest {
                 .buttonUrl("https://example.com")
                 .gradient("EMPTY")
                 .build();
+
         String storyString = objectMapper.writeValueAsString(storyFramesDto);
         dirProcess.createFolders(FILES_SAVE_DIRECTORY+bankId+"/WEB");
         copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json",
@@ -266,6 +280,19 @@ public class JsonProcessorServiceTest {
         FileInputStream input = new FileInputStream(file);
         MultipartFile multipartFile = new MockMultipartFile("file",
                 file.getName(), "text/plain", IOUtils.toByteArray(input));
+
+        //Мок для картинок
+        ImageContainer imageContainer = Mockito.mock(ImageContainer.class);
+        MultipartFileToImageConverter multipartFileToImageConverter = Mockito.mock(MultipartFileToImageConverter.class);
+
+        Mockito.lenient().when(multipartFileToImageConverter.parsePicture(
+                any(ImageContainer.class),
+                anyString(),
+                anyLong(),
+                any(UUID.class)
+        )).thenReturn("path");
+
+
         jsonProcessorService.addFrame(storyString, multipartFile, bankId, platform, id);
 
         var mapStory = storyToMap(FILES_SAVE_DIRECTORY + "story_test_bank_web.json");
@@ -281,7 +308,45 @@ public class JsonProcessorServiceTest {
                 () -> Assertions.assertEquals(frame.getButtonUrl(), storyFramesDto.getButtonUrl()),
                 () -> Assertions.assertEquals(frame.getGradient(), storyFramesDto.getGradient())
         );
-        dirProcess.deleteFolders(FILES_SAVE_DIRECTORY);
+    }
+
+    @Test
+    public void add_frame_FILE_test() throws IOException {
+        String bankId = "test_bank";
+        String platform = "WEB";
+        Long id = 0L;
+        StoryFramesDto storyFramesDto = StoryFramesDto.builder()
+                .title("Sample Title")
+                .text("Sample text for the story.")
+                .textColor("FF0000")
+                .visibleButtonOrNone("BUTTON")
+                .buttonText("Click Here")
+                .buttonTextColor("FFFFFF")
+                .buttonBackgroundColor("0000FF")
+                .buttonUrl("https://example.com")
+                .gradient("EMPTY")
+                .build();
+
+        String storyString = objectMapper.writeValueAsString(storyFramesDto);
+        dirProcess.createFolders(FILES_SAVE_DIRECTORY+bankId+"/WEB");
+        copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json",
+                FILES_SAVE_DIRECTORY + "story_test_bank_web.json");
+
+        File file = new File(FILES_TEST_DIRECTORY+"sample.png");
+        FileInputStream input = new FileInputStream(file);
+        MultipartFile multipartFile = new MockMultipartFile("file",
+                file.getName(), "text/plain", IOUtils.toByteArray(input));
+
+        jsonProcessorService.addFrame(storyString, multipartFile, bankId, platform, id);
+
+        var mapStory = storyToMap(FILES_SAVE_DIRECTORY + "story_test_bank_web.json");
+        var frame = mapStory.get("stories").get(0).getStoryPresentationFrames().get(mapStory.get("stories").get(0).getStoryPresentationFrames().size()-1);
+
+        File[] files = new File(FILES_SAVE_DIRECTORY+bankId+"/WEB").listFiles();
+        Set<String> pict = Arrays.stream(files).map(x -> x.getName()).collect(Collectors.toSet());
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(pict.contains(frame.getPictureUrl().split("/WEB/")[1]), true)
+        );
     }
 
     private Map<String, List<StoryPresentation>> storyToMap(String path) throws IOException {
