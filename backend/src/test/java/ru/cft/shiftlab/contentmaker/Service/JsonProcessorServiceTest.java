@@ -269,7 +269,19 @@ public class JsonProcessorServiceTest {
         jsonProcessorService.addFrame(storyString, multipartFile, bankId, platform, id);
 
         var mapStory = storyToMap(FILES_SAVE_DIRECTORY + "story_test_bank_web.json");
-        System.out.println(mapStory);
+        var frame = mapStory.get("stories").get(0).getStoryPresentationFrames().get(mapStory.get("stories").get(0).getStoryPresentationFrames().size()-1);
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(frame.getTitle(), storyFramesDto.getTitle()),
+                () -> Assertions.assertEquals(frame.getText(), storyFramesDto.getText()),
+                () -> Assertions.assertEquals(frame.getTextColor(), storyFramesDto.getTextColor()),
+                () -> Assertions.assertEquals(frame.getVisibleButtonOrNone(), storyFramesDto.getVisibleButtonOrNone()),
+                () -> Assertions.assertEquals(frame.getButtonText(), storyFramesDto.getButtonText()),
+                () -> Assertions.assertEquals(frame.getButtonTextColor(), storyFramesDto.getButtonTextColor()),
+                () -> Assertions.assertEquals(frame.getButtonBackgroundColor(), storyFramesDto.getButtonBackgroundColor()),
+                () -> Assertions.assertEquals(frame.getButtonUrl(), storyFramesDto.getButtonUrl()),
+                () -> Assertions.assertEquals(frame.getGradient(), storyFramesDto.getGradient())
+        );
+        dirProcess.deleteFolders(FILES_SAVE_DIRECTORY);
     }
 
     private Map<String, List<StoryPresentation>> storyToMap(String path) throws IOException {
