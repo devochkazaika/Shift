@@ -57,4 +57,7 @@ public interface FileSaverService {
                           String frameId,
                           MultipartFile file) throws IOException;
     ResponseEntity deleteStoryFrame(String bankId, String platform, String id, String frameId) throws Throwable;
+
+    void addFrame(String storyFramesDto, MultipartFile file,
+                  String bankId, String platform, Long id) throws IOException;
 }

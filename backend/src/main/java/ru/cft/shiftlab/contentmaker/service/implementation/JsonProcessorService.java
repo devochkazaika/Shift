@@ -184,6 +184,29 @@ public class JsonProcessorService implements FileSaverService {
         }
     }
 
+    public void addFrame(String storyFramesDto, MultipartFile file,
+                          String bankId, String platform, Long id) throws IOException {
+        StoryPresentationFrames frame = mapper.readValue(
+                storyFramesDto
+                , StoryPresentationFrames.class);
+
+        //добавление картинки в JSON
+        frame.setId(UUID.randomUUID());
+        String presentationPictureUrl = multipartFileToImageConverter.parsePicture(
+                new ImageContainer(file),
+                FILES_SAVE_DIRECTORY+bankId+"/"+platform+"/",
+                id,
+                frame.getId());
+        frame.setPictureUrl(presentationPictureUrl);
+
+        //Изменение JSON
+        final List<StoryPresentation> listStory = getStoryList(bankId, platform);
+        final StoryPresentation storyPresentation = getStoryModel(listStory, id);
+        final ArrayList<StoryPresentationFrames> listFrames = storyPresentation.getStoryPresentationFrames();
+        listFrames.add(frame);
+        putStoryToJson(listStory, bankId, platform);
+    }
+
     /**
      * Метод возвращает все истории в виде списка
      */

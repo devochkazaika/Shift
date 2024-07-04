@@ -66,6 +66,26 @@ public class StoriesController {
 
         storiesService.saveFiles(storiesRequestDto, previewImage, images);
     }
+
+    @PostMapping(path = "/add/frame", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void addFrame(
+            @RequestParam(value = "json")
+            String frameRequestDto,
+
+            @RequestPart(value = "image",required = true)
+            MultipartFile image,
+
+            @RequestParam(value = "bankId")
+            String bankId,
+
+            @RequestParam(value = "platform")
+            String platform,
+
+            @RequestParam(value = "id")
+            Long id) throws IOException {
+        storiesService.addFrame(frameRequestDto, image, bankId, platform, id);
+    }
+
     /**
      * Метод, который обрабатывает GET-запрос на чтение историй.
      * Основан на формате FormData

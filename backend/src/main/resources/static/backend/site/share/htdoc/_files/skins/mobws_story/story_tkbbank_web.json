@@ -18,6 +18,18 @@
       "buttonBackgroundColor" : "0000FF",
       "buttonUrl" : "https://example.com",
       "gradient" : "EMPTY"
+    }, {
+      "id" : "f911b1cc-5915-4b93-b700-cee4983bc969",
+      "title" : "Sample Title",
+      "text" : "Sample text for the story.",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/1_f911b1cc-5915-4b93-b700-cee4983bc969.jpg",
+      "visibleButtonOrNone" : "BUTTON",
+      "buttonText" : "Click Here",
+      "buttonTextColor" : "FFFFFF",
+      "buttonBackgroundColor" : "0000FF",
+      "buttonUrl" : "https://example.com",
+      "gradient" : "EMPTY"
     } ]
   } ]
 }
