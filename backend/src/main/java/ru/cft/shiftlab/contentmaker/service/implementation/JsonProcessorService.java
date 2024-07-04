@@ -184,14 +184,14 @@ public class JsonProcessorService implements FileSaverService {
         }
     }
 
-    public void addFrame(String storyFramesDto, MultipartFile file,
+    public void addFrame(String frameDto, MultipartFile file,
                           String bankId, String platform, Long id) throws IOException {
         StoryPresentationFrames frame = mapper.readValue(
-                storyFramesDto
+                frameDto
                 , StoryPresentationFrames.class);
+        frame.setId(UUID.randomUUID());
 
         //добавление картинки в JSON
-        frame.setId(UUID.randomUUID());
         String presentationPictureUrl = multipartFileToImageConverter.parsePicture(
                 new ImageContainer(file),
                 FILES_SAVE_DIRECTORY+bankId+"/"+platform+"/",

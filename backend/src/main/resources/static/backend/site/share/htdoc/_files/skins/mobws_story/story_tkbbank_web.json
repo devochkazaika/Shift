@@ -30,6 +30,29 @@
       "buttonBackgroundColor" : "0000FF",
       "buttonUrl" : "https://example.com",
       "gradient" : "EMPTY"
+    }, {
+      "id" : "36acc950-50d7-40bb-baf9-3f5e070fe86f",
+      "title" : "Sample Title",
+      "text" : "Sample text for the story.",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/1_36acc950-50d7-40bb-baf9-3f5e070fe86f.jpg",
+      "visibleButtonOrNone" : "BUTTON",
+      "buttonText" : "Click Here",
+      "buttonTextColor" : "FFFFFF",
+      "buttonBackgroundColor" : "0000FF",
+      "buttonUrl" : "https://example.com",
+      "gradient" : "EMPTY"
+    }, {
+      "id" : "b2fdd621-807c-4c9a-8d90-9d72c458dd35",
+      "title" : "Sample Title",
+      "text" : "Sample text for the story.",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/1_b2fdd621-807c-4c9a-8d90-9d72c458dd35.jpg",
+      "visibleButtonOrNone" : "BUTTON",
+      "buttonText" : "Click Here",
+      "buttonTextColor" : "FFFFFF",
+      "buttonBackgroundColor" : "0000FF",
+      "buttonUrl" : "https://example.com",
+      "gradient" : "EMPTY"
     } ]
   } ]
 }

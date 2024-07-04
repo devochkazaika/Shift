@@ -241,6 +241,47 @@ public class JsonProcessorServiceTest {
         }
     }
 
+    @Test
+    public void add_frame_JSON_test() throws IOException {
+        String bankId = "test_bank";
+        String platform = "WEB";
+        Long id = 0L;
+        StoryFramesDto storyFramesDto = StoryFramesDto.builder()
+                .title("Sample Title")
+                .text("Sample text for the story.")
+                .textColor("FF0000")
+                .visibleButtonOrNone("BUTTON")
+                .buttonText("Click Here")
+                .buttonTextColor("FFFFFF")
+                .buttonBackgroundColor("0000FF")
+                .buttonUrl("https://example.com")
+                .gradient("EMPTY")
+                .build();
+        String storyString = objectMapper.writeValueAsString(storyFramesDto);
+        dirProcess.createFolders(FILES_SAVE_DIRECTORY+bankId+"/WEB");
+        copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json",
+                FILES_SAVE_DIRECTORY + "story_test_bank_web.json");
+
+        File file = new File(FILES_TEST_DIRECTORY+"sample.png");
+        FileInputStream input = new FileInputStream(file);
+        MultipartFile multipartFile = new MockMultipartFile("file",
+                file.getName(), "text/plain", IOUtils.toByteArray(input));
+        jsonProcessorService.addFrame(storyString, multipartFile, bankId, platform, id);
+
+        var mapStory = storyToMap(FILES_SAVE_DIRECTORY + "story_test_bank_web.json");
+        System.out.println(mapStory);
+    }
+
+    private Map<String, List<StoryPresentation>> storyToMap(String path) throws IOException {
+        StringBuilder jsonStr = new StringBuilder();
+        Files.readAllLines(new File(path).toPath()).forEach(jsonStr::append);
+        Map<String, List<StoryPresentation>> map = objectMapper.readValue(
+                jsonStr.toString(),
+                new TypeReference<Map<String, List<StoryPresentation>>>() {}
+        );
+        return map;
+    }
+
     private int getCountFilesInDir(StoriesRequestDto storiesRequestDto) {
         File f = new File(
                 FILES_SAVE_DIRECTORY +

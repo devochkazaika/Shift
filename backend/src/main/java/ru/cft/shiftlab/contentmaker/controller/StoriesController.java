@@ -68,6 +68,10 @@ public class StoriesController {
     }
 
     @PostMapping(path = "/add/frame", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Карточка добавлена на сервер.")
+    })
+    @ResponseStatus(HttpStatus.CREATED)
     public void addFrame(
             @RequestParam(value = "json")
             String frameRequestDto,
@@ -76,9 +80,17 @@ public class StoriesController {
             MultipartFile image,
 
             @RequestParam(value = "bankId")
+            @WhiteListValid(message = "bankId must match the allowed")
+            @Parameter(description = "Название банка",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "tkkbank")
             String bankId,
 
             @RequestParam(value = "platform")
+            @PlatformValid
+            @Parameter(description = "Тип платформы",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "WEB")
             String platform,
 
             @RequestParam(value = "id")
