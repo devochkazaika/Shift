@@ -268,22 +268,23 @@ public class JsonProcessorService implements FileSaverService {
                 storyFramesRequestDt
                 , StoryFramesDto.class);
 
-        //Меняем картинку
-        if (file != null) {
-            multipartFileToImageConverter.parsePicture(
-                    new ImageContainer(file),
-                    FILES_SAVE_DIRECTORY + bankId + "/" + platform + "/",
-                    id,
-                    UUID.fromString(frameId));
-        }
-
         List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
         StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
         final StoryPresentationFrames storyPresentationFrames = getFrameFromStory(storyPresentation, frameId);
 
+        //Меняем картинку
+        if (file != null) {
+            String pictureUrl = multipartFileToImageConverter.parsePicture(
+                    new ImageContainer(file),
+                    FILES_SAVE_DIRECTORY + bankId + "/" + platform + "/",
+                    id,
+                    UUID.fromString(frameId));
+            storyPresentationFrames.setPictureUrl(pictureUrl);
+        }
+
+        //обновляем значение и записываем в JSON
         String json = mapper.writeValueAsString(story);
         mapper.readerForUpdating(storyPresentationFrames).readValue(json);
-
         putStoryToJson(storyPresentationList, bankId, platform);
     }
 

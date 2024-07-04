@@ -8,16 +8,16 @@
     "previewGradient" : "HALF",
     "storyFrames" : [ {
       "id" : "6656720f-71a7-4e22-ac84-1dc9372e3b28",
-      "title" : "asfasfasf",
-      "text" : "asfasfasf",
-      "textColor" : "#000",
+      "title" : "Sample Title",
+      "text" : "Sample text for the story.",
+      "textColor" : "FF0000",
       "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/1_6656720f-71a7-4e22-ac84-1dc9372e3b28.jpg",
       "visibleButtonOrNone" : "BUTTON",
-      "buttonText" : "asdasd",
-      "buttonTextColor" : "#000",
-      "buttonBackgroundColor" : "#da1f1fff",
-      "buttonUrl" : "sadasd",
-      "gradient" : "FULL"
+      "buttonText" : "Click Here",
+      "buttonTextColor" : "FFFFFF",
+      "buttonBackgroundColor" : "0000FF",
+      "buttonUrl" : "https://example.com",
+      "gradient" : "EMPTY"
     } ]
   } ]
 }
