@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { FieldArray, Form, Formik, Field } from 'formik';
 import FormField from "../../FormField";
 import Button from '../.././ui/Button';
@@ -6,11 +6,32 @@ import ColorPicker from './../../ColorPicker/index';
 import { gradientOptions } from './../../../utils/constants/gradient';
 import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg';
 import { updateFrame } from '../../../api/stories';
+import axios from 'axios';
+import UploadImage from './../../UploadImage/index';
 
 const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
   const handleOnSubmit = async (values, platform, frame, frameIndex) => {
     updateFrame(values, platform, frame, frameIndex);
   };
+  const [initialImage, setInitialImage] = useState(null);
+  const [imageLoadad, setImageLoadad] = useState(false);
+  useEffect(() => {
+    //получаем картинку
+    const fetchImage = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080" + story.previewUrl, { responseType: 'arraybuffer' });
+        const blob = new Blob([response.data], { type: response.headers['content-type'] });
+        const file = new File([blob], "initial_image.jpg", { type: blob.type });
+        setInitialImage(file);
+      } catch (error) {
+        console.error('Error fetching the image:', error);
+      }
+    };
+    if (!imageLoadad){
+      fetchImage();
+      setImageLoadad(true);
+    }
+  })
 
   return (
     <div>
@@ -25,7 +46,8 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
           buttonText: frame.buttonText,
           buttonTextColor: frame.buttonTextColor,
           buttonBackgroundColor: frame.buttonBackgroundColor,
-          buttonUrl: frame.buttonUrl
+          buttonUrl: frame.buttonUrl,
+          pictureUrl: initialImage
         }}
         onSubmit={(values) => handleOnSubmit(values, platform, frame, frameIndex)}
       >
@@ -136,9 +158,13 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                     </>
                   )}
                   <div className='item-card__summary'>
-                    <img className='pict' src={`http://localhost:8080${frame.pictureUrl}`} alt="Story Frame" />
+                    <div className="input_field">
+                      <FormField
+                        name={`pictureUrl`}
+                        component={UploadImage}
+                      />
+                      </div>
                     <div className='item-card__button--change'>
-                      {console.log(frame.id)}
                       <Button
                         handleOnClick={() => handleOnSubmit(story, platform, values, frame.id)}
                         text="Изменить"

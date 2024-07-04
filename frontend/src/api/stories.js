@@ -103,6 +103,8 @@ export const updateStory = async (story, jsonStory, platform) => {
   form.append("platform", platform);
   form.append("id", story.id);
   form.append("bankId", story.bankId);
+  form.append("image", jsonStory.pictureUrl);
+  {console.log(jsonStory)}
   try {
     const response = await axios.patch(`/stories/bank/info/change`, form, {
       headers: { "Content-Type": "multipart/form-data" },

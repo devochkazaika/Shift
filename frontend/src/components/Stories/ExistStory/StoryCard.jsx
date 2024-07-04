@@ -7,18 +7,38 @@ import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg'
 import Button from '../.././ui/Button';
 import ColorPicker from './../../ColorPicker/index';
 import { deleteFrame, updateStory } from './../../../api/stories';
+import UploadImage from './../../UploadImage/index';
+// import axios from 'axios';
+import axios  from 'axios';
 
 const StoryCard = ({ storyIndex, story, platform}) => {
-   const [frames, setFrames] = useState(story.storyFrames);
-
+  const [frames, setFrames] = useState(story.storyFrames);
+  // const [img, setImg] = useState(<img name={`pictureUrl`} src={"http://localhost:8080" + story.previewUrl} alt="Story Frame" style={{ width: "100%" }} />);
   const handleOnSubmit = async (story, frame, platform) => {
     const success = await deleteFrame(story, frame, platform);
     if (success) {
       setFrames(prevFrames => prevFrames.filter(item => item.id !== frame.id));
     }
   };
-
+  const [imageLoadad, setImageLoadad] = useState(false);
+  const [initialImage, setInitialImage] = useState(null);
   useEffect(() => {
+    //получаем картинку
+    const fetchImage = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080" + story.previewUrl, { responseType: 'arraybuffer' });
+        const blob = new Blob([response.data], { type: response.headers['content-type'] });
+        const file = new File([blob], "initial_image.jpg", { type: blob.type });
+        setInitialImage(file);
+      } catch (error) {
+        console.error('Error fetching the image:', error);
+      }
+    };
+    if (!imageLoadad){
+      fetchImage();
+      setImageLoadad(true);
+    }
+    //получаем карточки
     if (story && story.storyFrames) {
       setFrames(story.storyFrames);
     }
@@ -33,6 +53,7 @@ const StoryCard = ({ storyIndex, story, platform}) => {
             previewTitle: story.previewTitle,
             previewTitleColor: story.previewTitleColor,
             previewGradient: story.previewGradient,
+            pictureUrl: initialImage
           }}
         >
           {({ values, handleChange }) => (
@@ -73,8 +94,14 @@ const StoryCard = ({ storyIndex, story, platform}) => {
                         </div>
                       </div>
                     </div>
-                    <div style={{width: "30%", marginLeft: "auto", float: "right" }}> {/* Правая часть контейнера с картинкой */}
-                      <img src={"http://localhost:8080" + story.previewUrl} alt="Story Frame" style={{ width: "100%" }} />
+                    <div style={{width: "30%", marginLeft: "auto", float: "right" }}>
+                      <div className="input_field">
+                      <FormField
+                        name={`pictureUrl`}
+                        component={UploadImage}
+                      />
+                      </div>
+                      {/* {console.log(values)} */}
                       <Button
                         handleOnClick={() => updateStory(story, values, platform)}
                         text="Изменить"
