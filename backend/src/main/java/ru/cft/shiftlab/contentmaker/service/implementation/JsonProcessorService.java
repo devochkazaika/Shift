@@ -217,7 +217,9 @@ public class JsonProcessorService implements FileSaverService {
         final StoryPresentationFrames storyPresentationFrames = storyPresentation
                 .getStoryPresentationFrames()
                 .stream().filter(x -> x.getId().equals(UUID.fromString(id)))
-                .findFirst().orElse(null);
+                .findFirst()
+                .orElseThrow(() ->
+                    new IllegalArgumentException(String.format("Could not find frame with id = %s", id)));
         return storyPresentationFrames;
     }
     /**

@@ -14,12 +14,12 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
     updateFrame(values, platform, frame, frameIndex);
   };
   const [initialImage, setInitialImage] = useState(null);
-  const [imageLoadad, setImageLoadad] = useState(false);
+  const [imageLoadad, setImageLoaded] = useState(false);
   useEffect(() => {
     //получаем картинку
     const fetchImage = async () => {
       try {
-        const response = await axios.get("http://localhost:8080" + story.previewUrl, { responseType: 'arraybuffer' });
+        const response = await axios.get("http://localhost:8080" + frame.pictureUrl, { responseType: 'arraybuffer' });
         const blob = new Blob([response.data], { type: response.headers['content-type'] });
         const file = new File([blob], "initial_image.jpg", { type: blob.type });
         setInitialImage(file);
@@ -29,9 +29,9 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
     };
     if (!imageLoadad){
       fetchImage();
-      setImageLoadad(true);
+      setImageLoaded(true);
     }
-  })
+  }, [imageLoadad, frame.pictureUrl])
 
   return (
     <div>
@@ -47,7 +47,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
           buttonTextColor: frame.buttonTextColor,
           buttonBackgroundColor: frame.buttonBackgroundColor,
           buttonUrl: frame.buttonUrl,
-          pictureUrl: initialImage
+          pictureFrame: initialImage
         }}
         onSubmit={(values) => handleOnSubmit(values, platform, frame, frameIndex)}
       >
@@ -160,7 +160,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                   <div className='item-card__summary'>
                     <div className="input_field">
                       <FormField
-                        name={`pictureUrl`}
+                        name={`pictureFrame`}
                         component={UploadImage}
                       />
                       </div>

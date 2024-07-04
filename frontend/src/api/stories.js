@@ -137,6 +137,7 @@ export const updateFrame = async (story, platform, frame, frameIndex) => {
   form.append("id", story.id);
   form.append("bankId", story.bankId);
   form.append("frameId", frameIndex)
+  form.append("image", frame.pictureFrame)
   try {
     const response = await axios.patch(`/stories/bank/info/change/frame`, form, {
       headers: { "Content-Type": "multipart/form-data" },
