@@ -284,4 +284,46 @@ public class StoriesControllerTest {
 
         andReturn.andExpect(status().isCreated());
     }
+
+    @Test
+    public void add_frame_to_story_bad_validation_bank_test() throws Exception {
+        String bank = "tkbbasdank";
+        String platform = "WEB";
+        String path = FILES_TEST_DIRECTORY + "sample.png";
+        File img =  new File(
+                FILES_TEST_DIRECTORY,
+                "sample.png");
+
+        StoryFramesDto requestFrame = StoryFramesDto.builder()
+                .title("Sample Title")
+                .text("Sample text for the story.")
+                .textColor("FF0000")
+                .visibleButtonOrNone("BUTTON")
+                .buttonText("Click Here")
+                .buttonTextColor("FFFFFF")
+                .buttonBackgroundColor("0000FF")
+                .buttonUrl("https://example.com")
+                .gradient("EMPTY")
+                .build();
+        FileInputStream input = new FileInputStream(img);
+        Assertions.assertNotNull(input);
+        MockMultipartFile image = new MockMultipartFile(
+                "image",
+                path,
+                "image/png",
+                input);
+        doAnswer(i -> i).when(jsonProcessorService).addFrame(asJsonString(requestFrame), image,
+                bank, platform, 0L);
+        ResultActions andReturn = mockMvc.perform(MockMvcRequestBuilders
+                .multipart("/stories/add/frame")
+                .file(image)
+                .param("bankId", bank)
+                .param("platform", platform)
+                .param("id", String.valueOf(0))
+                .param("json", asJsonString(requestFrame))
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+        );
+
+        andReturn.andExpect(status().is(400));
+    }
 }
