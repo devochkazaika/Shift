@@ -103,7 +103,7 @@ export const updateStory = async (story, jsonStory, platform) => {
   form.append("platform", platform);
   form.append("id", story.id);
   form.append("bankId", story.bankId);
-  form.append("image", jsonStory.pictureUrl);
+  form.append("image", jsonStory.previewUrl);
   try {
     const response = await axios.patch(`/stories/bank/info/change`, form, {
       headers: { "Content-Type": "multipart/form-data" },
@@ -147,6 +147,49 @@ export const updateFrame = async (story, platform, frame, frameIndex) => {
       render: response.message,
     });
     return true;
+  } catch (error) {
+    if (error.response.status === 500) {
+      toast.update(toastView, {
+        ...defaultUpdateToastOptions,
+        render: defaultToastMessages.connectionError,
+        type: "warning"
+      });
+      return false;
+    }
+  }
+};
+
+
+export const addFrame = async (story, values, platform) => {
+  const toastView = toast(defaultToastMessages.uploadingData, {
+    ...defaultToastOptions,
+    autoClose: false,
+    isLoading: true,
+  });
+  const form = new FormData();
+  form.append("json", JSON.stringify({
+    title: values.title,
+    text: values.text,
+    visibleButtonOrNone: values.visibleButtonOrNone,
+    gradient: values.gradient,
+    textColor: values.textColor,
+    buttonText: values.buttonText,
+    buttonTextColor: values.buttonTextColor,
+    buttonBackgroundColor: values.buttonBackgroundColor,
+    buttonUrl: values.buttonUrl
+  }
+  ));
+  form.append("platform", platform);
+  form.append("id", story.id);
+  form.append("bankId", story.bankId);
+  form.append("image", values.pictureUrl);
+  try {
+    const response = await axios.post(`/stories/add/frame`, form);
+    toast.update(toastView, {
+      ...defaultUpdateToastOptions,
+      render: response.message,
+    });
+    return response;
   } catch (error) {
     if (error.response.status === 500) {
       toast.update(toastView, {

@@ -57,6 +57,14 @@
   cursor: pointer;
 }
 
+.item-card__add {
+  border: 2px dashed;
+  background-color: #e9e7e7;
+  height: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
 .item-card__icon {
   width: 40px;
   height: 40px;

@@ -11,7 +11,7 @@ const StoryPanel = ({ storyArray, platform }) => {
   const [stories, setStories] = useState(storyArray);
   //Для обновления после удаления
   useEffect(() => {
-    if (storyArray && storyArray.length) {
+    if (storyArray) {
       setStories(storyArray);
     }
   }, [storyArray]);

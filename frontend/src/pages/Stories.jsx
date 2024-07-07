@@ -40,7 +40,11 @@ const Stories = () => {
     const fetchDataAsync = async () => {
       try {
         const data = await fetchData(bankId, platform);
-        setStoryArray(data);
+        if (data == null) {
+          setStoryArray([]);
+        } else {
+          setStoryArray(data);
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -74,6 +78,7 @@ const Stories = () => {
 
   return (
     <>
+      {console.log(storyArray)}
       <StoryPanel storyArray={storyArray} platform={platform} />
       {loading && <Loader />}
       <h1>Добавить Story</h1>

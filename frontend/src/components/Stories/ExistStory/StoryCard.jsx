@@ -6,22 +6,26 @@ import { gradientOptions } from './../../../utils/constants/gradient';
 import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg';
 import Button from '../.././ui/Button';
 import ColorPicker from './../../ColorPicker/index';
-import { deleteFrame, updateStory } from './../../../api/stories';
+import {deleteFrame, updateStory } from './../../../api/stories';
 import UploadImage from './../../UploadImage/index';
-// import axios from 'axios';
 import axios  from 'axios';
+import { storyValidationSchema } from './../../../utils/helpers/validation';
+import AddFrame from './AddFrame';
+
 
 const StoryCard = ({ storyIndex, story, platform}) => {
   const [frames, setFrames] = useState(story.storyFrames);
-  // const [img, setImg] = useState(<img name={`pictureUrl`} src={"http://localhost:8080" + story.previewUrl} alt="Story Frame" style={{ width: "100%" }} />);
+
   const handleOnSubmit = async (story, frame, platform) => {
     const success = await deleteFrame(story, frame, platform);
     if (success) {
       setFrames(prevFrames => prevFrames.filter(item => item.id !== frame.id));
     }
   };
+
   const [imageLoadad, setImageLoadad] = useState(false);
   const [initialImage, setInitialImage] = useState(null);
+
   useEffect(() => {
     //получаем картинку
     const fetchImage = async () => {
@@ -49,16 +53,17 @@ const StoryCard = ({ storyIndex, story, platform}) => {
       <div>
         <Formik
           enableReinitialize
+          validationSchema={storyValidationSchema}
           initialValues={{
             previewTitle: story.previewTitle,
             previewTitleColor: story.previewTitleColor,
             previewGradient: story.previewGradient,
-            pictureUrl: initialImage
+            previewUrl: initialImage
           }}
         >
           {({ values, handleChange }) => (
             <Form>
-              <FieldArray name={`stories.${storyIndex}.storyFrames`}>
+              <FieldArray name={`frames`}>
                 {() => (
                   <div className='row' style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ width: "70%" }}> {/* Левая часть контейнера с полями ввода */}
@@ -97,7 +102,7 @@ const StoryCard = ({ storyIndex, story, platform}) => {
                     <div style={{width: "30%", marginLeft: "auto", float: "right" }}>
                       <div className="input_field">
                       <FormField
-                        name={`pictureUrl`}
+                        name={`previewUrl`}
                         component={UploadImage}
                       />
                       </div>
@@ -139,19 +144,36 @@ const StoryCard = ({ storyIndex, story, platform}) => {
                 </summary>
                 <div className="item-card__content">
                 <StoryFrame
-                 key={index}
-                 frame={value}
-                 frameIndex={index}
-                 storyIndex={storyIndex}
-                 story={story}
-                 platform={platform} 
+                  key={index}
+                  frame={value}
+                  frameIndex={index}
+                  storyIndex={storyIndex}
+                  story={story}
+                  platform={platform} 
                 />
                 </div>
               </details>
             </li>
           ))}
+          <li className='listFrame'>
+          <details className="item-card item-card__add">
+            <summary className="item-card__summary">
+              <p className="item-card__title">Добавить карточку</p>
+            </summary>
+            <div className="item-card__content">
+              <AddFrame
+                setFrames = {setFrames}
+                frames = {frames}
+                storyIndex={storyIndex}
+                story={story}
+                platform={platform} 
+              />
+            </div>
+            </details>
+          </li>
         </ul>
       </div>
+      
     </div>
   );
 }

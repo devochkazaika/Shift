@@ -1,55 +1,45 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import { FieldArray, Form, Formik, Field } from 'formik';
 import FormField from "../../FormField";
 import Button from '../.././ui/Button';
 import ColorPicker from './../../ColorPicker/index';
 import { gradientOptions } from './../../../utils/constants/gradient';
 import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg';
-import { updateFrame } from '../../../api/stories';
-import axios from 'axios';
+import { addFrame } from '../../../api/stories';
 import UploadImage from './../../UploadImage/index';
 
-const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
-  const handleOnSubmit = async (values, platform, frame, frameIndex) => {
-    updateFrame(values, platform, frame, frameIndex);
-  };
-  const [initialImage, setInitialImage] = useState(null);
-  const [imageLoadad, setImageLoaded] = useState(false);
-  useEffect(() => {
-    //получаем картинку
-    const fetchImage = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080" + frame.pictureUrl, { responseType: 'arraybuffer' });
-        const blob = new Blob([response.data], { type: response.headers['content-type'] });
-        const file = new File([blob], "initial_image.jpg", { type: blob.type });
-        setInitialImage(file);
-      } catch (error) {
-        console.error('Error fetching the image:', error);
-      }
-    };
-    if (!imageLoadad){
-      fetchImage();
-      setImageLoaded(true);
+const AddFrame = ({setFrames, frames, story, storyIndex, platform }) => {
+  const handleOnSubmit = async (story, values, platform) => {
+    try {
+      const frame = await addFrame(story, values, platform);
+      
+      // Создаем новый массив, включая новый фрейм
+      const updatedFrames = [...frames, frame.data];
+      
+      // Обновляем состояние с новым массивом
+      setFrames(updatedFrames);
+    } catch (error) {
+      console.error('Error adding frame:', error);
     }
-  }, [imageLoadad, frame.pictureUrl])
+  };
 
   return (
     <div>
       <Formik
         enableReinitialize
         initialValues={{
-          title: frame.title,
-          text: frame.text,
-          visibleButtonOrNone: frame.visibleButtonOrNone,
-          gradient: frame.gradient,
-          textColor: frame.textColor,
-          buttonText: frame.buttonText,
-          buttonTextColor: frame.buttonTextColor,
-          buttonBackgroundColor: frame.buttonBackgroundColor,
-          buttonUrl: frame.buttonUrl,
-          pictureFrame: initialImage
+          title: "Sample Title",
+          text: "Sample text for the story.",
+          visibleButtonOrNone: "BUTTON",
+          gradient: "EMPTY",
+          textColor: "FF0000",
+          buttonText: "Click Here",
+          buttonTextColor: "FFFFFF",
+          buttonBackgroundColor: "0000FF",
+          buttonUrl: "https://example.com",
+          pictureUrl: null
         }}
-        onSubmit={(values) => handleOnSubmit(values, platform, frame, frameIndex)}
+        onSubmit={(values) => handleOnSubmit(story, values, platform)}
       >
         {({ values, handleChange }) => (
           <Form>
@@ -91,25 +81,25 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                   />
                   <div role="group" aria-labelledby="my-radio-group">
                     <div className="row">
-                      <label htmlFor={`ButtonIntarectiveType-${frameIndex}`}>
+                      <label htmlFor={`ButtonIntarectiveType`}>
                         Кнопка
                         <Field
                           name={`visibleButtonOrNone`}
                           value="BUTTON"
                           as={FormField}
-                          id={`ButtonIntarectiveType-${frameIndex}`}
+                          id={`ButtonIntarectiveType`}
                           type="radio"
                           checked={values.visibleButtonOrNone === "BUTTON"}
                           onChange={handleChange}
                         />
                       </label>
-                      <label htmlFor={`NonIntarectiveType-${frameIndex}`}>
+                      <label htmlFor={`NonIntarectiveType`}>
                         Ничего
                         <Field
                           name={`visibleButtonOrNone`}
                           value="NONE"
                           as={FormField}
-                          id={`NonIntarectiveType-${frameIndex}`}
+                          id={`NonIntarectiveType`}
                           type="radio"
                           checked={values.visibleButtonOrNone === "NONE"}
                           onChange={handleChange}
@@ -158,15 +148,16 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                     </>
                   )}
                   <div className='item-card__summary'>
-                    <FormField
-                        labelTitle={"Картинка"}
-                        name={`stories.${storyIndex}.storyFrames.${frameIndex}.pictureUrl`}
+                    <div className="input_field">
+                      <FormField
+                        name={`pictureUrl`}
                         component={UploadImage}
-                    />
+                      />
+                    </div>
                     <div className='item-card__button--change'>
                       <Button
-                        handleOnClick={() => handleOnSubmit(story, platform, values, frame.id)}
-                        text="Изменить"
+                        handleOnClick={() => handleOnSubmit(story, values, platform)}
+                        text="Добавить"
                         type="button"
                         color="green"
                         icon={<ArrowIcon width="12px" height="12px" />}
@@ -183,4 +174,4 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
   );
 };
 
-export default StoryFrame;
+export default AddFrame;
