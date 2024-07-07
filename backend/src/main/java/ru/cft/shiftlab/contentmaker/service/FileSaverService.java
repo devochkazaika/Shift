@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
+import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 
 import java.io.IOException;
 import java.util.List;
@@ -58,6 +59,6 @@ public interface FileSaverService {
                           MultipartFile file) throws IOException;
     ResponseEntity deleteStoryFrame(String bankId, String platform, String id, String frameId) throws Throwable;
 
-    void addFrame(String storyFramesDto, MultipartFile file,
-                  String bankId, String platform, Long id) throws IOException;
+    StoryPresentationFrames addFrame(String storyFramesDto, MultipartFile file,
+                                     String bankId, String platform, Long id) throws IOException;
 }

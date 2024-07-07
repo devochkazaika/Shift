@@ -12,11 +12,7 @@ const AddFrame = ({setFrames, frames, story, storyIndex, platform }) => {
   const handleOnSubmit = async (story, values, platform) => {
     try {
       const frame = await addFrame(story, values, platform);
-      
-      // Создаем новый массив, включая новый фрейм
       const updatedFrames = [...frames, frame.data];
-      
-      // Обновляем состояние с новым массивом
       setFrames(updatedFrames);
     } catch (error) {
       console.error('Error adding frame:', error);
@@ -46,7 +42,7 @@ const AddFrame = ({setFrames, frames, story, storyIndex, platform }) => {
             <FieldArray name={`frames[${storyIndex}]`}>
               {() => (
                 <div>
-                  <Field
+                  <FormField
                     labelTitle="Заголовок"
                     name={`title`}
                     value={values.title}
@@ -55,11 +51,11 @@ const AddFrame = ({setFrames, frames, story, storyIndex, platform }) => {
                     onChange={handleChange}
                   />
                   <div className='row'>
-                    <Field
+                    <FormField
                       name={`text`}
                       value={values.text}
                       labelTitle="Текст"
-                      as={FormField}
+                      as={"textarea"}
                       type="text"
                       onChange={handleChange}
                     />

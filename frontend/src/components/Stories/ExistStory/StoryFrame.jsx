@@ -56,7 +56,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
             <FieldArray name={`frames[${storyIndex}]`}>
               {() => (
                 <div>
-                  <Field
+                  <FormField
                     labelTitle="Заголовок"
                     name={`title`}
                     value={values.title}
@@ -65,11 +65,11 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                     onChange={handleChange}
                   />
                   <div className='row'>
-                    <Field
+                    <FormField
                       name={`text`}
                       value={values.text}
                       labelTitle="Текст"
-                      as={FormField}
+                      as={"textarea"}
                       type="text"
                       onChange={handleChange}
                     />

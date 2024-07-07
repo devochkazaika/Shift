@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
+import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.PlatformValid;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
@@ -72,7 +73,7 @@ public class StoriesController {
             @ApiResponse(responseCode = "201", description = "Карточка добавлена на сервер.")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    public void addFrame(
+    public StoryPresentationFrames addFrame(
             @RequestParam(value = "json")
             String frameRequestDto,
 
@@ -95,7 +96,7 @@ public class StoriesController {
 
             @RequestParam(value = "id")
             Long id) throws IOException {
-        storiesService.addFrame(frameRequestDto, image, bankId, platform, id);
+        return storiesService.addFrame(frameRequestDto, image, bankId, platform, id);
     }
 
     /**

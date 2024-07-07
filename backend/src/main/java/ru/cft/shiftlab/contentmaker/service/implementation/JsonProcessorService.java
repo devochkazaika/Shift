@@ -184,7 +184,7 @@ public class JsonProcessorService implements FileSaverService {
         }
     }
 
-    public void addFrame(String frameDto, MultipartFile file,
+    public StoryPresentationFrames addFrame(String frameDto, MultipartFile file,
                           String bankId, String platform, Long id) throws IOException {
         StoryPresentationFrames frame = mapper.readValue(
                 frameDto
@@ -205,6 +205,7 @@ public class JsonProcessorService implements FileSaverService {
         final ArrayList<StoryPresentationFrames> listFrames = storyPresentation.getStoryPresentationFrames();
         listFrames.add(frame);
         putStoryToJson(listStory, bankId, platform);
+        return frame;
     }
 
     /**
