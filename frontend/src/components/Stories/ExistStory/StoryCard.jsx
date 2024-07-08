@@ -10,7 +10,7 @@ import ColorPicker from './../../ColorPicker/index';
 import { deleteFrame, updateStory, updateFrameOrder } from './../../../api/stories';
 import UploadImage from './../../UploadImage/index';
 import axios from 'axios';
-import { storyValidationSchema } from './../../../utils/helpers/validation';
+import { storyPanelValidationSchema } from './../../../utils/helpers/validation';
 import AddFrame from './AddFrame';
 
 const StoryCard = ({ storyIndex, story, platform }) => {
@@ -41,42 +41,40 @@ const StoryCard = ({ storyIndex, story, platform }) => {
   }, [story, imageLoaded]);
 
   useEffect(() => {
-    const draggables = document.querySelectorAll('.draggable');
     const list = document.getElementById('draggable-list');
 
     const handleDragStart = (e) => {
-      e.target.classList.add('dragging');
-    };
-
-    const handleDragEnd = async (e) => {
-      e.target.classList.remove('dragging');
-      const newOrder = Array.from(list.children).map((child, index) => ({
-        id: child.id,
-        order: index
-      }));
-      
-      let arr = [];
-      frames.forEach((frame, index) => {
-        if (frame.id !== newOrder[index].id) {
-          arr.push(frame.id);
-        }
-      });
-      
-      if (arr.length){
-        // Свап карточек
-        try {
-          await updateFrameOrder(story, platform, arr[0], arr[1]);
-          setFrames(frames);
-        } catch (error) {
-          console.error('Error updating frame order:', error);
-        }
+      if (e.target.tagName === 'LI') {
+        e.target.classList.add('dragging');
       }
     };
 
-    draggables.forEach(draggable => {
-      draggable.addEventListener('dragstart', handleDragStart);
-      draggable.addEventListener('dragend', handleDragEnd);
-    });
+    const handleDragEnd = async (e) => {
+      if (e.target.tagName === 'LI') {
+        e.target.classList.remove('dragging');
+        const newOrder = Array.from(list.children).map((child, index) => ({
+          id: child.id,
+          order: index
+        }));
+        
+        let arr = [];
+        frames.forEach((frame, index) => {
+          if (frame.id !== newOrder[index].id) {
+            arr.push(frame.id);
+          }
+        });
+        
+        if (arr.length) {
+          // Swap cards
+          try {
+            await updateFrameOrder(story, platform, arr[0], arr[1]);
+            setFrames(frames);
+          } catch (error) {
+            console.error('Error updating frame order:', error);
+          }
+        }
+      }
+    };
 
     const handleDragOver = (e) => {
       e.preventDefault();
@@ -89,7 +87,27 @@ const StoryCard = ({ storyIndex, story, platform }) => {
       }
     };
 
+    const getDragAfterElement = (list, y) => {
+      const draggableElements = [...list.querySelectorAll('.draggable:not(.dragging)')];
+
+      return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset: offset, element: child };
+        } else {
+          return closest;
+        }
+      }, { offset: Number.NEGATIVE_INFINITY }).element;
+    };
+
     list.addEventListener('dragover', handleDragOver);
+
+    const draggables = list.querySelectorAll('li');
+    draggables.forEach(draggable => {
+      draggable.addEventListener('dragstart', handleDragStart);
+      draggable.addEventListener('dragend', handleDragEnd);
+    });
 
     return () => {
       draggables.forEach(draggable => {
@@ -99,20 +117,6 @@ const StoryCard = ({ storyIndex, story, platform }) => {
       list.removeEventListener('dragover', handleDragOver);
     };
   }, [frames]);
-
-  const getDragAfterElement = (list, y) => {
-    const draggableElements = [...list.querySelectorAll('.draggable:not(.dragging)')];
-
-    return draggableElements.reduce((closest, child) => {
-      const box = child.getBoundingClientRect();
-      const offset = y - box.top - box.height / 2;
-      if (offset < 0 && offset > closest.offset) {
-        return { offset: offset, element: child };
-      } else {
-        return closest;
-      }
-    }, { offset: Number.NEGATIVE_INFINITY }).element;
-  };
 
   const handleOnSubmit = async (story, frame, platform) => {
     const success = await deleteFrame(story, frame, platform);
@@ -126,7 +130,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
       <div>
         <Formik
           enableReinitialize
-          validationSchema={storyValidationSchema}
+          validationSchema={storyPanelValidationSchema}
           initialValues={{
             previewTitle: story.previewTitle,
             previewTitleColor: story.previewTitleColor,
