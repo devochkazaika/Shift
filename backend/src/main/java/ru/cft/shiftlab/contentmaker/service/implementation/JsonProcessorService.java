@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
@@ -246,6 +247,7 @@ public class JsonProcessorService implements FileSaverService {
                     new IllegalArgumentException(String.format("Could not find frame with id = %s", id)));
         return storyPresentationFrames;
     }
+
     /**
      * Изменение общих параметров истории, а именно previewTitle, previewTitleColor, previewGradient
      * @param storiesRequestDto
@@ -452,5 +454,31 @@ public class JsonProcessorService implements FileSaverService {
                 .map(x -> x.delete());
     }
 
+    /**
+     * Метод для свапа порядка историй
+     * @param id
+     * @param bankId
+     * @param platform
+     * @param fristUuid
+     * @param secondUuid
+     * @throws IOException
+     */
+    public void swapFrames(Long id, String bankId, String platform, String fristUuid, String secondUuid) throws IOException {
+        final List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
+        final StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
+        final ArrayList<StoryPresentationFrames> frames = storyPresentation.getStoryPresentationFrames();
+        int first = IntStream.range(0, frames.size())
+                .filter(streamIndex -> fristUuid.equals(frames.get(streamIndex).getId().toString()))
+                .findFirst()
+                .orElse(-1);
+        int second = IntStream.range(0, frames.size())
+                .filter(streamIndex -> secondUuid.equals(frames.get(streamIndex).getId().toString()))
+                .findFirst()
+                .orElse(-1);
+
+        Collections.swap(frames, first, second);
+        storyPresentation.setStoryPresentationFrames(frames);
+        putStoryToJson(storyPresentationList, bankId, platform);
+    }
 
 }

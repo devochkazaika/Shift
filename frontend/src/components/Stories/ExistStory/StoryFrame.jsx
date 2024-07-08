@@ -160,7 +160,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                   <div className='item-card__summary'>
                     <FormField
                         labelTitle={"Картинка"}
-                        name={`stories.${storyIndex}.storyFrames.${frameIndex}.pictureUrl`}
+                        name={`pictureFrame`}
                         component={UploadImage}
                     />
                     <div className='item-card__button--change'>

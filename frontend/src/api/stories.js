@@ -201,3 +201,34 @@ export const addFrame = async (story, values, platform) => {
     }
   }
 };
+
+export const updateFrameOrder = async (story, platform, firstId, secondId) => {
+  const toastView = toast(defaultToastMessages.uploadingData, {
+    ...defaultToastOptions,
+    autoClose: false,
+    isLoading: true,
+  });
+  const form = new FormData();
+  form.append("bankId", story.bankId);
+  form.append("platform", platform);
+  form.append("id", story.id);
+  form.append("second", secondId);
+  form.append("first", firstId);
+  try {
+    const response = await axios.patch(`/stories/bank/info/change/swap/frame`, form);
+    toast.update(toastView, {
+      ...defaultUpdateToastOptions,
+      render: response.message,
+    });
+    return response;
+  } catch (error) {
+    if (error.response.status === 500) {
+      toast.update(toastView, {
+        ...defaultUpdateToastOptions,
+        render: defaultToastMessages.connectionError,
+        type: "warning"
+      });
+      return false;
+    }
+  }
+}

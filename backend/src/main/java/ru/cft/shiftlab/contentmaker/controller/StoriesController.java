@@ -292,4 +292,28 @@ public class StoriesController {
                 frameId,
                 file);
     }
+
+    @PatchMapping("/bank/info/change/swap/frame")
+    public void swapFrames(
+            @RequestParam(name = "id", defaultValue="0")
+            Long id,
+
+            @RequestParam(value = "bankId")
+            String bankId,
+
+            @Parameter(description = "Тип платформы",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "ALL PLATFORMS")
+            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+            String platform,
+
+            @RequestParam(name = "first")
+            String first,
+            @RequestParam(name = "second")
+            String second
+    ) throws IOException {
+        storiesService.swapFrames(
+                id, bankId, platform, first, second
+        );
+    }
 }
