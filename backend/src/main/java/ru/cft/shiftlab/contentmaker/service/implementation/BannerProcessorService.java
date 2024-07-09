@@ -1,16 +1,12 @@
 package ru.cft.shiftlab.contentmaker.service.implementation;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.http.*;
-import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.BannerDto;
 import ru.cft.shiftlab.contentmaker.entity.Bank;
@@ -19,14 +15,14 @@ import ru.cft.shiftlab.contentmaker.exceptionhandling.ResourceNotFoundException;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 import ru.cft.shiftlab.contentmaker.repository.BankRepository;
 import ru.cft.shiftlab.contentmaker.repository.BannerRepository;
+import ru.cft.shiftlab.contentmaker.service.BannerService;
 import ru.cft.shiftlab.contentmaker.util.DirProcess;
-import ru.cft.shiftlab.contentmaker.util.MultipartBodyProcess;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
 import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import static ru.cft.shiftlab.contentmaker.util.Constants.BANNERS_SAVE_DIRECTORY;
 
@@ -34,7 +30,7 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.BANNERS_SAVE_DIRECTORY
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class BannerProcessorService {
+public class BannerProcessorService implements BannerService {
     ObjectMapper mapper = new ObjectMapper();
     {
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -79,6 +75,15 @@ public class BannerProcessorService {
         catch (IllegalArgumentException e){
             throw e;
         }
+    }
+
+    @Override
+    public List<Banner> getBannersList(String bankId, String platform) {
+        Bank bank = bankRepository.findBankByName(bankId).orElseThrow(
+                () -> new ResourceNotFoundException("c")
+        );
+        List<Banner> list = bannerRepository.findBannerByBankAndPlatform(bank, platform);
+        return list;
     }
 
     /**
@@ -131,27 +136,31 @@ public class BannerProcessorService {
         return new String[]{pictureName, iconName};
     }
 
-    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getBanners(String bankName) throws JsonProcessingException {
-        Bank bank = bankRepository.findBankByName(bankName)
-                .orElseThrow(() -> new ResourceNotFoundException("Bank not found"));
+//    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getBanners(String bankName) throws JsonProcessingException {
+//        Bank bank = bankRepository.findBankByName(bankName)
+//                .orElseThrow(() -> new ResourceNotFoundException("Bank not found"));
+//
+//        ArrayList<Banner> banners = bannerRepository.findBannerByBank(bank)
+//                .orElseThrow(
+//                        () -> new ResourceNotFoundException(String.format("bank with name= %s not found", bank.getName()))
+//                );
+//
+//        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
+//        String jsonAsString = mapper.writeValueAsString(banners);
+//
+//        MultipartBodyProcess.addJsonInBuilderMultipart(jsonAsString, multipartBodyBuilder);
+//        banners.forEach(
+//                x -> MultipartBodyProcess.addImageInBuilderMultipart(
+//                        BANNERS_SAVE_DIRECTORY.concat(x.getPicture()),
+//                        multipartBodyBuilder)
+//        );
+//
+//        HttpHeaders header = new HttpHeaders();
+//        header.setContentType(MediaType.MULTIPART_FORM_DATA);
+//        return new HttpEntity<>(multipartBodyBuilder.build(), header);
+//    }
 
-        ArrayList<Banner> banners = bannerRepository.findBannerByBank(bank)
-                .orElseThrow(
-                        () -> new ResourceNotFoundException(String.format("bank with name= %s not found", bank.getName()))
-                );
-
-        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
-        String jsonAsString = mapper.writeValueAsString(banners);
-
-        MultipartBodyProcess.addJsonInBuilderMultipart(jsonAsString, multipartBodyBuilder);
-        banners.forEach(
-                x -> MultipartBodyProcess.addImageInBuilderMultipart(
-                        BANNERS_SAVE_DIRECTORY.concat(x.getPicture()),
-                        multipartBodyBuilder)
-        );
-
-        HttpHeaders header = new HttpHeaders();
-        header.setContentType(MediaType.MULTIPART_FORM_DATA);
-        return new HttpEntity<>(multipartBodyBuilder.build(), header);
+    public void deleteBanner(String code){
+        bannerRepository.deleteBannerByCode(code);
     }
 }
