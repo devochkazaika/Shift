@@ -451,7 +451,7 @@ public class JsonProcessorService implements FileSaverService {
         Stream.of(files)
                 .filter(x -> x.getName().startsWith(id+"_"+frameId))
                 .findFirst()
-                .map(x -> x.delete());
+                .map(File::delete);
     }
 
     /**
