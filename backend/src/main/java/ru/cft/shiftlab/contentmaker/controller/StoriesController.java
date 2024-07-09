@@ -19,6 +19,7 @@ import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.PlatformValid;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.UUIDValid;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
 
 import java.io.IOException;
@@ -211,7 +212,10 @@ public class StoriesController {
             String platform,
 
             @RequestParam String storyId,
-            @RequestParam String frameId) throws Throwable {
+
+            @RequestParam
+            @UUIDValid
+            String frameId) throws Throwable {
         storiesService.deleteStoryFrame(bankId, platform, storyId, frameId);
 
     }
@@ -225,26 +229,29 @@ public class StoriesController {
      * @throws IOException
      */
     @PatchMapping("/bank/info/change")
-    public void changeStory(@RequestParam(value = "json")
-                            @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
-                            String storiesRequestDto,
+    public void changeStory(
+            @RequestParam(value = "json")
+            @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
+            String storiesRequestDto,
 
-                            @RequestParam(value = "bankId")
-                            String bankId,
+            @RequestParam(value = "bankId")
+            @WhiteListValid(message = "bankId must match the allowed")
+            String bankId,
 
-                            @Parameter(description = "Тип платформы",
-                                    schema = @Schema(type = "string", format = "string"),
-                                    example = "ALL PLATFORMS")
-                            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
-                            String platform,
+            @Parameter(description = "Тип платформы",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "ALL PLATFORMS")
+            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+            @PlatformValid
+            String platform,
 
-                            @Parameter(description = "id истории",
-                                    schema = @Schema(type = "string", format = "string"),
-                                    example = "0")
-                            @RequestParam(name = "id")
-                            Long id,
-                            @RequestPart(value = "image",required = false)
-                            MultipartFile file) throws IOException {
+            @Parameter(description = "id истории",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "0")
+            @RequestParam(name = "id")
+            Long id,
+            @RequestPart(value = "image",required = false)
+            MultipartFile file) throws IOException {
         storiesService.changeStory(storiesRequestDto, file, bankId, platform, id);
     }
 
@@ -259,32 +266,36 @@ public class StoriesController {
      */
     @PatchMapping("/bank/info/change/frame")
     public void changeStoryFrame(@RequestParam(value = "json")
-                            @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
-                            String storiesRequestDto,
+            @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
+            String storiesRequestDto,
 
-                            @RequestParam(value = "bankId")
-                            String bankId,
+            @RequestParam(value = "bankId")
+            @WhiteListValid(message = "bankId must match the allowed")
+            String bankId,
 
-                            @Parameter(description = "Тип платформы",
-                                    schema = @Schema(type = "string", format = "string"),
-                                    example = "ALL PLATFORMS")
-                            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
-                            String platform,
+            @Parameter(description = "Тип платформы",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "ALL PLATFORMS")
+            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+            @PlatformValid
+            String platform,
 
-                            @Parameter(description = "id истории",
-                                    schema = @Schema(type = "string", format = "string"),
-                                    example = "0")
-                            @RequestParam(name = "id")
-                            Long id,
+            @Parameter(description = "id истории",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "0")
+            @RequestParam(name = "id")
+            Long id,
 
-                            @Parameter(description = "id истории",
-                                     schema = @Schema(type = "string", format = "string"),
-                                     example = "0")
-                            @RequestParam(name = "frameId")
-                            String frameId,
-                            @RequestPart(value = "image",required = false)
-                            MultipartFile file
-                            ) throws IOException {
+            @Parameter(description = "id истории",
+                     schema = @Schema(type = "string", format = "string"),
+                     example = "0")
+            @RequestParam(name = "frameId")
+            @UUIDValid
+            String frameId,
+
+            @RequestPart(value = "image",required = false)
+            MultipartFile file
+            ) throws IOException {
         storiesService.changeFrameStory(storiesRequestDto,
                 bankId,
                 platform,
@@ -299,17 +310,22 @@ public class StoriesController {
             Long id,
 
             @RequestParam(value = "bankId")
+            @WhiteListValid
             String bankId,
 
             @Parameter(description = "Тип платформы",
                     schema = @Schema(type = "string", format = "string"),
                     example = "ALL PLATFORMS")
             @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+            @PlatformValid
             String platform,
 
             @RequestParam(name = "first")
+            @UUIDValid
             String first,
+
             @RequestParam(name = "second")
+            @UUIDValid
             String second
     ) throws IOException {
         storiesService.swapFrames(

@@ -480,7 +480,7 @@ public class JsonProcessorServiceTest {
         String bankId = "test_bank";
         String platform = "WEB";
         String json = objectMapper.writeValueAsString(storyPatchDto);
-        copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json", System.getProperty("user.dir") + "/src/main/resources/static/backend/site/share/htdoc/_files/skins/mobws_story/"+"story_test_bank_web.json");
+        copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json", FILES_SAVE_DIRECTORY+"story_test_bank_web.json");
 
         jsonProcessorService.changeFrameStory(json, bankId, platform,
                 0L,

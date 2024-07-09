@@ -36,9 +36,11 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.mockito.Mockito.doAnswer;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_TEST_DIRECTORY;
 
@@ -270,8 +272,8 @@ public class StoriesControllerTest {
                 path,
                 "image/png",
                 input);
-        doAnswer(i -> i).when(jsonProcessorService).addFrame(asJsonString(requestFrame), image,
-                bank, platform, 0L);
+//        doAnswer(i -> i).when(jsonProcessorService).addFrame(asJsonString(requestFrame), image,
+//                bank, platform, 0L);
         ResultActions andReturn = mockMvc.perform(MockMvcRequestBuilders
                 .multipart("/stories/add/frame")
                 .file(image)
@@ -366,6 +368,103 @@ public class StoriesControllerTest {
                 .contentType(MediaType.MULTIPART_FORM_DATA)
         );
 
+        andReturn.andExpect(status().is(400));
+    }
+
+    @Test
+    public void swap_frames_success_test() throws Exception {
+        String bank = "tkbbank";
+        String platform = "WEB";
+        String firstUUID = UUID.randomUUID().toString();
+        String secondUUID = UUID.randomUUID().toString();
+
+        doAnswer(i -> i).when(jsonProcessorService)
+                .swapFrames(0L, bank, platform, firstUUID, secondUUID);
+        ResultActions andReturn = mockMvc.perform(MockMvcRequestBuilders
+                .patch("/stories/bank/info/change/swap/frame")
+                .param("bankId", bank)
+                .param("platform", platform)
+                .param("id", String.valueOf(0))
+                .param("first", firstUUID)
+                .param("second", secondUUID)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+        );
+        andReturn.andExpect(status().is(200));
+    }
+    @Test
+    public void swap_frames_bad_bank_test() throws Exception {
+        String bank = "asdasdasdasd";
+        String platform = "WEB";
+        String firstUUID = UUID.randomUUID().toString();
+        String secondUUID = UUID.randomUUID().toString();
+
+        doAnswer(i -> i).when(jsonProcessorService)
+                .swapFrames(0L, bank, platform, firstUUID, secondUUID);
+        ResultActions andReturn = mockMvc.perform(MockMvcRequestBuilders
+                .patch("/stories/bank/info/change/swap/frame")
+                .param("bankId", bank)
+                .param("platform", platform)
+                .param("id", String.valueOf(0))
+                .param("first", firstUUID)
+                .param("second", secondUUID)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+        );
+        andReturn.andExpect(status().is(400));
+    }
+
+    @Test
+    public void swap_frames_bad_platform_test() throws Exception {
+        String bank = "tkbbank";
+        String platform = "asdasdasdasdasd";
+        String firstUUID = UUID.randomUUID().toString();
+        String secondUUID = UUID.randomUUID().toString();
+
+        doAnswer(i -> i).when(jsonProcessorService)
+                .swapFrames(0L, bank, platform, firstUUID, secondUUID);
+        ResultActions andReturn = mockMvc.perform(MockMvcRequestBuilders
+                .patch("/stories/bank/info/change/swap/frame")
+                .param("bankId", bank)
+                .param("platform", platform)
+                .param("id", String.valueOf(0))
+                .param("first", firstUUID)
+                .param("second", secondUUID)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+        );
+        andReturn.andExpect(status().is(400));
+    }
+
+    @Test
+    public void swap_frames_bad_UUID_test() throws Exception {
+        String bank = "tkbbank";
+        String platform = "WEB";
+        String firstUUID = "ASDASDASDASD";
+        String secondUUID = UUID.randomUUID().toString();
+
+        doAnswer(i -> i).when(jsonProcessorService)
+                .swapFrames(0L, bank, platform, firstUUID, secondUUID);
+        ResultActions andReturn = mockMvc.perform(MockMvcRequestBuilders
+                .patch("/stories/bank/info/change/swap/frame")
+                .param("bankId", bank)
+                .param("platform", platform)
+                .param("id", String.valueOf(0))
+                .param("first", firstUUID)
+                .param("second", secondUUID)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+        );
+        andReturn.andExpect(status().is(400));
+        firstUUID = UUID.randomUUID().toString();
+        secondUUID = "ASDSADASDASDASD";
+        doAnswer(i -> i).when(jsonProcessorService)
+                .swapFrames(0L, bank, platform, firstUUID, secondUUID);
+        andReturn = mockMvc.perform(MockMvcRequestBuilders
+                .patch("/stories/bank/info/change/swap/frame")
+                .param("bankId", bank)
+                .param("platform", platform)
+                .param("id", String.valueOf(0))
+                .param("first", firstUUID)
+                .param("second", secondUUID)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+        );
         andReturn.andExpect(status().is(400));
     }
 }
