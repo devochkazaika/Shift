@@ -24,6 +24,11 @@ public interface BannerRepository extends CrudRepository<Banner, Long> {
     void deleteBannerByCode(@Param("code") String code);
 
     @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM test_banner WHERE code = (SELECT code FROM test_banner main WHERE main.code = :code)", nativeQuery = true)
+    void deleteMainBannerByCode(@Param("code") String code);
+
+    @Modifying
     @Query("UPDATE Banner b SET b.mainBanner.id = :mainCodeId WHERE b.id = :bannerId")
     void updateBannerByMainBanner(@Param("bannerId") Long bannerId,
                                   @Param("mainCodeId") Long mainCodeId);

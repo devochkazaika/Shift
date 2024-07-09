@@ -82,7 +82,9 @@ public class BannerController {
     }
 
     @DeleteMapping(value = "/delete/cascade")
-    public void deleteBannerCascade(){
-
+    public void deleteBannerCascade(@RequestParam(value = "code")
+                                        String code
+    ){
+        bannerProcessorService.deleteBannerCascade(code);
     }
 }

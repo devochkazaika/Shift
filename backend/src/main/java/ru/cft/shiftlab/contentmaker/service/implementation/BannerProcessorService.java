@@ -163,4 +163,10 @@ public class BannerProcessorService implements BannerService {
     public void deleteBanner(String code){
         bannerRepository.deleteBannerByCode(code);
     }
+
+    @Transactional
+    public void deleteBannerCascade(String code){
+        bannerRepository.deleteMainBannerByCode(code);
+        deleteBanner(code);
+    }
 }
