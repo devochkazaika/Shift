@@ -11,7 +11,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -100,42 +99,43 @@ public class StoriesController {
         return storiesService.addFrame(frameRequestDto, image, bankId, platform, id);
     }
 
-    /**
-     * Метод, который обрабатывает GET-запрос на чтение историй.
-     * Основан на формате FormData
-     *
-     * @param bankId название банка.
-     * @param platform платформа, для которой создана история.
-     */
-    @GetMapping("/bank/info")
-    @Operation(summary = "Чтение истории с сервера.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "302", description = "История прочтена с сервера.")
-    })
-    @ResponseStatus(HttpStatus.FOUND)
-    @ResponseBody
-    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getStories(
-            @RequestParam(name = "bankId")
-            @Parameter(description = "Название банка",
-                    schema = @Schema(type = "string", format = "string"),
-                    example = "tkkbank")
-            @WhiteListValid(message = "bankId must match the allowed")
-            String bankId,
-
-            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
-            @Parameter(description = "Тип платформы",
-                    schema = @Schema(type = "string", format = "string"),
-                    example = "WEB")
-            @PlatformValid
-            String platform) throws IOException {
-
-        return storiesService.getFilePlatform(bankId, platform);
-    }
+//    /**
+//     * Метод, который обрабатывает GET-запрос на чтение историй.
+//     * Основан на формате FormData
+//     *
+//     * @param bankId название банка.
+//     * @param platform платформа, для которой создана история.
+//     */
+//    @GetMapping("/bank/info")
+//    @Operation(summary = "Чтение истории с сервера.")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "302", description = "История прочтена с сервера.")
+//    })
+//    @ResponseStatus(HttpStatus.FOUND)
+//    @ResponseBody
+//    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getStories(
+//            @RequestParam(name = "bankId")
+//            @Parameter(description = "Название банка",
+//                    schema = @Schema(type = "string", format = "string"),
+//                    example = "tkkbank")
+//            @WhiteListValid(message = "bankId must match the allowed")
+//            String bankId,
+//
+//            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+//            @Parameter(description = "Тип платформы",
+//                    schema = @Schema(type = "string", format = "string"),
+//                    example = "WEB")
+//            @PlatformValid
+//            String platform) throws IOException {
+//
+//        return storiesService.getFilePlatform(bankId, platform);
+//    }
 
     @GetMapping("/bank/info/getJson")
     @Operation(summary = "Чтение истории с сервера.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "302", description = "История прочтена с сервера.")
+            @ApiResponse(responseCode = "200", description = "История прочтена с сервера."),
+            @ApiResponse(responseCode = "400", description = "Неправильные параметры")
     })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -164,6 +164,7 @@ public class StoriesController {
      * @param id id истории
      */
     @DeleteMapping("/bank/info/delete")
+    @Operation(summary = "Удаление истории")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "История успешно удалена"),
             @ApiResponse(responseCode = "404", description = "История не найдена в JSON файле"),
@@ -202,19 +203,38 @@ public class StoriesController {
      * @throws Throwable
      */
     @DeleteMapping("/bank/info/delete/frame")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "История успешно удалена"),
+            @ApiResponse(responseCode = "404", description = "История не найдена в JSON файле"),
+            @ApiResponse(responseCode = "500", description = "Ошибка на стороне сервера(нет JSON или нет директории с файлами)")
+    })
+    @Operation(summary = "Удаление карточки из истории")
     public void deleteFrame(
             @RequestParam
             @WhiteListValid(message = "bankId must match the allowed")
+            @Parameter(description = "Название банка",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "tkbbank")
             String bankId,
 
             @RequestParam
             @PlatformValid
+            @Parameter(description = "Тип платформы",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "ALL PLATFORMS")
             String platform,
 
-            @RequestParam String storyId,
+            @RequestParam
+            @Parameter(description = "Id истории",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "0")
+            String storyId,
 
             @RequestParam
             @UUIDValid
+            @Parameter(description = "UUID карточки истории",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "55151a3b-c9f6-409a-b185-604b2a9afe86")
             String frameId) throws Throwable {
         storiesService.deleteStoryFrame(bankId, platform, storyId, frameId);
 
@@ -322,10 +342,16 @@ public class StoriesController {
 
             @RequestParam(name = "first")
             @UUIDValid
+            @Parameter(description = "UUID 1-ой карточки истории",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "55151a3b-c9f6-409a-b185-604b2a9afe86")
             String first,
 
             @RequestParam(name = "second")
             @UUIDValid
+            @Parameter(description = "UUID 2-ой карточки истории",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "55151a3b-c9f6-409a-b185-604b2a9afe86")
             String second
     ) throws IOException {
         storiesService.swapFrames(
