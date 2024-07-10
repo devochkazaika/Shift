@@ -39,6 +39,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.anyString;
 import static ru.cft.shiftlab.contentmaker.util.Constants.BANNERS_SAVE_DIRECTORY;
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_TEST_DIRECTORY;
 
@@ -346,21 +347,20 @@ public class BannerServiceTest {
         multipartBodyBuilder.part("test_codeFirst_icon.png", FILES_TEST_DIRECTORY+"sample.png");
         multipartBodyBuilder.part("test_codeSecond_pict.png", FILES_TEST_DIRECTORY+"sample.png");
         multipartBodyBuilder.part("test_codeSecond_icon.png", FILES_TEST_DIRECTORY+"sample.png");
-        String spyString = Mockito.spy(new String());
         Mockito.doReturn(FILES_TEST_DIRECTORY+"sample.png")
-                .when(spyString)
+                .when(anyString())
                 .equals(BANNERS_SAVE_DIRECTORY.concat("test_codeFirst_pict"));
         Mockito.doReturn(FILES_TEST_DIRECTORY+"sample.png")
-                .when(spyString)
+                .when(anyString())
                 .equals(BANNERS_SAVE_DIRECTORY.concat("test_codeFirst_icon"));
         Mockito.doReturn(FILES_TEST_DIRECTORY+"sample.png")
-                .when(spyString)
+                .when(anyString())
                 .equals(BANNERS_SAVE_DIRECTORY.concat("test_codeSecond_pict"));
         Mockito.doReturn(FILES_TEST_DIRECTORY+"sample.png")
-                .when(spyString)
+                .when(anyString())
                 .equals(BANNERS_SAVE_DIRECTORY.concat("test_codeSecond_icon"));
         Assertions.assertEquals(
-                bannerProcessorService.getBanners("tkbbank"),multipartBodyBuilder.build()
+                bannerProcessorService.getBannersList("tkbbank", "WEB"),multipartBodyBuilder.build()
         );
     }
 }
