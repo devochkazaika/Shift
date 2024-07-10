@@ -14,6 +14,7 @@ import javax.persistence.*;
 @Getter
 @Builder
 @Setter
+@ToString
 @Table(name = "test_banner")
 public class Banner {
 

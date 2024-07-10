@@ -1,5 +1,7 @@
 package ru.cft.shiftlab.contentmaker.service.implementation;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -37,6 +39,7 @@ public class BannerProcessorService implements BannerService {
         mapper.configure(DeserializationFeature
                         .FAIL_ON_UNKNOWN_PROPERTIES,
                 false);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
     private final DtoToEntityConverter dtoToEntityConverter;
@@ -136,29 +139,7 @@ public class BannerProcessorService implements BannerService {
         return new String[]{pictureName, iconName};
     }
 
-//    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getBanners(String bankName) throws JsonProcessingException {
-//        Bank bank = bankRepository.findBankByName(bankName)
-//                .orElseThrow(() -> new ResourceNotFoundException("Bank not found"));
-//
-//        ArrayList<Banner> banners = bannerRepository.findBannerByBank(bank)
-//                .orElseThrow(
-//                        () -> new ResourceNotFoundException(String.format("bank with name= %s not found", bank.getName()))
-//                );
-//
-//        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
-//        String jsonAsString = mapper.writeValueAsString(banners);
-//
-//        MultipartBodyProcess.addJsonInBuilderMultipart(jsonAsString, multipartBodyBuilder);
-//        banners.forEach(
-//                x -> MultipartBodyProcess.addImageInBuilderMultipart(
-//                        BANNERS_SAVE_DIRECTORY.concat(x.getPicture()),
-//                        multipartBodyBuilder)
-//        );
-//
-//        HttpHeaders header = new HttpHeaders();
-//        header.setContentType(MediaType.MULTIPART_FORM_DATA);
-//        return new HttpEntity<>(multipartBodyBuilder.build(), header);
-//    }
+
 
     public void deleteBanner(String code){
         bannerRepository.deleteBannerByCode(code);
@@ -168,5 +149,16 @@ public class BannerProcessorService implements BannerService {
     public void deleteBannerCascade(String code){
         bannerRepository.deleteMainBannerByCode(code);
         deleteBanner(code);
+    }
+
+    public void patchBanner(String bannerDto, String code) throws JsonProcessingException {
+        BannerDto dto = mapper.readValue(bannerDto, BannerDto.class);
+        Banner banner = bannerRepository.findBannerByCode(code)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException(String
+                                .format("Banner with code = %s doesnt exist", code))
+                );
+        banner = mapper.updateValue(banner, dto);
+        bannerRepository.save(banner);
     }
 }

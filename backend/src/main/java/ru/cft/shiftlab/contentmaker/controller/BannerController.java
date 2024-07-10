@@ -1,5 +1,6 @@
 package ru.cft.shiftlab.contentmaker.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -52,18 +53,12 @@ public class BannerController {
         bannerProcessorService.setMainBanner(code, codeMainBanner);
     }
 
-//    @GetMapping(value = "/get/{id}")
-//    @Operation(summary = "Возврат всех банеров с нужным банком.")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "Банк найден"),
-//            @ApiResponse(responseCode = "404", description = "Банк не найден")
-//    })
-//    @ResponseStatus(HttpStatus.OK)
-//    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getAllBannersByBank(@PathVariable(value = "id") String bankId) throws JsonProcessingException {
-//        return bannerProcessorService.getBanners(bankId);
-//    }
-
     @GetMapping(value = "/get")
+    @Operation(summary = "Возвращение всех банеров.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "MainBanner был установлен")
+    })
+    @ResponseStatus(HttpStatus.OK)
     public List<Banner> getAllBannersByBank
             (@RequestParam(value = "id")
              String bankId,
@@ -74,6 +69,11 @@ public class BannerController {
     }
 
     @DeleteMapping(value = "/delete")
+    @Operation(summary = "Удаление банера")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Банер успешно удален")
+    })
+    @ResponseStatus(HttpStatus.OK)
     public void deleteBanner(
             @RequestParam(value = "code")
             String code
@@ -82,9 +82,22 @@ public class BannerController {
     }
 
     @DeleteMapping(value = "/delete/cascade")
+    @Operation(summary = "Удаление банера")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Банер успешно удален вместе с mainBanner")
+    })
+    @ResponseStatus(HttpStatus.OK)
     public void deleteBannerCascade(@RequestParam(value = "code")
                                         String code
     ){
         bannerProcessorService.deleteBannerCascade(code);
+    }
+
+    @PatchMapping(value = "/change/banner")
+    public void changeBanner(@RequestParam(value = "json")
+                             String bannerDto,
+                             @RequestParam(value = "code")
+                             String code) throws JsonProcessingException {
+        bannerProcessorService.patchBanner(bannerDto, code);
     }
 }
