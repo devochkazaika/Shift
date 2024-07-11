@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.entity.Banner;
 import ru.cft.shiftlab.contentmaker.service.implementation.BannerProcessorService;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.PlatformValid;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
 
 import java.io.IOException;
 import java.util.List;
@@ -59,11 +61,14 @@ public class BannerController {
             @ApiResponse(responseCode = "200", description = "MainBanner был установлен")
     })
     @ResponseStatus(HttpStatus.OK)
-    public List<Banner> getAllBannersByBank
-            (@RequestParam(value = "id")
-             String bankId,
-             @RequestParam(value = "platform")
-             String platform
+    public List<Banner> getAllBannersByBank(
+            @RequestParam(value = "id")
+            @WhiteListValid
+            String bankId,
+
+            @RequestParam(value = "platform")
+            @PlatformValid
+            String platform
             ){
         return bannerProcessorService.getBannersList(bankId, platform);
     }
@@ -87,8 +92,9 @@ public class BannerController {
             @ApiResponse(responseCode = "200", description = "Банер успешно удален вместе с mainBanner")
     })
     @ResponseStatus(HttpStatus.OK)
-    public void deleteBannerCascade(@RequestParam(value = "code")
-                                        String code
+    public void deleteBannerCascade(
+            @RequestParam(value = "code")
+            String code
     ){
         bannerProcessorService.deleteBannerCascade(code);
     }
