@@ -364,7 +364,7 @@ public class BannerServiceTest {
     }
 
     @Test
-    public void change_banner_test_success() throws JsonProcessingException {
+    public void change_banner_test_success_test() throws JsonProcessingException {
         BannerDto bannerDto = BannerDto
                 .builder()
                 .bankName("tkbbank")
@@ -402,6 +402,28 @@ public class BannerServiceTest {
                 () -> Assertions.assertEquals(bannerDto.getColor(), finalBanner.getColor())
 
         );
+    }
+
+    @Test
+    public void change_banner_not_found_banner_test() throws JsonProcessingException {
+        BannerDto bannerDto = BannerDto
+                .builder()
+                .bankName("tkbbank")
+                .name("test_dto")
+                .platformType("WEB")
+                .priority(2)
+                .url("http://sadasdasd")
+                .textUrl("sample text for url")
+                .siteSection("site section")
+                .color("black")
+                .text("text")
+                .build();
+
+        Assertions.assertThrows(
+                ResourceNotFoundException.class,
+                () -> bannerProcessorService.patchBanner(mapper.writeValueAsString(bannerDto), "test_code")
+        );
+
     }
 }
 
