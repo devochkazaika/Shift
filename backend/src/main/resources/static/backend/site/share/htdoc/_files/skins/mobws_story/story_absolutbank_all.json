@@ -7,6 +7,18 @@
     "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/1_0.jpg",
     "previewGradient" : "FULL",
     "storyFrames" : [ {
+      "id" : "a4e7d659-7af1-43d5-8713-83dcf5b28c2b",
+      "title" : "Четвертая карточка",
+      "text" : "Sample text for the story.",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/1_a4e7d659-7af1-43d5-8713-83dcf5b28c2b.jpg",
+      "visibleButtonOrNone" : "BUTTON",
+      "buttonText" : "Click Here",
+      "buttonTextColor" : "FFFFFF",
+      "buttonBackgroundColor" : "0000FF",
+      "buttonUrl" : "https://example.com",
+      "gradient" : "EMPTY"
+    }, {
       "id" : "55151a3b-c9f6-409a-b185-604b2a9afe86",
       "title" : "Первая карточка",
       "text" : "Какой-то текст для первой карточки",
@@ -31,18 +43,6 @@
       "buttonUrl" : "https://example.com",
       "gradient" : "EMPTY"
     }, {
-      "id" : "a4e7d659-7af1-43d5-8713-83dcf5b28c2b",
-      "title" : "Четвертая карточка",
-      "text" : "Sample text for the story.",
-      "textColor" : "FF0000",
-      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/1_a4e7d659-7af1-43d5-8713-83dcf5b28c2b.jpg",
-      "visibleButtonOrNone" : "BUTTON",
-      "buttonText" : "Click Here",
-      "buttonTextColor" : "FFFFFF",
-      "buttonBackgroundColor" : "0000FF",
-      "buttonUrl" : "https://example.com",
-      "gradient" : "EMPTY"
-    }, {
       "id" : "940779c5-b408-4e72-af71-eb945ab647ae",
       "title" : "Третья карточка",
       "text" : "Sample text for the story.",
@@ -53,6 +53,26 @@
       "buttonTextColor" : "FFFFFF",
       "buttonBackgroundColor" : "0000FF",
       "buttonUrl" : "https://example.com",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 2,
+    "bankId" : "absolutbank",
+    "previewTitle" : "wasfasf",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/2_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "31b356ea-ddb2-4538-9d0c-567fe717e9d2",
+      "title" : "asfasfasfas",
+      "text" : "fasfasf",
+      "textColor" : "#000",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/2_31b356ea-ddb2-4538-9d0c-567fe717e9d2.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "asfsafasfasf",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
       "gradient" : "EMPTY"
     } ]
   } ]
