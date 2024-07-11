@@ -384,7 +384,7 @@ public class BannerServiceTest {
     }
 
     @Test
-    public void change_banner_not_found_banner_test() throws JsonProcessingException {
+    public void change_banner_not_found_exception_banner_test() throws JsonProcessingException {
         BannerDto bannerDto = BannerDto
                 .builder()
                 .bankName("tkbbank")
@@ -402,7 +402,8 @@ public class BannerServiceTest {
                 ResourceNotFoundException.class,
                 () -> bannerProcessorService.patchBanner(mapper.writeValueAsString(bannerDto), "test_code")
         );
-
     }
+
+
 }
 
