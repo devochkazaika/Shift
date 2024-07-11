@@ -32,10 +32,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -46,6 +43,8 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_TEST_DIRECTORY;
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class BannerServiceTest {
+
+    ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
     private BannerRepository bannerRepository;
@@ -361,6 +360,47 @@ public class BannerServiceTest {
                 .equals(BANNERS_SAVE_DIRECTORY.concat("test_codeSecond_icon"));
         Assertions.assertEquals(
                 bannerProcessorService.getBannersList("tkbbank", "WEB"),multipartBodyBuilder.build()
+        );
+    }
+
+    @Test
+    public void change_banner_test_success() throws JsonProcessingException {
+        BannerDto bannerDto = BannerDto
+                .builder()
+                .bankName("tkbbank")
+                .name("test_dto")
+                .platformType("WEB")
+                .priority(2)
+                .url("http://sadasdasd")
+                .textUrl("sample text for url")
+                .siteSection("site section")
+                .color("black")
+                .text("text")
+                .build();
+        Banner banner = Banner.builder()
+                .code("test_code")
+                .name("first name")
+                .text("first text")
+                .url("first url")
+                .textUrl("first url Text")
+                .availableForAll(false)
+                .platformType("ALL PLATFORMS")
+                .priority(3)
+                .build();
+
+        bannerRepository.save(banner);
+        bannerProcessorService.patchBanner(mapper.writeValueAsString(bannerDto), "test_code");
+        banner = bannerRepository.findBannerByCode("test_code").orElse(null);
+        Banner finalBanner = banner;
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(bannerDto.getPriority(), finalBanner.getPriority()),
+                () -> Assertions.assertEquals(bannerDto.getName(), finalBanner.getName()),
+                () -> Assertions.assertEquals(bannerDto.getPlatformType(), finalBanner.getPlatformType()),
+                () -> Assertions.assertEquals(bannerDto.getUrl(), finalBanner.getUrl()),
+                () -> Assertions.assertEquals(bannerDto.getTextUrl(), finalBanner.getTextUrl()),
+                () -> Assertions.assertEquals(false, finalBanner.getAvailableForAll()),
+                () -> Assertions.assertEquals(bannerDto.getColor(), finalBanner.getColor())
+
         );
     }
 }

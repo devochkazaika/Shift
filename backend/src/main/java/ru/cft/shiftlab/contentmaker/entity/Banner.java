@@ -79,7 +79,7 @@ public class Banner {
      * Текст ссылки.
      */
     @Column(name = "url_text")
-    private String urlText;
+    private String textUrl;
 
     /**
      * Приоритет отображения баннера.
@@ -97,7 +97,7 @@ public class Banner {
      * Признак Доступен всем.
      */
     @Column(name = "available")
-    private boolean availableForAll;
+    private Boolean availableForAll;
 
     /**
      * Тип платформы для отображения Банера.
