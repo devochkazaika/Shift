@@ -404,6 +404,53 @@ public class BannerServiceTest {
         );
     }
 
+    private void saveExampleToDb(){
+        Banner mainbanner = Banner.builder()
+                .code("code_main_banner")
+                .bank(null)
+                .name("test_banner_name")
+                .url("http://asdasdasd")
+                .text("any text")
+                .color("green")
+                .priority(2)
+                .build();
+        Banner banner = Banner.builder()
+                .code("test_code")
+                .name("first name")
+                .text("first text")
+                .url("first url")
+                .mainBanner(mainbanner)
+                .textUrl("first url Text")
+                .availableForAll(false)
+                .platformType("ALL PLATFORMS")
+                .priority(3)
+                .build();
+        bannerRepository.save(mainbanner);
+        bannerRepository.save(banner);
+    }
 
+    @Test
+    public void delete_banner_successful_test(){
+        saveExampleToDb();
+        bannerProcessorService.deleteBanner("test_code");
+        Assertions.assertEquals(
+                 bannerRepository.findBannerByCode("test_code").orElse(null),
+                null
+        );
+    }
+
+    @Test
+    public void delete_banner_cascade_successful_test(){
+        saveExampleToDb();
+        bannerProcessorService.deleteBannerCascade("test_code");
+        Assertions.assertEquals(
+                bannerRepository.findBannerByCode("test_code").orElse(null),
+                null
+        );
+        Assertions.assertEquals(
+                bannerRepository.findBannerByCode("code_main_banner").orElse(null),
+                null
+        );
+    }
 }
 

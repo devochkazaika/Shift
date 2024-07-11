@@ -168,8 +168,12 @@ public class BannerProcessorService implements BannerService {
      */
     @Transactional
     public void deleteBannerCascade(String code){
-        bannerRepository.deleteMainBannerByCode(code);
+        Banner banner = bannerRepository.findBannerByCode(code)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException(String.format("Banner with code = %s doesnt exist", code))
+                );
         deleteBanner(code);
+        deleteBanner(banner.getMainBanner().getCode());
     }
 
     /**
