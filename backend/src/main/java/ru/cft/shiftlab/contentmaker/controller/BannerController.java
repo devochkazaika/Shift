@@ -94,6 +94,8 @@ public class BannerController {
     }
 
     @PatchMapping(value = "/change/banner")
+    @Operation(summary = "Изменение банера")
+    @ResponseStatus(HttpStatus.OK)
     public void changeBanner(@RequestParam(value = "json")
                              String bannerDto,
                              @RequestParam(value = "code")

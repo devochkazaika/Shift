@@ -50,8 +50,9 @@ public class BannerProcessorService implements BannerService {
 
     /**
      * Метод для назначения mainBanner для банера
-     * @param code
-     * @param codeMainBanner
+     *
+     * @param code Код банера
+     * @param codeMainBanner Код mainBanner
      */
     @Transactional
     public void setMainBanner(String code, String codeMainBanner){
@@ -64,6 +65,14 @@ public class BannerProcessorService implements BannerService {
         banner.setMainBanner(mainBanner);
         bannerRepository.updateBannerByMainBanner(banner.getId(), mainBanner.getId());
     }
+
+    /**
+     * Метод для добавления банера на сервер
+     * @param bannerRequestDto BannerDto в формате <code>String</code>
+     * @param picture Картинка банера
+     * @param icon Иконка банера
+     * @throws IOException
+     */
     public void addBanner(String bannerRequestDto,
                           MultipartFile picture,
                           MultipartFile icon) throws IOException {
@@ -80,20 +89,25 @@ public class BannerProcessorService implements BannerService {
         }
     }
 
+    /**
+     * Возвращение списка банеров определенного банка и платформы
+     * @param bankId Банк
+     * @param platform Платформа (WEB | IOS | ALL PLATFORMS | ANDROID)
+     * @return <code>List<Banner></code> Список банеров
+     */
     @Override
     public List<Banner> getBannersList(String bankId, String platform) {
         Bank bank = bankRepository.findBankByName(bankId).orElseThrow(
-                () -> new ResourceNotFoundException("c")
+                () -> new ResourceNotFoundException(String.format("could not find bank with name = %s", bankId))
         );
-        List<Banner> list = bannerRepository.findBannerByBankAndPlatform(bank, platform);
-        return list;
+        return bannerRepository.findBannerByBankAndPlatform(bank, platform);
     }
 
     /**
-     * Метод для сохранение информации по банеру в БД
-     * @param bannerDto
-     * @param filesName
-     * @return Banner
+     * Метод для сохранения информации по банеру в БД (без картинки)
+     * @param bannerDto BannerDto
+     * @param filesName Массив имен файлов (1 - иконка, 2 - картинка)
+     * @return Banner сохраненный банер
      */
     private Banner saveToDb(BannerDto bannerDto, String[] filesName){
         Banner banner = dtoToEntityConverter.fromBannerDtoToBanner(bannerDto,
@@ -115,10 +129,10 @@ public class BannerProcessorService implements BannerService {
 
     /**
      * Метод для сохранения картинок для банеров
-     * @param bannerDto
-     * @param picture
-     * @param icon
-     * @return
+     * @param bannerDto Параметры банера BannerDto
+     * @param picture Картинка для банера
+     * @param icon Иконка банера
+     * @return String[] массив имен 1-иконка, 2-картинка
      * @throws IOException
      */
     private String[] saveImage(BannerDto bannerDto, MultipartFile picture,
@@ -129,35 +143,50 @@ public class BannerProcessorService implements BannerService {
         String pictureName = multipartFileToImageConverter.convertMultipartFileToImageAndSave(
                 picture,
                 picturesSaveDirectory,
-                bankId + "/" + bannerDto.getCode()+"_"+ "pict"
+                String.format("%s/%s_pict", bankId, bannerDto.getCode())
         );
         String iconName = multipartFileToImageConverter.convertMultipartFileToImageAndSave(
                 icon,
                 picturesSaveDirectory,
-                bankId  + "/" + bannerDto.getCode() + "_" + "icon"
+                String.format("%s/%s_icon", bankId, bannerDto.getCode())
         );
         return new String[]{pictureName, iconName};
     }
 
 
-
+    /**
+     * Удаление банера
+     * @param code Код банера
+     */
     public void deleteBanner(String code){
         bannerRepository.deleteBannerByCode(code);
     }
 
+    /**
+     * Каскадное удаление банера вместе с его mainBanner
+     * @param code Код банера
+     */
     @Transactional
     public void deleteBannerCascade(String code){
         bannerRepository.deleteMainBannerByCode(code);
         deleteBanner(code);
     }
 
+    /**
+     * Изменение банера (без картинки)
+     * @param bannerDto BannerDto
+     * @param code Код банера
+     * @throws JsonProcessingException
+     */
     public void patchBanner(String bannerDto, String code) throws JsonProcessingException {
         BannerDto dto = mapper.readValue(bannerDto, BannerDto.class);
+        //Нахождение банера из бд по коду
         Banner banner = bannerRepository.findBannerByCode(code)
                 .orElseThrow(
                         () -> new ResourceNotFoundException(String
                                 .format("Banner with code = %s doesnt exist", code))
                 );
+        //Обновление банера
         banner = mapper.updateValue(banner, dto);
         bannerRepository.save(banner);
     }

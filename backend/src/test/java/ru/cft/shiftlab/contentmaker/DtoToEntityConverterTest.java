@@ -78,6 +78,7 @@ public class DtoToEntityConverterTest {
         );
     }
 
+
     public static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
