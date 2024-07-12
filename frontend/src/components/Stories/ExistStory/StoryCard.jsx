@@ -17,9 +17,8 @@ const StoryCard = ({ storyIndex, story, platform }) => {
   const [initialImage, setInitialImage] = useState(null);
 
   useEffect(() => {
-  
     if (!initialImage) {
-      fetchImage(story.previewUrl, setInitialImage);
+      fetchImage(story.previewUrl).then(setInitialImage);
     }
 
     if (story && story.storyFrames) {
@@ -28,35 +27,29 @@ const StoryCard = ({ storyIndex, story, platform }) => {
   }, [story, initialImage]);
 
   useEffect(() => {
-    const draggableList = document.getElementById('draggable-list');
+    const draggableList = document.getElementById(`draggable-list-${storyIndex}`);
     let initialOrder = frames.map((frame) => frame.id);
-  
+
     const handleDragStart = (e) => {
       if (e.target.tagName === 'LI') {
         e.target.classList.add('dragging');
       }
     };
-  
+
     const handleDragEnd = async (e) => {
       if (e.target.tagName === 'LI') {
         e.target.classList.remove('dragging');
-        const newOrder = Array.from(draggableList.children).map((child) => {
-          if (initialOrder.includes(child.id)){
-            return child.id
-          }
-        }
-        );
-  
+        const newOrder = Array.from(draggableList.children).map((child) => child.id);
+
         // Поиск изменённых карточек
         let changedIds = [];
         for (let i = 0; i < newOrder.length; i++) {
-          if (newOrder[i] !== initialOrder[i] && newOrder[i] !== undefined) {
-            changedIds.push(initialOrder[i]);
-            changedIds.push(newOrder[i]);
+          if (newOrder[i] !== initialOrder[i]) {
+            changedIds.push(initialOrder[i], newOrder[i]);
             break;
           }
         }
-  
+
         if (changedIds.length === 2) {
           try {
             await updateFrameOrder(story, platform, changedIds[0], changedIds[1]);
@@ -69,18 +62,18 @@ const StoryCard = ({ storyIndex, story, platform }) => {
         }
       }
     };
-  
+
     const handleDragOver = (e) => {
       e.preventDefault();
       const afterElement = getDragAfterElement(draggableList, e.clientY);
-      const draggingElement = document.querySelector('.dragging');
+      const draggingElement = draggableList.querySelector('.dragging');
       if (afterElement == null) {
         draggableList.appendChild(draggingElement);
       } else {
         draggableList.insertBefore(draggingElement, afterElement);
       }
     };
-  
+
     const getDragAfterElement = (list, clientY) => {
       const draggableElements = [...list.querySelectorAll('.draggable:not(.dragging)')];
       return draggableElements.reduce((closest, child) => {
@@ -93,16 +86,15 @@ const StoryCard = ({ storyIndex, story, platform }) => {
         }
       }, { offset: Number.NEGATIVE_INFINITY }).element;
     };
-  
+
     draggableList.addEventListener('dragover', handleDragOver);
-  
+
     const draggables = draggableList.querySelectorAll('li');
     draggables.forEach(draggable => {
       draggable.addEventListener('dragstart', handleDragStart);
       draggable.addEventListener('dragend', handleDragEnd);
     });
-  
-    
+
     return () => {
       draggables.forEach(draggable => {
         draggable.removeEventListener('dragstart', handleDragStart);
@@ -110,7 +102,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
       });
       draggableList.removeEventListener('dragover', handleDragOver);
     };
-  }, [frames, story, platform]);
+  }, [frames, story, platform, storyIndex]);
 
   const handleOnSubmit = async (story, frame, platform) => {
     const success = await deleteFrame(story, frame, platform);
@@ -140,7 +132,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
                     <div style={{ width: "70%" }}>
                       <div>
                           <FormField
-                            labelTitle = "Заголовок"
+                            labelTitle="Заголовок"
                             name="previewTitle"
                             type="text"
                             value={values.previewTitle}
@@ -190,13 +182,13 @@ const StoryCard = ({ storyIndex, story, platform }) => {
       </div>
       <div>
         <h3>Story Frames:</h3>
-        <ul id="draggable-list">
+        <ul id={`draggable-list-${storyIndex}`}>
           {frames.map((value, index) => (
             <li id={value.id} className="listFrame draggable" key={index} draggable="true">
               <details>
                 <summary>
                   <p>
-                    <DragIcon style={{ cursor: 'grab', marginRight: '8px', width: '20px', height: '20px'}} /> {/* Иконка для перемещения */}
+                    <DragIcon style={{ cursor: 'grab', marginRight: '8px', width: '20px', height: '20px' }} /> {/* Иконка для перемещения */}
                     {value.title}
                   </p>
                   <div>
@@ -224,23 +216,23 @@ const StoryCard = ({ storyIndex, story, platform }) => {
               </details>
             </li>
           ))}
-          </ul>
-          <div>
-            <details className='addFrame'>
-              <summary>
-                Добавить карточку
-              </summary>
-              <div>
-                <AddFrame
-                  setFrames={setFrames}
-                  frames={frames}
-                  storyIndex={storyIndex}
-                  story={story}
-                  platform={platform}
-                />
-              </div>
-            </details>
-          </div>
+        </ul>
+        <div>
+          <details className='addFrame'>
+            <summary>
+              Добавить карточку
+            </summary>
+            <div>
+              <AddFrame
+                setFrames={setFrames}
+                frames={frames}
+                storyIndex={storyIndex}
+                story={story}
+                platform={platform}
+              />
+            </div>
+          </details>
+        </div>
       </div>
     </div>
   );

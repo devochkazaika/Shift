@@ -64,11 +64,6 @@
   transform: scale(0.8);
 }
 
-#dragging {
-  opacity: 0.5;
-  z-index: 10;
-}
-
 .draggable {
   cursor: grab;
   position: relative;
