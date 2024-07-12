@@ -64,7 +64,7 @@
   transform: scale(0.8);
 }
 
-.dragging {
+#dragging {
   opacity: 0.5;
   z-index: 10;
 }

@@ -5,7 +5,6 @@ import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg'
 import { deleteStory } from './../../../api/stories';
 import { useState, useEffect, React } from 'react';
 
-
 const StoryPanel = ({ storyArray, platform }) => {
   const [stories, setStories] = useState(storyArray);
   //Для обновления после удаления
@@ -57,6 +56,5 @@ const StoryPanel = ({ storyArray, platform }) => {
         </div>
     );
   }
-
 
 export default StoryPanel;

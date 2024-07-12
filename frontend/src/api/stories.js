@@ -170,8 +170,7 @@ export const updateFrame = async (story, platform, frame, frameIndex) => {
   }
 };
 
-
-export const addFrame = async (story, values, platform) => {
+export const addFrame = async (story, frame, platform) => {
   const toastView = toast(defaultToastMessages.uploadingData, {
     ...defaultToastOptions,
     autoClose: false,
@@ -179,21 +178,21 @@ export const addFrame = async (story, values, platform) => {
   });
   const form = new FormData();
   form.append("json", JSON.stringify({
-    title: values.title,
-    text: values.text,
-    visibleButtonOrNone: values.visibleButtonOrNone,
-    gradient: values.gradient,
-    textColor: values.textColor,
-    buttonText: values.buttonText,
-    buttonTextColor: values.buttonTextColor,
-    buttonBackgroundColor: values.buttonBackgroundColor,
-    buttonUrl: values.buttonUrl
+    title: frame.title,
+    text: frame.text,
+    visibleButtonOrNone: frame.visibleButtonOrNone,
+    gradient: frame.gradient,
+    textColor: frame.textColor,
+    buttonText: frame.buttonText,
+    buttonTextColor: frame.buttonTextColor,
+    buttonBackgroundColor: frame.buttonBackgroundColor,
+    buttonUrl: frame.buttonUrl
   }
   ));
   form.append("platform", platform);
   form.append("id", story.id);
   form.append("bankId", story.bankId);
-  form.append("image", values.pictureUrl);
+  form.append("image", frame.pictureUrl);
   try {
     const response = await axios.post(`/stories/add/frame`, form);
     toast.update(toastView, {

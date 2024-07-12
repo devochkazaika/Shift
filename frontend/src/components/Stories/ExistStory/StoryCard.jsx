@@ -28,7 +28,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
   }, [story, initialImage]);
 
   useEffect(() => {
-    const list = document.getElementById('draggable-list');
+    const draggableList = document.getElementById('draggable-list');
     let initialOrder = frames.map((frame) => frame.id);
   
     const handleDragStart = (e) => {
@@ -40,7 +40,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
     const handleDragEnd = async (e) => {
       if (e.target.tagName === 'LI') {
         e.target.classList.remove('dragging');
-        const newOrder = Array.from(list.children).map((child) => {
+        const newOrder = Array.from(draggableList.children).map((child) => {
           if (initialOrder.includes(child.id)){
             return child.id
           }
@@ -50,7 +50,6 @@ const StoryCard = ({ storyIndex, story, platform }) => {
         // Поиск изменённых карточек
         let changedIds = [];
         for (let i = 0; i < newOrder.length; i++) {
-          // Тут костыль в будущем надо поменять
           if (newOrder[i] !== initialOrder[i] && newOrder[i] !== undefined) {
             changedIds.push(initialOrder[i]);
             changedIds.push(newOrder[i]);
@@ -73,20 +72,20 @@ const StoryCard = ({ storyIndex, story, platform }) => {
   
     const handleDragOver = (e) => {
       e.preventDefault();
-      const afterElement = getDragAfterElement(list, e.clientY);
+      const afterElement = getDragAfterElement(draggableList, e.clientY);
       const draggingElement = document.querySelector('.dragging');
       if (afterElement == null) {
-        list.appendChild(draggingElement);
+        draggableList.appendChild(draggingElement);
       } else {
-        list.insertBefore(draggingElement, afterElement);
+        draggableList.insertBefore(draggingElement, afterElement);
       }
     };
   
-    const getDragAfterElement = (list, y) => {
+    const getDragAfterElement = (list, clientY) => {
       const draggableElements = [...list.querySelectorAll('.draggable:not(.dragging)')];
       return draggableElements.reduce((closest, child) => {
         const box = child.getBoundingClientRect();
-        const offset = y - box.top - box.height / 2;
+        const offset = clientY - box.top - box.height / 2;
         if (offset < 0 && offset > closest.offset) {
           return { offset: offset, element: child };
         } else {
@@ -95,9 +94,9 @@ const StoryCard = ({ storyIndex, story, platform }) => {
       }, { offset: Number.NEGATIVE_INFINITY }).element;
     };
   
-    list.addEventListener('dragover', handleDragOver);
+    draggableList.addEventListener('dragover', handleDragOver);
   
-    const draggables = list.querySelectorAll('li');
+    const draggables = draggableList.querySelectorAll('li');
     draggables.forEach(draggable => {
       draggable.addEventListener('dragstart', handleDragStart);
       draggable.addEventListener('dragend', handleDragEnd);
@@ -109,7 +108,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
         draggable.removeEventListener('dragstart', handleDragStart);
         draggable.removeEventListener('dragend', handleDragEnd);
       });
-      list.removeEventListener('dragover', handleDragOver);
+      draggableList.removeEventListener('dragover', handleDragOver);
     };
   }, [frames, story, platform]);
 
