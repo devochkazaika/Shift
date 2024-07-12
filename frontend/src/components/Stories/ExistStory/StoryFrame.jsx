@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { FieldArray, Form, Formik, Field } from 'formik';
+import { FieldArray, Form, Formik } from 'formik';
 import FormField from "../../FormField";
 import Button from '../.././ui/Button';
 import ColorPicker from './../../ColorPicker/index';
@@ -60,7 +60,6 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                     labelTitle="Заголовок"
                     name={`title`}
                     value={values.title}
-                    as={FormField}
                     type="text"
                     onChange={handleChange}
                   />
@@ -93,10 +92,9 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                     <div className="row">
                       <label htmlFor={`ButtonIntarectiveType-${frameIndex}`}>
                         Кнопка
-                        <Field
+                        <FormField
                           name={`visibleButtonOrNone`}
                           value="BUTTON"
-                          as={FormField}
                           id={`ButtonIntarectiveType-${frameIndex}`}
                           type="radio"
                           checked={values.visibleButtonOrNone === "BUTTON"}
@@ -105,10 +103,9 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                       </label>
                       <label htmlFor={`NonIntarectiveType-${frameIndex}`}>
                         Ничего
-                        <Field
+                        <FormField
                           name={`visibleButtonOrNone`}
                           value="NONE"
-                          as={FormField}
                           id={`NonIntarectiveType-${frameIndex}`}
                           type="radio"
                           checked={values.visibleButtonOrNone === "NONE"}
@@ -157,13 +154,13 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                       </div>
                     </>
                   )}
-                  <div className='item-card__summary'>
+                  <div className='row'>
                     <FormField
                         labelTitle={"Картинка"}
                         name={`pictureFrame`}
                         component={UploadImage}
                     />
-                    <div className='item-card__button--change'>
+                    <div className='item-card__button'>
                       <Button
                         handleOnClick={() => handleOnSubmit(story, platform, values, frame.id)}
                         text="Изменить"

@@ -211,14 +211,14 @@ const StoryCard = ({ storyIndex, story, platform }) => {
         <ul id="draggable-list">
           {frames.map((value, index) => (
             <li id={value.id} className="listFrame draggable" key={index} draggable="true">
-              <details className="item-card">
-                <summary className="item-card__summary">
-                  <p className="item-card__title">
+              <details>
+                <summary>
+                  <p>
                     <DragIcon style={{ cursor: 'grab', marginRight: '8px', width: '20px', height: '20px'}} /> {/* Иконка для перемещения */}
                     {value.title}
                   </p>
-                  <div className="item-card__buttons">
-                    <div className="item-card__button--delete">
+                  <div>
+                    <div>
                       <Button
                         text="Удалить"
                         type="button"
@@ -229,7 +229,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
                     </div>
                   </div>
                 </summary>
-                <div className="item-card__content">
+                <div>
                   <StoryFrame
                     key={index}
                     frame={value}
@@ -243,13 +243,12 @@ const StoryCard = ({ storyIndex, story, platform }) => {
             </li>
           ))}
           </ul>
-          <ul>
-          <li className="listFrame addFrame">
-            <details className="item-card__add">
-              <summary className="item-card__summary">
-                <p className="item-card__title">Добавить карточку</p>
+          <div>
+            <details className='addFrame'>
+              <summary>
+                Добавить карточку
               </summary>
-              <div className="item-card__content">
+              <div>
                 <AddFrame
                   setFrames={setFrames}
                   frames={frames}
@@ -259,8 +258,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
                 />
               </div>
             </details>
-          </li>
-        </ul>
+          </div>
       </div>
     </div>
   );

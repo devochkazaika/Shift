@@ -28,10 +28,10 @@ const AddFrame = ({setFrames, frames, story, storyIndex, platform }) => {
           text: "Sample text for the story.",
           visibleButtonOrNone: "BUTTON",
           gradient: "EMPTY",
-          textColor: "FF0000",
+          textColor: "#ffff",
           buttonText: "Click Here",
-          buttonTextColor: "FFFFFF",
-          buttonBackgroundColor: "0000FF",
+          buttonTextColor: "#FFFFFF",
+          buttonBackgroundColor: "#0000FF",
           buttonUrl: "https://example.com",
           pictureUrl: null
         }}

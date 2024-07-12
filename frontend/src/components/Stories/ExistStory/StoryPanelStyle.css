@@ -65,6 +65,7 @@
 .listFrame details summary button {
   display: flex;
   gap: 10px;
+  transform: scale(0.8);
 }
 
 
@@ -85,7 +86,7 @@
 }
 
 .item-card__button {
-  padding: 5px 15px;
+  gap: 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -93,18 +94,6 @@
   font-weight: bold;
   color: #fff;
 }
-
-.item-card__button--change{
-  float: right;
-  transform: scale(auto);
-  padding: 0 0px;
-  /* padding-right: 20px; */
-}
-
-.item-card__button--delete {
-  transform: scale(0.7);
-}
-
 
 
 .dragging {
@@ -133,5 +122,14 @@
 }
 
 .addFrame {
-  position: Static;
+  border: 2px dashed !important;
+  height: 100% !important;
+  padding-top: 20px !important;
+  position: Static !important;
+  background-color: #dddada !important;
 }
+
+.addFrame summary {
+  padding-bottom: 10px;
+}
+

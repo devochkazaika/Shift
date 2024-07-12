@@ -31,8 +31,8 @@ const StoryPanel = ({ storyArray, platform }) => {
                 <details>
                   <summary>
                     <p>{story.previewTitle}</p>
-                    <div className="item-card__buttons">
-                      <div className="item-card__button--delete">
+                    <div>
+                      <div>
                         <Button
                               text="Удалить"
                               type="button"
