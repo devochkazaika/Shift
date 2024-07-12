@@ -1,4 +1,4 @@
-.frames{
+.frames {
   display: inline-block;
   width: 70%;
 }
@@ -35,7 +35,7 @@
 }
 
 
-.card{
+.card {
  border: #858585;
 }
 
@@ -92,11 +92,10 @@
   color: #fff;
 }
 
-.item-card__button--change{
+.item-card__button--change {
   float: right;
   transform: scale(auto);
   padding: 0 0px;
-  /* padding-right: 20px; */
 }
 
 .item-card__button--delete {
@@ -110,7 +109,6 @@
   z-index: 10;
   position: sticky;
 }
-
 
 .dragging {
   opacity: 0.5;
