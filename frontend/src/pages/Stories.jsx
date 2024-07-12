@@ -78,7 +78,7 @@ const Stories = () => {
 
   return (
     <>
-      <StoryPanel storyArray={storyArray} platform={platform} />
+      {storyArray.length > 0 ? <StoryPanel storyArray={storyArray} platform={platform} /> : <></>}
       {loading && <Loader />}
       <h1>Добавить Story</h1>
       <div className="stories">
