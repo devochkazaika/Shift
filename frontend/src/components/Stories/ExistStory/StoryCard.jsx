@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import StoryFrame from './StoryFrame';
-import { FieldArray, Form, Field, Formik } from 'formik';
+import { FieldArray, Form, Formik } from 'formik';
 import FormField from "../../FormField";
 import { gradientOptions } from './../../../utils/constants/gradient';
 import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg';
@@ -152,17 +152,14 @@ const StoryCard = ({ storyIndex, story, platform }) => {
                 {() => (
                   <div className="row" style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ width: "70%" }}>
-                      <div className="frame" style={{ marginBottom: "10px" }}>
-                        <h3 style={{ paddingRight: "10px" }}>Заголовок</h3>
-                        <div style={{ width: "100%" }}>
-                          <Field
+                      <div>
+                          <FormField
+                            labelTitle = "Заголовок"
                             name="previewTitle"
-                            as={FormField}
                             type="text"
                             value={values.previewTitle}
                             onChange={handleChange}
                           />
-                        </div>
                       </div>
                       <FormField
                         name="previewTitleColor"
@@ -196,7 +193,6 @@ const StoryCard = ({ storyIndex, story, platform }) => {
                         text="Изменить"
                         type="button"
                         color="green"
-                        icon={<ArrowIcon width="12px" height="12px" />}
                       />
                     </div>
                   </div>

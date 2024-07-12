@@ -46,7 +46,6 @@ const AddFrame = ({setFrames, frames, story, storyIndex, platform }) => {
                     labelTitle="Заголовок"
                     name={`title`}
                     value={values.title}
-                    as={FormField}
                     type="text"
                     onChange={handleChange}
                   />
@@ -143,14 +142,14 @@ const AddFrame = ({setFrames, frames, story, storyIndex, platform }) => {
                       </div>
                     </>
                   )}
-                  <div className='item-card__summary'>
+                  <div className='row'>
                     <div className="input_field">
                       <FormField
                         name={`pictureUrl`}
                         component={UploadImage}
                       />
                     </div>
-                    <div className='item-card__button--change'>
+                    <div>
                       <Button
                         handleOnClick={() => handleOnSubmit(story, values, platform)}
                         text="Добавить"

@@ -4,7 +4,6 @@ import FormField from "../../FormField";
 import Button from '../.././ui/Button';
 import ColorPicker from './../../ColorPicker/index';
 import { gradientOptions } from './../../../utils/constants/gradient';
-import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg';
 import { updateFrame } from '../../../api/stories';
 import axios from 'axios';
 import UploadImage from './../../UploadImage/index';
@@ -160,14 +159,15 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                         name={`pictureFrame`}
                         component={UploadImage}
                     />
-                    <div className='item-card__button'>
-                      <Button
-                        handleOnClick={() => handleOnSubmit(story, platform, values, frame.id)}
-                        text="Изменить"
-                        type="button"
-                        color="green"
-                        icon={<ArrowIcon width="12px" height="12px" />}
-                      />
+                    <div className='row'>
+                      <div className="input_field">
+                        <Button
+                          handleOnClick={() => handleOnSubmit(story, platform, values, frame.id)}
+                          text="Изменить"
+                          type="button"
+                          color="green"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
