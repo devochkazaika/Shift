@@ -4,8 +4,7 @@ import FormField from "../../FormField";
 import Button from '../.././ui/Button';
 import ColorPicker from './../../ColorPicker/index';
 import { gradientOptions } from './../../../utils/constants/gradient';
-import { updateFrame } from '../../../api/stories';
-import axios from 'axios';
+import { updateFrame, fetchImage } from '../../../api/stories';
 import UploadImage from './../../UploadImage/index';
 
 const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
@@ -13,24 +12,13 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
     updateFrame(values, platform, frame, frameIndex);
   };
   const [initialImage, setInitialImage] = useState(null);
-  const [imageLoadad, setImageLoaded] = useState(false);
   useEffect(() => {
     //получаем картинку
-    const fetchImage = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080" + frame.pictureUrl, { responseType: 'arraybuffer' });
-        const blob = new Blob([response.data], { type: response.headers['content-type'] });
-        const file = new File([blob], "initial_image.jpg", { type: blob.type });
-        setInitialImage(file);
-      } catch (error) {
-        console.error('Error fetching the image:', error);
-      }
-    };
-    if (!imageLoadad){
-      fetchImage();
-      setImageLoaded(true);
+    if (!initialImage) {
+      fetchImage(frame.pictureUrl, setInitialImage);
     }
-  }, [imageLoadad, frame.pictureUrl])
+
+  }, [frame.pictureUrl])
 
   return (
     <div>

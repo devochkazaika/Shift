@@ -6,7 +6,6 @@ import { deleteStory } from './../../../api/stories';
 import { useState, useEffect, React } from 'react';
 
 
-
 const StoryPanel = ({ storyArray, platform }) => {
   const [stories, setStories] = useState(storyArray);
   //Для обновления после удаления
@@ -17,9 +16,14 @@ const StoryPanel = ({ storyArray, platform }) => {
   }, [storyArray]);
   //Для удаления истории
   const handleOnSubmit = async (story, platform) => {
-    const success = await deleteStory(story, platform);
-    if (success) {
-      setStories(prevStories => prevStories.filter(item => item.id !== story.id));
+    try {
+      const success = await deleteStory(story, platform);
+      if (success) {
+        setStories(prevStories => prevStories.filter(item => item.id !== story.id));
+      }
+    }
+    catch (error) {
+      console.error('Ошибка при удалении истории', error);
     }
   };
 

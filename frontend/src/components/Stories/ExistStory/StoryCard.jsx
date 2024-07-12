@@ -7,38 +7,25 @@ import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg'
 import { ReactComponent as DragIcon } from '../../../assets/icons/drag.svg';
 import Button from '../../ui/Button';
 import ColorPicker from './../../ColorPicker/index';
-import { deleteFrame, updateStory, updateFrameOrder } from './../../../api/stories';
+import { deleteFrame, updateStory, updateFrameOrder, fetchImage } from './../../../api/stories';
 import UploadImage from './../../UploadImage/index';
-import axios from 'axios';
 import { storyPanelValidationSchema } from './../../../utils/helpers/validation';
 import AddFrame from './AddFrame';
 
 const StoryCard = ({ storyIndex, story, platform }) => {
   const [frames, setFrames] = useState(story.storyFrames);
-  const [imageLoaded, setImageLoaded] = useState(false);
   const [initialImage, setInitialImage] = useState(null);
 
   useEffect(() => {
-    const fetchImage = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8080${story.previewUrl}`, { responseType: 'arraybuffer' });
-        const blob = new Blob([response.data], { type: response.headers['content-type'] });
-        const file = new File([blob], "initial_image.jpg", { type: blob.type });
-        setInitialImage(file);
-      } catch (error) {
-        console.error('Error fetching the image:', error);
-      }
-    };
-
-    if (!imageLoaded) {
-      fetchImage();
-      setImageLoaded(true);
+  
+    if (!initialImage) {
+      fetchImage(story.previewUrl, setInitialImage);
     }
 
     if (story && story.storyFrames) {
       setFrames(story.storyFrames);
     }
-  }, [story, imageLoaded]);
+  }, [story, initialImage]);
 
   useEffect(() => {
     const list = document.getElementById('draggable-list');

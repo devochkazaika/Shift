@@ -42,6 +42,17 @@ export const uploadStories = async (jsonPayload, previewImage, cardImages) => {
   }
 };
 
+export const fetchImage = async (url, setImage) => {
+  try {
+    const response = await axios.get(`${url}`, { responseType: 'arraybuffer' });
+    const blob = new Blob([response.data], { type: response.headers['content-type'] });
+    const file = new File([blob], "initial_image.jpg", { type: blob.type });
+    setImage(file);
+  } catch (error) {
+    console.error('Error fetching the image:', error);
+  }
+};
+
 export const deleteStory = async (value, platform) => {
   const toastView = toast(defaultToastMessages.uploadingData, {
     ...defaultToastOptions,
