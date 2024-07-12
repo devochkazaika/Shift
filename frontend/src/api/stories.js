@@ -3,12 +3,34 @@ import { defaultToastOptions, defaultUpdateToastOptions } from '../utils/constan
 import { toast } from "react-toastify";
 import { defaultToastMessages } from "../utils/constants/defaultToastMessages";
 
-export const uploadStories = async (jsonPayload, previewImage, cardImages) => {
-  const toastView = toast(defaultToastMessages.uploadingData, {
-    ...defaultToastOptions,
-    autoClose: false,
-    isLoading: true,
+const createToast = (toastContent) => {
+  return toast(toastContent, {
+  ...defaultToastOptions,
+  autoClose: false,
+  isLoading: true,
+});
+}
+
+const updateToast = (toastView, response) => {
+    toast.update(toastView, {
+    ...defaultUpdateToastOptions,
+    render: response.message,
   });
+};
+
+const warningToast = (toastView, error) => {
+  if (error.response.status === 500) {
+    toast.update(toastView, {
+      ...defaultUpdateToastOptions,
+      render: defaultToastMessages.connectionError,
+      type: "warning"
+    });
+    return false;
+  }
+};
+
+export const uploadStories = async (jsonPayload, previewImage, cardImages) => {
+  const toastView = createToast(defaultToastMessages.uploadingData);
   const form = new FormData();
   form.append("json", JSON.stringify(jsonPayload));
   form.append("previewImage", previewImage);
@@ -19,26 +41,10 @@ export const uploadStories = async (jsonPayload, previewImage, cardImages) => {
     const response = await axios.post("/stories/add", form, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    toast.update(toastView, {
-      ...defaultUpdateToastOptions,
-      render: response.message,
-    });
+    updateToast(toastView, response);
     return true;
   } catch (error) {
-    if (error.response.status === 500) {
-      toast.update(toastView, {
-        ...defaultUpdateToastOptions,
-        render: defaultToastMessages.connectionError,
-        type: "warning"
-      });
-      return false;
-    }
-    toast.update(toastView, {
-      ...defaultUpdateToastOptions,
-      render: error.message,
-      type: "warning"
-    });
-    return false;
+    warningToast(toastView, error);
   }
 };
 
@@ -53,62 +59,33 @@ export const fetchImage = async (url, setImage) => {
   }
 };
 
-export const deleteStory = async (value, platform) => {
-  const toastView = toast(defaultToastMessages.uploadingData, {
-    ...defaultToastOptions,
-    autoClose: false,
-    isLoading: true,
-  });
+export const deleteStory = async (story, platform) => {
+  const toastView = createToast(defaultToastMessages.uploadingData);
+  if (!story || !Object.hasOwn(story, 'bankId') || !Object.hasOwn(story, 'id')) {
+    return false;
+  }
   try {
-    const response = await axios.delete(`/stories/bank/info/delete?bankId=${value.bankId}&platform=${platform}&id=${value.id}`);
-    toast.update(toastView, {
-      ...defaultUpdateToastOptions,
-      render: response.message,
-    });
+    const response = await axios.delete(`/stories/bank/info/delete?bankId=${story.bankId}&platform=${platform}&id=${story.id}`);
+    updateToast(toastView, response);
     return true;
   } catch (error) {
-    if (error.response.status === 500) {
-      toast.update(toastView, {
-        ...defaultUpdateToastOptions,
-        render: defaultToastMessages.connectionError,
-        type: "warning"
-      });
-      return false;
-    }
+    warningToast(toastView, error);
   }
 };
 
 export const deleteFrame = async (story, frame, platform) => {
-  const toastView = toast(defaultToastMessages.uploadingData, {
-    ...defaultToastOptions,
-    autoClose: false,
-    isLoading: true,
-  });
+  const toastView = createToast(defaultToastMessages.uploadingData);
   try {
     const response = await axios.delete(`/stories/bank/info/delete/frame?bankId=${story.bankId}&platform=${platform}&storyId=${story.id}&frameId=${frame.id}`);
-    toast.update(toastView, {
-      ...defaultUpdateToastOptions,
-      render: response.message,
-    });
+    updateToast(toastView, response);
     return true;
   } catch (error) {
-    if (error.response.status === 500) {
-      toast.update(toastView, {
-        ...defaultUpdateToastOptions,
-        render: defaultToastMessages.connectionError,
-        type: "warning"
-      });
-      return false;
-    }
+    warningToast(toastView, error);
   }
 };
 
 export const updateStory = async (story, jsonStory, platform) => {
-  const toastView = toast(defaultToastMessages.uploadingData, {
-    ...defaultToastOptions,
-    autoClose: false,
-    isLoading: true,
-  });
+  const toastView = createToast(defaultToastMessages.uploadingData);
   const form = new FormData();
   form.append("json", JSON.stringify(jsonStory));
   form.append("platform", platform);
@@ -119,29 +96,15 @@ export const updateStory = async (story, jsonStory, platform) => {
     const response = await axios.patch(`/stories/bank/info/change`, form, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    toast.update(toastView, {
-      ...defaultUpdateToastOptions,
-      render: response.message,
-    });
+    updateToast(toastView, response);
     return true;
   } catch (error) {
-    if (error.response.status === 500) {
-      toast.update(toastView, {
-        ...defaultUpdateToastOptions,
-        render: defaultToastMessages.connectionError,
-        type: "warning"
-      });
-      return false;
-    }
+    warningToast(toastView, error);
   }
 };
 
 export const updateFrame = async (story, platform, frame, frameIndex) => {
-  const toastView = toast(defaultToastMessages.uploadingData, {
-    ...defaultToastOptions,
-    autoClose: false,
-    isLoading: true,
-  });
+  const toastView = createToast(defaultToastMessages.uploadingData);
   const form = new FormData();
   form.append("json", JSON.stringify(frame));
   form.append("platform", platform);
@@ -153,29 +116,15 @@ export const updateFrame = async (story, platform, frame, frameIndex) => {
     const response = await axios.patch(`/stories/bank/info/change/frame`, form, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    toast.update(toastView, {
-      ...defaultUpdateToastOptions,
-      render: response.message,
-    });
+    updateToast(toastView, response);
     return true;
   } catch (error) {
-    if (error.response.status === 500) {
-      toast.update(toastView, {
-        ...defaultUpdateToastOptions,
-        render: defaultToastMessages.connectionError,
-        type: "warning"
-      });
-      return false;
-    }
+    warningToast(toastView, error);
   }
 };
 
 export const addFrame = async (story, frame, platform) => {
-  const toastView = toast(defaultToastMessages.uploadingData, {
-    ...defaultToastOptions,
-    autoClose: false,
-    isLoading: true,
-  });
+  const toastView = createToast(defaultToastMessages.uploadingData);
   const form = new FormData();
   form.append("json", JSON.stringify({
     title: frame.title,
@@ -201,23 +150,13 @@ export const addFrame = async (story, frame, platform) => {
     });
     return response;
   } catch (error) {
-    if (error.response.status === 500) {
-      toast.update(toastView, {
-        ...defaultUpdateToastOptions,
-        render: defaultToastMessages.connectionError,
-        type: "warning"
-      });
-      return false;
-    }
+    warningToast(toastView, error);
   }
 };
 
 export const updateFrameOrder = async (story, platform, firstId, secondId) => {
-  const toastView = toast(defaultToastMessages.uploadingData, {
-    ...defaultToastOptions,
-    autoClose: false,
-    isLoading: true,
-  });
+  const toastView = createToast(defaultToastMessages.uploadingData);
+
   const form = new FormData();
   form.append("bankId", story.bankId);
   form.append("platform", platform);
@@ -232,13 +171,6 @@ export const updateFrameOrder = async (story, platform, firstId, secondId) => {
     });
     return response;
   } catch (error) {
-    if (error.response.status === 500) {
-      toast.update(toastView, {
-        ...defaultUpdateToastOptions,
-        render: defaultToastMessages.connectionError,
-        type: "warning"
-      });
-      return false;
-    }
+    warningToast(toastView, error);
   }
 }
