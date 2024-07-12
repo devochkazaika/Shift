@@ -3,6 +3,11 @@ import FormField from "../FormField";
 import { banks } from "../../utils/constants/banks";
 
 const CommonForm = ( {setBankId, setPlatform, ...props }) => {
+  function selectedBankId(event){
+    const selectedBankId = event.target.value;
+      setBankId(selectedBankId);
+      props.handleChange(event);
+  }
 
   return (
     <>
@@ -12,11 +17,7 @@ const CommonForm = ( {setBankId, setPlatform, ...props }) => {
         <FormField
           name={`bankId`}
           as="select"
-          onChange={(event) => {
-            const selectedBankId = event.target.value;
-            setBankId(selectedBankId);
-            props.handleChange(event);
-          }}
+          onChange={(event) => selectedBankId(event)}
           options={banks.map((bank) => {
             return { value: bank.id, name: bank.name };
           })}
@@ -36,11 +37,7 @@ const CommonForm = ( {setBankId, setPlatform, ...props }) => {
               name={`platformType`}
               value="ALL PLATFORMS"
               checked={props.values.platformType === "ALL PLATFORMS"}
-              onChange={(event) => {
-                const selectedBankId = event.target.value;
-                setPlatform(selectedBankId);
-                props.handleChange(event);
-              }}
+              onChange={(event) => selectedBankId(event)}
               {...props}
             />
           </label>
@@ -53,11 +50,7 @@ const CommonForm = ( {setBankId, setPlatform, ...props }) => {
               type="radio"
               name={`platformType`}
               value="ANDROID"
-              onChange={(event) => {
-                const selectedBankId = event.target.value;
-                setPlatform(selectedBankId);
-                props.handleChange(event);
-              }}
+              onChange={(event) => selectedBankId(event)}
               checked={props.values.platformType === "ANDROID"}
               {...props}
             />
@@ -71,11 +64,7 @@ const CommonForm = ( {setBankId, setPlatform, ...props }) => {
               type="radio"
               name={`platformType`}
               value="IOS"
-              onChange={(event) => {
-                const selectedBankId = event.target.value;
-                setPlatform(selectedBankId);
-                props.handleChange(event);
-              }}
+              onChange={(event) => selectedBankId(event)}
               checked={props.values.platformType === "IOS"}
               {...props}
             />
@@ -88,11 +77,7 @@ const CommonForm = ( {setBankId, setPlatform, ...props }) => {
               type="radio"
               name={`platformType`}
               value="WEB"
-              onChange={(event) => {
-                const selectedBankId = event.target.value;
-                setPlatform(selectedBankId);
-                props.handleChange(event);
-              }}
+              onChange={(event) => selectedBankId(event)}
               checked={props.values.platformType === "WEB"}
               {...props}
             />

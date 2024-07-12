@@ -78,7 +78,6 @@ const Stories = () => {
 
   return (
     <>
-      {console.log(storyArray)}
       <StoryPanel storyArray={storyArray} platform={platform} />
       {loading && <Loader />}
       <h1>Добавить Story</h1>

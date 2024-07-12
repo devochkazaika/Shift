@@ -42,40 +42,48 @@ const StoryCard = ({ storyIndex, story, platform }) => {
 
   useEffect(() => {
     const list = document.getElementById('draggable-list');
-
+    let initialOrder = frames.map((frame) => frame.id);
+  
     const handleDragStart = (e) => {
       if (e.target.tagName === 'LI') {
         e.target.classList.add('dragging');
       }
     };
-
+  
     const handleDragEnd = async (e) => {
       if (e.target.tagName === 'LI') {
         e.target.classList.remove('dragging');
-        const newOrder = Array.from(list.children).map((child, index) => ({
-          id: child.id,
-          order: index
-        }));
-        
-        let arr = [];
-        frames.forEach((frame, index) => {
-          if (frame.id !== newOrder[index].id) {
-            arr.push(frame.id);
+        const newOrder = Array.from(list.children).map((child) => {
+          if (initialOrder.includes(child.id)){
+            return child.id
           }
-        });
-        
-        if (arr.length) {
-          // Swap cards
+        }
+        );
+  
+        // Поиск изменённых карточек
+        let changedIds = [];
+        for (let i = 0; i < newOrder.length; i++) {
+          // Тут костыль в будущем надо поменять
+          if (newOrder[i] !== initialOrder[i] && newOrder[i] !== undefined) {
+            changedIds.push(initialOrder[i]);
+            changedIds.push(newOrder[i]);
+            break;
+          }
+        }
+  
+        if (changedIds.length === 2) {
           try {
-            await updateFrameOrder(story, platform, arr[0], arr[1]);
-            setFrames(frames);
+            await updateFrameOrder(story, platform, changedIds[0], changedIds[1]);
+            setFrames((prevFrames) =>
+              prevFrames.sort((a, b) => newOrder.indexOf(a.id) - newOrder.indexOf(b.id))
+            );
           } catch (error) {
-            console.error('Error updating frame order:', error);
+            console.error('Ошибка при обновлении порядка фреймов:', error);
           }
         }
       }
     };
-
+  
     const handleDragOver = (e) => {
       e.preventDefault();
       const afterElement = getDragAfterElement(list, e.clientY);
@@ -86,10 +94,9 @@ const StoryCard = ({ storyIndex, story, platform }) => {
         list.insertBefore(draggingElement, afterElement);
       }
     };
-
+  
     const getDragAfterElement = (list, y) => {
       const draggableElements = [...list.querySelectorAll('.draggable:not(.dragging)')];
-
       return draggableElements.reduce((closest, child) => {
         const box = child.getBoundingClientRect();
         const offset = y - box.top - box.height / 2;
@@ -100,15 +107,16 @@ const StoryCard = ({ storyIndex, story, platform }) => {
         }
       }, { offset: Number.NEGATIVE_INFINITY }).element;
     };
-
+  
     list.addEventListener('dragover', handleDragOver);
-
+  
     const draggables = list.querySelectorAll('li');
     draggables.forEach(draggable => {
       draggable.addEventListener('dragstart', handleDragStart);
       draggable.addEventListener('dragend', handleDragEnd);
     });
-
+  
+    
     return () => {
       draggables.forEach(draggable => {
         draggable.removeEventListener('dragstart', handleDragStart);
@@ -116,7 +124,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
       });
       list.removeEventListener('dragover', handleDragOver);
     };
-  }, [frames]);
+  }, [frames, story, platform]);
 
   const handleOnSubmit = async (story, frame, platform) => {
     const success = await deleteFrame(story, frame, platform);
