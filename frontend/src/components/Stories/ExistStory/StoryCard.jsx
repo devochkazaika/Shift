@@ -245,7 +245,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
           </ul>
           <ul>
           <li className="listFrame addFrame">
-            <details className="item-card item-card__add">
+            <details className="item-card__add">
               <summary className="item-card__summary">
                 <p className="item-card__title">Добавить карточку</p>
               </summary>

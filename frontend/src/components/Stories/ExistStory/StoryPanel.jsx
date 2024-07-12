@@ -28,9 +28,9 @@ const StoryPanel = ({ storyArray, platform }) => {
             <ul className="stories">
             {stories.map((story, index) => (
                 <li className='listFrame' key={index}>
-                <details className="item-card">
-                  <summary className="item-card__summary">
-                    <p className="item-card__title">{story.previewTitle}</p>
+                <details>
+                  <summary>
+                    <p>{story.previewTitle}</p>
                     <div className="item-card__buttons">
                       <div className="item-card__button--delete">
                         <Button
@@ -43,7 +43,7 @@ const StoryPanel = ({ storyArray, platform }) => {
                       </div>
                     </div>
                   </summary>
-                  <div className="item-card__content">
+                  <div>
                      <StoryCard key={index} story={story} storyIndex={index} platform={platform}/>
                   </div>
                 </details>
