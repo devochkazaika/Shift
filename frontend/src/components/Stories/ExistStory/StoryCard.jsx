@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import StoryFrame from './StoryFrame';
 import { FieldArray, Form, Formik } from 'formik';
 import FormField from "../../FormField";
@@ -15,6 +15,7 @@ import AddFrame from './AddFrame';
 const StoryCard = ({ storyIndex, story, platform }) => {
   const [frames, setFrames] = useState(story.storyFrames);
   const [initialImage, setInitialImage] = useState(null);
+  const draggableListRef = useRef(null);
 
   useEffect(() => {
     if (!initialImage) {
@@ -27,7 +28,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
   }, [story, initialImage]);
 
   useEffect(() => {
-    const draggableList = document.getElementById(`draggable-list-${storyIndex}`);
+    const draggableList = draggableListRef.current;
     let initialOrder = frames.map((frame) => frame.id);
 
     const handleDragStart = (e) => {
@@ -131,13 +132,13 @@ const StoryCard = ({ storyIndex, story, platform }) => {
                   <div className="row" style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ width: "70%" }}>
                       <div>
-                          <FormField
-                            labelTitle="Заголовок"
-                            name="previewTitle"
-                            type="text"
-                            value={values.previewTitle}
-                            onChange={handleChange}
-                          />
+                        <FormField
+                          labelTitle="Заголовок"
+                          name="previewTitle"
+                          type="text"
+                          value={values.previewTitle}
+                          onChange={handleChange}
+                        />
                       </div>
                       <FormField
                         name="previewTitleColor"
@@ -182,7 +183,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
       </div>
       <div>
         <h3>Story Frames:</h3>
-        <ul id={`draggable-list-${storyIndex}`}>
+        <ul ref={draggableListRef} id={`draggable-list-${storyIndex}`}>
           {frames.map((value, index) => (
             <li id={value.id} className="listFrame draggable" key={index} draggable="true">
               <details>
