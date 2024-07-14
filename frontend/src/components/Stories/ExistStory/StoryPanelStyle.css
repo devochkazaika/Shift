@@ -84,15 +84,15 @@
   list-style-type: none;
 }
 
-.addFrame {
-  border: 2px dashed !important;
-  height: 100% !important;
-  padding-top: 20px !important;
-  position: Static !important;
-  background-color: #dddada !important;
+#addFrame {
+  border: 2px dashed;
+  height: 100%;
+  padding-top: 20px;
+  position: Static;
+  background-color: #dddada ;
 }
 
-.addFrame summary {
+#addFrame summary {
   padding-bottom: 10px;
 }
 

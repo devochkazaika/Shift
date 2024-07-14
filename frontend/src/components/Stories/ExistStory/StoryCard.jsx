@@ -18,7 +18,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
 
   useEffect(() => {
     if (!initialImage) {
-      fetchImage(story.previewUrl).then(setInitialImage);
+      fetchImage(story.previewUrl, setInitialImage);
     }
 
     if (story && story.storyFrames) {
@@ -218,7 +218,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
           ))}
         </ul>
         <div>
-          <details className='addFrame'>
+          <details id='addFrame'>
             <summary>
               Добавить карточку
             </summary>
