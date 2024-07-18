@@ -1,14 +1,20 @@
 package ru.cft.shiftlab.contentmaker.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.mock.web.MockMultipartFile;
@@ -16,10 +22,12 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
+import ru.cft.shiftlab.contentmaker.dto.StoryPatchDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 import ru.cft.shiftlab.contentmaker.util.DirProcess;
+import ru.cft.shiftlab.contentmaker.util.Image.ImageContainer;
 import ru.cft.shiftlab.contentmaker.util.Image.ImageNameGenerator;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
 import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
@@ -34,8 +42,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.mockito.ArgumentMatchers.*;
 import static ru.cft.shiftlab.contentmaker.util.Constants.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,7 +58,20 @@ public class JsonProcessorServiceTest {
     private final ImageNameGenerator imageNameGenerator = new ImageNameGenerator();
     private final DirProcess dirProcess = new DirProcess();
     ObjectMapper objectMapper = new ObjectMapper();
-
+    {
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        objectMapper.configure(DeserializationFeature
+                        .FAIL_ON_UNKNOWN_PROPERTIES,
+                false);
+    }
+    @AfterEach
+    public void deleteFolderBackend() throws IOException {
+        dirProcess.deleteFolders(String.valueOf(Paths.get("backend")));
+    }
+    @BeforeEach
+    public void createFolders() throws IOException {
+        dirProcess.createFolders(FILES_SAVE_DIRECTORY);
+    }
     private final JsonProcessorService jsonProcessorService = new JsonProcessorService(
             multipartFileToImageConverter,
             dtoToEntityConverter,
@@ -231,6 +254,111 @@ public class JsonProcessorServiceTest {
         }
     }
 
+    @Test
+    public void add_frame_JSON_test() throws IOException {
+        String bankId = "test_bank";
+        String platform = "WEB";
+        Long id = 0L;
+        StoryFramesDto storyFramesDto = StoryFramesDto.builder()
+                .title("Sample Title")
+                .text("Sample text for the story.")
+                .textColor("FF0000")
+                .visibleButtonOrNone("BUTTON")
+                .buttonText("Click Here")
+                .buttonTextColor("FFFFFF")
+                .buttonBackgroundColor("0000FF")
+                .buttonUrl("https://example.com")
+                .gradient("EMPTY")
+                .build();
+
+        String storyString = objectMapper.writeValueAsString(storyFramesDto);
+        dirProcess.createFolders(FILES_SAVE_DIRECTORY+bankId+"/WEB");
+        copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json",
+                FILES_SAVE_DIRECTORY + "story_test_bank_web.json");
+
+        File file = new File(FILES_TEST_DIRECTORY+"sample.png");
+        FileInputStream input = new FileInputStream(file);
+        MultipartFile multipartFile = new MockMultipartFile("file",
+                file.getName(), "text/plain", IOUtils.toByteArray(input));
+
+        //Мок для картинок
+        ImageContainer imageContainer = Mockito.mock(ImageContainer.class);
+        MultipartFileToImageConverter multipartFileToImageConverter = Mockito.mock(MultipartFileToImageConverter.class);
+
+        Mockito.lenient().when(multipartFileToImageConverter.parsePicture(
+                any(ImageContainer.class),
+                anyString(),
+                anyLong(),
+                any(UUID.class)
+        )).thenReturn("path");
+
+
+        jsonProcessorService.addFrame(storyString, multipartFile, bankId, platform, id);
+
+        var mapStory = storyToMap(FILES_SAVE_DIRECTORY + "story_test_bank_web.json");
+        var frame = mapStory.get("stories").get(0).getStoryPresentationFrames().get(mapStory.get("stories").get(0).getStoryPresentationFrames().size()-1);
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(frame.getTitle(), storyFramesDto.getTitle()),
+                () -> Assertions.assertEquals(frame.getText(), storyFramesDto.getText()),
+                () -> Assertions.assertEquals(frame.getTextColor(), storyFramesDto.getTextColor()),
+                () -> Assertions.assertEquals(frame.getVisibleButtonOrNone(), storyFramesDto.getVisibleButtonOrNone()),
+                () -> Assertions.assertEquals(frame.getButtonText(), storyFramesDto.getButtonText()),
+                () -> Assertions.assertEquals(frame.getButtonTextColor(), storyFramesDto.getButtonTextColor()),
+                () -> Assertions.assertEquals(frame.getButtonBackgroundColor(), storyFramesDto.getButtonBackgroundColor()),
+                () -> Assertions.assertEquals(frame.getButtonUrl(), storyFramesDto.getButtonUrl()),
+                () -> Assertions.assertEquals(frame.getGradient(), storyFramesDto.getGradient())
+        );
+    }
+
+    @Test
+    public void add_frame_FILE_test() throws IOException {
+        String bankId = "test_bank";
+        String platform = "WEB";
+        Long id = 0L;
+        StoryFramesDto storyFramesDto = StoryFramesDto.builder()
+                .title("Sample Title")
+                .text("Sample text for the story.")
+                .textColor("FF0000")
+                .visibleButtonOrNone("BUTTON")
+                .buttonText("Click Here")
+                .buttonTextColor("FFFFFF")
+                .buttonBackgroundColor("0000FF")
+                .buttonUrl("https://example.com")
+                .gradient("EMPTY")
+                .build();
+
+        String storyString = objectMapper.writeValueAsString(storyFramesDto);
+        dirProcess.createFolders(FILES_SAVE_DIRECTORY+bankId+"/WEB");
+        copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json",
+                FILES_SAVE_DIRECTORY + "story_test_bank_web.json");
+
+        File file = new File(FILES_TEST_DIRECTORY+"sample.png");
+        FileInputStream input = new FileInputStream(file);
+        MultipartFile multipartFile = new MockMultipartFile("file",
+                file.getName(), "text/plain", IOUtils.toByteArray(input));
+
+        jsonProcessorService.addFrame(storyString, multipartFile, bankId, platform, id);
+
+        var mapStory = storyToMap(FILES_SAVE_DIRECTORY + "story_test_bank_web.json");
+        var frame = mapStory.get("stories").get(0).getStoryPresentationFrames().get(mapStory.get("stories").get(0).getStoryPresentationFrames().size()-1);
+
+        File[] files = new File(FILES_SAVE_DIRECTORY+bankId+"/WEB").listFiles();
+        Set<String> pict = Arrays.stream(files).map(x -> x.getName()).collect(Collectors.toSet());
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(pict.contains(frame.getPictureUrl().split("/WEB/")[1]), true)
+        );
+    }
+
+    private Map<String, List<StoryPresentation>> storyToMap(String path) throws IOException {
+        StringBuilder jsonStr = new StringBuilder();
+        Files.readAllLines(new File(path).toPath()).forEach(jsonStr::append);
+        Map<String, List<StoryPresentation>> map = objectMapper.readValue(
+                jsonStr.toString(),
+                new TypeReference<Map<String, List<StoryPresentation>>>() {}
+        );
+        return map;
+    }
+
     private int getCountFilesInDir(StoriesRequestDto storiesRequestDto) {
         File f = new File(
                 FILES_SAVE_DIRECTORY +
@@ -315,4 +443,165 @@ public class JsonProcessorServiceTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void changeStory_methdo_test() throws Exception{
+        StoryPatchDto storyPatchDto = StoryPatchDto.builder()
+//                .previewTitle("test_previewTitle")
+                .previewGradient("gradient_test")
+                .previewTitleColor("color_test")
+                .build();
+        String bankId = "test_bank";
+        String platform = "WEB";
+        String json = objectMapper.writeValueAsString(storyPatchDto);
+        copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json", FILES_SAVE_DIRECTORY+"story_test_bank_web.json");
+//        File file = new File(FILES_TEST_DIRECTORY+"story_test_bank_web.json");
+        jsonProcessorService.changeStory(json, null, bankId, platform, 0L);
+        Map<String, List<StoryPresentation>> resultMap = objectMapper.readValue(new File(FILES_SAVE_DIRECTORY, "story_test_bank_web.json"),
+                new TypeReference<>(){});
+        StoryPresentation storyPresentation = resultMap.get("stories").get(0);
+        Assertions.assertAll(
+//                () -> Assertions.assertEquals(storyPresentation.getPreviewTitle(), storyPatchDto.getPreviewTitle()),
+                () -> Assertions.assertEquals(storyPresentation.getPreviewGradient(), storyPatchDto.getPreviewGradient()),
+                () -> Assertions.assertEquals(storyPresentation.getPreviewTitleColor(), storyPatchDto.getPreviewTitleColor())
+        );
+    }
+    @Test
+    public void changeStoryFrame__method_test() throws Exception{
+        StoryFramesDto storyPatchDto = StoryFramesDto.builder()
+                .text("Sample text for the story.")
+                .textColor("FF0000")
+                .visibleButtonOrNone("BUTTON")
+                .buttonText("Click Here")
+                .buttonTextColor("FFFFFF")
+                .buttonBackgroundColor("0000FF")
+                .buttonUrl("https://example.com")
+                .build();
+        String bankId = "test_bank";
+        String platform = "WEB";
+        String json = objectMapper.writeValueAsString(storyPatchDto);
+        copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json", System.getProperty("user.dir") + "/src/main/resources/static/backend/site/share/htdoc/_files/skins/mobws_story/"+"story_test_bank_web.json");
+
+        jsonProcessorService.changeFrameStory(json, bankId, platform,
+                0L,
+                "dc430619-a772-4f80-81e5-bc66218ddd0c",
+                null);
+        Map<String, List<StoryPresentation>> resultMap = objectMapper.readValue(new File(FILES_SAVE_DIRECTORY, "story_test_bank_web.json"),
+                new TypeReference<>(){});
+        StoryPresentationFrames storyPresentation = resultMap.get("stories").get(0).getStoryPresentationFrames().get(0);
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("mainText", storyPresentation.getTitle()),
+                () -> Assertions.assertEquals(storyPatchDto.getText(), storyPresentation.getText()),
+                () -> Assertions.assertEquals(storyPatchDto.getTextColor(), storyPresentation.getTextColor()),
+                () -> Assertions.assertEquals(storyPatchDto.getButtonText(), storyPresentation.getButtonText()),
+                () -> Assertions.assertEquals(storyPatchDto.getButtonUrl(), storyPresentation.getButtonUrl())
+        );
+    }
+    @Test
+    public void delete_JsonFrame_test() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException {
+        Method method = JsonProcessorService.class.getDeclaredMethod("deleteJsonFrame",
+                String.class, String.class, String.class, String.class);
+        File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_tkbbank_web.json");
+        File storyDir = new File(FILES_SAVE_DIRECTORY + "/story_test_web.json");
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_test_web.json");
+
+        JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
+                dtoToEntityConverter,
+                dirProcess);
+
+        method.setAccessible(true);
+        method.invoke(service, "test", "WEB", "1", "edfb9afb-d795-4979-b7cf-b60923d3f266");
+        ObjectNode node = (ObjectNode) objectMapper.readTree(new File(FILES_SAVE_DIRECTORY + "/story_test_web.json"));
+        ArrayNode arrayNode = (ArrayNode) node.get("stories").get(1).get("storyFrames");
+        Assertions.assertEquals(arrayNode.size(), 1);
+        storyDir.delete();
+    }
+    @Test
+    public void delete_FileFrame_test() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException {
+        Method method = JsonProcessorService.class.getDeclaredMethod("deleteFileFrame",
+                String.class, String.class, String.class, UUID.class);
+        File jsonFile = new File(FILES_TEST_DIRECTORY + "/sample.png");
+        dirProcess.createFolders(FILES_SAVE_DIRECTORY + "test/WEB");
+        File storyDir = new File(FILES_SAVE_DIRECTORY + "test");
+        UUID uuid = UUID.randomUUID();
+//        UUID uuid2 = UUID.randomUUID();
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/1_"+0+".png");
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/1_"+uuid+".png");
+
+        JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
+                dtoToEntityConverter,
+                dirProcess);
+        method.setAccessible(true);
+        method.invoke(service, "test", "WEB", "1", uuid);
+        File[] directory = new File(FILES_SAVE_DIRECTORY+"test"+"/WEB").listFiles();
+        Assertions.assertEquals(directory.length, 1);
+        FileUtils.deleteDirectory(storyDir);
+    }
+
+//    Надо дописать для всего удаления
+    @Test
+    public void delete_Frame_test() throws Throwable {
+        String bankId = "test";
+        String platform = "WEB";
+        String id = "0";
+        String frameId = "72f250d4-2fea-4f00-a0b2-3259555ceb81";
+
+        File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_tkbbank_web.json");
+        File storyDir = new File(FILES_SAVE_DIRECTORY + "/story_test_web.json");
+        //копирую json file
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_test_web.json");
+
+        //копирую изображения
+        File file = new File(FILES_TEST_DIRECTORY + "/sample.png");
+        dirProcess.createFolders(FILES_SAVE_DIRECTORY + "test/WEB");
+        UUID uuid = UUID.fromString("72f250d4-2fea-4f00-a0b2-3259555ceb81");
+
+        copyFile(file.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/0_"+0+".png");
+        copyFile(file.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/0_"+uuid+".png");
+
+        jsonProcessorService.deleteStoryFrame(bankId, platform, id, frameId);
+        ObjectNode node = (ObjectNode) objectMapper.readTree(new File(FILES_SAVE_DIRECTORY + "/story_test_web.json"));
+        ArrayNode arrayNode = (ArrayNode) node.get("stories").get(0).get("storyFrames");
+        Assertions.assertEquals(arrayNode.size(), 0);
+
+        File[] directoryPict = new File(FILES_SAVE_DIRECTORY+"test/WEB/").listFiles();
+        Assertions.assertEquals(directoryPict.length, 1);
+
+        dirProcess.deleteFolders(FILES_SAVE_DIRECTORY+"test/");
+        storyDir.delete();
+    }
+
+    /**
+     * Тест для ловли ошибки в JsonDelete
+     * @throws Throwable
+     */
+    @Test
+    public void deleteStoryFrame_IndexOutOfBoundsException_test() throws Throwable {
+        String bankId = "test";
+        String platform = "WEB";
+        String id = "0";
+        String frameId = "123";
+
+        File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_tkbbank_web.json");
+        File storyDir = new File(FILES_SAVE_DIRECTORY + "/story_test_web.json");
+        //копирую json file
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_test_web.json");
+
+        //копирую изображения
+        File file = new File(FILES_TEST_DIRECTORY + "/sample.png");
+        dirProcess.createFolders(FILES_SAVE_DIRECTORY + "test/WEB");
+        UUID uuid = UUID.fromString("72f250d4-2fea-4f00-a0b2-3259555ceb81");
+
+        copyFile(file.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/0_"+0+".png");
+        copyFile(file.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/0_"+uuid+".png");
+
+        Assertions.assertThrows(
+                IllegalArgumentException.class,
+                ()->jsonProcessorService.deleteStoryFrame(bankId, platform, id, frameId)
+        );
+        dirProcess.deleteFolders(FILES_SAVE_DIRECTORY+"test/");
+        storyDir.delete();
+    }
+
+
 }

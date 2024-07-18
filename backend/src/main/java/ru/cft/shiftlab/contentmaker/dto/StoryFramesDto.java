@@ -1,6 +1,7 @@
 package ru.cft.shiftlab.contentmaker.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.StoryFramesValid;
@@ -12,6 +13,7 @@ import javax.validation.constraints.Pattern;
  * DTO, который содержит информацию о карточке истории.
  */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @StoryFramesValid(message = "Incorrect parameters for Story Frames")
@@ -40,7 +42,7 @@ public class StoryFramesDto {
      */
     @NotBlank(message = "Button and link display is not specified")
     @Pattern(regexp = "BUTTON|NONE", message = "Incorrect parameters. Possible: BUTTON, NONE")
-    private String visibleLinkOrButtonOrNone;
+    private String visibleButtonOrNone;
 
     /**
      * Текст кнопки.

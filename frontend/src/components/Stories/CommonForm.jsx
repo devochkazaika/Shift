@@ -1,10 +1,9 @@
 import React from "react";
-
 import FormField from "../FormField";
-
 import { banks } from "../../utils/constants/banks";
 
-const CommonForm = (props) => {
+const CommonForm = ( {setBankId, setPlatform, ...props }) => {
+
   return (
     <>
       <h2>Банк</h2>
@@ -12,6 +11,7 @@ const CommonForm = (props) => {
         <FormField
           name={`bankId`}
           as="select"
+          onChange={setBankId(props.values.bankId)}
           options={banks.map((bank) => {
             return { value: bank.id, name: bank.name };
           })}
@@ -30,6 +30,7 @@ const CommonForm = (props) => {
               name={`platformType`}
               value="ALL PLATFORMS"
               checked={props.values.platformType === "ALL PLATFORMS"}
+              onChange={setPlatform(props.values.platformType)}
               {...props}
             />
           </label>
@@ -41,6 +42,7 @@ const CommonForm = (props) => {
               type="radio"
               name={`platformType`}
               value="ANDROID"
+              onChange={setPlatform(props.values.platformType)}
               checked={props.values.platformType === "ANDROID"}
               {...props}
             />
@@ -53,6 +55,7 @@ const CommonForm = (props) => {
               type="radio"
               name={`platformType`}
               value="IOS"
+              onChange={setPlatform(props.values.platformType)}
               checked={props.values.platformType === "IOS"}
               {...props}
             />
@@ -64,6 +67,7 @@ const CommonForm = (props) => {
               type="radio"
               name={`platformType`}
               value="WEB"
+              onChange={setPlatform(props.values.platformType)}
               checked={props.values.platformType === "WEB"}
               {...props}
             />

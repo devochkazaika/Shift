@@ -2,8 +2,10 @@ package ru.cft.shiftlab.contentmaker.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
+import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +42,15 @@ public class DirProcess {
         throw new IllegalArgumentException("Unsupported type: " + type);
     }
 
+    public File checkDirectoryBankAndPlatformIsExist(String bankId, String platform){
+        File directory = new File(FILES_SAVE_DIRECTORY + "/" + bankId + "/" + platform);
+        if (!directory.exists() || !directory.isDirectory()) {
+            throw new StaticContentException("Directory does not exist or is not a directory: " + directory.getAbsolutePath(),
+                    "HTTP 500 - INTERNAL_SERVER_ERROR");
+        }
+        return directory;
+    }
+
     public void createFolders(String picturesSaveDirectory) throws IOException {
         File newDirectory = new File(picturesSaveDirectory);
         if (!newDirectory.exists()) {
@@ -47,5 +58,8 @@ public class DirProcess {
                 throw new IOException("Can't create dir: " + picturesSaveDirectory);
             }
         }
+    }
+    public void deleteFolders(String picturesSaveDirectory) throws IOException {
+        FileUtils.deleteDirectory(new File(picturesSaveDirectory));
     }
 }

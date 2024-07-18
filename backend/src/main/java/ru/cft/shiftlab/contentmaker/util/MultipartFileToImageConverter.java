@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * Класс, предназначенный для конвертации массива байтов в картинку,
@@ -48,6 +49,15 @@ public class MultipartFileToImageConverter {
         return fileName;
     }
 
+    public String parsePicture(ImageContainer imageContainer, String picturesSaveDirectory, Long id, UUID uuid) throws IOException {
+        String previewPictureName = convertMultipartFileToImageAndSave(
+                imageContainer.getNextImage(),
+                picturesSaveDirectory,
+                imageNameGenerator.generateImageName(picturesSaveDirectory, id, uuid)
+        );
+
+        return (picturesSaveDirectory + previewPictureName).split("static")[1];
+    }
     public String parsePicture(ImageContainer imageContainer, String picturesSaveDirectory, Long id) throws IOException {
         String previewPictureName = convertMultipartFileToImageAndSave(
                 imageContainer.getNextImage(),
@@ -55,6 +65,6 @@ public class MultipartFileToImageConverter {
                 imageNameGenerator.generateImageName(picturesSaveDirectory, id)
         );
 
-        return picturesSaveDirectory + previewPictureName;
+        return (picturesSaveDirectory + previewPictureName).split("static")[1];
     }
 }

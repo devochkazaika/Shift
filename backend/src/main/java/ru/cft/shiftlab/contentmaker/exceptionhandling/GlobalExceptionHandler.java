@@ -12,6 +12,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
+import java.nio.file.NoSuchFileException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +20,17 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+    @ExceptionHandler(NoSuchFileException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<?> NoSuchFileExceptionHandler(NoSuchFileException ex) {
+        return new ResponseEntity<>(ex, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<?> IllegalArgumentHandler(IllegalArgumentException ex) {
+        return new ResponseEntity<>(ex, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(JsonException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<?> JsonHandler(JsonException ex) {

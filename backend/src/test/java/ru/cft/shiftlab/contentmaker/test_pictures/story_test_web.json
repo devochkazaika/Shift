@@ -8,11 +8,12 @@
     "previewGradient" : "EMPTY",
     "font-size" : null,
     "storyFrames" : [ {
+      "id": "3ce39074-c11a-4ddb-bf85-6da10887e937",
       "title" : "mainText",
       "text" : "Text card",
       "textColor" : "FF0000",
       "pictureUrl" : "/F:\\JAVA\\CWT\\content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/tkbbank/0_1.png",
-      "visibleLinkOrButtonOrNone" : "NONE",
+      "visibleButtonOrNone" : "NONE",
       "buttonText" : "",
       "buttonTextColor" : "",
       "buttonBackgroundColor" : "",
@@ -28,16 +29,30 @@
     "previewGradient" : "EMPTY",
     "font-size" : null,
     "storyFrames" : [ {
+      "id": "ee823bf9-d88d-4fbf-b285-079b325cbacf",
       "title" : "mainText",
       "text" : "Text card",
       "textColor" : "FF0000",
       "pictureUrl" : "/F:\\JAVA\\CWT\\content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/tkbbank/1_1.png",
-      "visibleLinkOrButtonOrNone" : "NONE",
+      "visibleButtonOrNone" : "NONE",
       "buttonText" : "",
       "buttonTextColor" : "",
       "buttonBackgroundColor" : "",
       "buttonUrl" : "",
       "gradient" : "EMPTY"
-    } ]
+    },
+      {
+        "id": "bff25f36-38ba-4e9e-bcc2-1e9100199c02",
+        "title" : "mainText",
+        "text" : "Text card",
+        "textColor" : "FF0000",
+        "pictureUrl" : "/F:\\JAVA\\CWT\\content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/tkbbank/1_1.png",
+        "visibleButtonOrNone" : "NONE",
+        "buttonText" : "",
+        "buttonTextColor" : "",
+        "buttonBackgroundColor" : "",
+        "buttonUrl" : "",
+        "gradient" : "EMPTY"
+      }]
   } ]
 }

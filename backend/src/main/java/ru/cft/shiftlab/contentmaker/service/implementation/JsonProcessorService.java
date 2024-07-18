@@ -1,13 +1,11 @@
 package ru.cft.shiftlab.contentmaker.service.implementation;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -21,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
+import ru.cft.shiftlab.contentmaker.dto.StoryPatchDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
@@ -32,17 +31,15 @@ import ru.cft.shiftlab.contentmaker.util.MultipartBodyProcess;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
 import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
-import static ru.cft.shiftlab.contentmaker.util.Constants.STORIES;
+import static ru.cft.shiftlab.contentmaker.util.Constants.*;
 
 
 /**
@@ -58,6 +55,7 @@ public class JsonProcessorService implements FileSaverService {
     ObjectMapper mapper = new ObjectMapper();
     {
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         mapper.configure(DeserializationFeature
                         .FAIL_ON_UNKNOWN_PROPERTIES,
                 false);
@@ -67,7 +65,7 @@ public class JsonProcessorService implements FileSaverService {
     private final DirProcess dirProcess;
 
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getFilePlatform(String bankId, String platform) {
-        String filePlatform = FileNameCreator.createFileName(bankId, platform);
+        String filePlatform = FileNameCreator.createJsonName(bankId, platform);
         Map<String, List<StoryPresentation>> resultMap;
         try {
             resultMap = mapper.readValue(new File(FILES_SAVE_DIRECTORY, filePlatform), new TypeReference<>(){});
@@ -101,6 +99,9 @@ public class JsonProcessorService implements FileSaverService {
         return new HttpEntity<>(multipartBodyBuilder.build(), headers);
     }
 
+    public HttpEntity<List<StoryPresentation>> getFilePlatformJson(String bankId, String platform) throws IOException {
+        return new HttpEntity<>(getStoryList(bankId, platform));
+    }
 
     @Override
     public void saveFiles(String strStoriesRequestDto, MultipartFile previewImage, MultipartFile[] images){
@@ -109,17 +110,19 @@ public class JsonProcessorService implements FileSaverService {
                     mapper.readValue(strStoriesRequestDto, String.class)
                     , StoriesRequestDto.class);
 
+            var countStoryFrames = storiesRequestDto.getStoryDtos().get(0).getStoryFramesDtos().size();
+            if (countStoryFrames == 0 || countStoryFrames > MAX_COUNT_FRAME){
+                throw new IllegalArgumentException("Bad count of the story frames");
+            }
+
             String bankId = storiesRequestDto.getBankId();
             String platformType = storiesRequestDto.getPlatformType();
 
-            String picturesSaveDirectory = FILES_SAVE_DIRECTORY + bankId + "/" + platformType + "/";
+            String picturesSaveDirectory = FILES_SAVE_DIRECTORY+bankId+"/"+platformType+"/";
             //Создание пути для картинок, если его еще нет
             dirProcess.createFolders(picturesSaveDirectory);
             //Чтение сторис, которые уже находятся в хранилище
-            List<StoryPresentation> storyPresentationList = dirProcess.checkFileInBankDir(
-                    FileNameCreator.createFileName(bankId, platformType),
-                    STORIES
-            );
+            List<StoryPresentation> storyPresentationList = getStoryList(bankId, platformType);
             storiesDtoToPresentations(
                     bankId,
                     picturesSaveDirectory,
@@ -129,10 +132,7 @@ public class JsonProcessorService implements FileSaverService {
                     images
             );
 
-            Map<String, List<StoryPresentation>> resultMap = new HashMap<>();
-            resultMap.put(STORIES, storyPresentationList);
-            File file = new File(FILES_SAVE_DIRECTORY, FileNameCreator.createFileName(bankId, platformType));
-            mapper.writeValue(file, resultMap);
+            putStoryToJson(storyPresentationList, bankId, platformType);
         }
         catch (JsonProcessingException e){
             throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
@@ -158,17 +158,10 @@ public class JsonProcessorService implements FileSaverService {
                 previewImage = images[0];
             }
             ImageContainer imageContainerPreview = new ImageContainer(previewImage);
-            long lastId;
-            if (storyPresentationList.isEmpty()){
-                lastId = 0;
-            }
-            else {
-                var lastOfList = storyPresentationList.get(storyPresentationList.size()-1);
-                lastId = (lastOfList.getId()==null) ? 0 : lastOfList.getId()+1;
-            }
-
-            //Добавление к старым картинкам _old
-            FileNameCreator.renameOld(picturesSaveDirectory, lastId);
+            //находим максимальный id
+            long lastId = storyPresentationList.stream()
+                    .mapToLong(StoryPresentation::getId)
+                    .max().orElse(0L)+1;
 
             previewUrl = multipartFileToImageConverter.parsePicture(
                     imageContainerPreview,
@@ -178,15 +171,16 @@ public class JsonProcessorService implements FileSaverService {
                     bankId,
                     story,
                     previewUrl);
-
             storyPresentation.setId(lastId);
+
             ArrayList<StoryPresentationFrames> storyPresentationFramesList = new ArrayList<>();
             for (StoryFramesDto storyFramesDto: story.getStoryFramesDtos()) {
                 var storyPresentationFrame = dtoToEntityConverter.fromStoryFramesDtoToStoryPresentationFrames(storyFramesDto);
                 String presentationPictureUrl = multipartFileToImageConverter.parsePicture(
                         imageContainer,
                         picturesSaveDirectory,
-                        storyPresentation.getId());
+                        storyPresentation.getId(),
+                        storyPresentationFrame.getId());
                 storyPresentationFrame.setPictureUrl(presentationPictureUrl);
                 storyPresentationFramesList.add(storyPresentationFrame);
             }
@@ -196,18 +190,164 @@ public class JsonProcessorService implements FileSaverService {
         }
     }
 
+    @Transactional
+    public StoryPresentationFrames addFrame(String frameDto, MultipartFile file,
+                          String bankId, String platform, Long id) throws IOException {
+        StoryPresentationFrames frame = mapper.readValue(
+                frameDto
+                , StoryPresentationFrames.class);
+        frame.setId(UUID.randomUUID());
+
+        //добавление картинки в JSON
+        String presentationPictureUrl = multipartFileToImageConverter.parsePicture(
+                new ImageContainer(file),
+                FILES_SAVE_DIRECTORY+bankId+"/"+platform+"/",
+                id,
+                frame.getId());
+        frame.setPictureUrl(presentationPictureUrl);
+
+        //Изменение JSON
+        final List<StoryPresentation> listStory = getStoryList(bankId, platform);
+        final StoryPresentation storyPresentation = getStoryModel(listStory, id);
+        final ArrayList<StoryPresentationFrames> listFrames = storyPresentation.getStoryPresentationFrames();
+        listFrames.add(frame);
+        if (listFrames.size() >= MAX_COUNT_FRAME) throw new IllegalArgumentException("Cant save a frame. The maximum size is reached");
+        putStoryToJson(listStory, bankId, platform);
+        return frame;
+    }
+
+    /**
+     * Метод возвращает все истории в виде списка
+     */
+    private List<StoryPresentation> getStoryList(String bankId, String platform) throws IOException {
+        return dirProcess.checkFileInBankDir(
+                FileNameCreator.createJsonName(bankId, platform),
+                STORIES
+        );
+    }
+    /**
+     * Метод возвращает конкретную историю
+     */
+    private StoryPresentation getStoryModel(List<StoryPresentation> storyPresentationList,
+                                            Long id) throws IOException {
+        return storyPresentationList.stream()
+                .filter(x-> x.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Could not find the story with id=" + id));
+    }
+    /**
+     * Положить истории из списка в JSON
+     */
+    private void putStoryToJson(List<StoryPresentation> storyPresentationList, String bankId, String platform) throws IOException {
+        Map<String, List<StoryPresentation>> resultMap = new HashMap<>();
+        resultMap.put(STORIES, storyPresentationList);
+        File file = new File(FILES_SAVE_DIRECTORY, FileNameCreator.createJsonName(bankId, platform));
+        mapper.writerWithDefaultPrettyPrinter().writeValue(file, resultMap);
+    }
+
+    private StoryPresentationFrames getFrameFromStory(StoryPresentation storyPresentation, String id){
+        final StoryPresentationFrames storyPresentationFrames = storyPresentation
+                .getStoryPresentationFrames()
+                .stream().filter(x -> x.getId().equals(UUID.fromString(id)))
+                .findFirst()
+                .orElseThrow(() ->
+                    new IllegalArgumentException(String.format("Could not find frame with id = %s", id)));
+        return storyPresentationFrames;
+    }
+
+    /**
+     * Изменение общих параметров истории, а именно previewTitle, previewTitleColor, previewGradient
+     * @param storiesRequestDto
+     * @param bankId
+     * @param platform
+     * @param id
+     * @throws IOException
+     */
+    public void changeStory(String storiesRequestDto, MultipartFile file, String bankId, String platform, Long id) throws IOException {
+        StoryPatchDto story = mapper.readValue(
+                storiesRequestDto
+                , StoryPatchDto.class);
+        //Берем нужную историю из списка
+        List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
+        final StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
+
+        //Меняем картинку
+        if (file != null) {
+            String pictureUrl = multipartFileToImageConverter.parsePicture(
+                    new ImageContainer(file),
+                    FILES_SAVE_DIRECTORY + bankId + "/" + platform + "/",
+                    id);
+            storyPresentation.setPreviewUrl(pictureUrl);
+        }
+
+        //обновляем значение и записываем в JSON
+        String json = mapper.writeValueAsString(story);
+        mapper.readerForUpdating(storyPresentation).readValue(json);
+        putStoryToJson(storyPresentationList, bankId, platform);
+    }
+
+    /**
+     * Метод для изменения карточки в историях
+     * @param storyFramesRequestDto
+     * @param bankId
+     * @param platform
+     * @param id
+     * @param frameId
+     * @throws IOException
+     */
+    public void changeFrameStory(String storyFramesRequestDto, String bankId, String platform,
+                                 Long id,
+                                 String frameId,
+                                 MultipartFile file) throws IOException {
+        StoryFramesDto story = mapper.readValue(
+                storyFramesRequestDto
+                , StoryFramesDto.class);
+
+        List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
+        StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
+        final StoryPresentationFrames storyPresentationFrames = getFrameFromStory(storyPresentation, frameId);
+
+        //Меняем картинку
+        if (file != null) {
+            String pictureUrl = multipartFileToImageConverter.parsePicture(
+                    new ImageContainer(file),
+                    FILES_SAVE_DIRECTORY + bankId + "/" + platform + "/",
+                    id,
+                    UUID.fromString(frameId));
+            storyPresentationFrames.setPictureUrl(pictureUrl);
+        }
+
+        //обновляем значение и записываем в JSON
+        String json = mapper.writeValueAsString(story);
+        mapper.readerForUpdating(storyPresentationFrames).readValue(json);
+        putStoryToJson(storyPresentationList, bankId, platform);
+    }
+
+    /**
+     * Метод для удаления истории
+     * @param bankId Имя банка
+     * @param platform Тип платформы
+     * @param id Id истории
+     * @return
+     * @throws Throwable
+     */
     public ResponseEntity<?> deleteService(String bankId, String platform, String id) throws Throwable {
         ExecutorService executor = Executors.newFixedThreadPool(2);
-        Runnable r = ()->{
+        Future<?> deleteJson = executor.submit(()->{
             try {
                 deleteJsonStories(bankId, platform, id);
             }
             catch (IOException e){
                 throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
             }
-        };
-        Future<?> deleteJson = executor.submit(r);
-        Future<?> deleteImages = executor.submit(() -> deleteFilesStories(bankId, platform, id));
+        });
+        Future<?> deleteImages = executor.submit(() -> {
+            try {
+                deleteFilesStories(bankId, platform, id);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
         try {
             deleteJson.get();
             deleteImages.get();
@@ -220,51 +360,24 @@ public class JsonProcessorService implements FileSaverService {
      * Метод, предназначенный для удаления историй из JSON.
      */
     private void deleteJsonStories(String bankId, String platform, String id) throws IOException {
-        deleteFromJson(bankId, platform, id);
-    }
-    private void deleteFromJson(String bankId, String platform, String id) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        String fileName = FileNameCreator.createFileName(bankId, platform);
-        ObjectNode node = (ObjectNode) mapper.readTree(new File(FILES_SAVE_DIRECTORY + "/" + fileName));
-        if (node.has("stories")) {
-            ArrayNode storiesNode = (ArrayNode) node.get("stories");
-            Iterator<JsonNode> i = storiesNode.iterator();
-            String IdBank;
-            String IdFrame;
-            while (i.hasNext()){
-                JsonNode k = i.next();
-                if (id.indexOf("_") > 0) {
-                    IdBank = id.substring(0, id.indexOf("_"));
-                    IdFrame = id.substring(id.indexOf("_") + 1);
-                    //именно такая проверка, а не по индексу, так как элемент может удалиться и id будут 3, 8, 10, например
-                    if (IdBank.equals(k.get("id").toString())) {
-                        ArrayNode listFrames = (ArrayNode) k.get("storyFrames");
-                        listFrames.remove(Integer.parseInt(IdFrame));
-                    }
-                }
-                else{
-                    if (id.equals(k.get("id").toString())) {
-                       i.remove();
-                    }
-                }
-            }
+        //Берем список историй
+        List<StoryPresentation> list = getStoryList(bankId, platform);
+        //удаляем нужную историю
+        if (!list.removeIf(k -> id.equals(k.getId().toString()))){
+            throw new IllegalArgumentException(String.format(
+                    "Could not find the frame with id = %s",
+                    id)
+            );
         }
-        else{
-            throw new StaticContentException("Field stories not created",
-                    "HTTP 500 - INTERNAL_SERVER_ERROR");
-        }
-        JsonNode js = (JsonNode) node;
-        mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILES_SAVE_DIRECTORY, fileName), js);
+        //кладем в json
+        putStoryToJson(list, bankId, platform);
     }
+
     /**
      * Метод, предназначенный для удаления файлов историй из директории.
      */
-    private void deleteFilesStories(String bankId, String platform, String id){
-        File directory = new File(FILES_SAVE_DIRECTORY + "/" + bankId + "/" + platform);
-        if (!directory.exists() || !directory.isDirectory()) {
-            throw new StaticContentException("Directory does not exist or is not a directory: " + directory.getAbsolutePath(),
-                    "HTTP 500 - INTERNAL_SERVER_ERROR");
-        }
+    private void deleteFilesStories(String bankId, String platform, String id) throws InterruptedException {
+        File directory = dirProcess.checkDirectoryBankAndPlatformIsExist(bankId, platform);
         File[] files = directory.listFiles();
         Stream.of(files)
                 .filter(x -> x.getName().startsWith(id))
@@ -277,22 +390,121 @@ public class JsonProcessorService implements FileSaverService {
 
     }
 
+
     /**
      * Метод, предназначенный для удаления одной карточки из историй.
      * deleteJsonFrame - удаляет frame из JSON
      * deleteFileFrame - удаляет файл из директории
+     *
+     * @param bankId   Банк
+     * @param platform Платформа
+     * @param id       id истории
+     * @param frameId  UUID карточки
      */
-    public void deleteStoryFrame(String bankId, String platform, String id, String frameId) throws IOException {
-        deleteJsonFrame(bankId, platform, id, frameId);
-        deleteFileFrame(bankId, platform, id, frameId);
+    public ResponseEntity<?> deleteStoryFrame(String bankId, String platform, String id, String frameId) throws Throwable {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        //для передачи UUID между потоками
+        Exchanger<UUID> exchanger = new Exchanger<>();
+        Future<?> deleteJson = executor.submit(()->{
+            try {
+                exchanger.exchange(deleteJsonFrame(bankId, platform, id, frameId));
+            }
+            catch (IOException e){
+                throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (IndexOutOfBoundsException e){
+                throw new IllegalArgumentException(String.format("Frame with id=%s doesnt exist", frameId));
+            }
+        });
+        Future<?> deleteImages = executor.submit(() -> {
+            try {
+                deleteFileFrame(bankId, platform, id, exchanger.exchange(null));
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        try {
+            deleteJson.get();
+            deleteImages.get();
+        } catch (ExecutionException ex) {
+            throw ex.getCause();
+        }
+        return new ResponseEntity<>(HttpStatus.valueOf(202));
     }
 
-    private void deleteFileFrame(String bankId, String platform, String id, String frameId){
-        deleteFilesStories(bankId, platform, id.concat("_").concat(frameId));
+    /**
+     * Метод предназначенный для удаления карточки внутри JSON
+     * @param bankId Банк
+     * @param platform Платформа
+     * @param id id истории
+     * @param frameId UUID карточки
+     * @return
+     * @throws IOException
+     */
+    private UUID deleteJsonFrame(String bankId, String platform, String id, String frameId) throws IOException {
+        UUID uuid = null;
+        //Берем историю из списка историй
+        List<StoryPresentation> list = getStoryList(bankId, platform);
+        StoryPresentation story = getStoryModel(list, Long.parseLong(id));
+
+        //Берем все карточки историй
+        List<StoryPresentationFrames> frames = story.getStoryPresentationFrames();
+        //Получаем UUID нужной истории и удаляем ее
+        uuid = UUID.fromString(frameId);
+
+        if (frames.size() == 1) throw new IllegalArgumentException("Can't delete a single frame");
+        if (!frames.removeIf(x -> x.getId().equals(UUID.fromString(frameId)))){
+            throw new IllegalArgumentException(String.format(
+                    "Could not find the frame with id = %s",
+                    id
+            ));
+        }
+        //Записываем в JSON
+        putStoryToJson(list, bankId, platform);
+        return uuid;
+    }
+    /**
+     * Метод, предназначенный для удаления файлов при удалении карточки
+     * @param bankId
+     * @param platform
+     * @param id
+     * @param frameId
+     */
+    private void deleteFileFrame(String bankId, String platform, String id, UUID frameId) throws InterruptedException {
+        File directory = dirProcess.checkDirectoryBankAndPlatformIsExist(bankId, platform);
+        File[] files = directory.listFiles();
+        Stream.of(files)
+                .filter(x -> x.getName().startsWith(id+"_"+frameId))
+                .findFirst()
+                .map(x -> x.delete());
     }
 
-    private void deleteJsonFrame(String bankId, String platform, String id, String frameId) throws IOException {
-        deleteFromJson(bankId, platform, id.concat("_").concat(frameId));
+    /**
+     * Метод для свапа порядка историй
+     * @param id
+     * @param bankId
+     * @param platform
+     * @param fristUuid
+     * @param secondUuid
+     * @throws IOException
+     */
+    public void swapFrames(Long id, String bankId, String platform, String fristUuid, String secondUuid) throws IOException {
+        final List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
+        final StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
+        final ArrayList<StoryPresentationFrames> frames = storyPresentation.getStoryPresentationFrames();
+        int first = IntStream.range(0, frames.size())
+                .filter(streamIndex -> fristUuid.equals(frames.get(streamIndex).getId().toString()))
+                .findFirst()
+                .orElse(-1);
+        int second = IntStream.range(0, frames.size())
+                .filter(streamIndex -> secondUuid.equals(frames.get(streamIndex).getId().toString()))
+                .findFirst()
+                .orElse(-1);
+
+        Collections.swap(frames, first, second);
+        storyPresentation.setStoryPresentationFrames(frames);
+        putStoryToJson(storyPresentationList, bankId, platform);
     }
 
 }

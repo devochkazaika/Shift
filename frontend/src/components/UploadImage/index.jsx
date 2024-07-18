@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { SUPPORTED_FORMATS } from '../../utils/constants/validation';
 import { ReactComponent as UploadIcon } from '../../assets/icons/upload.svg';
 import styles from './UploadImage.module.scss';
@@ -10,7 +9,6 @@ const UploadImage = ({ field, form }) => {
 
   const handleUploadImage = async (e) => {
     let img = e.target.files[0];
-
     if (img) {
       form.setFieldValue(field.name, img);
     }
