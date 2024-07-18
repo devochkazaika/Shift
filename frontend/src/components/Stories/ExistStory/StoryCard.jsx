@@ -121,13 +121,13 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
             previewTitle: story.previewTitle,
             previewTitleColor: story.previewTitleColor,
             previewGradient: story.previewGradient,
-            previewUrl: initialImage
+            [`previewUrl_${storyIndex}`]: initialImage
           }}
           onSubmit={(values) => {
-            updateStory(story, values, platform);
+            updateStory(story, storyIndex, values, platform);
           }}
         >
-          {({ values, handleChange, setFieldValue }) => (
+          {({ values, handleChange }) => (
             <Form>
               <FieldArray name="frames">
                 {() => (
@@ -169,17 +169,14 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
                     <div style={{ width: "30%", marginLeft: "auto", float: "right" }}>
                       <div className="input_field">
                         <FormField
-                          name="previewUrl"
+                          name={`previewUrl_${storyIndex}`}
                           component={UploadImage}
                           type="file"
-                          onChange={(event) => {
-                            setFieldValue('previewUrl', event.currentTarget.files[0]);
-                          }}
                         />
                         <ErrorMessage name="previewUrl" component="div" className="error-message" />
                       </div>
                       <Button
-                        handleOnClick={() => updateStory(story, values, platform)}
+                        handleOnClick={() => updateStory(story, storyIndex, values, platform)}
                         text="Изменить"
                         type="button"
                         color="green"

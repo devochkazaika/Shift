@@ -84,14 +84,14 @@ export const deleteFrame = async (story, frame, platform) => {
   }
 };
 
-export const updateStory = async (story, jsonStory, platform) => {
+export const updateStory = async (story, storyIndex, jsonStory, platform) => {
   const toastView = createToast(defaultToastMessages.uploadingData);
   const form = new FormData();
   form.append("json", JSON.stringify(jsonStory));
   form.append("platform", platform);
   form.append("id", story.id);
   form.append("bankId", story.bankId);
-  form.append("image", jsonStory.previewUrl);
+  form.append("image", jsonStory[`previewUrl_${storyIndex}`]);
   try {
     const response = await axios.patch(`/stories/bank/info/change`, form, {
       headers: { "Content-Type": "multipart/form-data" },
@@ -103,15 +103,15 @@ export const updateStory = async (story, jsonStory, platform) => {
   }
 };
 
-export const updateFrame = async (story, platform, frame, frameIndex) => {
+export const updateFrame = async (story, platform, frame, storyIndex, frameId, frameIndex) => {
   const toastView = createToast(defaultToastMessages.uploadingData);
   const form = new FormData();
   form.append("json", JSON.stringify(frame));
   form.append("platform", platform);
   form.append("id", story.id);
   form.append("bankId", story.bankId);
-  form.append("frameId", frameIndex)
-  form.append("image", frame.pictureFrame)
+  form.append("frameId", frameId)
+  form.append("image", frame[`pictureFrame_${storyIndex}_${frameIndex}`])
   try {
     const response = await axios.patch(`/stories/bank/info/change/frame`, form, {
       headers: { "Content-Type": "multipart/form-data" },
@@ -123,7 +123,7 @@ export const updateFrame = async (story, platform, frame, frameIndex) => {
   }
 };
 
-export const addFrame = async (story, frame, platform) => {
+export const addFrame = async (story, frame,  platform) => {
   const toastView = createToast(defaultToastMessages.uploadingData);
   const form = new FormData();
   form.append("json", JSON.stringify({

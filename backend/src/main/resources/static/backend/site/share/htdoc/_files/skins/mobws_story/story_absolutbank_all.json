@@ -6,7 +6,67 @@
     "previewTitleColor" : "#a25d5dff",
     "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/1_0.jpg",
     "previewGradient" : "FULL",
-    "storyFrames" : [ ]
+    "storyFrames" : [ {
+      "id" : "5274cf96-9033-4674-b8a5-c3ab96674971",
+      "title" : "Sample Title",
+      "text" : "Sample text for the story.",
+      "textColor" : "#ffff",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/1_5274cf96-9033-4674-b8a5-c3ab96674971.jpg",
+      "visibleButtonOrNone" : "BUTTON",
+      "buttonText" : "Click Here",
+      "buttonTextColor" : "#FFFFFF",
+      "buttonBackgroundColor" : "#0000FF",
+      "buttonUrl" : "https://example.com",
+      "gradient" : "EMPTY"
+    }, {
+      "id" : "45bdccd0-32a8-4a14-8ad7-8035e78333be",
+      "title" : "Sample Title",
+      "text" : "Sample text for the story.",
+      "textColor" : "#ffff",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/1_45bdccd0-32a8-4a14-8ad7-8035e78333be.jpg",
+      "visibleButtonOrNone" : "BUTTON",
+      "buttonText" : "Click Here",
+      "buttonTextColor" : "#FFFFFF",
+      "buttonBackgroundColor" : "#0000FF",
+      "buttonUrl" : "https://example.com",
+      "gradient" : "EMPTY"
+    }, {
+      "id" : "bfc1b721-d94b-462a-8a54-31a47ff324aa",
+      "title" : "Sample Title",
+      "text" : "Sample text for the story.",
+      "textColor" : "#ffff",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/1_bfc1b721-d94b-462a-8a54-31a47ff324aa.jpg",
+      "visibleButtonOrNone" : "BUTTON",
+      "buttonText" : "Click Hereasdasdasd",
+      "buttonTextColor" : "#FFFFFF",
+      "buttonBackgroundColor" : "#0000FF",
+      "buttonUrl" : "https://example.com",
+      "gradient" : "EMPTY"
+    }, {
+      "id" : "a60a2f4e-b8e7-44a8-86c9-92751a53d3ff",
+      "title" : "Sample Title",
+      "text" : "Sample text for the story.",
+      "textColor" : "#ffff",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/1_a60a2f4e-b8e7-44a8-86c9-92751a53d3ff.jpg",
+      "visibleButtonOrNone" : "BUTTON",
+      "buttonText" : "Click Here",
+      "buttonTextColor" : "#FFFFFF",
+      "buttonBackgroundColor" : "#0000FF",
+      "buttonUrl" : "https://example.com",
+      "gradient" : "EMPTY"
+    }, {
+      "id" : "0d0bbe65-43c5-4022-bfa3-f470ee775f50",
+      "title" : "Sample Title",
+      "text" : "Sample text for the story.",
+      "textColor" : "#ffff",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/1_0d0bbe65-43c5-4022-bfa3-f470ee775f50.jpg",
+      "visibleButtonOrNone" : "BUTTON",
+      "buttonText" : "Click Here",
+      "buttonTextColor" : "#FFFFFF",
+      "buttonBackgroundColor" : "#0000FF",
+      "buttonUrl" : "https://example.com",
+      "gradient" : "EMPTY"
+    } ]
   }, {
     "id" : 2,
     "bankId" : "absolutbank",
@@ -18,7 +78,7 @@
   }, {
     "id" : 3,
     "bankId" : "absolutbank",
-    "previewTitle" : "asfasfasf",
+    "previewTitle" : "asfasfasfфывфывфыв",
     "previewTitleColor" : "#000",
     "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/3_0.jpg",
     "previewGradient" : "EMPTY",
@@ -76,18 +136,6 @@
       "text" : "asfasfasfasf",
       "textColor" : "#000",
       "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/3_7c6240c3-1fab-4b8e-aeab-34f6f2d99f59.jpg",
-      "visibleButtonOrNone" : "NONE",
-      "buttonText" : "",
-      "buttonTextColor" : "#000",
-      "buttonBackgroundColor" : "#fff",
-      "buttonUrl" : "",
-      "gradient" : "EMPTY"
-    }, {
-      "id" : "62adb015-75e1-42b7-8ef8-d745a9b94b94",
-      "title" : "asfasfasf",
-      "text" : "asfasfasf",
-      "textColor" : "#000",
-      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/3_62adb015-75e1-42b7-8ef8-d745a9b94b94.jpg",
       "visibleButtonOrNone" : "BUTTON",
       "buttonText" : "",
       "buttonTextColor" : "#000",

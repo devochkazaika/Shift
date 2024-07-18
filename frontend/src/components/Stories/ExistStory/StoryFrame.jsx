@@ -8,8 +8,8 @@ import { updateFrame, fetchImage } from '../../../api/stories';
 import UploadImage from './../../UploadImage/index';
 
 const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform, ...props }) => {
-  const handleOnSubmit = async (values, platform, frame, frameIndex) => {
-    updateFrame(values, platform, frame, frameIndex);
+  const handleOnSubmit = async (values, platform, frame, frameId) => {
+    updateFrame(values, platform, frame, storyIndex, frameId, frameIndex);
   };
   const [initialImage, setInitialImage] = useState(null);
   useEffect(() => {
@@ -34,7 +34,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform, ...props }
           buttonTextColor: frame.buttonTextColor,
           buttonBackgroundColor: frame.buttonBackgroundColor,
           buttonUrl: frame.buttonUrl,
-          pictureFrame: initialImage
+          [`pictureFrame_${storyIndex}_${frameIndex}`]: initialImage
         }}
         onSubmit={(values) => handleOnSubmit(values, platform, frame, frameIndex)}
       >
@@ -154,7 +154,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform, ...props }
                   <div className='row'>
                     <FormField
                         labelTitle={"Картинка"}
-                        name={`pictureFrame`}
+                        name={`pictureFrame_${storyIndex}_${frameIndex}`}
                         component={UploadImage}
                         {...props}
                     />

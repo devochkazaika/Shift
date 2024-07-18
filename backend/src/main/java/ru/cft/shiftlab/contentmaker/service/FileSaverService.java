@@ -48,16 +48,43 @@ public interface FileSaverService {
         IOException e = new IOException();
         throw new RuntimeException(e);
     }
+
     HttpEntity<List<StoryPresentation>> getFilePlatformJson(String bankId, String platform) throws IOException;
 
+    /**
+     * Изменение общих параметров истории, а именно previewTitle, previewTitleColor, previewGradient
+     * @param storiesRequestDto StoryDto + platform + bankID
+     * @param bankId Банк
+     * @param platform Платформа
+     * @param id id истории
+     * @throws IOException
+     */
     void changeStory(String storiesRequestDto, MultipartFile file, String bankId, String platform, Long id) throws IOException;
-    void changeFrameStory(String storyFramesRequestDt,
+
+    /**
+     * Метод для изменения карточки в историях
+     * @param storyFramesRequestDto StoryFramesDto
+     * @param bankId Банк
+     * @param platform Платформа
+     * @param id id истории
+     * @param frameId UUID карточки
+     * @throws IOException
+     */
+    void changeFrameStory(String storyFramesRequestDto,
                           String bankId,
                           String platform,
                           Long id,
                           String frameId,
                           MultipartFile file) throws IOException;
-    ResponseEntity deleteStoryFrame(String bankId, String platform, String id, String frameId) throws Throwable;
+    /**
+     * Метод, предназначенный для удаления одной карточки из историй.
+     *
+     * @param bankId   Банк
+     * @param platform Платформа
+     * @param id       id истории
+     * @param frameId  UUID карточки
+     */
+    ResponseEntity<?> deleteStoryFrame(String bankId, String platform, String id, String frameId) throws Throwable;
 
     StoryPresentationFrames addFrame(String storyFramesDto, MultipartFile file,
                                      String bankId, String platform, Long id) throws IOException;
