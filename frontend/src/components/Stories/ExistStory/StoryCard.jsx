@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import StoryFrame from './StoryFrame';
-import { FieldArray, Form, Formik } from 'formik';
-import FormField from "../../FormField";
+import { FieldArray, Form, Formik, ErrorMessage } from 'formik';
+import FormField from '../../FormField';
 import { gradientOptions } from './../../../utils/constants/gradient';
 import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg';
 import { ReactComponent as DragIcon } from '../../../assets/icons/drag.svg';
@@ -12,7 +12,7 @@ import UploadImage from './../../UploadImage/index';
 import { storyPanelValidationSchema } from './../../../utils/helpers/validation';
 import AddFrame from './AddFrame';
 
-const StoryCard = ({ storyIndex, story, platform }) => {
+const StoryCard = ({ storyIndex, story, platform, ...props }) => {
   const [frames, setFrames] = useState(story.storyFrames);
   const [initialImage, setInitialImage] = useState(null);
   const draggableListRef = useRef(null);
@@ -42,7 +42,6 @@ const StoryCard = ({ storyIndex, story, platform }) => {
         e.target.classList.remove('dragging');
         const newOrder = Array.from(draggableList.children).map((child) => child.id);
 
-        // Поиск изменённых карточек
         let changedIds = [];
         for (let i = 0; i < newOrder.length; i++) {
           if (newOrder[i] !== initialOrder[i]) {
@@ -124,8 +123,11 @@ const StoryCard = ({ storyIndex, story, platform }) => {
             previewGradient: story.previewGradient,
             previewUrl: initialImage
           }}
+          onSubmit={(values) => {
+            updateStory(story, values, platform);
+          }}
         >
-          {({ values, handleChange }) => (
+          {({ values, handleChange, setFieldValue }) => (
             <Form>
               <FieldArray name="frames">
                 {() => (
@@ -138,7 +140,9 @@ const StoryCard = ({ storyIndex, story, platform }) => {
                           type="text"
                           value={values.previewTitle}
                           onChange={handleChange}
+                          {...props}
                         />
+                        <ErrorMessage name="previewTitle" component="div" className="error-message" />
                       </div>
                       <FormField
                         name="previewTitleColor"
@@ -146,6 +150,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
                         value={values.previewTitleColor}
                         component={ColorPicker}
                         onChange={handleChange}
+                        {...props}
                       />
                       <div className="frame">
                         <div>
@@ -156,6 +161,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
                             onChange={handleChange}
                             as="select"
                             options={gradientOptions}
+                            {...props}
                           />
                         </div>
                       </div>
@@ -165,7 +171,12 @@ const StoryCard = ({ storyIndex, story, platform }) => {
                         <FormField
                           name="previewUrl"
                           component={UploadImage}
+                          type="file"
+                          onChange={(event) => {
+                            setFieldValue('previewUrl', event.currentTarget.files[0]);
+                          }}
                         />
+                        <ErrorMessage name="previewUrl" component="div" className="error-message" />
                       </div>
                       <Button
                         handleOnClick={() => updateStory(story, values, platform)}
@@ -189,7 +200,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
               <details>
                 <summary>
                   <p>
-                    <DragIcon style={{ cursor: 'grab', marginRight: '8px', width: '20px', height: '20px' }} /> {/* Иконка для перемещения */}
+                    <DragIcon style={{ cursor: 'grab', marginRight: '8px', width: '20px', height: '20px' }} />
                     {value.title}
                   </p>
                   <div>
@@ -212,6 +223,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
                     storyIndex={storyIndex}
                     story={story}
                     platform={platform}
+                    {...props}
                   />
                 </div>
               </details>

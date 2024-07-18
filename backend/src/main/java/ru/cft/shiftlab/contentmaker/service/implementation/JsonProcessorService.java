@@ -110,6 +110,11 @@ public class JsonProcessorService implements FileSaverService {
                     mapper.readValue(strStoriesRequestDto, String.class)
                     , StoriesRequestDto.class);
 
+            var countStoryFrames = storiesRequestDto.getStoryDtos().get(0).getStoryFramesDtos().size();
+            if (countStoryFrames == 0 || countStoryFrames > 6){
+                throw new IllegalArgumentException("Bad count of the story frames");
+            }
+
             String bankId = storiesRequestDto.getBankId();
             String platformType = storiesRequestDto.getPlatformType();
 
@@ -326,16 +331,21 @@ public class JsonProcessorService implements FileSaverService {
      */
     public ResponseEntity<?> deleteService(String bankId, String platform, String id) throws Throwable {
         ExecutorService executor = Executors.newFixedThreadPool(2);
-        Runnable r = ()->{
+        Future<?> deleteJson = executor.submit(()->{
             try {
                 deleteJsonStories(bankId, platform, id);
             }
             catch (IOException e){
                 throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
             }
-        };
-        Future<?> deleteJson = executor.submit(r);
-        Future<?> deleteImages = executor.submit(() -> deleteFilesStories(bankId, platform, id));
+        });
+        Future<?> deleteImages = executor.submit(() -> {
+            try {
+                deleteFilesStories(bankId, platform, id);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
         try {
             deleteJson.get();
             deleteImages.get();
@@ -351,7 +361,13 @@ public class JsonProcessorService implements FileSaverService {
         //Берем список историй
         List<StoryPresentation> list = getStoryList(bankId, platform);
         //удаляем нужную историю
-        list.removeIf(k -> id.equals(k.getId().toString()));
+        if (!list.removeIf(k -> id.equals(k.getId().toString()))){
+            throw new IllegalArgumentException(String.format(
+                    "Could not find the frame with id = %s",
+                    id)
+            );
+        }
+        notify();
         //кладем в json
         putStoryToJson(list, bankId, platform);
     }
@@ -359,9 +375,10 @@ public class JsonProcessorService implements FileSaverService {
     /**
      * Метод, предназначенный для удаления файлов историй из директории.
      */
-    private void deleteFilesStories(String bankId, String platform, String id){
+    private void deleteFilesStories(String bankId, String platform, String id) throws InterruptedException {
         File directory = dirProcess.checkDirectoryBankAndPlatformIsExist(bankId, platform);
         File[] files = directory.listFiles();
+        wait();
         Stream.of(files)
                 .filter(x -> x.getName().startsWith(id))
                 .forEach(x -> {

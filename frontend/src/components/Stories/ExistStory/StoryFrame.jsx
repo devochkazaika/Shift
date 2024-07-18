@@ -7,7 +7,7 @@ import { gradientOptions } from './../../../utils/constants/gradient';
 import { updateFrame, fetchImage } from '../../../api/stories';
 import UploadImage from './../../UploadImage/index';
 
-const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
+const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform, ...props }) => {
   const handleOnSubmit = async (values, platform, frame, frameIndex) => {
     updateFrame(values, platform, frame, frameIndex);
   };
@@ -49,6 +49,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                     value={values.title}
                     type="text"
                     onChange={handleChange}
+                    {...props}
                   />
                   <div className='row'>
                     <FormField
@@ -58,6 +59,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                       as={"textarea"}
                       type="text"
                       onChange={handleChange}
+                      {...props}
                     />
                     <FormField
                       name={`textColor`}
@@ -65,6 +67,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                       value={values.textColor}
                       component={ColorPicker}
                       onChange={handleChange}
+                      {...props}
                     />
                   </div>
                   <FormField
@@ -74,6 +77,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                     as="select"
                     options={gradientOptions}
                     onChange={handleChange}
+                    {...props}
                   />
                   <div role="group" aria-labelledby="my-radio-group">
                     <div className="row">
@@ -86,6 +90,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                           type="radio"
                           checked={values.visibleButtonOrNone === "BUTTON"}
                           onChange={handleChange}
+                          {...props}
                         />
                       </label>
                       <label htmlFor={`NonIntarectiveType-${frameIndex}`}>
@@ -97,6 +102,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                           type="radio"
                           checked={values.visibleButtonOrNone === "NONE"}
                           onChange={handleChange}
+                          {...props}
                         />
                       </label>
                     </div>
@@ -111,6 +117,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                             as="textarea"
                             value={values.buttonText}
                             onChange={handleChange}
+                            {...props}
                           />
                         </div>
                         <div className='column'>
@@ -120,6 +127,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                             component={ColorPicker}
                             value={values.buttonTextColor}
                             onChange={handleChange}
+                            {...props}
                           />
                           <FormField
                             name={`buttonBackgroundColor`}
@@ -127,6 +135,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                             component={ColorPicker}
                             value={values.buttonBackgroundColor}
                             onChange={handleChange}
+                            {...props}
                           />
                         </div>
                       </div>
@@ -137,6 +146,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                           type="text"
                           value={values.buttonUrl}
                           onChange={handleChange}
+                          {...props}
                         />
                       </div>
                     </>
@@ -146,6 +156,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform }) => {
                         labelTitle={"Картинка"}
                         name={`pictureFrame`}
                         component={UploadImage}
+                        {...props}
                     />
                     <div className='row'>
                       <div className="input_field">
