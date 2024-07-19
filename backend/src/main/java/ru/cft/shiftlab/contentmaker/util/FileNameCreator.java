@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
@@ -22,7 +23,7 @@ public class FileNameCreator {
      * @param platformType тип платформы.
      * @return название JSON файла.
      */
-    public static String createFileName(String bankId, String platformType) {
+    public static String createJsonName(String bankId, String platformType) {
         if (Objects.equals(platformType, "IOS")) {
             return "story_" + bankId + "_iOS" + ".json";
         }
@@ -32,7 +33,13 @@ public class FileNameCreator {
         else if (Objects.equals(platformType, "WEB")) {
             return "story_" + bankId + "_web" + ".json";
         }
+        else if (Objects.equals(platformType, "ALL PLATFORMS")) {
+            return "story_" + bankId + "_all" + ".json";
+        }
         return "story_" + bankId + ".json";
+    }
+    public static String createFileStoryName(String id, UUID uuid){
+        return id + "_" + uuid.toString();
     }
     public static void renameOld(String picturesSaveDirectory, long lastId){
         File file = new File(picturesSaveDirectory);

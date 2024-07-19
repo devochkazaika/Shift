@@ -74,7 +74,7 @@ public class StoryFramesValidator implements ConstraintValidator<StoryFramesVali
         }
 
         StoryFramesDto storyFramesDto = (StoryFramesDto) object;
-        String visibleType = storyFramesDto.getVisibleLinkOrButtonOrNone();
+        String visibleType = storyFramesDto.getVisibleButtonOrNone();
 
         if (visibleType.equals("BUTTON")) {
             return !(storyFramesDto.getButtonText().isBlank()) &&

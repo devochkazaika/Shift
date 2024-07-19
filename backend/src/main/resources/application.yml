@@ -33,6 +33,8 @@ files:
       filesSaveDirectory: "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
 
 spring:
+  resources:
+    cache-period: 0
   security:
     oauth2:
       resourceserver:

@@ -1,0 +1,98 @@
+.frames{
+  display: inline-block;
+  width: 70%;
+}
+
+.frame {
+  width: 100%;
+  display: grid;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+.frame p{
+  margin-bottom: 15px;
+  padding-right: 20px;
+}
+
+.flexContainer {
+  display: flex;
+}
+
+.marginTop {
+  margin-top: 50%;
+}
+  
+.pict {
+  width: 50%;
+  height: 50%;
+}
+
+.image:hover img {
+  transform: scale(1.1); 
+}
+
+.card{
+ border: #858585;
+}
+
+.listFrame details {
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  background-color: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+  position: static;
+}
+
+.listFrame details summary {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.listFrame details summary p {
+  flex-grow: 1;
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.listFrame details summary button {
+  display: flex;
+  gap: 10px;
+  transform: scale(0.8);
+}
+
+.draggable {
+  cursor: grab;
+  position: relative;
+  z-index: 1;
+}
+
+.draggable.dragging {
+  opacity: 0.5;
+}
+
+#draggable-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.listFrame {
+  margin-bottom: 10px;
+  list-style-type: none;
+}
+
+#addFrame {
+  border: 2px dashed;
+  height: 100%;
+  padding-top: 20px;
+  position: Static;
+  background-color: #dddada ;
+}
+
+#addFrame summary {
+  padding-bottom: 10px;
+}
+
