@@ -1,47 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import StoryFrame from './StoryFrame';
-import { FieldArray, Form, Field, Formik } from 'formik';
-import FormField from "../../FormField";
+import { FieldArray, Form, Formik, ErrorMessage } from 'formik';
+import FormField from '../../FormField';
 import { gradientOptions } from './../../../utils/constants/gradient';
 import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg';
 import { ReactComponent as DragIcon } from '../../../assets/icons/drag.svg';
 import Button from '../../ui/Button';
 import ColorPicker from './../../ColorPicker/index';
-import { deleteFrame, updateStory, updateFrameOrder } from './../../../api/stories';
+import { deleteFrame, updateStory, updateFrameOrder, fetchImage } from './../../../api/stories';
 import UploadImage from './../../UploadImage/index';
-import axios from 'axios';
 import { storyPanelValidationSchema } from './../../../utils/helpers/validation';
 import AddFrame from './AddFrame';
 
-const StoryCard = ({ storyIndex, story, platform }) => {
+const StoryCard = ({ storyIndex, story, platform, ...props }) => {
   const [frames, setFrames] = useState(story.storyFrames);
-  const [imageLoaded, setImageLoaded] = useState(false);
   const [initialImage, setInitialImage] = useState(null);
+  const draggableListRef = useRef(null);
 
   useEffect(() => {
-    const fetchImage = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8080${story.previewUrl}`, { responseType: 'arraybuffer' });
-        const blob = new Blob([response.data], { type: response.headers['content-type'] });
-        const file = new File([blob], "initial_image.jpg", { type: blob.type });
-        setInitialImage(file);
-      } catch (error) {
-        console.error('Error fetching the image:', error);
-      }
-    };
-
-    if (!imageLoaded) {
-      fetchImage();
-      setImageLoaded(true);
+    if (!initialImage) {
+      fetchImage(story.previewUrl, setInitialImage);
     }
 
     if (story && story.storyFrames) {
       setFrames(story.storyFrames);
     }
-  }, [story, imageLoaded]);
+  }, [story, initialImage]);
 
   useEffect(() => {
-    const list = document.getElementById('draggable-list');
+    const draggableList = draggableListRef.current;
+    let initialOrder = frames.map((frame) => frame.id);
 
     const handleDragStart = (e) => {
       if (e.target.tagName === 'LI') {
@@ -52,25 +40,24 @@ const StoryCard = ({ storyIndex, story, platform }) => {
     const handleDragEnd = async (e) => {
       if (e.target.tagName === 'LI') {
         e.target.classList.remove('dragging');
-        const newOrder = Array.from(list.children).map((child, index) => ({
-          id: child.id,
-          order: index
-        }));
-        
-        let arr = [];
-        frames.forEach((frame, index) => {
-          if (frame.id !== newOrder[index].id) {
-            arr.push(frame.id);
+        const newOrder = Array.from(draggableList.children).map((child) => child.id);
+
+        let changedIds = [];
+        for (let i = 0; i < newOrder.length; i++) {
+          if (newOrder[i] !== initialOrder[i]) {
+            changedIds.push(initialOrder[i], newOrder[i]);
+            break;
           }
-        });
-        
-        if (arr.length) {
-          // Swap cards
+        }
+
+        if (changedIds.length === 2) {
           try {
-            await updateFrameOrder(story, platform, arr[0], arr[1]);
-            setFrames(frames);
+            await updateFrameOrder(story, platform, changedIds[0], changedIds[1]);
+            setFrames((prevFrames) =>
+              prevFrames.sort((a, b) => newOrder.indexOf(a.id) - newOrder.indexOf(b.id))
+            );
           } catch (error) {
-            console.error('Error updating frame order:', error);
+            console.error('Ошибка при обновлении порядка фреймов:', error);
           }
         }
       }
@@ -78,21 +65,20 @@ const StoryCard = ({ storyIndex, story, platform }) => {
 
     const handleDragOver = (e) => {
       e.preventDefault();
-      const afterElement = getDragAfterElement(list, e.clientY);
-      const draggingElement = document.querySelector('.dragging');
+      const afterElement = getDragAfterElement(draggableList, e.clientY);
+      const draggingElement = draggableList.querySelector('.dragging');
       if (afterElement == null) {
-        list.appendChild(draggingElement);
+        draggableList.appendChild(draggingElement);
       } else {
-        list.insertBefore(draggingElement, afterElement);
+        draggableList.insertBefore(draggingElement, afterElement);
       }
     };
 
-    const getDragAfterElement = (list, y) => {
+    const getDragAfterElement = (list, clientY) => {
       const draggableElements = [...list.querySelectorAll('.draggable:not(.dragging)')];
-
       return draggableElements.reduce((closest, child) => {
         const box = child.getBoundingClientRect();
-        const offset = y - box.top - box.height / 2;
+        const offset = clientY - box.top - box.height / 2;
         if (offset < 0 && offset > closest.offset) {
           return { offset: offset, element: child };
         } else {
@@ -101,9 +87,9 @@ const StoryCard = ({ storyIndex, story, platform }) => {
       }, { offset: Number.NEGATIVE_INFINITY }).element;
     };
 
-    list.addEventListener('dragover', handleDragOver);
+    draggableList.addEventListener('dragover', handleDragOver);
 
-    const draggables = list.querySelectorAll('li');
+    const draggables = draggableList.querySelectorAll('li');
     draggables.forEach(draggable => {
       draggable.addEventListener('dragstart', handleDragStart);
       draggable.addEventListener('dragend', handleDragEnd);
@@ -114,9 +100,9 @@ const StoryCard = ({ storyIndex, story, platform }) => {
         draggable.removeEventListener('dragstart', handleDragStart);
         draggable.removeEventListener('dragend', handleDragEnd);
       });
-      list.removeEventListener('dragover', handleDragOver);
+      draggableList.removeEventListener('dragover', handleDragOver);
     };
-  }, [frames]);
+  }, [frames, story, platform, storyIndex]);
 
   const handleOnSubmit = async (story, frame, platform) => {
     const success = await deleteFrame(story, frame, platform);
@@ -135,7 +121,10 @@ const StoryCard = ({ storyIndex, story, platform }) => {
             previewTitle: story.previewTitle,
             previewTitleColor: story.previewTitleColor,
             previewGradient: story.previewGradient,
-            previewUrl: initialImage
+            [`previewUrl_${storyIndex}`]: initialImage
+          }}
+          onSubmit={(values) => {
+            updateStory(story, storyIndex, values, platform);
           }}
         >
           {({ values, handleChange }) => (
@@ -144,17 +133,16 @@ const StoryCard = ({ storyIndex, story, platform }) => {
                 {() => (
                   <div className="row" style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ width: "70%" }}>
-                      <div className="frame" style={{ marginBottom: "10px" }}>
-                        <h3 style={{ paddingRight: "10px" }}>Заголовок</h3>
-                        <div style={{ width: "100%" }}>
-                          <Field
-                            name="previewTitle"
-                            as={FormField}
-                            type="text"
-                            value={values.previewTitle}
-                            onChange={handleChange}
-                          />
-                        </div>
+                      <div>
+                        <FormField
+                          labelTitle="Заголовок"
+                          name="previewTitle"
+                          type="text"
+                          value={values.previewTitle}
+                          onChange={handleChange}
+                          {...props}
+                        />
+                        <ErrorMessage name="previewTitle" component="div" className="error-message" />
                       </div>
                       <FormField
                         name="previewTitleColor"
@@ -162,6 +150,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
                         value={values.previewTitleColor}
                         component={ColorPicker}
                         onChange={handleChange}
+                        {...props}
                       />
                       <div className="frame">
                         <div>
@@ -172,6 +161,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
                             onChange={handleChange}
                             as="select"
                             options={gradientOptions}
+                            {...props}
                           />
                         </div>
                       </div>
@@ -179,16 +169,17 @@ const StoryCard = ({ storyIndex, story, platform }) => {
                     <div style={{ width: "30%", marginLeft: "auto", float: "right" }}>
                       <div className="input_field">
                         <FormField
-                          name="previewUrl"
+                          name={`previewUrl_${storyIndex}`}
                           component={UploadImage}
+                          type="file"
                         />
+                        <ErrorMessage name="previewUrl" component="div" className="error-message" />
                       </div>
                       <Button
-                        handleOnClick={() => updateStory(story, values, platform)}
+                        handleOnClick={() => updateStory(story, storyIndex, values, platform)}
                         text="Изменить"
                         type="button"
                         color="green"
-                        icon={<ArrowIcon width="12px" height="12px" />}
                       />
                     </div>
                   </div>
@@ -200,17 +191,17 @@ const StoryCard = ({ storyIndex, story, platform }) => {
       </div>
       <div>
         <h3>Story Frames:</h3>
-        <ul id="draggable-list">
+        <ul ref={draggableListRef} id={`draggable-list-${storyIndex}`}>
           {frames.map((value, index) => (
             <li id={value.id} className="listFrame draggable" key={index} draggable="true">
-              <details className="item-card">
-                <summary className="item-card__summary">
-                  <p className="item-card__title">
-                    <DragIcon style={{ cursor: 'grab', marginRight: '8px', width: '20px', height: '20px'}} /> {/* Иконка для перемещения */}
+              <details>
+                <summary>
+                  <p>
+                    <DragIcon style={{ cursor: 'grab', marginRight: '8px', width: '20px', height: '20px' }} />
                     {value.title}
                   </p>
-                  <div className="item-card__buttons">
-                    <div className="item-card__button--delete">
+                  <div>
+                    <div>
                       <Button
                         text="Удалить"
                         type="button"
@@ -221,7 +212,7 @@ const StoryCard = ({ storyIndex, story, platform }) => {
                     </div>
                   </div>
                 </summary>
-                <div className="item-card__content">
+                <div>
                   <StoryFrame
                     key={index}
                     frame={value}
@@ -229,30 +220,29 @@ const StoryCard = ({ storyIndex, story, platform }) => {
                     storyIndex={storyIndex}
                     story={story}
                     platform={platform}
+                    {...props}
                   />
                 </div>
               </details>
             </li>
           ))}
-          </ul>
-          <ul>
-          <li className="listFrame addFrame">
-            <details className="item-card item-card__add">
-              <summary className="item-card__summary">
-                <p className="item-card__title">Добавить карточку</p>
-              </summary>
-              <div className="item-card__content">
-                <AddFrame
-                  setFrames={setFrames}
-                  frames={frames}
-                  storyIndex={storyIndex}
-                  story={story}
-                  platform={platform}
-                />
-              </div>
-            </details>
-          </li>
         </ul>
+        <div>
+          <details id='addFrame'>
+            <summary>
+              Добавить карточку
+            </summary>
+            <div>
+              <AddFrame
+                setFrames={setFrames}
+                frames={frames}
+                storyIndex={storyIndex}
+                story={story}
+                platform={platform}
+              />
+            </div>
+          </details>
+        </div>
       </div>
     </div>
   );

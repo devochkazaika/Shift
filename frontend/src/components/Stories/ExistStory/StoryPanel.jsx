@@ -5,8 +5,6 @@ import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg'
 import { deleteStory } from './../../../api/stories';
 import { useState, useEffect, React } from 'react';
 
-
-
 const StoryPanel = ({ storyArray, platform }) => {
   const [stories, setStories] = useState(storyArray);
   //Для обновления после удаления
@@ -17,9 +15,14 @@ const StoryPanel = ({ storyArray, platform }) => {
   }, [storyArray]);
   //Для удаления истории
   const handleOnSubmit = async (story, platform) => {
-    const success = await deleteStory(story, platform);
-    if (success) {
-      setStories(prevStories => prevStories.filter(item => item.id !== story.id));
+    try {
+      const success = await deleteStory(story, platform);
+      if (success) {
+        setStories(prevStories => prevStories.filter(item => item.id !== story.id));
+      }
+    }
+    catch (error) {
+      console.error('Ошибка при удалении истории', error);
     }
   };
 
@@ -28,11 +31,11 @@ const StoryPanel = ({ storyArray, platform }) => {
             <ul className="stories">
             {stories.map((story, index) => (
                 <li className='listFrame' key={index}>
-                <details className="item-card">
-                  <summary className="item-card__summary">
-                    <p className="item-card__title">{story.previewTitle}</p>
-                    <div className="item-card__buttons">
-                      <div className="item-card__button--delete">
+                <details>
+                  <summary>
+                    <p>{story.previewTitle}</p>
+                    <div>
+                      <div>
                         <Button
                               text="Удалить"
                               type="button"
@@ -43,7 +46,7 @@ const StoryPanel = ({ storyArray, platform }) => {
                       </div>
                     </div>
                   </summary>
-                  <div className="item-card__content">
+                  <div>
                      <StoryCard key={index} story={story} storyIndex={index} platform={platform}/>
                   </div>
                 </details>
@@ -53,6 +56,5 @@ const StoryPanel = ({ storyArray, platform }) => {
         </div>
     );
   }
-
 
 export default StoryPanel;

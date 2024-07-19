@@ -13,4 +13,6 @@ public class Constants {
 
     public static final String FILES_TEST_DIRECTORY =
             System.getProperty("user.dir") + "/src/test/java/ru/cft/shiftlab/contentmaker/test_pictures/";
+
+    public static final Integer MAX_COUNT_FRAME = 6;
 }

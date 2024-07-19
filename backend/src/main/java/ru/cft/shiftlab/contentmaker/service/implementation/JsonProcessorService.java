@@ -31,6 +31,7 @@ import ru.cft.shiftlab.contentmaker.util.MultipartBodyProcess;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
 import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -38,8 +39,7 @@ import java.util.concurrent.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
-import static ru.cft.shiftlab.contentmaker.util.Constants.STORIES;
+import static ru.cft.shiftlab.contentmaker.util.Constants.*;
 
 
 /**
@@ -109,6 +109,11 @@ public class JsonProcessorService implements FileSaverService {
             StoriesRequestDto storiesRequestDto = mapper.readValue(
                     mapper.readValue(strStoriesRequestDto, String.class)
                     , StoriesRequestDto.class);
+
+            var countStoryFrames = storiesRequestDto.getStoryDtos().get(0).getStoryFramesDtos().size();
+            if (countStoryFrames == 0 || countStoryFrames > MAX_COUNT_FRAME){
+                throw new IllegalArgumentException("Bad count of the story frames");
+            }
 
             String bankId = storiesRequestDto.getBankId();
             String platformType = storiesRequestDto.getPlatformType();
@@ -185,6 +190,7 @@ public class JsonProcessorService implements FileSaverService {
         }
     }
 
+    @Transactional
     public StoryPresentationFrames addFrame(String frameDto, MultipartFile file,
                           String bankId, String platform, Long id) throws IOException {
         StoryPresentationFrames frame = mapper.readValue(
@@ -205,6 +211,7 @@ public class JsonProcessorService implements FileSaverService {
         final StoryPresentation storyPresentation = getStoryModel(listStory, id);
         final ArrayList<StoryPresentationFrames> listFrames = storyPresentation.getStoryPresentationFrames();
         listFrames.add(frame);
+        if (listFrames.size() >= MAX_COUNT_FRAME) throw new IllegalArgumentException("Cant save a frame. The maximum size is reached");
         putStoryToJson(listStory, bankId, platform);
         return frame;
     }
@@ -281,19 +288,19 @@ public class JsonProcessorService implements FileSaverService {
 
     /**
      * Метод для изменения карточки в историях
-     * @param storyFramesRequestDt
+     * @param storyFramesRequestDto
      * @param bankId
      * @param platform
      * @param id
      * @param frameId
      * @throws IOException
      */
-    public void changeFrameStory(String storyFramesRequestDt, String bankId, String platform,
+    public void changeFrameStory(String storyFramesRequestDto, String bankId, String platform,
                                  Long id,
                                  String frameId,
                                  MultipartFile file) throws IOException {
         StoryFramesDto story = mapper.readValue(
-                storyFramesRequestDt
+                storyFramesRequestDto
                 , StoryFramesDto.class);
 
         List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
@@ -326,16 +333,21 @@ public class JsonProcessorService implements FileSaverService {
      */
     public ResponseEntity<?> deleteService(String bankId, String platform, String id) throws Throwable {
         ExecutorService executor = Executors.newFixedThreadPool(2);
-        Runnable r = ()->{
+        Future<?> deleteJson = executor.submit(()->{
             try {
                 deleteJsonStories(bankId, platform, id);
             }
             catch (IOException e){
                 throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
             }
-        };
-        Future<?> deleteJson = executor.submit(r);
-        Future<?> deleteImages = executor.submit(() -> deleteFilesStories(bankId, platform, id));
+        });
+        Future<?> deleteImages = executor.submit(() -> {
+            try {
+                deleteFilesStories(bankId, platform, id);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
         try {
             deleteJson.get();
             deleteImages.get();
@@ -351,7 +363,12 @@ public class JsonProcessorService implements FileSaverService {
         //Берем список историй
         List<StoryPresentation> list = getStoryList(bankId, platform);
         //удаляем нужную историю
-        list.removeIf(k -> id.equals(k.getId().toString()));
+        if (!list.removeIf(k -> id.equals(k.getId().toString()))){
+            throw new IllegalArgumentException(String.format(
+                    "Could not find the frame with id = %s",
+                    id)
+            );
+        }
         //кладем в json
         putStoryToJson(list, bankId, platform);
     }
@@ -359,7 +376,7 @@ public class JsonProcessorService implements FileSaverService {
     /**
      * Метод, предназначенный для удаления файлов историй из директории.
      */
-    private void deleteFilesStories(String bankId, String platform, String id){
+    private void deleteFilesStories(String bankId, String platform, String id) throws InterruptedException {
         File directory = dirProcess.checkDirectoryBankAndPlatformIsExist(bankId, platform);
         File[] files = directory.listFiles();
         Stream.of(files)
@@ -373,18 +390,22 @@ public class JsonProcessorService implements FileSaverService {
 
     }
 
+
     /**
      * Метод, предназначенный для удаления одной карточки из историй.
      * deleteJsonFrame - удаляет frame из JSON
      * deleteFileFrame - удаляет файл из директории
      *
-     * @return
+     * @param bankId   Банк
+     * @param platform Платформа
+     * @param id       id истории
+     * @param frameId  UUID карточки
      */
-    public ResponseEntity deleteStoryFrame(String bankId, String platform, String id, String frameId) throws Throwable {
+    public ResponseEntity<?> deleteStoryFrame(String bankId, String platform, String id, String frameId) throws Throwable {
         ExecutorService executor = Executors.newFixedThreadPool(2);
         //для передачи UUID между потоками
         Exchanger<UUID> exchanger = new Exchanger<>();
-        Runnable r = ()->{
+        Future<?> deleteJson = executor.submit(()->{
             try {
                 exchanger.exchange(deleteJsonFrame(bankId, platform, id, frameId));
             }
@@ -395,8 +416,7 @@ public class JsonProcessorService implements FileSaverService {
             } catch (IndexOutOfBoundsException e){
                 throw new IllegalArgumentException(String.format("Frame with id=%s doesnt exist", frameId));
             }
-        };
-        Future<?> deleteJson = executor.submit(r);
+        });
         Future<?> deleteImages = executor.submit(() -> {
             try {
                 deleteFileFrame(bankId, platform, id, exchanger.exchange(null));
@@ -415,10 +435,10 @@ public class JsonProcessorService implements FileSaverService {
 
     /**
      * Метод предназначенный для удаления карточки внутри JSON
-     * @param bankId
-     * @param platform
-     * @param id
-     * @param frameId
+     * @param bankId Банк
+     * @param platform Платформа
+     * @param id id истории
+     * @param frameId UUID карточки
      * @return
      * @throws IOException
      */
@@ -432,8 +452,14 @@ public class JsonProcessorService implements FileSaverService {
         List<StoryPresentationFrames> frames = story.getStoryPresentationFrames();
         //Получаем UUID нужной истории и удаляем ее
         uuid = UUID.fromString(frameId);
-        frames.removeIf(x -> x.getId().equals(UUID.fromString(frameId)));
 
+        if (frames.size() == 1) throw new IllegalArgumentException("Can't delete a single frame");
+        if (!frames.removeIf(x -> x.getId().equals(UUID.fromString(frameId)))){
+            throw new IllegalArgumentException(String.format(
+                    "Could not find the frame with id = %s",
+                    id
+            ));
+        }
         //Записываем в JSON
         putStoryToJson(list, bankId, platform);
         return uuid;
@@ -445,7 +471,7 @@ public class JsonProcessorService implements FileSaverService {
      * @param id
      * @param frameId
      */
-    private void deleteFileFrame(String bankId, String platform, String id, UUID frameId){
+    private void deleteFileFrame(String bankId, String platform, String id, UUID frameId) throws InterruptedException {
         File directory = dirProcess.checkDirectoryBankAndPlatformIsExist(bankId, platform);
         File[] files = directory.listFiles();
         Stream.of(files)

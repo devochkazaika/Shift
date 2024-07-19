@@ -3,7 +3,6 @@
   width: 70%;
 }
 
-
 .frame {
   width: 100%;
   display: grid;
@@ -24,7 +23,6 @@
   margin-top: 50%;
 }
   
-
 .pict {
   width: 50%;
   height: 50%;
@@ -34,13 +32,11 @@
   transform: scale(1.1); 
 }
 
-
 .card{
  border: #858585;
 }
 
-
-.item-card {
+.listFrame details {
   border: 1px solid #e0e0e0;
   border-radius: 5px;
   background-color: #fff;
@@ -49,72 +45,23 @@
   position: static;
 }
 
-.item-card__summary {
+.listFrame details summary {
   display: flex;
   align-items: center;
   cursor: pointer;
 }
 
-.item-card__add {
-  border: 2px dashed;
-  background-color: #e9e7e7;
-  height: 100%;
-  padding-top: 20px;
-  padding-bottom: 20px;
-}
-
-.item-card__icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-
-.item-card__title {
+.listFrame details summary p {
   flex-grow: 1;
   margin: 0;
   font-size: 16px;
   color: #333;
 }
 
-.item-card__buttons {
+.listFrame details summary button {
   display: flex;
   gap: 10px;
-}
-
-.item-card__button {
-  padding: 5px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  color: #fff;
-}
-
-.item-card__button--change{
-  float: right;
-  transform: scale(auto);
-  padding: 0 0px;
-  /* padding-right: 20px; */
-}
-
-.item-card__button--delete {
-  transform: scale(0.7);
-}
-
-.item-card__content {
-  margin-top: 10px;
-  padding: 10px;
-  border-top: 1px solid #e0e0e0;
-  z-index: 10;
-  position: sticky;
-}
-
-
-.dragging {
-  opacity: 0.5;
-  z-index: 10;
+  transform: scale(0.8);
 }
 
 .draggable {
@@ -137,6 +84,15 @@
   list-style-type: none;
 }
 
-.addFrame {
+#addFrame {
+  border: 2px dashed;
+  height: 100%;
+  padding-top: 20px;
   position: Static;
+  background-color: #dddada ;
 }
+
+#addFrame summary {
+  padding-bottom: 10px;
+}
+
