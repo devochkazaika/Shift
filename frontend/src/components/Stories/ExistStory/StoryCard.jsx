@@ -2,14 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import StoryFrame from './StoryFrame';
 import { FieldArray, Form, Formik, ErrorMessage } from 'formik';
 import FormField from '../../FormField';
+
 import { gradientOptions } from './../../../utils/constants/gradient';
-import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg';
+import { storyPanelValidationSchema } from './../../../utils/helpers/validation';
+
 import { ReactComponent as DragIcon } from '../../../assets/icons/drag.svg';
 import Button from '../../ui/Button';
 import ColorPicker from './../../ColorPicker/index';
 import { deleteFrame, updateStory, updateFrameOrder, fetchImage } from './../../../api/stories';
 import UploadImage from './../../UploadImage/index';
-import { storyPanelValidationSchema } from './../../../utils/helpers/validation';
 import AddFrame from './AddFrame';
 
 const StoryCard = ({ storyIndex, story, platform, ...props }) => {
@@ -190,7 +191,7 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
         </Formik>
       </div>
       <div>
-        <h3>Story Frames:</h3>
+        <h3>Карточки</h3>
         <ul ref={draggableListRef} id={`draggable-list-${storyIndex}`}>
           {frames.map((value, index) => (
             <li id={value.id} className="listFrame draggable" key={index} draggable="true">
@@ -206,7 +207,6 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
                         text="Удалить"
                         type="button"
                         color="red"
-                        icon={<ArrowIcon width="12px" height="12px" />}
                         handleOnClick={() => handleOnSubmit(story, value, platform)}
                       />
                     </div>
