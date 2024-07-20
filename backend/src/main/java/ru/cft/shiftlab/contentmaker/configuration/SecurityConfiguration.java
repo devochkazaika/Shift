@@ -19,7 +19,8 @@ public class SecurityConfiguration  {
                             .antMatchers("/stories/add/**").authenticated()
                             .antMatchers("/stories/add").authenticated()
                             .anyRequest().authenticated()
-            );
+            )
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt());
         return http.build();
     }
 
