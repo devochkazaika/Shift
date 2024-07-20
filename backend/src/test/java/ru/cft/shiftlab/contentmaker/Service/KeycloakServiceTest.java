@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import ru.cft.shiftlab.contentmaker.dto.UserDto;
-import ru.cft.shiftlab.contentmaker.service.implementation.KeycloakServiceImpl;
 
 @SpringBootTest
 public class KeycloakServiceTest {

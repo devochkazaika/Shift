@@ -5,7 +5,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.keycloak.admin.client.Keycloak;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.cft.shiftlab.contentmaker.service.implementation.KeycloakServiceImpl;
 
 @ExtendWith(SpringExtension.class)
 //@WebMvcTest(value = HelloWorldController.class)

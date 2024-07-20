@@ -21,7 +21,6 @@ preview:
 keycloak:
   realm: content-maker
   resource: maker
-  public-client: true
   auth-server-url: http://localhost:8081/auth
   use-resource-role-mappings: true
   principal-attribute: preferred_username
@@ -33,11 +32,9 @@ files:
       filesSaveDirectory: "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
 
 spring:
-  resources:
-    cache-period: 0
   security:
     oauth2:
-      resourceserver:
+      resource server:
         jwt:
           issuer-uri: http://localhost:8081/realms/content-maker
       client:

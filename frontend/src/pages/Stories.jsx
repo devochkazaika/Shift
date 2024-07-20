@@ -13,6 +13,7 @@ import Button from "../components/ui/Button";
 import Loader from "../components/ui/Loader/index";
 import StoryPanel from "../components/Stories/ExistStory/StoryPanel";
 import axios from "axios";
+import {getJWT } from "../components/Security/TokenProcess";
 
 const Stories = () => {
   const [send, setSend] = useState(false);
@@ -24,9 +25,10 @@ const Stories = () => {
 
   const fetchData = async (bankId, platform) => {
     try {
+      let head = {};
+      getJWT(head);
       const response = await axios.get('/stories/bank/info/getJson/?bankId='+bankId+'&platform='+platform, {
-        headers: {
-        },
+        headers: head,
         responseType: 'json'
       });
       return response.data;

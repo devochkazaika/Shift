@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 
 import './styles/globals.scss';
 
@@ -9,8 +9,11 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import React from 'react';
+import Login from './pages/Login';
 
 function App() {
+  const isAuthenticated = localStorage.getItem('jwt_token') !== null;
+
   return (
     <BrowserRouter>
       <div className="main_container">
@@ -18,9 +21,10 @@ function App() {
         <main className="content">
           <ToastContainer />
           <Routes>
-            <Route path="/" element={<Stories />} />
-            <Route path="/stories" element={<Stories />} />
-            <Route path="/banners" element={<Banners />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={isAuthenticated ? <Stories /> : <Navigate to="/login" />} />
+            <Route path="/stories" element={isAuthenticated ? <Stories /> : <Navigate to="/login" />} />
+            <Route path="/banners" element={isAuthenticated ? <Banners /> : <Navigate to="/login" />} />
           </Routes>
         </main>
       </div>
