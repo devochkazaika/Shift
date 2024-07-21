@@ -1,13 +1,22 @@
-import React, {useState, useEffect} from 'react';
-import { FieldArray, Form, Formik } from 'formik';
+import React, { useState, useEffect } from "react";
+import { FieldArray, Form, Formik } from "formik";
 import FormField from "../../FormField";
-import Button from '../.././ui/Button';
-import ColorPicker from './../../ColorPicker/index';
-import { gradientOptions } from './../../../utils/constants/gradient';
-import { updateFrame, fetchImage } from '../../../api/stories';
-import UploadImage from './../../UploadImage/index';
+import Button from "../.././ui/Button";
+import ColorPicker from "./../../ColorPicker/index";
+import { gradientOptions } from "./../../../utils/constants/gradient";
+import { updateFrame, fetchImage } from "../../../api/stories";
+import UploadImage from "./../../UploadImage/index";
+import { storyPanelValidationSchema } from "./../../../utils/helpers/validation";
 
-const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform, ...props }) => {
+
+const StoryFrame = ({
+  story,
+  frame,
+  frameIndex,
+  storyIndex,
+  platform,
+  ...props
+}) => {
   const handleOnSubmit = async (values, platform, frame, frameId) => {
     updateFrame(values, platform, frame, storyIndex, frameId, frameIndex);
   };
@@ -17,13 +26,13 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform, ...props }
     if (!initialImage) {
       fetchImage(frame.pictureUrl, setInitialImage);
     }
-
-  }, [frame.pictureUrl])
+  }, [frame.pictureUrl]);
 
   return (
     <div>
       <Formik
         enableReinitialize
+        validationSchema={storyPanelValidationSchema(storyIndex, frameIndex)}
         initialValues={{
           title: frame.title,
           text: frame.text,
@@ -34,9 +43,11 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform, ...props }
           buttonTextColor: frame.buttonTextColor,
           buttonBackgroundColor: frame.buttonBackgroundColor,
           buttonUrl: frame.buttonUrl,
-          [`pictureFrame_${storyIndex}_${frameIndex}`]: initialImage
+          [`pictureFrame_${storyIndex}_${frameIndex}`]: initialImage,
         }}
-        onSubmit={(values) => handleOnSubmit(values, platform, frame, frameIndex)}
+        onSubmit={(values) =>
+          handleOnSubmit(values, platform, frame, frameIndex)
+        }
       >
         {({ values, handleChange }) => (
           <Form>
@@ -45,13 +56,13 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform, ...props }
                 <div>
                   <FormField
                     labelTitle="Заголовок"
-                    name={`title`}
+                    name={`previewTitle`}
                     value={values.title}
                     type="text"
                     onChange={handleChange}
                     {...props}
                   />
-                  <div className='row'>
+                  <div className="row">
                     <FormField
                       name={`text`}
                       value={values.text}
@@ -120,7 +131,7 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform, ...props }
                             {...props}
                           />
                         </div>
-                        <div className='column'>
+                        <div className="column">
                           <FormField
                             name={`buttonTextColor`}
                             labelTitle="Цвет текста"
@@ -151,19 +162,21 @@ const StoryFrame = ({ story, frame, frameIndex, storyIndex, platform, ...props }
                       </div>
                     </>
                   )}
-                  <div className='row'>
+                  <div className="row">
                     <FormField
-                        labelTitle={"Картинка"}
-                        name={`pictureFrame_${storyIndex}_${frameIndex}`}
-                        component={UploadImage}
-                        {...props}
+                      labelTitle={"Картинка"}
+                      name={`pictureFrame_${storyIndex}_${frameIndex}`}
+                      component={UploadImage}
+                      {...props}
                     />
-                    <div className='row'>
+                    <div className="row">
                       <div className="input_field">
                         <Button
-                          handleOnClick={() => handleOnSubmit(story, platform, values, frame.id)}
+                          handleOnClick={() =>
+                            handleOnSubmit(story, platform, values, frame.id)
+                          }
                           text="Изменить"
-                          type="button"
+                          type="submit"
                           color="green"
                         />
                       </div>
