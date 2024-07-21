@@ -137,7 +137,7 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
       <div>
         <Formik
           enableReinitialize
-          validationSchema={storyPanelValidationSchema}
+          validationSchema={storyPanelValidationSchema(storyIndex)}
           initialValues={{
             previewTitle: story.previewTitle,
             previewTitleColor: story.previewTitleColor,
@@ -208,7 +208,7 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
                           updateStory(story, storyIndex, values, platform)
                         }
                         text="Изменить"
-                        type="button"
+                        type="submit"
                         color="green"
                       />
                     </div>

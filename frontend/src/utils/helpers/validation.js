@@ -197,94 +197,99 @@ export const storyValidationSchema = Yup.object({
   ),
 });
 
-export const storyPanelValidationSchema = Yup.object({
-  previewTitle: Yup.string().required("Поле обязательно"),
-  previewUrl: Yup.mixed()
-    .required()
-    .nullable()
-    .test("fileFormat", "Неподходящий тип изображения", checkFileFormat)
-    .test(
-      "fileSize",
-      `Максимальный допустимый размер - ${MAX_IMAGE_SIZE}КБ`,
-      checkFileSize,
-    )
-    .test(
-      "fileSides",
-      `Максимальный допустимый размер - ${MAX_IMAGE_WIDTH}x${MAX_IMAGE_HEIGHT}px`,
-      checkFileSides,
-    ),
-  storyFrames: Yup.array().of(
-    Yup.object().shape({
-      title: Yup.string()
-        .required("Поле обязательно")
-        .test(
-          "titleStrings",
-          `Максимальное кол-во строк в заголовке - ${framesRules.length}`,
-          checkTitleStrings,
-        )
-        .test("titleLength", checkTitleLength)
-        .test("titleStringsLength", checkTitleStringsLength),
-      text: Yup.string()
-        .notRequired()
-        .when("title", (titleValue, textSchema) => {
-          if (!titleValue || !checkTitleStrings(titleValue)) return textSchema;
-          const titleStringsCount = getStrings(titleValue).length;
-          const rule = framesRules[titleStringsCount - 1];
+export const storyPanelValidationSchema = (storyIndex) =>
+  Yup.object({
+    previewTitle: Yup.string().required("Поле обязательно"),
+    [`previewUrl_${storyIndex}`]: Yup.mixed()
+      .required("Поле обязательно")
+      .nullable()
+      .test("fileFormat", "Неподходящий тип изображения", checkFileFormat)
+      .test(
+        "fileSize",
+        `Максимальный допустимый размер - ${MAX_IMAGE_SIZE}КБ`,
+        checkFileSize,
+      )
+      .test(
+        "fileSides",
+        `Максимальный допустимый размер - ${MAX_IMAGE_WIDTH}x${MAX_IMAGE_HEIGHT}px`,
+        checkFileSides,
+      ),
+    storyFrames: Yup.array().of(
+      Yup.object().shape({
+        title: Yup.string()
+          .required("Поле обязательно")
+          .test(
+            "titleStrings",
+            `Максимальное кол-во строк в заголовке - ${framesRules.length}`,
+            checkTitleStrings,
+          )
+          .test("titleLength", checkTitleLength)
+          .test("titleStringsLength", checkTitleStringsLength),
+        text: Yup.string()
+          .notRequired()
+          .when("title", (titleValue, textSchema) => {
+            if (!titleValue || !checkTitleStrings(titleValue))
+              return textSchema;
+            const titleStringsCount = getStrings(titleValue).length;
+            const rule = framesRules[titleStringsCount - 1];
 
-          return textSchema.test("textValidation", (value, { createError }) => {
-            if (!value) return true;
+            return textSchema.test(
+              "textValidation",
+              (value, { createError }) => {
+                if (!value) return true;
 
-            if (!checkStringsCount(value, rule.maxTextStrings))
-              return createError({
-                message: `Максимальное кол-во строк в тексте - ${rule.maxTextStrings}`,
-              });
+                if (!checkStringsCount(value, rule.maxTextStrings))
+                  return createError({
+                    message: `Максимальное кол-во строк в тексте - ${rule.maxTextStrings}`,
+                  });
 
-            if (!checkLength(value, rule.maxTextLength))
-              return createError({
-                message: `Максимальное кол-во символов в тексте - ${rule.maxTextLength}`,
-              });
-            const strings = getStrings(value);
-            for (const string of strings) {
-              if (string.length < rule.minLength) {
-                return createError({
-                  message: "Пустая строка",
-                });
-              }
-            }
+                if (!checkLength(value, rule.maxTextLength))
+                  return createError({
+                    message: `Максимальное кол-во символов в тексте - ${rule.maxTextLength}`,
+                  });
+                const strings = getStrings(value);
+                for (const string of strings) {
+                  if (string.length < rule.minLength) {
+                    return createError({
+                      message: "Пустая строка",
+                    });
+                  }
+                }
 
-            return true;
-          });
+                return true;
+              },
+            );
+          }),
+        pictureUrl: Yup.mixed()
+          .nullable()
+          .required("Поле обязательно")
+          .test("fileFormat", "Неподходящий тип изображения", checkFileFormat)
+          .test(
+            "fileSize",
+            `Максимальный допустимый размер - ${MAX_IMAGE_SIZE}КБ`,
+            checkFileSize,
+          )
+          .test(
+            "fileSides",
+            `Максимальный допустимый размер - ${MAX_IMAGE_WIDTH}x${MAX_IMAGE_HEIGHT}px`,
+            checkFileSides,
+          ),
+        linkText: Yup.string().when("visibleLinkOrButtonOrNone", {
+          is: "LINK",
+          then: Yup.string().required("Поле обязательно"),
         }),
-      pictureUrl: Yup.mixed()
-        .nullable()
-        .required("Поле обязательно")
-        .test("fileFormat", "Неподходящий тип изображения", checkFileFormat)
-        .test(
-          "fileSize",
-          `Максимальный допустимый размер - ${MAX_IMAGE_SIZE}КБ`,
-          checkFileSize,
-        )
-        .test(
-          "fileSides",
-          `Максимальный допустимый размер - ${MAX_IMAGE_WIDTH}x${MAX_IMAGE_HEIGHT}px`,
-          checkFileSides,
-        ),
-      linkText: Yup.string().when("visibleLinkOrButtonOrNone", {
-        is: "LINK",
-        then: Yup.string().required("Поле обязательно"),
+        linkUrl: Yup.string().when("visibleLinkOrButtonOrNone", {
+          is: "LINK",
+          then: Yup.string().required("Поле обязательно"),
+        }),
+        buttonText: Yup.string().when("visibleLinkOrButtonOrNone", {
+          is: "BUTTON",
+          then: Yup.string().required("Поле обязательно"),
+        }),
+        buttonUrl: Yup.string().when("visibleLinkOrButtonOrNone", {
+          is: "BUTTON",
+          then: Yup.string().required("Поле обязательно"),
+        }),
       }),
-      linkUrl: Yup.string().when("visibleLinkOrButtonOrNone", {
-        is: "LINK",
-        then: Yup.string().required("Поле обязательно"),
-      }),
-      buttonText: Yup.string().when("visibleLinkOrButtonOrNone", {
-        is: "BUTTON",
-        then: Yup.string().required("Поле обязательно"),
-      }),
-      buttonUrl: Yup.string().when("visibleLinkOrButtonOrNone", {
-        is: "BUTTON",
-        then: Yup.string().required("Поле обязательно"),
-      }),
-    }),
-  ),
-});
+    ),
+  });
