@@ -18,7 +18,21 @@
       "buttonBackgroundColor" : "",
       "buttonUrl" : "",
       "gradient" : "EMPTY"
-    } ]
+    },
+      {
+        "id": "7b0c950b-c43b-4461-8aa8-295c308990c8",
+        "title" : "mainText",
+        "text" : "Text card",
+        "textColor" : "FF0000",
+        "pictureUrl" : "/F:\\JAVA\\CWT\\content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/tkbbank/0_1.png",
+        "visibleButtonOrNone" : "NONE",
+        "buttonText" : "",
+        "buttonTextColor" : "",
+        "buttonBackgroundColor" : "",
+        "buttonUrl" : "",
+        "gradient" : "EMPTY"
+      }
+    ]
   }, {
     "id" : 1,
     "bankId" : "tkbbank",

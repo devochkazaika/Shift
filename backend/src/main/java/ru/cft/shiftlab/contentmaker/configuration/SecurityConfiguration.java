@@ -2,30 +2,55 @@ package ru.cft.shiftlab.contentmaker.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration  {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
+        http.cors().disable()
+                .csrf().disable()
             .authorizeHttpRequests((authz) ->
                     authz
-                            .antMatchers("/stories/bank/info/**").authenticated()
+                            .antMatchers("/stories/bank/info/**").hasAnyRole("ADMIN", "USER")
                             .antMatchers("/backend/**").authenticated()
                             .antMatchers("/stories/add/**").authenticated()
                             .antMatchers("/stories/add").authenticated()
-                            .anyRequest().authenticated()
+                            .anyRequest().permitAll()
             )
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt());
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
         return http.build();
     }
 
-//    @Bean
-//    public WebSecurityCustomizer webSecurityCustomizer() {
-//        return (web) -> web.ignoring().antMatchers("/resources/**");
-//    }
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter(){
+        var converter = new JwtAuthenticationConverter();
+        final var jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        converter.setPrincipalClaimName("preferred_username");
+        converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+            var authorities = jwtGrantedAuthoritiesConverter.convert(jwt);
+            var roles = ((Map<String, List<String>>) jwt.getClaimAsMap("resource_access").get("maker")).get("roles");
+            return Stream.concat(
+                    authorities.stream(),
+                    roles.stream()
+                            .map(role -> "ROLE_"+role)
+                            .map(SimpleGrantedAuthority::new)
+                            .map(GrantedAuthority.class::cast)
+                    ).collect(Collectors.toList());
+        });
+        return converter;
+    }
 }

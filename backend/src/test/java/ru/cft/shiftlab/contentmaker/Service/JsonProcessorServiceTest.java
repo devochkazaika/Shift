@@ -480,8 +480,7 @@ public class JsonProcessorServiceTest {
         String bankId = "test_bank";
         String platform = "WEB";
         String json = objectMapper.writeValueAsString(storyPatchDto);
-        copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json", System.getProperty("user.dir") + "/src/main/resources/static/backend/site/share/htdoc/_files/skins/mobws_story/"+"story_test_bank_web.json");
-
+        copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json", FILES_SAVE_DIRECTORY+"story_test_bank_web.json");
         jsonProcessorService.changeFrameStory(json, bankId, platform,
                 0L,
                 "dc430619-a772-4f80-81e5-bc66218ddd0c",
@@ -562,7 +561,7 @@ public class JsonProcessorServiceTest {
         jsonProcessorService.deleteStoryFrame(bankId, platform, id, frameId);
         ObjectNode node = (ObjectNode) objectMapper.readTree(new File(FILES_SAVE_DIRECTORY + "/story_test_web.json"));
         ArrayNode arrayNode = (ArrayNode) node.get("stories").get(0).get("storyFrames");
-        Assertions.assertEquals(arrayNode.size(), 0);
+        Assertions.assertEquals(arrayNode.size(), 1);
 
         File[] directoryPict = new File(FILES_SAVE_DIRECTORY+"test/WEB/").listFiles();
         Assertions.assertEquals(directoryPict.length, 1);

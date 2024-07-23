@@ -3,6 +3,7 @@ package ru.cft.shiftlab.contentmaker.exceptionhandling;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.JwtDecoderInitializationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,6 +21,12 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(JwtDecoderInitializationException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<?> JwtExceptionHandler(JwtDecoderInitializationException ex){
+        return new ResponseEntity<>("keycloak doesnt work", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     @ExceptionHandler(NoSuchFileException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> NoSuchFileExceptionHandler(NoSuchFileException ex) {

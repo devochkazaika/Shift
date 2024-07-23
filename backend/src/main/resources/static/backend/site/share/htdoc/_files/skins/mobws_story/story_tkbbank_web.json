@@ -18,6 +18,19 @@
       "buttonBackgroundColor" : "#df5e5eff",
       "buttonUrl" : "asfasfasfasf",
       "gradient" : "HALF"
-    } ]
+    },
+      {
+        "id" : "02a5abdf-2cc3-4ba5-9cca-76dcc6609ebc",
+        "title" : "aasdasd",
+        "text" : "asdasdasdasdasdsdxzczxc",
+        "textColor" : "#000",
+        "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/1_02a5abdf-2cc3-4ba5-9cca-76dcc6609ebc.jpg",
+        "visibleButtonOrNone" : "BUTTON",
+        "buttonText" : "asfasfasf",
+        "buttonTextColor" : "#000",
+        "buttonBackgroundColor" : "#df5e5eff",
+        "buttonUrl" : "asfasfasfasf",
+        "gradient" : "HALF"
+      }]
   } ]
 }

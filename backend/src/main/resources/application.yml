@@ -49,10 +49,12 @@ spring:
     console:
       enabled: true
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5433/content_maker
+    username: admin
     password: password
+    jpa:
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
   sql:
     init:
       platform: org.hibernate.dialect.H2Dialect

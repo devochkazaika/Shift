@@ -26,6 +26,7 @@ import ru.cft.shiftlab.contentmaker.controller.StoriesController;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
+import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.ValidationException;
 import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 import ru.cft.shiftlab.contentmaker.util.WhiteList;
@@ -38,6 +39,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_TEST_DIRECTORY;
@@ -244,7 +246,7 @@ public class StoriesControllerTest {
     }
 
     @Test
-    public void add_frame_to_story_successfull_test() throws Exception {
+    public void add_frame_to_story_successful_test() throws Exception {
         String bank = "tkbbank";
         String platform = "WEB";
         String path = FILES_TEST_DIRECTORY + "sample.png";
@@ -270,7 +272,8 @@ public class StoriesControllerTest {
                 path,
                 "image/png",
                 input);
-        doAnswer(i -> i).when(jsonProcessorService).addFrame(asJsonString(requestFrame), image,
+        StoryPresentationFrames mockFrame = new StoryPresentationFrames();
+        doReturn(mockFrame).when(jsonProcessorService).addFrame(asJsonString(requestFrame), image,
                 bank, platform, 0L);
         ResultActions andReturn = mockMvc.perform(MockMvcRequestBuilders
                 .multipart("/stories/add/frame")
