@@ -3,6 +3,7 @@ package ru.cft.shiftlab.contentmaker.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.PlatformValid;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @AllArgsConstructor
 @Validated
+@Getter
 public class StoriesRequestDto {
 
     /**

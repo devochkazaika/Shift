@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
-import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryPatchDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
@@ -36,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -109,7 +109,6 @@ public class JsonProcessorService implements FileSaverService {
             StoriesRequestDto storiesRequestDto = mapper.readValue(
                     mapper.readValue(strStoriesRequestDto, String.class)
                     , StoriesRequestDto.class);
-
             var countStoryFrames = storiesRequestDto.getStoryDtos().get(0).getStoryFramesDtos().size();
             if (countStoryFrames == 0 || countStoryFrames > MAX_COUNT_FRAME){
                 throw new IllegalArgumentException("Bad count of the story frames");
@@ -117,20 +116,21 @@ public class JsonProcessorService implements FileSaverService {
 
             String bankId = storiesRequestDto.getBankId();
             String platformType = storiesRequestDto.getPlatformType();
-
             String picturesSaveDirectory = FILES_SAVE_DIRECTORY+bankId+"/"+platformType+"/";
             //Создание пути для картинок, если его еще нет
             dirProcess.createFolders(picturesSaveDirectory);
+
             //Чтение сторис, которые уже находятся в хранилище
             List<StoryPresentation> storyPresentationList = getStoryList(bankId, platformType);
-            storiesDtoToPresentations(
-                    bankId,
-                    picturesSaveDirectory,
-                    storiesRequestDto,
-                    storyPresentationList,
-                    previewImage,
-                    images
-            );
+            Long lastId = storyPresentationList.stream()
+                    .mapToLong(StoryPresentation::getId)
+                    .max().orElse(0L)+1;
+
+            LinkedList<MultipartFile> imageQueue = Arrays.stream(images).
+                    collect(Collectors.toCollection(LinkedList::new));
+            imageQueue.addFirst(previewImage);
+            dtoToEntityConverter.fromStoryDtoToStoryPresentation(bankId, platformType, storiesRequestDto.getStoryDtos().get(0),
+                    lastId, imageQueue);
 
             putStoryToJson(storyPresentationList, bankId, platformType);
         }
@@ -143,59 +143,17 @@ public class JsonProcessorService implements FileSaverService {
     }
 
 
-    private void storiesDtoToPresentations(
-            String bankId,
-            String picturesSaveDirectory,
-            StoriesRequestDto storiesRequestDto,
-            List<StoryPresentation> storyPresentationList,
-            MultipartFile previewImage,
-            MultipartFile[] images
-    ) throws IOException {
-        ImageContainer imageContainer = new ImageContainer(images);
-        for (StoryDto story: storiesRequestDto.getStoryDtos()) {
-            String previewUrl;
-            if(previewImage == null){
-                previewImage = images[0];
-            }
-            ImageContainer imageContainerPreview = new ImageContainer(previewImage);
-            //находим максимальный id
-            long lastId = storyPresentationList.stream()
-                    .mapToLong(StoryPresentation::getId)
-                    .max().orElse(0L)+1;
-
-            previewUrl = multipartFileToImageConverter.parsePicture(
-                    imageContainerPreview,
-                    picturesSaveDirectory,
-                    lastId);
-            var storyPresentation = dtoToEntityConverter.fromStoryDtoToStoryPresentation(
-                    bankId,
-                    story,
-                    previewUrl);
-            storyPresentation.setId(lastId);
-
-            ArrayList<StoryPresentationFrames> storyPresentationFramesList = new ArrayList<>();
-            for (StoryFramesDto storyFramesDto: story.getStoryFramesDtos()) {
-                var storyPresentationFrame = dtoToEntityConverter.fromStoryFramesDtoToStoryPresentationFrames(storyFramesDto);
-                String presentationPictureUrl = multipartFileToImageConverter.parsePicture(
-                        imageContainer,
-                        picturesSaveDirectory,
-                        storyPresentation.getId(),
-                        storyPresentationFrame.getId());
-                storyPresentationFrame.setPictureUrl(presentationPictureUrl);
-                storyPresentationFramesList.add(storyPresentationFrame);
-            }
-            storyPresentation.setStoryPresentationFrames(storyPresentationFramesList);
-
-            storyPresentationList.add(storyPresentation);
-        }
-    }
-
     @Transactional
     public StoryPresentationFrames addFrame(String frameDto, MultipartFile file,
                           String bankId, String platform, Long id) throws IOException {
         StoryPresentationFrames frame = mapper.readValue(
                 frameDto
                 , StoryPresentationFrames.class);
+        return addFrameEntity(frame, file, bankId, platform, id);
+    }
+    @Transactional
+    public StoryPresentationFrames addFrameEntity(StoryPresentationFrames frame, MultipartFile file,
+                                            String bankId, String platform, Long id) throws IOException {
         frame.setId(UUID.randomUUID());
 
         //добавление картинки в JSON

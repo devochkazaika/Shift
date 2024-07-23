@@ -1,0 +1,244 @@
+{
+  "stories" : [ {
+    "id" : 1,
+    "bankId" : "tkbbank",
+    "previewTitle" : "MainTextPreview",
+    "previewTitleColor" : "FF0000",
+    "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/1_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "64cc6d78-8a11-46cc-be5b-0671eee4087a",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/1_64cc6d78-8a11-46cc-be5b-0671eee4087a.jpg",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 2,
+    "bankId" : "tkbbank",
+    "previewTitle" : "MainTextPreview",
+    "previewTitleColor" : "FF0000",
+    "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/2_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "fa876078-f268-4792-acb8-66a5de69e71c",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/2_fa876078-f268-4792-acb8-66a5de69e71c.jpg",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 3,
+    "bankId" : "tkbbank",
+    "previewTitle" : "MainTextPreview",
+    "previewTitleColor" : "FF0000",
+    "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/3_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "dad66946-48b3-42fb-9025-0dca542227f8",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    }, {
+      "id" : "2dcd9d76-e7ea-4ae8-ad14-de4e7b58c824",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/3_2dcd9d76-e7ea-4ae8-ad14-de4e7b58c824.jpg",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 4,
+    "bankId" : "tkbbank",
+    "previewTitle" : "MainTextPreview",
+    "previewTitleColor" : "FF0000",
+    "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/4_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "aff3a3fa-ac39-4568-9aa1-391e595e6cbf",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    }, {
+      "id" : "b22e05a1-6124-4c82-99f9-e92d1591b743",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/4_b22e05a1-6124-4c82-99f9-e92d1591b743.jpg",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 5,
+    "bankId" : "tkbbank",
+    "previewTitle" : "MainTextPreview",
+    "previewTitleColor" : "FF0000",
+    "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/5_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "430d124e-5296-46e2-a61d-46067518c9fa",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    }, {
+      "id" : "150e2cc3-bf12-4902-b07a-d142bbdc78ae",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/5_150e2cc3-bf12-4902-b07a-d142bbdc78ae.jpg",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 6,
+    "bankId" : "tkbbank",
+    "previewTitle" : "MainTextPreview",
+    "previewTitleColor" : "FF0000",
+    "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/6_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "6f2b70e2-a60e-4d0f-bd4a-07209c36f62e",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    }, {
+      "id" : "9760179e-3ddb-4635-a640-a7df6fdd9f26",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/6_9760179e-3ddb-4635-a640-a7df6fdd9f26.jpg",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 7,
+    "bankId" : "tkbbank",
+    "previewTitle" : "MainTextPreview",
+    "previewTitleColor" : "FF0000",
+    "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/7_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "862e76bb-e9c3-409b-b544-496dd818a2eb",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    }, {
+      "id" : "b64d294f-294b-4217-a416-10c68c6d94d4",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/7_b64d294f-294b-4217-a416-10c68c6d94d4.jpg",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 8,
+    "bankId" : "tkbbank",
+    "previewTitle" : "MainTextPreview",
+    "previewTitleColor" : "FF0000",
+    "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/8_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "50f30062-25ae-4245-9484-d929236dd636",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    }, {
+      "id" : "bdb130a8-b2f9-43dc-8889-2824b96e4344",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/8_bdb130a8-b2f9-43dc-8889-2824b96e4344.jpg",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 9,
+    "bankId" : "tkbbank",
+    "previewTitle" : "MainTextPreview",
+    "previewTitleColor" : "FF0000",
+    "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/9_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "af8b9dde-bee9-4ed4-a26d-4bdbcb802fa4",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    }, {
+      "id" : "0b867aab-d82a-4458-91bd-18066a06be93",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/9_0b867aab-d82a-4458-91bd-18066a06be93.jpg",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  } ]
+}
