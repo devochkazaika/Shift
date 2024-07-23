@@ -103,35 +103,37 @@ public class JsonProcessorService implements FileSaverService {
         return new HttpEntity<>(getStoryList(bankId, platform));
     }
 
+    private Long getLastId(List<StoryPresentation> storyPresentationList){
+        return storyPresentationList.stream()
+                .mapToLong(StoryPresentation::getId)
+                .max().orElse(0L)+1;
+    }
     @Override
     public void saveFiles(String strStoriesRequestDto, MultipartFile previewImage, MultipartFile[] images){
         try {
             StoriesRequestDto storiesRequestDto = mapper.readValue(
                     mapper.readValue(strStoriesRequestDto, String.class)
                     , StoriesRequestDto.class);
-            var countStoryFrames = storiesRequestDto.getStoryDtos().get(0).getStoryFramesDtos().size();
-            if (countStoryFrames == 0 || countStoryFrames > MAX_COUNT_FRAME){
-                throw new IllegalArgumentException("Bad count of the story frames");
-            }
-
             String bankId = storiesRequestDto.getBankId();
             String platformType = storiesRequestDto.getPlatformType();
-            String picturesSaveDirectory = FILES_SAVE_DIRECTORY+bankId+"/"+platformType+"/";
+
             //Создание пути для картинок, если его еще нет
+            String picturesSaveDirectory = FILES_SAVE_DIRECTORY+bankId+"/"+platformType+"/";
             dirProcess.createFolders(picturesSaveDirectory);
 
             //Чтение сторис, которые уже находятся в хранилище
             List<StoryPresentation> storyPresentationList = getStoryList(bankId, platformType);
-            Long lastId = storyPresentationList.stream()
-                    .mapToLong(StoryPresentation::getId)
-                    .max().orElse(0L)+1;
+            var lastId = getLastId(storyPresentationList);
 
+            //Преобразование из dto в entity с сохранением картинок
             LinkedList<MultipartFile> imageQueue = Arrays.stream(images).
                     collect(Collectors.toCollection(LinkedList::new));
             imageQueue.addFirst(previewImage);
-            dtoToEntityConverter.fromStoryDtoToStoryPresentation(bankId, platformType, storiesRequestDto.getStoryDtos().get(0),
+            StoryPresentation storyPresentation = dtoToEntityConverter.fromStoryDtoToStoryPresentation(bankId, platformType, storiesRequestDto.getStoryDtos().get(0),
                     lastId, imageQueue);
 
+            //Сохранение
+            storyPresentationList.add(storyPresentation);
             putStoryToJson(storyPresentationList, bankId, platformType);
         }
         catch (JsonProcessingException e){
@@ -178,10 +180,10 @@ public class JsonProcessorService implements FileSaverService {
      * Метод возвращает все истории в виде списка
      */
     private List<StoryPresentation> getStoryList(String bankId, String platform) throws IOException {
-        return dirProcess.checkFileInBankDir(
+        List<StoryPresentation> list = dirProcess.checkFileInBankDir(
                 FileNameCreator.createJsonName(bankId, platform),
-                STORIES
-        );
+                STORIES);
+        return (list == null) ? new ArrayList<StoryPresentation>() : list;
     }
     /**
      * Метод возвращает конкретную историю

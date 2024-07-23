@@ -54,7 +54,7 @@ public class JsonProcessorServiceTest {
     private final MultipartFileToImageConverter multipartFileToImageConverter = new MultipartFileToImageConverter(new ImageNameGenerator());
 
 
-    private final DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
+    private final DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper(), new MultipartFileToImageConverter(new ImageNameGenerator()));
     private final ImageNameGenerator imageNameGenerator = new ImageNameGenerator();
     private final DirProcess dirProcess = new DirProcess();
     ObjectMapper objectMapper = new ObjectMapper();
@@ -113,7 +113,7 @@ public class JsonProcessorServiceTest {
         var arrImg = new MultipartFile[1];
         arrImg[0] = multipartFile;
 
-        DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
+        DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper(), new MultipartFileToImageConverter(new ImageNameGenerator()));
 
         String picturesDirectory = FILES_SAVE_DIRECTORY
                 + storiesRequestDto.getBankId() + "/" + storiesRequestDto.getPlatformType();
@@ -212,7 +212,7 @@ public class JsonProcessorServiceTest {
         var arrImg = new MultipartFile[1];
         arrImg[0] = multipartFile;
 
-        DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
+        DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper(), new MultipartFileToImageConverter(new ImageNameGenerator()));
 
         String picturesDirectory = FILES_SAVE_DIRECTORY
                 + storiesRequestDto.getBankId() + "/" + storiesRequestDto.getPlatformType();

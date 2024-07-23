@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import ru.cft.shiftlab.contentmaker.util.Image.ImageNameGenerator;
+import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
 import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
@@ -20,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DtoToEntityConverterTest {
 
     private final ModelMapper modelMapper = new ModelMapper();
-    private final DtoToEntityConverter converterRequestDto = new DtoToEntityConverter(modelMapper);
+    private final DtoToEntityConverter converterRequestDto = new DtoToEntityConverter(modelMapper, new MultipartFileToImageConverter(new ImageNameGenerator()));
     private StoryPresentation storyPresentation = new StoryPresentation();
 
 
