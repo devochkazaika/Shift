@@ -11,6 +11,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +49,7 @@ public class StoriesController {
             @ApiResponse(responseCode = "201", description = "История добавлена на сервер.")
     })
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public void addStories(
             @RequestParam(value = "json")
             @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
@@ -63,8 +65,8 @@ public class StoriesController {
             @Parameter(description = "Файлы с картинками карточек.",
                     schema = @Schema(type = "array", format = "binary"),
                     content = @Content(mediaType = "multipart/form-data"))
-            MultipartFile[] images) {
-
+            MultipartFile[] images
+    ) {
         storiesService.saveFiles(storiesRequestDto, previewImage, images);
     }
 
