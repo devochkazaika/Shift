@@ -13,8 +13,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.*;
 import org.springframework.http.client.MultipartBodyBuilder;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,7 +36,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -111,11 +108,6 @@ public class JsonProcessorService implements FileSaverService {
                           MultipartFile previewImage,
                           MultipartFile[] images){
         try {
-            List<String> Roles = SecurityContextHolder.getContext().getAuthentication()
-                    .getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .filter(x -> x.startsWith("ROLE_"))
-                    .collect(Collectors.toList());
             StoriesRequestDto storiesRequestDto = mapper.readValue(
                     mapper.readValue(strStoriesRequestDto, String.class)
                     , StoriesRequestDto.class);
@@ -151,6 +143,28 @@ public class JsonProcessorService implements FileSaverService {
             throw new StaticContentException("Could not save files", "HTTP 500 - INTERNAL_SERVER_ERROR");
         }
     }
+
+    private void saveFiles(Long id, String bankId, String platformType, MultipartFile[] images) throws IOException {
+        ImageContainer imageContainer = new ImageContainer(images);
+        ImageContainer imageContainerPreview = new ImageContainer(images[0]);
+        String previewUrl = multipartFileToImageConverter.parsePicture(
+                imageContainerPreview,
+                FILES_SAVE_DIRECTORY+bankId+"/"+platformType+"/",
+                id);
+        String presentationPictureUrl = multipartFileToImageConverter.parsePicture(
+                imageContainer,
+                FILES_SAVE_DIRECTORY+bankId+"/"+platformType+"/",
+                storyPresentation.getId(),
+                storyPresentationFrame.getId());
+
+    }
+
+    private void saveJson(String bankId, String platformType) throws IOException {
+        List<StoryPresentation> storyPresentationList = getStoryList(bankId, platformType);
+
+
+    }
+
 
 
     private void storiesDtoToPresentations(

@@ -183,5 +183,62 @@
       "buttonUrl" : "",
       "gradient" : "EMPTY"
     } ]
+  }, {
+    "id" : 10,
+    "bankId" : "tkbbank",
+    "previewTitle" : "MainTextPreview",
+    "previewTitleColor" : "FF0000",
+    "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/10_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "6fc55e3d-dd22-4c9f-8ad7-77a55810807d",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/10_6fc55e3d-dd22-4c9f-8ad7-77a55810807d.jpg",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 11,
+    "bankId" : "tkbbank",
+    "previewTitle" : "MainTextPreview",
+    "previewTitleColor" : "FF0000",
+    "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/11_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "433eaace-d5f6-4d15-8769-1e3a9c76fa22",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/11_433eaace-d5f6-4d15-8769-1e3a9c76fa22.jpg",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 12,
+    "bankId" : "tkbbank",
+    "previewTitle" : "MainTextPreview",
+    "previewTitleColor" : "FF0000",
+    "previewUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/12_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "1f1138c0-6297-4de3-9771-45e97014dcde",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/backend/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/12_1f1138c0-6297-4de3-9771-45e97014dcde.jpg",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
   } ]
 }
