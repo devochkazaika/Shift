@@ -99,38 +99,6 @@ public class StoriesController {
         return storiesService.addFrame(frameRequestDto, image, bankId, platform, id);
     }
 
-//    /**
-//     * Метод, который обрабатывает GET-запрос на чтение историй.
-//     * Основан на формате FormData
-//     *
-//     * @param bankId название банка.
-//     * @param platform платформа, для которой создана история.
-//     */
-//    @GetMapping("/bank/info")
-//    @Operation(summary = "Чтение истории с сервера.")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "302", description = "История прочтена с сервера.")
-//    })
-//    @ResponseStatus(HttpStatus.FOUND)
-//    @ResponseBody
-//    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getStories(
-//            @RequestParam(name = "bankId")
-//            @Parameter(description = "Название банка",
-//                    schema = @Schema(type = "string", format = "string"),
-//                    example = "tkkbank")
-//            @WhiteListValid(message = "bankId must match the allowed")
-//            String bankId,
-//
-//            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
-//            @Parameter(description = "Тип платформы",
-//                    schema = @Schema(type = "string", format = "string"),
-//                    example = "WEB")
-//            @PlatformValid
-//            String platform) throws IOException {
-//
-//        return storiesService.getFilePlatform(bankId, platform);
-//    }
-
     @GetMapping("/bank/info/getJson")
     @Operation(summary = "Чтение истории с сервера.")
     @ApiResponses(value = {
