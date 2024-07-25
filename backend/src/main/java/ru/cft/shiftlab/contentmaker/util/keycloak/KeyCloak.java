@@ -7,7 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -25,12 +25,12 @@ public class KeyCloak {
                     .orElseThrow(() -> new IllegalArgumentException("Unexpected role"));
         }
     }
-    public static List<Roles> getRoles(){
+    public static Set<Roles> getRoles(){
         return SecurityContextHolder.getContext().getAuthentication()
                 .getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .filter(x -> x.startsWith("ROLE_"))
                 .map(Roles::fromString)
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableSet());
     }
 }

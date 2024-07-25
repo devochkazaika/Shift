@@ -11,6 +11,7 @@ import ru.cft.shiftlab.contentmaker.util.WhiteList;
 @SpringBootApplication
 @EnableConfigurationProperties
 @EnableWebMvc
+
 public class ContentMakerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ContentMakerApplication.class, args);

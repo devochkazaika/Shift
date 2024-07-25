@@ -32,6 +32,14 @@ files:
       filesSaveDirectory: "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
 
 spring:
+  flyway:
+    enabled: true
+    locations:
+      - db.migration
+    validate:
+      -off
+      -migrate=false
+
   security:
     oauth2:
       resource server:

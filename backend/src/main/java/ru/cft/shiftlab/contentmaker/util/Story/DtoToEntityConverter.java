@@ -8,12 +8,13 @@ import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
+import ru.cft.shiftlab.contentmaker.repository.StoryPresentationFramesRepository;
+import ru.cft.shiftlab.contentmaker.repository.StoryPresentationRepository;
 import ru.cft.shiftlab.contentmaker.util.Image.ImageContainer;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
 
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.UUID;
 
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
 import static ru.cft.shiftlab.contentmaker.util.Constants.MAX_COUNT_FRAME;
@@ -27,6 +28,8 @@ public class DtoToEntityConverter {
 
     private final ModelMapper modelMapper;
     private final MultipartFileToImageConverter multipartFileToImageConverter;
+    private final StoryPresentationRepository storyPresentationRepository;
+    private final StoryPresentationFramesRepository storyPresentationFramesRepository;
 
     /**
      * Метод для конвертации StoryDto в StoryPresentation.
@@ -53,7 +56,6 @@ public class DtoToEntityConverter {
     public StoryPresentation fromStoryDtoToStoryPresentation(String bankId,
                                                              String platform,
                                                              StoryDto storyDto,
-                                                             Long id,
                                                              LinkedList<MultipartFile> frameUrl) throws IOException {
         //проверка на максимальное допустимое число карточек в истории
         var countStoryFrames = storyDto.getStoryFramesDtos().size();
@@ -63,30 +65,28 @@ public class DtoToEntityConverter {
 
         StoryPresentation storyPresentation = modelMapper.map(storyDto, StoryPresentation.class);
         storyPresentation.setBankId(bankId);
-        storyPresentation.setId(id);
+        storyPresentation = storyPresentationRepository.save(storyPresentation);
         String filePath = FILES_SAVE_DIRECTORY+bankId+"/"+platform+"/";
 
         //сама история
         String previewUrl = multipartFileToImageConverter.parsePicture(
                 new ImageContainer(frameUrl.removeFirst()),
                 filePath,
-                id);
+                storyPresentation.getId());
         storyPresentation.setPreviewUrl(previewUrl);
 
         //карточки
         for(StoryFramesDto storyFramesDto : storyDto.getStoryFramesDtos()) {
             var frame = fromStoryFramesDtoToStoryPresentationFrames(storyFramesDto);
-            UUID uuid =  UUID.randomUUID();
-            frame.setId(uuid);
             frame.setPictureUrl(multipartFileToImageConverter.parsePicture(
                     new ImageContainer(frameUrl.removeFirst()),
                     FILES_SAVE_DIRECTORY+bankId+"/"+platform+"/",
-                    id,
-                    uuid));
+                    storyPresentation.getId(),
+                    frame.getId()));
             storyPresentation.getStoryPresentationFrames()
                     .add(frame);
         }
-
+        storyPresentationRepository.save(storyPresentation);
         return storyPresentation;
     }
 
@@ -98,8 +98,7 @@ public class DtoToEntityConverter {
      */
     public StoryPresentationFrames fromStoryFramesDtoToStoryPresentationFrames(StoryFramesDto storyFramesDto) {
         StoryPresentationFrames storyPresentationFrames = modelMapper.map(storyFramesDto, StoryPresentationFrames.class);
-        storyPresentationFrames.setId(UUID.randomUUID());
-        return storyPresentationFrames;
+        return storyPresentationFramesRepository.save(storyPresentationFrames);
     }
 
 }

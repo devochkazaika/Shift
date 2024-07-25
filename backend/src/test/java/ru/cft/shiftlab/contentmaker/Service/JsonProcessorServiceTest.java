@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
@@ -51,12 +53,14 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.*;
 @ExtendWith(MockitoExtension.class)
 public class JsonProcessorServiceTest {
 
-    private final MultipartFileToImageConverter multipartFileToImageConverter = new MultipartFileToImageConverter(new ImageNameGenerator());
+    @Mock
+    private MultipartFileToImageConverter multipartFileToImageConverter;
 
+    @Mock
+    private DtoToEntityConverter dtoToEntityConverter;
 
-    private final DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper(), new MultipartFileToImageConverter(new ImageNameGenerator()));
-    private final ImageNameGenerator imageNameGenerator = new ImageNameGenerator();
-    private final DirProcess dirProcess = new DirProcess();
+    @Mock
+    private DirProcess dirProcess = new DirProcess();
     ObjectMapper objectMapper = new ObjectMapper();
     {
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -72,10 +76,9 @@ public class JsonProcessorServiceTest {
     public void createFolders() throws IOException {
         dirProcess.createFolders(FILES_SAVE_DIRECTORY);
     }
-    private final JsonProcessorService jsonProcessorService = new JsonProcessorService(
-            multipartFileToImageConverter,
-            dtoToEntityConverter,
-            dirProcess);
+
+    @InjectMocks
+    private JsonProcessorService jsonProcessorService;
 
     @Test
     void should_save_files() throws IOException {
@@ -396,13 +399,7 @@ public class JsonProcessorServiceTest {
         MultipartFile multipartFile = new MockMultipartFile("fileItem",
                 img.getName(), "image/png", IOUtils.toByteArray(input));
 
-        JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
-                dtoToEntityConverter,
-                dirProcess
-        );
-
-
-        method.invoke(service, bankId, platform, "0");
+        method.invoke(jsonProcessorService, bankId, platform, "0");
         File file = new File(saveDirectory);
         File[] files = file.listFiles();
         Assertions.assertEquals(0, files.length);
@@ -413,12 +410,9 @@ public class JsonProcessorServiceTest {
         File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_tkbbank_web.json");
         copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_test_web.json");
         File json = new File(FILES_SAVE_DIRECTORY + "/story_test_web.json");
-        JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
-                dtoToEntityConverter,
-                dirProcess);
 
         method.setAccessible(true);
-        method.invoke(service, "test", "WEB", "0");
+        method.invoke(jsonProcessorService, "test", "WEB", "0");
 
         StringBuilder jsonStr = new StringBuilder();
         Files.readAllLines(json.toPath()).forEach(jsonStr::append);
@@ -481,10 +475,6 @@ public class JsonProcessorServiceTest {
         String platform = "WEB";
         String json = objectMapper.writeValueAsString(storyPatchDto);
         copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json", FILES_SAVE_DIRECTORY+"story_test_bank_web.json");
-<<<<<<< HEAD
-=======
-
->>>>>>> SHIFTLAB-7386
         jsonProcessorService.changeFrameStory(json, bankId, platform,
                 0L,
                 "dc430619-a772-4f80-81e5-bc66218ddd0c",
@@ -508,12 +498,9 @@ public class JsonProcessorServiceTest {
         File storyDir = new File(FILES_SAVE_DIRECTORY + "/story_test_web.json");
         copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_test_web.json");
 
-        JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
-                dtoToEntityConverter,
-                dirProcess);
 
         method.setAccessible(true);
-        method.invoke(service, "test", "WEB", "1", "edfb9afb-d795-4979-b7cf-b60923d3f266");
+        method.invoke(jsonProcessorService, "test", "WEB", "1", "edfb9afb-d795-4979-b7cf-b60923d3f266");
         ObjectNode node = (ObjectNode) objectMapper.readTree(new File(FILES_SAVE_DIRECTORY + "/story_test_web.json"));
         ArrayNode arrayNode = (ArrayNode) node.get("stories").get(1).get("storyFrames");
         Assertions.assertEquals(arrayNode.size(), 1);
@@ -530,12 +517,8 @@ public class JsonProcessorServiceTest {
 //        UUID uuid2 = UUID.randomUUID();
         copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/1_"+0+".png");
         copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "test/WEB/1_"+uuid+".png");
-
-        JsonProcessorService service = new JsonProcessorService(multipartFileToImageConverter,
-                dtoToEntityConverter,
-                dirProcess);
         method.setAccessible(true);
-        method.invoke(service, "test", "WEB", "1", uuid);
+        method.invoke(jsonProcessorService, "test", "WEB", "1", uuid);
         File[] directory = new File(FILES_SAVE_DIRECTORY+"test"+"/WEB").listFiles();
         Assertions.assertEquals(directory.length, 1);
         FileUtils.deleteDirectory(storyDir);

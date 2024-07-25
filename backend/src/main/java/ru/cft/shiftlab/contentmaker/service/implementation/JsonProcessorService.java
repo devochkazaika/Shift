@@ -22,6 +22,7 @@ import ru.cft.shiftlab.contentmaker.dto.StoryPatchDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
+import ru.cft.shiftlab.contentmaker.repository.StoryPresentationRepository;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 import ru.cft.shiftlab.contentmaker.util.DirProcess;
 import ru.cft.shiftlab.contentmaker.util.FileNameCreator;
@@ -29,6 +30,7 @@ import ru.cft.shiftlab.contentmaker.util.Image.ImageContainer;
 import ru.cft.shiftlab.contentmaker.util.MultipartBodyProcess;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
 import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
+import ru.cft.shiftlab.contentmaker.util.keycloak.KeyCloak;
 
 import javax.transaction.Transactional;
 import java.io.File;
@@ -63,6 +65,7 @@ public class JsonProcessorService implements FileSaverService {
     private final MultipartFileToImageConverter multipartFileToImageConverter;
     private final DtoToEntityConverter dtoToEntityConverter;
     private final DirProcess dirProcess;
+    private final StoryPresentationRepository storyPresentationRepository;
 
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getFilePlatform(String bankId, String platform) {
         String filePlatform = FileNameCreator.createJsonName(bankId, platform);
@@ -103,11 +106,6 @@ public class JsonProcessorService implements FileSaverService {
         return new HttpEntity<>(getStoryList(bankId, platform));
     }
 
-    private Long getLastId(List<StoryPresentation> storyPresentationList){
-        return storyPresentationList.stream()
-                .mapToLong(StoryPresentation::getId)
-                .max().orElse(0L)+1;
-    }
     @Override
     public void saveFiles(String strStoriesRequestDto,
                           MultipartFile previewImage,
@@ -123,20 +121,14 @@ public class JsonProcessorService implements FileSaverService {
             String picturesSaveDirectory = FILES_SAVE_DIRECTORY+bankId+"/"+platformType+"/";
             dirProcess.createFolders(picturesSaveDirectory);
 
-            //Чтение сторис, которые уже находятся в хранилище
-            List<StoryPresentation> storyPresentationList = getStoryList(bankId, platformType);
-            var lastId = getLastId(storyPresentationList);
-
             //Преобразование из dto в entity с сохранением картинок
             LinkedList<MultipartFile> imageQueue = Arrays.stream(images).
                     collect(Collectors.toCollection(LinkedList::new));
             imageQueue.addFirst(previewImage);
-            StoryPresentation storyPresentation = dtoToEntityConverter.fromStoryDtoToStoryPresentation(bankId, platformType, storiesRequestDto.getStoryDtos().get(0),
-                    lastId, imageQueue);
+            StoryPresentation storyPresentation = dtoToEntityConverter.fromStoryDtoToStoryPresentation(bankId, platformType, storiesRequestDto.getStoryDtos().get(0), imageQueue);
 
             //Сохранение
-            storyPresentationList.add(storyPresentation);
-            putStoryToJson(storyPresentationList, bankId, platformType);
+            saveToJsonByRoles(storyPresentation, bankId, platformType);
         }
         catch (JsonProcessingException e){
             throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
@@ -144,6 +136,24 @@ public class JsonProcessorService implements FileSaverService {
         catch (IOException e) {
             throw new StaticContentException("Could not save files", "HTTP 500 - INTERNAL_SERVER_ERROR");
         }
+    }
+
+    public void saveToJsonByRoles(StoryPresentation storyPresentation, String bankId, String platformType) throws IOException {
+        Set<KeyCloak.Roles> roles = KeyCloak.getRoles();
+        List<StoryPresentation> storyPresentationList = getStoryList(bankId, platformType);
+        storyPresentationList.add(storyPresentation);
+        if (roles.contains(KeyCloak.Roles.ADMIN)){
+            putStoryToJson(storyPresentationList, bankId, platformType);
+            storyPresentation.setApproved(true);
+        }
+        else if (roles.contains(KeyCloak.Roles.USER)){
+            storyPresentation.setApproved(false);
+        }
+        else{
+            throw new IllegalArgumentException("Unexpected role");
+        }
+        var actual = Optional.of(storyPresentationRepository.save(storyPresentation));
+        System.out.println(actual.orElse(null));
     }
 
     @Transactional
@@ -170,7 +180,7 @@ public class JsonProcessorService implements FileSaverService {
         //Изменение JSON
         final List<StoryPresentation> listStory = getStoryList(bankId, platform);
         final StoryPresentation storyPresentation = getStoryModel(listStory, id);
-        final ArrayList<StoryPresentationFrames> listFrames = storyPresentation.getStoryPresentationFrames();
+        final List<StoryPresentationFrames> listFrames = storyPresentation.getStoryPresentationFrames();
         listFrames.add(frame);
         if (listFrames.size() >= MAX_COUNT_FRAME) throw new IllegalArgumentException("Cant save a frame. The maximum size is reached");
         putStoryToJson(listStory, bankId, platform);
@@ -453,7 +463,7 @@ public class JsonProcessorService implements FileSaverService {
     public void swapFrames(Long id, String bankId, String platform, String fristUuid, String secondUuid) throws IOException {
         final List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
         final StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
-        final ArrayList<StoryPresentationFrames> frames = storyPresentation.getStoryPresentationFrames();
+        final List<StoryPresentationFrames> frames = storyPresentation.getStoryPresentationFrames();
         int first = IntStream.range(0, frames.size())
                 .filter(streamIndex -> fristUuid.equals(frames.get(streamIndex).getId().toString()))
                 .findFirst()
