@@ -11,8 +11,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +18,7 @@ import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.PlatformValid;
+import ru.cft.shiftlab.contentmaker.util.validation.annotation.UUIDValid;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
 
 import java.io.IOException;
@@ -49,7 +48,6 @@ public class StoriesController {
             @ApiResponse(responseCode = "201", description = "История добавлена на сервер.")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public void addStories(
             @RequestParam(value = "json")
             @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
@@ -65,8 +63,8 @@ public class StoriesController {
             @Parameter(description = "Файлы с картинками карточек.",
                     schema = @Schema(type = "array", format = "binary"),
                     content = @Content(mediaType = "multipart/form-data"))
-            MultipartFile[] images
-    ) {
+            MultipartFile[] images) {
+
         storiesService.saveFiles(storiesRequestDto, previewImage, images);
     }
 
@@ -101,42 +99,11 @@ public class StoriesController {
         return storiesService.addFrame(frameRequestDto, image, bankId, platform, id);
     }
 
-    /**
-     * Метод, который обрабатывает GET-запрос на чтение историй.
-     * Основан на формате FormData
-     *
-     * @param bankId название банка.
-     * @param platform платформа, для которой создана история.
-     */
-    @GetMapping("/bank/info")
-    @Operation(summary = "Чтение истории с сервера.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "302", description = "История прочтена с сервера.")
-    })
-    @ResponseStatus(HttpStatus.FOUND)
-    @ResponseBody
-    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getStories(
-            @RequestParam(name = "bankId")
-            @Parameter(description = "Название банка",
-                    schema = @Schema(type = "string", format = "string"),
-                    example = "tkkbank")
-            @WhiteListValid(message = "bankId must match the allowed")
-            String bankId,
-
-            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
-            @Parameter(description = "Тип платформы",
-                    schema = @Schema(type = "string", format = "string"),
-                    example = "WEB")
-            @PlatformValid
-            String platform) throws IOException {
-
-        return storiesService.getFilePlatform(bankId, platform);
-    }
-
     @GetMapping("/bank/info/getJson")
     @Operation(summary = "Чтение истории с сервера.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "302", description = "История прочтена с сервера.")
+            @ApiResponse(responseCode = "200", description = "История прочтена с сервера."),
+            @ApiResponse(responseCode = "400", description = "Неправильные параметры")
     })
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -165,6 +132,7 @@ public class StoriesController {
      * @param id id истории
      */
     @DeleteMapping("/bank/info/delete")
+    @Operation(summary = "Удаление истории")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "История успешно удалена"),
             @ApiResponse(responseCode = "404", description = "История не найдена в JSON файле"),
@@ -203,17 +171,39 @@ public class StoriesController {
      * @throws Throwable
      */
     @DeleteMapping("/bank/info/delete/frame")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "История успешно удалена"),
+            @ApiResponse(responseCode = "404", description = "История не найдена в JSON файле"),
+            @ApiResponse(responseCode = "500", description = "Ошибка на стороне сервера(нет JSON или нет директории с файлами)")
+    })
+    @Operation(summary = "Удаление карточки из истории")
     public void deleteFrame(
             @RequestParam
             @WhiteListValid(message = "bankId must match the allowed")
+            @Parameter(description = "Название банка",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "tkbbank")
             String bankId,
 
             @RequestParam
             @PlatformValid
+            @Parameter(description = "Тип платформы",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "ALL PLATFORMS")
             String platform,
 
-            @RequestParam String storyId,
-            @RequestParam String frameId) throws Throwable {
+            @RequestParam
+            @Parameter(description = "Id истории",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "0")
+            String storyId,
+
+            @RequestParam
+            @UUIDValid
+            @Parameter(description = "UUID карточки истории",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "55151a3b-c9f6-409a-b185-604b2a9afe86")
+            String frameId) throws Throwable {
         storiesService.deleteStoryFrame(bankId, platform, storyId, frameId);
 
     }
@@ -227,26 +217,29 @@ public class StoriesController {
      * @throws IOException
      */
     @PatchMapping("/bank/info/change")
-    public void changeStory(@RequestParam(value = "json")
-                            @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
-                            String storiesRequestDto,
+    public void changeStory(
+            @RequestParam(value = "json")
+            @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
+            String storiesRequestDto,
 
-                            @RequestParam(value = "bankId")
-                            String bankId,
+            @RequestParam(value = "bankId")
+            @WhiteListValid(message = "bankId must match the allowed")
+            String bankId,
 
-                            @Parameter(description = "Тип платформы",
-                                    schema = @Schema(type = "string", format = "string"),
-                                    example = "ALL PLATFORMS")
-                            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
-                            String platform,
+            @Parameter(description = "Тип платформы",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "ALL PLATFORMS")
+            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+            @PlatformValid
+            String platform,
 
-                            @Parameter(description = "id истории",
-                                    schema = @Schema(type = "string", format = "string"),
-                                    example = "0")
-                            @RequestParam(name = "id")
-                            Long id,
-                            @RequestPart(value = "image",required = false)
-                            MultipartFile file) throws IOException {
+            @Parameter(description = "id истории",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "0")
+            @RequestParam(name = "id")
+            Long id,
+            @RequestPart(value = "image",required = false)
+            MultipartFile file) throws IOException {
         storiesService.changeStory(storiesRequestDto, file, bankId, platform, id);
     }
 
@@ -261,32 +254,36 @@ public class StoriesController {
      */
     @PatchMapping("/bank/info/change/frame")
     public void changeStoryFrame(@RequestParam(value = "json")
-                            @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
-                            String storiesRequestDto,
+            @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
+            String storiesRequestDto,
 
-                            @RequestParam(value = "bankId")
-                            String bankId,
+            @RequestParam(value = "bankId")
+            @WhiteListValid(message = "bankId must match the allowed")
+            String bankId,
 
-                            @Parameter(description = "Тип платформы",
-                                    schema = @Schema(type = "string", format = "string"),
-                                    example = "ALL PLATFORMS")
-                            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
-                            String platform,
+            @Parameter(description = "Тип платформы",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "ALL PLATFORMS")
+            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+            @PlatformValid
+            String platform,
 
-                            @Parameter(description = "id истории",
-                                    schema = @Schema(type = "string", format = "string"),
-                                    example = "0")
-                            @RequestParam(name = "id")
-                            Long id,
+            @Parameter(description = "id истории",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "0")
+            @RequestParam(name = "id")
+            Long id,
 
-                            @Parameter(description = "id истории",
-                                     schema = @Schema(type = "string", format = "string"),
-                                     example = "0")
-                            @RequestParam(name = "frameId")
-                            String frameId,
-                            @RequestPart(value = "image",required = false)
-                            MultipartFile file
-                            ) throws IOException {
+            @Parameter(description = "id истории",
+                     schema = @Schema(type = "string", format = "string"),
+                     example = "0")
+            @RequestParam(name = "frameId")
+            @UUIDValid
+            String frameId,
+
+            @RequestPart(value = "image",required = false)
+            MultipartFile file
+            ) throws IOException {
         storiesService.changeFrameStory(storiesRequestDto,
                 bankId,
                 platform,
@@ -301,17 +298,28 @@ public class StoriesController {
             Long id,
 
             @RequestParam(value = "bankId")
+            @WhiteListValid
             String bankId,
 
             @Parameter(description = "Тип платформы",
                     schema = @Schema(type = "string", format = "string"),
                     example = "ALL PLATFORMS")
             @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+            @PlatformValid
             String platform,
 
             @RequestParam(name = "first")
+            @UUIDValid
+            @Parameter(description = "UUID 1-ой карточки истории",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "55151a3b-c9f6-409a-b185-604b2a9afe86")
             String first,
+
             @RequestParam(name = "second")
+            @UUIDValid
+            @Parameter(description = "UUID 2-ой карточки истории",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "55151a3b-c9f6-409a-b185-604b2a9afe86")
             String second
     ) throws IOException {
         storiesService.swapFrames(
