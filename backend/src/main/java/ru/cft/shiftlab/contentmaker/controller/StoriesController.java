@@ -124,6 +124,32 @@ public class StoriesController {
 
         return storiesService.getFilePlatformJson(bankId, platform);
     }
+
+    @GetMapping("/bank/info/getUnApprovedStories")
+    @Operation(summary = "Чтение истории с сервера.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "История прочтена с сервера."),
+            @ApiResponse(responseCode = "400", description = "Неправильные параметры")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<StoryPresentation> getUnApprovedStories(
+            @RequestParam(name = "bankId")
+            @Parameter(description = "Название банка",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "tkkbank")
+            @WhiteListValid(message = "bankId must match the allowed")
+            String bankId,
+
+            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+            @Parameter(description = "Тип платформы",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "WEB")
+            @PlatformValid
+            String platform) throws IOException {
+
+        return storiesService.getUnApprovedStories(bankId, platform);
+    }
     /**
      * Метод, который обрабатывает DELETE-запрос на удаление историй.
      *

@@ -22,6 +22,7 @@ import ru.cft.shiftlab.contentmaker.dto.StoryPatchDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
+import ru.cft.shiftlab.contentmaker.repository.StoryPresentationFramesRepository;
 import ru.cft.shiftlab.contentmaker.repository.StoryPresentationRepository;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 import ru.cft.shiftlab.contentmaker.util.DirProcess;
@@ -66,6 +67,7 @@ public class JsonProcessorService implements FileSaverService {
     private final DtoToEntityConverter dtoToEntityConverter;
     private final DirProcess dirProcess;
     private final StoryPresentationRepository storyPresentationRepository;
+    private final StoryPresentationFramesRepository storyPresentationFramesRepository;
 
     public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getFilePlatform(String bankId, String platform) {
         String filePlatform = FileNameCreator.createJsonName(bankId, platform);
@@ -100,6 +102,11 @@ public class JsonProcessorService implements FileSaverService {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         return new HttpEntity<>(multipartBodyBuilder.build(), headers);
+    }
+
+    public List<StoryPresentation> getUnApprovedStories(String bankId, String platform){
+        System.out.println(storyPresentationRepository.getUnApprovedStories(bankId, platform));
+        return storyPresentationRepository.getUnApprovedStories(bankId, platform);
     }
 
     public HttpEntity<List<StoryPresentation>> getFilePlatformJson(String bankId, String platform) throws IOException {
@@ -152,8 +159,11 @@ public class JsonProcessorService implements FileSaverService {
         else{
             throw new IllegalArgumentException("Unexpected role");
         }
-        var actual = Optional.of(storyPresentationRepository.save(storyPresentation));
-        System.out.println(actual.orElse(null));
+        storyPresentationRepository.save(storyPresentation);
+        storyPresentation.getStoryPresentationFrames().forEach(x -> {
+            x.setStory(storyPresentation);
+            storyPresentationFramesRepository.save(x);
+        });
     }
 
     @Transactional

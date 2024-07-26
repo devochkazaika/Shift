@@ -65,6 +65,7 @@ public class DtoToEntityConverter {
 
         StoryPresentation storyPresentation = modelMapper.map(storyDto, StoryPresentation.class);
         storyPresentation.setBankId(bankId);
+        storyPresentation.setPlatform(platform);
         storyPresentation = storyPresentationRepository.save(storyPresentation);
         String filePath = FILES_SAVE_DIRECTORY+bankId+"/"+platform+"/";
 
@@ -86,7 +87,6 @@ public class DtoToEntityConverter {
             storyPresentation.getStoryPresentationFrames()
                     .add(frame);
         }
-        storyPresentationRepository.save(storyPresentation);
         return storyPresentation;
     }
 

@@ -80,7 +80,7 @@ public class StoryPresentation {
      * Список карточек истории.
      */
     @JsonProperty("storyFrames")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "id")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "story")
     private List<StoryPresentationFrames> storyPresentationFrames = new ArrayList<>();
 
 }

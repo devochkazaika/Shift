@@ -18,22 +18,60 @@ preview:
     validator:
       titleMaxStringCount: 2
 
+keycloak:
+  realm: content-maker
+  resource: maker
+  auth-server-url: http://localhost:8081/auth
+  use-resource-role-mappings: true
+  principal-attribute: preferred_username
+
+
 files:
   save:
     directory:
       filesSaveDirectory: "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
 
 spring:
-  resources:
-    cache-period: 0
-  h2:
-    console:
-      enabled: true
+  flyway:
+    enabled: true
+    locations:
+      - db.migration
+    validate:
+      -off
+      -migrate=false
+
+  security:
+    oauth2:
+      resource server:
+        jwt:
+          issuer-uri: http://localhost:8081/realms/content-maker
+      client:
+        registration:
+          keycloak:
+            client-id: maker
+            client-secret: "**********"
+    user:
+      name: admin
+      password: password
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5433/content_maker
+    username: admin
     password: password
-  sql:
-    init:
-      platform: org.hibernate.dialect.H2Dialect
+
+  servlet:
+    multipart:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
+server:
+  tomcat:
+    max-http-form-post-size: 10485760
+
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        security: DEBUG

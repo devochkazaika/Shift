@@ -1,6 +1,6 @@
-CREATE TABLE stories (
+CREATE TABLE IF NOT EXISTS stories (
      id SERIAL PRIMARY KEY NOT NULL,
-     bank_id VARCHAR(255) UNIQUE,
+     bank_id VARCHAR(255),
      platform VARCHAR(255),
      font_size VARCHAR(255),
      preview_title VARCHAR(255),
@@ -10,7 +10,7 @@ CREATE TABLE stories (
      approved BOOLEAN
 );
 
-CREATE TABLE frames (
+CREATE TABLE IF NOT EXISTS frames (
     id UUID PRIMARY KEY,
     story_id BIGINT,
     title VARCHAR(255),

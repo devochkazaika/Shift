@@ -36,9 +36,8 @@ spring:
     enabled: true
     locations:
       - db.migration
-    validate:
-      -off
-      -migrate=false
+    validate-on-migrate: true
+    baseline-on-migrate: true
 
   security:
     oauth2:
@@ -53,19 +52,15 @@ spring:
     user:
       name: admin
       password: password
-  h2:
-    console:
-      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5433/content_maker
     username: admin
     password: password
-    jpa:
-      database-platform: org.hibernate.dialect.PostgreSQLDialect
-  sql:
-    init:
-      platform: org.hibernate.dialect.H2Dialect
+
   servlet:
     multipart:
       max-file-size: 1000MB

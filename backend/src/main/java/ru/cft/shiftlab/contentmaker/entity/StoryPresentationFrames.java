@@ -1,5 +1,6 @@
 package ru.cft.shiftlab.contentmaker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,7 @@ public class StoryPresentationFrames {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(updatable = false, nullable = false)
     private UUID id;
+
     /**
      * Подзаголовок карточки истории.
      */
@@ -73,5 +75,10 @@ public class StoryPresentationFrames {
      * Градиент карточки истории.
      */
     private String gradient;
+
+    @ManyToOne
+    @JoinColumn(name = "story_id")
+    @JsonIgnore
+    private StoryPresentation story;
 
 }
