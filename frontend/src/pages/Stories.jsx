@@ -13,7 +13,7 @@ import Button from "../components/ui/Button";
 import Loader from "../components/ui/Loader/index";
 import StoryPanel from "../components/Stories/ExistStory/StoryPanel";
 import axios from "axios";
-import {getJWT } from "../components/Security/TokenProcess";
+import { useAuth } from "../components/Security/AuthProvider";
 
 const Stories = () => {
   const [send, setSend] = useState(false);
@@ -23,13 +23,16 @@ const Stories = () => {
   const [bankId, setBankId] = useState('absolutbank');
   const [platform, setPlatform] = useState('ALL PLATFORMS');
 
+  const { token } = useAuth();
+
   const fetchData = async (bankId, platform) => {
     try {
-      let head = {};
-      getJWT(head);
-      const response = await axios.get('/stories/bank/info/getJson/?bankId='+bankId+'&platform='+platform, {
-        headers: head,
-        responseType: 'json'
+      const response = await axios.get('/stories/bank/info/getJson/', {
+        params: { bankId, platform },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: 'json',
       });
       return response.data;
     } catch (error) {

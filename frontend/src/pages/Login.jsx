@@ -1,42 +1,57 @@
-import React, { useState } from 'react';
-import { fetchToken } from '../components/Security/TokenProcess';
+import React from 'react';
+import { Formik, Form } from 'formik';
+import Modal from './../components/ui/Modal/index';
+import FormField from './../components/FormField/index';
+import Button from './../components/ui/Button/index';
+import { useAuth } from './../components/Security/AuthProvider'; // Импортируем правильный хук
+
 
 const Login = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-
-        const response = await fetchToken(username, password);
-
-        if (response.ok) {
-            const data = await response.json();
-            localStorage.setItem('jwt_token', data.access_token);
-            history.push('/');
-        } else {
-            console.error('Login failed');
-        }
+    const auth = useAuth();
+    const handleSubmitEvent = (values) => {
+      if (values.login !== "" && values.password !== "") {
+        auth.loginAction(values);
+        return;
+      }
+      alert("pleae provide a valid input");
     };
 
-    return (
-        <form onSubmit={handleLogin}>
-            <h1>Login</h1>
-            <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username"
+  return (
+    <Modal>
+      <Formik
+        initialValues={{
+          login: "",
+          password: ""
+        }}
+        onSubmit={handleSubmitEvent}
+      >
+        {({ values, handleChange }) => (
+          <Form>
+            <FormField
+              labelTitle="Login"
+              name="login"
+              value={values.login}
+              type="text"
+              handleChange={handleChange}
             />
-            <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
+            <FormField
+              labelTitle="Password"
+              name="password"
+              type="password"
+              value={values.password}
+              handleChange={handleChange}
             />
-            <button type="submit">Login</button>
-        </form>
-    );
+            <Button
+              text="Войти"
+              type="submit"
+              color="red"
+            />
+          </Form>
+        )}
+      </Formik>
+    </Modal>
+  );
 };
 
 export default Login;

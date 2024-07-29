@@ -1,7 +1,7 @@
-import axios from 'axios';
+
 
 // Функция для получения токена и его сохранения
-async function fetchToken(username, password) {
+export const fetchToken = async (username, password) => {
     const url = 'http://localhost:8081/realms/content-maker/protocol/openid-connect/token';
     const params = new URLSearchParams();
     params.append('client_id', 'makerFront');
@@ -23,32 +23,29 @@ async function fetchToken(username, password) {
             throw new Error(`Ошибка при получении токена: ${response.statusText}`);
         }
         
-        const data = await response.json();
-        saveJWT(data.access_token);
-
-        console.log('Токен успешно получен и сохранен:', data);
+        return response;
     } catch (error) {
         console.error('Ошибка:', error);
     }
 }
 
-function saveJWT(token) {
-    localStorage.setItem('jwt_token', token);
-}
 
-function getJWT() {
+export const refreshToken = async () => {
     const token = localStorage.getItem('jwt_token');
-    return token ? `Bearer ${token}` : null;
-}
-
-axios.interceptors.request.use(function (config) {
-    const token = getJWT();
     if (token) {
-        config.headers.Authorization = token;
+      const response = await fetch('/api/refresh-token', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('jwt_token', data.access_token);
+      } else {
+        console.error('Token refresh failed');
+      }
     }
-    return config;
-}, function (error) {
-    return Promise.reject(error);
-});
-
-export { fetchToken, getJWT };
+  };
