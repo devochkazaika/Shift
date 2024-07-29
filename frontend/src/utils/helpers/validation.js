@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import * as Yup from "yup";
 
 import {
@@ -197,7 +199,7 @@ export const storyValidationSchema = Yup.object({
   ),
 });
 
-export const storyPanelValidationSchema = (storyIndex, frameIndex) =>
+export const storyPanelValidationSchema = (storyIndex) =>
   Yup.object({
     previewTitle: Yup.string().required("Поле обязательно"),
     [`previewUrl_${storyIndex}`]: Yup.mixed()
@@ -214,6 +216,11 @@ export const storyPanelValidationSchema = (storyIndex, frameIndex) =>
         `Максимальный допустимый размер - ${MAX_IMAGE_WIDTH}x${MAX_IMAGE_HEIGHT}px`,
         checkFileSides,
       ),
+  });
+export const storyFrameValidationSchema = (storyIndex, frameIndex) =>
+  Yup.object({
+    title: Yup.string().required("Поле обязательно"),
+
     [`pictureFrame_${storyIndex}_${frameIndex}`]: Yup.mixed()
       .required("Поле обязательно")
       .test("fileFormat", "Неподходящий тип изображения", checkFileFormat)

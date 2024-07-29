@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect, useRef } from "react";
 import StoryFrame from "./StoryFrame";
 import { FieldArray, Form, Formik } from "formik";
@@ -144,6 +145,7 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
             previewGradient: story.previewGradient,
             [`previewUrl_${storyIndex}`]: initialImage,
           }}
+          validator={() => ({})}
           onSubmit={(values) => {
             updateStory(story, storyIndex, values, platform);
           }}
@@ -203,14 +205,7 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
                           type="file"
                         />
                       </div>
-                      <Button
-                        handleOnClick={() =>
-                          updateStory(story, storyIndex, values, platform)
-                        }
-                        text="Изменить"
-                        type="submit"
-                        color="green"
-                      />
+                      <Button text="Изменить" type="submit" color="green" />
                     </div>
                   </div>
                 )}

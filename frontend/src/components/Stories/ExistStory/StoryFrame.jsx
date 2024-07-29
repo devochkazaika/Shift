@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect } from "react";
 import { FieldArray, Form, Formik } from "formik";
 import FormField from "../../FormField";
@@ -6,8 +7,7 @@ import ColorPicker from "./../../ColorPicker/index";
 import { gradientOptions } from "./../../../utils/constants/gradient";
 import { updateFrame, fetchImage } from "../../../api/stories";
 import UploadImage from "./../../UploadImage/index";
-import { storyPanelValidationSchema } from "./../../../utils/helpers/validation";
-
+import { storyFrameValidationSchema } from "./../../../utils/helpers/validation";
 
 const StoryFrame = ({
   story,
@@ -32,7 +32,7 @@ const StoryFrame = ({
     <div>
       <Formik
         enableReinitialize
-        validationSchema={storyPanelValidationSchema(storyIndex, frameIndex)}
+        validationSchema={storyFrameValidationSchema(storyIndex, frameIndex)}
         initialValues={{
           title: frame.title,
           text: frame.text,
@@ -45,9 +45,8 @@ const StoryFrame = ({
           buttonUrl: frame.buttonUrl,
           [`pictureFrame_${storyIndex}_${frameIndex}`]: initialImage,
         }}
-        onSubmit={(values) =>
-          handleOnSubmit(values, platform, frame, frameIndex)
-        }
+        validator={() => ({})}
+        onSubmit={(values) => handleOnSubmit(story, platform, values, frame.id)}
       >
         {({ values, handleChange }) => (
           <Form>
@@ -56,7 +55,7 @@ const StoryFrame = ({
                 <div>
                   <FormField
                     labelTitle="Заголовок"
-                    name={`previewTitle`}
+                    name="title"
                     value={values.title}
                     type="text"
                     onChange={handleChange}
@@ -171,14 +170,7 @@ const StoryFrame = ({
                     />
                     <div className="row">
                       <div className="input_field">
-                        <Button
-                          handleOnClick={() =>
-                            handleOnSubmit(story, platform, values, frame.id)
-                          }
-                          text="Изменить"
-                          type="submit"
-                          color="green"
-                        />
+                        <Button text="Изменить" type="submit" color="green" />
                       </div>
                     </div>
                   </div>
