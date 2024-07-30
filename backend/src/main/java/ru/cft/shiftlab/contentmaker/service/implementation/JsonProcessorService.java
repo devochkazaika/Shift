@@ -155,6 +155,26 @@ public class JsonProcessorService implements FileSaverService {
         });
     }
 
+    public void saveToJsonByRoles(final StoryPresentationFrames frame, MultipartFile file, Long id, String bankId, String platformType) throws IOException {
+        Set<KeyCloak.Roles> roles = KeyCloak.getRoles();
+        List<StoryPresentation> storyPresentationList = getStoryList(bankId, platformType);
+        StoryPresentation storyPresentation = storyPresentationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Could not find story"));
+        frame.setStory(storyPresentation);
+        storyPresentationList.stream().filter(x -> x.getId().equals(id)).findFirst().map(y -> storyPresentation);
+        if (roles.contains(KeyCloak.Roles.ADMIN)){
+            putStoryToJson(storyPresentationList, bankId, platformType);
+        }
+        storyPresentationRepository.save(storyPresentation);
+        storyPresentationFramesRepository.save(frame);
+        //добавление картинки в JSON
+        String presentationPictureUrl = multipartFileToImageConverter.parsePicture(
+                new ImageContainer(file),
+                FILES_SAVE_DIRECTORY+bankId+"/"+platformType+"/",
+                id,
+                frame.getId());
+        frame.setPictureUrl(presentationPictureUrl);
+    }
+
 
     @Transactional
     public StoryPresentationFrames addFrame(String frameDto, MultipartFile file,
@@ -167,15 +187,6 @@ public class JsonProcessorService implements FileSaverService {
     @Transactional
     public StoryPresentationFrames addFrameEntity(StoryPresentationFrames frame, MultipartFile file,
                                             String bankId, String platform, Long id) throws IOException {
-        frame.setId(UUID.randomUUID());
-
-        //добавление картинки в JSON
-        String presentationPictureUrl = multipartFileToImageConverter.parsePicture(
-                new ImageContainer(file),
-                FILES_SAVE_DIRECTORY+bankId+"/"+platform+"/",
-                id,
-                frame.getId());
-        frame.setPictureUrl(presentationPictureUrl);
 
         //Изменение JSON
         final List<StoryPresentation> listStory = getStoryList(bankId, platform);
@@ -183,7 +194,7 @@ public class JsonProcessorService implements FileSaverService {
         final List<StoryPresentationFrames> listFrames = storyPresentation.getStoryPresentationFrames();
         listFrames.add(frame);
         if (listFrames.size() >= MAX_COUNT_FRAME) throw new IllegalArgumentException("Cant save a frame. The maximum size is reached");
-        putStoryToJson(listStory, bankId, platform);
+        saveToJsonByRoles(frame, file, id, bankId, platform);
         return frame;
     }
 
