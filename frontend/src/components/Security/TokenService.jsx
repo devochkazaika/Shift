@@ -1,6 +1,6 @@
 class TokenService {
     getLocalRefreshToken() {
-      const user = JSON.parse(localStorage.getItem("token"));
+      const user = JSON.parse(localStorage.getItem("refresh_token"));
       return user?.refreshToken;
     }
   
@@ -20,13 +20,13 @@ class TokenService {
       }
 
     updateRefreshToken(token){
-        let user = JSON.parse(localStorage.getItem("token"));
+        let user = JSON.parse(localStorage.getItem("refresh_token"));
         if (user) {
           user.refreshToken = token;
         } else {
           user = { refreshToken: token };
         }
-        localStorage.setItem("token", JSON.stringify(user));
+        localStorage.setItem("refresh_token", JSON.stringify(user));
       }
 
   }

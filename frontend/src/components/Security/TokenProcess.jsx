@@ -38,9 +38,9 @@ export const refreshToken = async () => {
     form.append('client_id', 'makerFront');
     form.append('client_secret', '**********');
     form.append('grant_type', 'refresh_token');
-    console.log(localStorage.getItem("token"));
-    form.append('refresh_token', localStorage.getItem("token").refreshToken );
-
+    const storedToken = JSON.parse(localStorage.getItem("refresh_token"));
+    form.append('refresh_token', storedToken.refreshToken);
+    
     const response = await fetch('http://localhost:8081/realms/content-maker/protocol/openid-connect/token', {
       method: 'POST',
       headers: {
@@ -52,8 +52,9 @@ export const refreshToken = async () => {
     if (response.ok) {
       const data = await response.json();
       TokenService.updateLocalAccessToken(data.access_token);
-      TokenService.updateLocalAccessToken(data.refresh_token);
+      TokenService.updateLocalRefreshToken(data.refresh_token);
     } else {
       console.error('Token refresh failed');
     }
+    return response;
   };

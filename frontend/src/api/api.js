@@ -23,17 +23,14 @@ api.interceptors.response.use(response => response, async error => {
  
    if (error.response.status === 401) {
     try {
-        const rs = await refreshToken();
-
-        const { accessToken } = rs.data;
-        TokenService.updateLocalAccessToken(accessToken);
-
+        await refreshToken();
+        
       } catch (_error) {
         return Promise.reject(_error);
       }
       
-      return api.request(originalRequest);
    }
+   return api.request(originalRequest);
    }
 );
 
