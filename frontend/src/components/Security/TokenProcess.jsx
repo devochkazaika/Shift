@@ -1,11 +1,14 @@
 
+// import axios from 'axios';
+
+import TokenService from "./TokenService";
 
 // Функция для получения токена и его сохранения
 export const fetchToken = async (username, password) => {
     const url = 'http://localhost:8081/realms/content-maker/protocol/openid-connect/token';
     const params = new URLSearchParams();
     params.append('client_id', 'makerFront');
-    params.append('client_secret', '**********'); // Не забудьте заменить на реальный secret
+    params.append('client_secret', '**********');
     params.append('username', username);
     params.append('password', password);
     params.append('grant_type', 'password');
@@ -31,21 +34,26 @@ export const fetchToken = async (username, password) => {
 
 
 export const refreshToken = async () => {
-    const token = localStorage.getItem('jwt_token');
-    if (token) {
-      const response = await fetch('/api/refresh-token', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('jwt_token', data.access_token);
-      } else {
-        console.error('Token refresh failed');
-      }
+    const form = new URLSearchParams();
+    form.append('client_id', 'makerFront');
+    form.append('client_secret', '**********');
+    form.append('grant_type', 'refresh_token');
+    console.log(localStorage.getItem("token"));
+    form.append('refresh_token', localStorage.getItem("token").refreshToken );
+
+    const response = await fetch('http://localhost:8081/realms/content-maker/protocol/openid-connect/token', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: form.toString()
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      TokenService.updateLocalAccessToken(data.access_token);
+      TokenService.updateLocalAccessToken(data.refresh_token);
+    } else {
+      console.error('Token refresh failed');
     }
   };

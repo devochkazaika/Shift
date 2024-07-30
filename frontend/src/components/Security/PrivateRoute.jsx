@@ -1,11 +1,11 @@
 import React from 'react';
-import { useAuth } from './AuthProvider';
+
 import {Navigate } from 'react-router-dom';
+import TokenService from './TokenService';
 
 
 const PrivateRoute = ({ children }) => {
-    const user = useAuth();
-    if (!user.token) {
+    if (!TokenService.getLocalAccessToken()) {
       return <Navigate to="/login" />;
     }
     return children;

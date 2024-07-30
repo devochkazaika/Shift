@@ -1,7 +1,7 @@
 import { FieldArray, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 
-import { uploadStories } from "../api/stories";
+import { getStories, uploadStories } from "../api/stories";
 import { initialStoryValues } from "../utils/constants/initialValues";
 import { convertToPayload } from "../utils/helpers/byteArrayFunctions";
 import { storyValidationSchema } from "../utils/helpers/validation";
@@ -12,8 +12,6 @@ import AlertMessage from "../components/ui/AlertMessage";
 import Button from "../components/ui/Button";
 import Loader from "../components/ui/Loader/index";
 import StoryPanel from "../components/Stories/ExistStory/StoryPanel";
-import axios from "axios";
-import { useAuth } from "../components/Security/AuthProvider";
 
 const Stories = () => {
   const [send, setSend] = useState(false);
@@ -23,28 +21,10 @@ const Stories = () => {
   const [bankId, setBankId] = useState('absolutbank');
   const [platform, setPlatform] = useState('ALL PLATFORMS');
 
-  const { token } = useAuth();
-
-  const fetchData = async (bankId, platform) => {
-    try {
-      const response = await axios.get('/stories/bank/info/getJson/', {
-        params: { bankId, platform },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        responseType: 'json',
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      return null;
-    }
-  };
-
   useEffect(() => {
     const fetchDataAsync = async () => {
       try {
-        const data = await fetchData(bankId, platform);
+        const data = await getStories(bankId, platform);
         if (data == null) {
           setStoryArray([]);
         } else {

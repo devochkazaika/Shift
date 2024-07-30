@@ -1,7 +1,8 @@
-import axios from "axios";
 import { defaultToastOptions, defaultUpdateToastOptions } from '../utils/constants/toastOptions';
 import { toast } from "react-toastify";
 import { defaultToastMessages } from "../utils/constants/defaultToastMessages";
+import api from "./api";
+
 
 const createToast = (toastContent) => {
   return toast(toastContent, {
@@ -29,6 +30,20 @@ const warningToast = (toastView, error) => {
   }
 };
 
+
+export const getStories = async (bankId, platform) => {
+  try {
+    const response = await api.get('/stories/bank/info/getJson/', {
+      params: { bankId, platform },
+      responseType: 'json',
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return null;
+  }
+};
+
 export const uploadStories = async (jsonPayload, previewImage, cardImages) => {
   const toastView = createToast(defaultToastMessages.uploadingData);
   const form = new FormData();
@@ -38,7 +53,7 @@ export const uploadStories = async (jsonPayload, previewImage, cardImages) => {
       form.append("cardImages", image);
   });
   try {
-    const response = await axios.post("/stories/add", form, {
+    const response = await api.post("/stories/add", form, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     updateToast(toastView, response);
@@ -50,7 +65,7 @@ export const uploadStories = async (jsonPayload, previewImage, cardImages) => {
 
 export const fetchImage = async (url, setImage) => {
   try {
-    const response = await axios.get(`${url}`, { responseType: 'arraybuffer' });
+    const response = await api.get(`${url}`, { responseType: 'arraybuffer' });
     const blob = new Blob([response.data], { type: response.headers['content-type'] });
     const file = new File([blob], "initial_image.jpg", { type: blob.type });
     setImage(file);
@@ -65,7 +80,7 @@ export const deleteStory = async (story, platform) => {
     return false;
   }
   try {
-    const response = await axios.delete(`/stories/bank/info/delete?bankId=${story.bankId}&platform=${platform}&id=${story.id}`);
+    const response = await api.delete(`/stories/bank/info/delete?bankId=${story.bankId}&platform=${platform}&id=${story.id}`);
     updateToast(toastView, response);
     return true;
   } catch (error) {
@@ -76,7 +91,7 @@ export const deleteStory = async (story, platform) => {
 export const deleteFrame = async (story, frame, platform) => {
   const toastView = createToast(defaultToastMessages.uploadingData);
   try {
-    const response = await axios.delete(`/stories/bank/info/delete/frame?bankId=${story.bankId}&platform=${platform}&storyId=${story.id}&frameId=${frame.id}`);
+    const response = await api.delete(`/stories/bank/info/delete/frame?bankId=${story.bankId}&platform=${platform}&storyId=${story.id}&frameId=${frame.id}`);
     updateToast(toastView, response);
     return true;
   } catch (error) {
@@ -93,7 +108,7 @@ export const updateStory = async (story, storyIndex, jsonStory, platform) => {
   form.append("bankId", story.bankId);
   form.append("image", jsonStory[`previewUrl_${storyIndex}`]);
   try {
-    const response = await axios.patch(`/stories/bank/info/change`, form, {
+    const response = await api.patch(`/stories/bank/info/change`, form, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     updateToast(toastView, response);
@@ -113,7 +128,7 @@ export const updateFrame = async (story, platform, frame, storyIndex, frameId, f
   form.append("frameId", frameId)
   form.append("image", frame[`pictureFrame_${storyIndex}_${frameIndex}`])
   try {
-    const response = await axios.patch(`/stories/bank/info/change/frame`, form, {
+    const response = await api.patch(`/stories/bank/info/change/frame`, form, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     updateToast(toastView, response);
@@ -143,7 +158,7 @@ export const addFrame = async (story, frame,  platform) => {
   form.append("bankId", story.bankId);
   form.append("image", frame.pictureUrl);
   try {
-    const response = await axios.post(`/stories/add/frame`, form);
+    const response = await api.post(`/stories/add/frame`, form);
     toast.update(toastView, {
       ...defaultUpdateToastOptions,
       render: response.message,
@@ -164,7 +179,7 @@ export const updateFrameOrder = async (story, platform, firstId, secondId) => {
   form.append("second", secondId);
   form.append("first", firstId);
   try {
-    const response = await axios.patch(`/stories/bank/info/change/swap/frame`, form);
+    const response = await api.patch(`/stories/bank/info/change/swap/frame`, form);
     toast.update(toastView, {
       ...defaultUpdateToastOptions,
       render: response.message,

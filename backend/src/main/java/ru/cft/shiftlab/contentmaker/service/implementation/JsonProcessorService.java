@@ -2,7 +2,6 @@ package ru.cft.shiftlab.contentmaker.service.implementation;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -11,10 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.http.*;
-import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
@@ -28,7 +27,6 @@ import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 import ru.cft.shiftlab.contentmaker.util.DirProcess;
 import ru.cft.shiftlab.contentmaker.util.FileNameCreator;
 import ru.cft.shiftlab.contentmaker.util.Image.ImageContainer;
-import ru.cft.shiftlab.contentmaker.util.MultipartBodyProcess;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
 import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 import ru.cft.shiftlab.contentmaker.util.keycloak.KeyCloak;
@@ -69,43 +67,27 @@ public class JsonProcessorService implements FileSaverService {
     private final StoryPresentationRepository storyPresentationRepository;
     private final StoryPresentationFramesRepository storyPresentationFramesRepository;
 
-    public HttpEntity<MultiValueMap<String, HttpEntity<?>>> getFilePlatform(String bankId, String platform) {
-        String filePlatform = FileNameCreator.createJsonName(bankId, platform);
-        Map<String, List<StoryPresentation>> resultMap;
-        try {
-            resultMap = mapper.readValue(new File(FILES_SAVE_DIRECTORY, filePlatform), new TypeReference<>(){});
-        } catch (IOException e) {
-            throw new StaticContentException("Некорректный файл json на стороне сервера", "404");
-        }
-
-        MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
-        //Добавление json из истории в multipartBodyBuilder
-        String jsonAsString;
-        try {
-            jsonAsString = mapper.writeValueAsString(resultMap.get("stories"));
-        } catch (JsonProcessingException e) {
-            throw new StaticContentException("Некорректный файл json на стороне сервера", "404");
-        }
-        MultipartBodyProcess.addJsonInBuilderMultipart(jsonAsString, multipartBodyBuilder);
-
-        //Добавление картинок из истории в multipartBodyBuilder
-        resultMap.get("stories").forEach(
-                storyPresentation->{
-                    MultipartBodyProcess.addImageInBuilderMultipart(storyPresentation.getPreviewUrl(), multipartBodyBuilder);
-                    storyPresentation.getStoryPresentationFrames().forEach(
-                            frame-> MultipartBodyProcess.addImageInBuilderMultipart(frame.getPictureUrl(), multipartBodyBuilder)
-                    );
-                }
-        );
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        return new HttpEntity<>(multipartBodyBuilder.build(), headers);
+    /**
+     * Метод возвращает все истории в виде списка
+     */
+    private List<StoryPresentation> getStoryList(String bankId, String platform) throws IOException {
+        List<StoryPresentation> list = dirProcess.checkFileInBankDir(
+                FileNameCreator.createJsonName(bankId, platform),
+                STORIES);
+        return (list == null) ? new ArrayList<StoryPresentation>() : list;
+    }
+    /**
+     * Метод возвращает конкретную историю
+     */
+    private StoryPresentation getStoryModel(List<StoryPresentation> storyPresentationList,
+                                            Long id) throws IOException {
+        return storyPresentationList.stream()
+                .filter(x-> x.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Could not find the story with id=" + id));
     }
 
     public List<StoryPresentation> getUnApprovedStories(String bankId, String platform){
-        System.out.println(storyPresentationRepository.getUnApprovedStories(bankId, platform));
         return storyPresentationRepository.getUnApprovedStories(bankId, platform);
     }
 
@@ -145,6 +127,13 @@ public class JsonProcessorService implements FileSaverService {
         }
     }
 
+    /**
+     * Сохранение истории в зависимости от роли
+     * @param storyPresentation
+     * @param bankId
+     * @param platformType
+     * @throws IOException
+     */
     public void saveToJsonByRoles(StoryPresentation storyPresentation, String bankId, String platformType) throws IOException {
         Set<KeyCloak.Roles> roles = KeyCloak.getRoles();
         List<StoryPresentation> storyPresentationList = getStoryList(bankId, platformType);
@@ -165,6 +154,7 @@ public class JsonProcessorService implements FileSaverService {
             storyPresentationFramesRepository.save(x);
         });
     }
+
 
     @Transactional
     public StoryPresentationFrames addFrame(String frameDto, MultipartFile file,
@@ -197,25 +187,6 @@ public class JsonProcessorService implements FileSaverService {
         return frame;
     }
 
-    /**
-     * Метод возвращает все истории в виде списка
-     */
-    private List<StoryPresentation> getStoryList(String bankId, String platform) throws IOException {
-        List<StoryPresentation> list = dirProcess.checkFileInBankDir(
-                FileNameCreator.createJsonName(bankId, platform),
-                STORIES);
-        return (list == null) ? new ArrayList<StoryPresentation>() : list;
-    }
-    /**
-     * Метод возвращает конкретную историю
-     */
-    private StoryPresentation getStoryModel(List<StoryPresentation> storyPresentationList,
-                                            Long id) throws IOException {
-        return storyPresentationList.stream()
-                .filter(x-> x.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Could not find the story with id=" + id));
-    }
     /**
      * Положить истории из списка в JSON
      */
