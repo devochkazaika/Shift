@@ -134,6 +134,7 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
                   <div className="row" style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ width: "70%" }}>
                       <div>
+                      <h3>Превью</h3>
                         <FormField
                           labelTitle="Заголовок"
                           name="previewTitle"
