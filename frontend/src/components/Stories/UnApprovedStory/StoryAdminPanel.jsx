@@ -1,11 +1,11 @@
-import StoryCard from './StoryCard';
-import  './StoryPanelStyle.css';
+import  '../ExistStory/StoryPanelStyle.css';
 import Button from './../../ui/Button/index';
 import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg';
 import { deleteStory } from './../../../api/stories';
 import { useState, useEffect, React } from 'react';
+import StoryCard from '../ExistStory/StoryCard';
 
-const StoryPanel = ({ storyArray, platform }) => {
+const StoryAdminPanel = ({ storyArray, platform }) => {
   const [stories, setStories] = useState(storyArray);
   //Для обновления после удаления
   useEffect(() => {
@@ -25,6 +25,11 @@ const StoryPanel = ({ storyArray, platform }) => {
       console.error('Ошибка при удалении истории', error);
     }
   };
+  const approved = async (bankId, platform, storyId) => {
+    console.log(bankId);
+    console.log(platform);
+    console.log(storyId);
+    }
 
     return(
         <div>
@@ -36,6 +41,12 @@ const StoryPanel = ({ storyArray, platform }) => {
                     <p>{story.previewTitle}</p>
                     <div>
                       <div className='row'>
+                        <Button
+                            handleOnClick={() => approved(story.bankId, platform, story)}
+                            text="Сохранить"
+                            type="button"
+                            color="green"
+                        />
                         <Button
                               text="Удалить"
                               type="button"
@@ -57,4 +68,4 @@ const StoryPanel = ({ storyArray, platform }) => {
     );
   }
 
-export default StoryPanel;
+export default StoryAdminPanel;

@@ -2,23 +2,13 @@ import React, { useEffect, useState } from 'react';
 import CommonForm from '../components/Stories/CommonForm';
 import { getUnApprovedStories } from '../api/stories';
 import { Formik } from 'formik';
-import StoryPanel from '../components/Stories/ExistStory/StoryPanel';
-import Button from '../components/ui/Button';
+import StoryAdminPanel from '../components/Stories/UnApprovedStory/StoryAdminPanel';
 
 const StoryAdmin = () => {
   const [bankId, setBankId] = useState("absolutbank");
   const [platform, setPlatform] = useState("ALL PLATFORMS");
   const [storyArray, setStoryArray] = useState([]);
 
-  const approved = async (bankId, platform, storyId) => {
-
-  }
-
-  const button = {
-    {
-      <Button handleOnClick={}
-    }
-  }
   useEffect(() => {
     const fetchDataAsync = async () => {
       try {
@@ -32,7 +22,8 @@ const StoryAdmin = () => {
     fetchDataAsync();
   }, [bankId, platform]);
   return <div>
-    {storyArray.length > 0 ? <StoryPanel storyArray={storyArray} platform={platform} /> : <></>}
+    {storyArray.length > 0 ? 
+      <StoryAdminPanel storyArray={storyArray} platform={platform}/> : <></>}
     <Formik
       enableReinitialize
       initialValues={{

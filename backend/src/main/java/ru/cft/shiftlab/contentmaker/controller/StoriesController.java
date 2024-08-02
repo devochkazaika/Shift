@@ -75,15 +75,15 @@ public class StoriesController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     public void approveStory(
-            @RequestParam(value = "bankId")
-            String bankId,
+            @RequestParam(value = "json")
+            String storiesRequestDto,
 
-            @RequestParam(value = "platform")
-            String platform,
+            @RequestParam(value = "previewImage")
+            MultipartFile previewImage,
 
-            @RequestParam(value = "id")
-            Long id) throws IOException {
-        storiesService.approvedStory(bankId, platform, id);
+            @RequestParam(value = "cardImages")
+            MultipartFile[] images) throws IOException {
+        storiesService.approvedStory(storiesRequestDto, previewImage, images);
     }
 
     @PostMapping(path = "/add/frame", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

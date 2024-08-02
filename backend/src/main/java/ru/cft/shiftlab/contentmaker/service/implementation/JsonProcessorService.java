@@ -98,14 +98,8 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     @Modifying
-    public void approvedStory(String bankId, String platform, Long id) throws IOException {
-        final var story = storyPresentationRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find story by id = %d", id)));
-        story.setApproved(true);
-        final var storyList = getStoryList(bankId, platform);
-        storyList.add(story);
-        putStoryToJson(storyList, bankId, platform);
-        storyPresentationRepository.save(story);
+    public void approvedStory(Long id) throws IOException {
+        saveByRoles(id);
     }
 
     /**
@@ -119,29 +113,35 @@ public class JsonProcessorService implements FileSaverService {
         return new HttpEntity<>(getStoryList(bankId, platform));
     }
 
+    private StoryPresentation getStoryEntity(String strStoriesRequestDto,
+                           MultipartFile previewImage,
+                           MultipartFile[] images) throws IOException {
+        StoriesRequestDto storiesRequestDto = mapper.readValue(
+                mapper.readValue(strStoriesRequestDto, String.class)
+                , StoriesRequestDto.class);
+        String bankId = storiesRequestDto.getBankId();
+        String platformType = storiesRequestDto.getPlatformType();
+
+        //Создание пути для картинок, если его еще нет
+        String picturesSaveDirectory = FILES_SAVE_DIRECTORY+bankId+"/"+platformType+"/";
+        dirProcess.createFolders(picturesSaveDirectory);
+
+        //Преобразование из dto в entity с сохранением картинок
+        LinkedList<MultipartFile> imageQueue = Arrays.stream(images).
+                collect(Collectors.toCollection(LinkedList::new));
+        imageQueue.addFirst(previewImage);
+        return dtoToEntityConverter.fromStoryDtoToStoryPresentation(bankId, platformType, storiesRequestDto.getStoryDtos().get(0), imageQueue);
+    }
+
     @Override
     public void saveFiles(String strStoriesRequestDto,
                           MultipartFile previewImage,
                           MultipartFile[] images){
         try {
-            StoriesRequestDto storiesRequestDto = mapper.readValue(
-                    mapper.readValue(strStoriesRequestDto, String.class)
-                    , StoriesRequestDto.class);
-            String bankId = storiesRequestDto.getBankId();
-            String platformType = storiesRequestDto.getPlatformType();
-
-            //Создание пути для картинок, если его еще нет
-            String picturesSaveDirectory = FILES_SAVE_DIRECTORY+bankId+"/"+platformType+"/";
-            dirProcess.createFolders(picturesSaveDirectory);
-
-            //Преобразование из dto в entity с сохранением картинок
-            LinkedList<MultipartFile> imageQueue = Arrays.stream(images).
-                    collect(Collectors.toCollection(LinkedList::new));
-            imageQueue.addFirst(previewImage);
-            StoryPresentation storyPresentation = dtoToEntityConverter.fromStoryDtoToStoryPresentation(bankId, platformType, storiesRequestDto.getStoryDtos().get(0), imageQueue);
-
+            //Преобразование в Entity с сохранением картинок
+            final var storyEntity = getStoryEntity(strStoriesRequestDto, previewImage, images);
             //Сохранение
-            saveToJsonByRoles(storyPresentation, bankId, platformType);
+            saveByRoles(storyEntity);
         }
         catch (JsonProcessingException e){
             throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
@@ -154,12 +154,12 @@ public class JsonProcessorService implements FileSaverService {
     /**
      * Сохранение истории в зависимости от роли
      * @param storyPresentation
-     * @param bankId
-     * @param platformType
      * @throws IOException
      */
-    public void saveToJsonByRoles(StoryPresentation storyPresentation, String bankId, String platformType) throws IOException {
+    public void saveByRoles(StoryPresentation storyPresentation) throws IOException {
         Set<KeyCloak.Roles> roles = KeyCloak.getRoles();
+        String bankId = storyPresentation.getBankId();
+        String platformType = storyPresentation.getPlatform();
         List<StoryPresentation> storyPresentationList = getStoryList(bankId, platformType);
         storyPresentationList.add(storyPresentation);
         if (roles.contains(KeyCloak.Roles.ADMIN)){
