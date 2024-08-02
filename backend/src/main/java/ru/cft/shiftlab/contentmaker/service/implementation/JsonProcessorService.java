@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -86,11 +87,34 @@ public class JsonProcessorService implements FileSaverService {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Could not find the story with id=" + id));
     }
-
+    /**
+     * Метод для одобрения истории админом
+     * @param bankId
+     * @param platform
+     * @return
+     */
     public List<StoryPresentation> getUnApprovedStories(String bankId, String platform){
         return storyPresentationRepository.getUnApprovedStories(bankId, platform);
     }
 
+    @Modifying
+    public void approvedStory(String bankId, String platform, Long id) throws IOException {
+        final var story = storyPresentationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find story by id = %d", id)));
+        story.setApproved(true);
+        final var storyList = getStoryList(bankId, platform);
+        storyList.add(story);
+        putStoryToJson(storyList, bankId, platform);
+        storyPresentationRepository.save(story);
+    }
+
+    /**
+     * Запрос для вывода всех историй банка и его платформы
+     * @param bankId
+     * @param platform
+     * @return
+     * @throws IOException
+     */
     public HttpEntity<List<StoryPresentation>> getFilePlatformJson(String bankId, String platform) throws IOException {
         return new HttpEntity<>(getStoryList(bankId, platform));
     }
@@ -154,7 +178,15 @@ public class JsonProcessorService implements FileSaverService {
             storyPresentationFramesRepository.save(x);
         });
     }
-
+    /**
+     * Сохранение карточки в зависимости от роли
+     * @param frame
+     * @param file
+     * @param id
+     * @param bankId
+     * @param platformType
+     * @throws IOException
+     */
     public void saveToJsonByRoles(final StoryPresentationFrames frame, MultipartFile file, Long id, String bankId, String platformType) throws IOException {
         Set<KeyCloak.Roles> roles = KeyCloak.getRoles();
         List<StoryPresentation> storyPresentationList = getStoryList(bankId, platformType);
@@ -163,6 +195,10 @@ public class JsonProcessorService implements FileSaverService {
         storyPresentationList.stream().filter(x -> x.getId().equals(id)).findFirst().map(y -> storyPresentation);
         if (roles.contains(KeyCloak.Roles.ADMIN)){
             putStoryToJson(storyPresentationList, bankId, platformType);
+            storyPresentation.setApproved(true);
+        }
+        else if (roles.contains(KeyCloak.Roles.USER)){
+            storyPresentation.setApproved(false);
         }
         storyPresentationRepository.save(storyPresentation);
         storyPresentationFramesRepository.save(frame);
@@ -208,6 +244,12 @@ public class JsonProcessorService implements FileSaverService {
         mapper.writerWithDefaultPrettyPrinter().writeValue(file, resultMap);
     }
 
+    /**
+     * Вспомогательный метод для возврата определенной карточки из истории
+     * @param storyPresentation
+     * @param id
+     * @return
+     */
     private StoryPresentationFrames getFrameFromStory(StoryPresentation storyPresentation, String id){
         final StoryPresentationFrames storyPresentationFrames = storyPresentation
                 .getStoryPresentationFrames()

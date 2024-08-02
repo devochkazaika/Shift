@@ -24,7 +24,6 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-
   return (
     <AuthContext.Provider value={{loginAction }}>
       {children}
@@ -37,3 +36,8 @@ export default AuthProvider;
 export const useAuth = () => {
   return useContext(AuthContext);
 };
+
+export const logOut = () => {
+  TokenService.updateLocalAccessToken("");
+  TokenService.updateRefreshToken("");
+}

@@ -5,7 +5,7 @@ import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg'
 import { deleteStory } from './../../../api/stories';
 import { useState, useEffect, React } from 'react';
 
-const StoryPanel = ({ storyArray, platform }) => {
+const StoryPanel = ({ storyArray, platform, children }) => {
   const [stories, setStories] = useState(storyArray);
   //Для обновления после удаления
   useEffect(() => {
@@ -36,6 +36,7 @@ const StoryPanel = ({ storyArray, platform }) => {
                     <p>{story.previewTitle}</p>
                     <div>
                       <div>
+                        {children}
                         <Button
                               text="Удалить"
                               type="button"

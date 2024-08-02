@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS frames (
     button_background_color VARCHAR(255),
     button_url VARCHAR(255),
     gradient VARCHAR(255),
+    approved BOOLEAN,
     CONSTRAINT fk_story FOREIGN KEY (story_id) REFERENCES stories(id)
 );
 

@@ -16,11 +16,6 @@ api.interceptors.request.use(function (config) {
     return Promise.reject(error);
   });
 
-let navigate;
-
-export const setNavigate = (nav) => {
-    navigate = nav;
-};
 
 api.interceptors.response.use(
     response => response,
@@ -34,8 +29,8 @@ api.interceptors.response.use(
                 return response;
             }
             catch (_error) {
-                navigate('/login');
                 TokenService.updateLocalAccessToken(null);
+                window.navigate('/login')
             }
         }
 

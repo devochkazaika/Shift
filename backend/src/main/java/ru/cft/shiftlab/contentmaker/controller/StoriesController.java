@@ -68,6 +68,24 @@ public class StoriesController {
         storiesService.saveFiles(storiesRequestDto, previewImage, images);
     }
 
+    @PostMapping(path = "/approveStory")
+    @Operation(summary = "Добавление истории на сервер.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "История добавлена на сервер.")
+    })
+    @ResponseStatus(HttpStatus.CREATED)
+    public void approveStory(
+            @RequestParam(value = "bankId")
+            String bankId,
+
+            @RequestParam(value = "platform")
+            String platform,
+
+            @RequestParam(value = "id")
+            Long id) throws IOException {
+        storiesService.approvedStory(bankId, platform, id);
+    }
+
     @PostMapping(path = "/add/frame", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Карточка добавлена на сервер.")
@@ -132,7 +150,6 @@ public class StoriesController {
             @ApiResponse(responseCode = "400", description = "Неправильные параметры")
     })
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public List<StoryPresentation> getUnApprovedStories(
             @RequestParam(name = "bankId")
             @Parameter(description = "Название банка",

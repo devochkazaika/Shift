@@ -81,4 +81,7 @@ public class StoryPresentationFrames {
     @JsonIgnore
     private StoryPresentation story;
 
+    @JsonIgnore
+    @Column(name = "approved")
+    private Boolean approved;
 }

@@ -44,6 +44,19 @@ export const getStories = async (bankId, platform) => {
   }
 };
 
+export const getUnApprovedStories = async (bankId, platform) => {
+  try {
+    const response = await api.get('/stories/bank/info/getUnApprovedStories/', {
+      params: { bankId, platform },
+      responseType: 'json',
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return null;
+  }
+};
+
 export const uploadStories = async (jsonPayload, previewImage, cardImages) => {
   const toastView = createToast(defaultToastMessages.uploadingData);
   const form = new FormData();

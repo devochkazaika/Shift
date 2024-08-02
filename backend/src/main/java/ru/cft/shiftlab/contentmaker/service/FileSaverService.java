@@ -93,5 +93,5 @@ public interface FileSaverService {
 
     void swapFrames(Long id, String bankId, String platform, String firstUUID, String secondUUID) throws IOException;
 
-//    void approveStory(Long id, String bankId, String platform) throws IOException;
+    void approvedStory(String bankId, String platform, Long id) throws IOException;
 }

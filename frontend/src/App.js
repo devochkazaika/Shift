@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import PrivateRoute from './components/Security/PrivateRoute';
 import AuthProvider from './components/Security/AuthProvider';
 import Login from './pages/Login';
+import StoryAdmin from './pages/StoryAdmin';
 
 
 function App() {
@@ -45,6 +46,10 @@ function App() {
                       <Banners />
                     </PrivateRoute>
                   } 
+                />
+                <Route
+                  path='/unApproved'
+                  element={<StoryAdmin />}
                 />
               </Routes>
           </AuthProvider>
