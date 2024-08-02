@@ -26,11 +26,15 @@ public class DirProcess {
             ObjectMapper mapper = new ObjectMapper();
             TypeReference<Map<String, List<StoryPresentation>>> typeReference = new TypeReference<>() {
             };
-
-            storyPresentationList.addAll(mapper.readValue(
-                            new File(FILES_SAVE_DIRECTORY,fileName), typeReference)
-                    .get(STORIES)
-            );
+            try {
+                var list = mapper.readValue(new File(FILES_SAVE_DIRECTORY, fileName), typeReference);
+                storyPresentationList = (list.containsKey(STORIES)) ?
+                        list.get(STORIES) :
+                        new ArrayList<StoryPresentation>();
+            }
+            catch (Exception e){
+                return new ArrayList<StoryPresentation>();
+            }
         }
         return storyPresentationList;
     }
