@@ -38,17 +38,6 @@ public interface FileSaverService {
         IOException e = new IOException();
         throw new RuntimeException(e);
     }
-    /**
-     * Метод для удаления JSON файла и картинок.
-     *
-     * @param bankId Имя банка
-     * @param platform Тип платформы
-     */
-    default HttpEntity<MultiValueMap<String, HttpEntity<?>>> getFilePlatform(String bankId, String platform) throws IOException {
-        IOException e = new IOException();
-        throw new RuntimeException(e);
-    }
-
     HttpEntity<List<StoryPresentation>> getFilePlatformJson(String bankId, String platform) throws IOException;
 
     /**

@@ -1,0 +1,55 @@
+{
+  "stories" : [ {
+    "id" : 0,
+    "bankId" : "tkbbank",
+    "previewTitle" : "nasady",
+    "previewTitleColor" : "previewTitleColor",
+    "previewUrl" : "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/5_0.png",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "72f250d4-2fea-4f00-a0b2-3259555ceb81",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/tkbbank/WEB/5_72f250d4-2fea-4f00-a0b2-3259555ceb81.png",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 1,
+    "bankId" : "tkbbank",
+    "previewTitle" : "MainTextPreview",
+    "previewTitleColor" : "FF0000",
+    "previewUrl" : "/F:\\JAVA\\CWT\\content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/tkbbank/1_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "edfb9afb-d795-4979-b7cf-b60923d3f266",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/F:\\JAVA\\CWT\\content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/tkbbank/1_1.png",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    }, {
+      "id" : "d5249b7a-a4f6-4a11-b690-22bf3518fcff",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "pictureUrl" : "/F:\\JAVA\\CWT\\content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/tkbbank/1_1.png",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  } ]
+}
