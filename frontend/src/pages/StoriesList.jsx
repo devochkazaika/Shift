@@ -10,6 +10,7 @@ import Loader from "../components/ui/Loader/index";
 import StoryPanel from "../components/Stories/ExistStory/StoryPanel";
 import Button from "../components/ui/Button";
 import { ReactComponent as ArrowIcon } from "../assets/icons/arrow-up.svg";
+import { Pagination } from "../components/Pagination/Pagination";
 
 const StoriesList = () => {
   const navigate = useNavigate();
@@ -18,6 +19,8 @@ const StoriesList = () => {
 
   const [bankId, setBankId] = useState("absolutbank");
   const [platform, setPlatform] = useState("ALL PLATFORMS");
+
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchData = async (bankId, platform) => {
     try {
@@ -46,6 +49,7 @@ const StoriesList = () => {
           setStoriesArray([]);
         } else {
           setStoriesArray(data);
+          setCurrentPage(1)
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -54,7 +58,15 @@ const StoriesList = () => {
 
     fetchDataAsync();
   }, [bankId, platform]);
+  
+  const itemsPerPage = 2;
+  const totalPages = Math.ceil(storiesArray.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
 
+  const currentItems = storiesArray.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
   return (
     <>
       <h1>Stories</h1>
@@ -80,11 +92,15 @@ const StoriesList = () => {
         </Formik>
       </div>
       {storiesArray.length > 0 ? (
-        <StoryPanel storyArray={storiesArray} platform={platform} />
+        <StoryPanel storyArray={currentItems} platform={platform} />
       ) : (
         <h2>Пока нет историй</h2>
       )}
-
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
       {loading && <Loader />}
     </>
   );
