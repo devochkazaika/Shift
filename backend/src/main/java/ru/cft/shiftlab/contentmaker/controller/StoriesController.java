@@ -63,7 +63,7 @@ public class StoriesController {
             @Parameter(description = "Файлы с картинками карточек.",
                     schema = @Schema(type = "array", format = "binary"),
                     content = @Content(mediaType = "multipart/form-data"))
-            MultipartFile[] images) {
+            MultipartFile[] images) throws IOException {
 
         storiesService.saveFiles(storiesRequestDto, previewImage, images);
     }
@@ -75,15 +75,15 @@ public class StoriesController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     public void approveStory(
-            @RequestParam(value = "json")
-            String storiesRequestDto,
+            @RequestParam(value = "bank")
+            String bankId,
 
-            @RequestParam(value = "previewImage")
-            MultipartFile previewImage,
+            @RequestParam(value = "platform")
+            String platform,
 
-            @RequestParam(value = "cardImages")
-            MultipartFile[] images) throws IOException {
-        storiesService.approvedStory(storiesRequestDto, previewImage, images);
+            @RequestParam(value = "id")
+            Long id) throws IOException {
+        storiesService.approvedStory(bankId, platform, id);
     }
 
     @PostMapping(path = "/add/frame", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

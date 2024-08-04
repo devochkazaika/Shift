@@ -11,7 +11,7 @@ import UploadImage from './../../UploadImage/index';
 const AddFrame = ({setFrames, frames, story, storyIndex, platform }) => {
   const handleOnSubmit = async (story, frame, platform) => {
     try {
-      const addedFrame = await addFrame(story, frame, platform);
+      const addedFrame = await addFrame(story, storyIndex, frame, platform);
       const updatedFrames = [...frames, addedFrame.data];
       setFrames(updatedFrames);
     } catch (error) {
@@ -33,7 +33,7 @@ const AddFrame = ({setFrames, frames, story, storyIndex, platform }) => {
           buttonTextColor: "#FFFFFF",
           buttonBackgroundColor: "#0000FF",
           buttonUrl: "https://example.com",
-          pictureUrl: null
+          [`pictureUrl_${storyIndex}_add`]: null
         }}
         onSubmit={(values) => handleOnSubmit(story, values, platform)}
       >
@@ -143,7 +143,7 @@ const AddFrame = ({setFrames, frames, story, storyIndex, platform }) => {
                   <div className='row'>
                     <div className="input_field">
                       <FormField
-                        name={`pictureUrl`}
+                        name={`pictureUrl_${storyIndex}_add`}
                         component={UploadImage}
                       />
                     </div>

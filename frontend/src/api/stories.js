@@ -151,7 +151,7 @@ export const updateFrame = async (story, platform, frame, storyIndex, frameId, f
   }
 };
 
-export const addFrame = async (story, frame,  platform) => {
+export const addFrame = async (story, storyIndex, frame,  platform) => {
   const toastView = createToast(defaultToastMessages.uploadingData);
   const form = new FormData();
   form.append("json", JSON.stringify({
@@ -169,7 +169,7 @@ export const addFrame = async (story, frame,  platform) => {
   form.append("platform", platform);
   form.append("id", story.id);
   form.append("bankId", story.bankId);
-  form.append("image", frame.pictureUrl);
+  form.append("image", frame[`pictureUrl_${storyIndex}_add`]);
   try {
     const response = await api.post(`/stories/add/frame`, form);
     toast.update(toastView, {

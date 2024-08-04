@@ -2,7 +2,6 @@ package ru.cft.shiftlab.contentmaker.service;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
@@ -23,7 +22,7 @@ public interface FileSaverService {
      * @param images Массив картинок для карточек
      * @throws RuntimeException исключение, которые может возникнуть во время работы приложения.
      */
-    default void saveFiles(String strStoriesRequestDto, MultipartFile previewImage, MultipartFile[] images) {
+    default void saveFiles(String strStoriesRequestDto, MultipartFile previewImage, MultipartFile[] images) throws IOException {
         IOException e = new IOException();
         throw new RuntimeException(e);
     }
@@ -38,17 +37,6 @@ public interface FileSaverService {
         IOException e = new IOException();
         throw new RuntimeException(e);
     }
-    /**
-     * Метод для удаления JSON файла и картинок.
-     *
-     * @param bankId Имя банка
-     * @param platform Тип платформы
-     */
-    default HttpEntity<MultiValueMap<String, HttpEntity<?>>> getFilePlatform(String bankId, String platform) throws IOException {
-        IOException e = new IOException();
-        throw new RuntimeException(e);
-    }
-
     HttpEntity<List<StoryPresentation>> getFilePlatformJson(String bankId, String platform) throws IOException;
 
     List<StoryPresentation> getUnApprovedStories(String bankId, String platform);
@@ -93,5 +81,5 @@ public interface FileSaverService {
 
     void swapFrames(Long id, String bankId, String platform, String firstUUID, String secondUUID) throws IOException;
 
-    void approvedStory(String strStoriesRequestDto, MultipartFile previewImage, MultipartFile[] images) throws IOException;
+    void approvedStory(String bankId, String platform, Long id) throws IOException;
 }

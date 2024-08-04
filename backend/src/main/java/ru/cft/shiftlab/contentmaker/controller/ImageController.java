@@ -20,7 +20,7 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
 @RequestMapping("/")
 public class ImageController {
 
-    @GetMapping("/backend/site/share/htdoc/_files/skins/mobws_story/{bankId}/{platform}/{name}")
+    @GetMapping("/site/share/htdoc/_files/skins/mobws_story/{bankId}/{platform}/{name}")
     public ResponseEntity<byte[]> getImage(
             @PathVariable("bankId") String bankId,
             @PathVariable("platform") String plaform,

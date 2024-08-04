@@ -1,16 +1,11 @@
 package ru.cft.shiftlab.contentmaker.service.implementation;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +21,10 @@ import ru.cft.shiftlab.contentmaker.repository.StoryPresentationFramesRepository
 import ru.cft.shiftlab.contentmaker.repository.StoryPresentationRepository;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 import ru.cft.shiftlab.contentmaker.util.DirProcess;
-import ru.cft.shiftlab.contentmaker.util.FileNameCreator;
 import ru.cft.shiftlab.contentmaker.util.Image.ImageContainer;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
 import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
+import ru.cft.shiftlab.contentmaker.util.StoryMapper;
 import ru.cft.shiftlab.contentmaker.util.keycloak.KeyCloak;
 
 import javax.transaction.Transactional;
@@ -41,7 +36,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static ru.cft.shiftlab.contentmaker.util.Constants.*;
+import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
+import static ru.cft.shiftlab.contentmaker.util.Constants.MAX_COUNT_FRAME;
 
 
 /**
@@ -54,83 +50,15 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.*;
 @ConfigurationProperties(prefix = "files.save.directory")
 @Log4j2
 public class JsonProcessorService implements FileSaverService {
-    ObjectMapper mapper = new ObjectMapper();
-    {
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        mapper.configure(DeserializationFeature
-                        .FAIL_ON_UNKNOWN_PROPERTIES,
-                false);
-    }
+    private final StoryMapper mapper;
     private final MultipartFileToImageConverter multipartFileToImageConverter;
     private final DtoToEntityConverter dtoToEntityConverter;
     private final DirProcess dirProcess;
     private final StoryPresentationRepository storyPresentationRepository;
     private final StoryPresentationFramesRepository storyPresentationFramesRepository;
 
-    /**
-     * Метод возвращает все истории в виде списка
-     */
-    private List<StoryPresentation> getStoryList(String bankId, String platform) throws IOException {
-        List<StoryPresentation> list = dirProcess.checkFileInBankDir(
-                FileNameCreator.createJsonName(bankId, platform),
-                STORIES);
-        return (list == null) ? new ArrayList<StoryPresentation>() : list;
-    }
-    /**
-     * Метод возвращает конкретную историю
-     */
-    private StoryPresentation getStoryModel(List<StoryPresentation> storyPresentationList,
-                                            Long id) throws IOException {
-        return storyPresentationList.stream()
-                .filter(x-> x.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Could not find the story with id=" + id));
-    }
-    /**
-     * Метод для одобрения истории админом
-     * @param bankId
-     * @param platform
-     * @return
-     */
-    public List<StoryPresentation> getUnApprovedStories(String bankId, String platform){
-        return storyPresentationRepository.getUnApprovedStories(bankId, platform);
-    }
-
-    @Modifying
-    public void approvedStory(Long id) throws IOException {
-        saveByRoles(id);
-    }
-
-    /**
-     * Запрос для вывода всех историй банка и его платформы
-     * @param bankId
-     * @param platform
-     * @return
-     * @throws IOException
-     */
     public HttpEntity<List<StoryPresentation>> getFilePlatformJson(String bankId, String platform) throws IOException {
-        return new HttpEntity<>(getStoryList(bankId, platform));
-    }
-
-    private StoryPresentation getStoryEntity(String strStoriesRequestDto,
-                           MultipartFile previewImage,
-                           MultipartFile[] images) throws IOException {
-        StoriesRequestDto storiesRequestDto = mapper.readValue(
-                mapper.readValue(strStoriesRequestDto, String.class)
-                , StoriesRequestDto.class);
-        String bankId = storiesRequestDto.getBankId();
-        String platformType = storiesRequestDto.getPlatformType();
-
-        //Создание пути для картинок, если его еще нет
-        String picturesSaveDirectory = FILES_SAVE_DIRECTORY+bankId+"/"+platformType+"/";
-        dirProcess.createFolders(picturesSaveDirectory);
-
-        //Преобразование из dto в entity с сохранением картинок
-        LinkedList<MultipartFile> imageQueue = Arrays.stream(images).
-                collect(Collectors.toCollection(LinkedList::new));
-        imageQueue.addFirst(previewImage);
-        return dtoToEntityConverter.fromStoryDtoToStoryPresentation(bankId, platformType, storiesRequestDto.getStoryDtos().get(0), imageQueue);
+        return new HttpEntity<List<StoryPresentation>>(mapper.getStoryList(bankId, platform));
     }
 
     @Override
@@ -151,6 +79,26 @@ public class JsonProcessorService implements FileSaverService {
         }
     }
 
+    private StoryPresentation getStoryEntity(String strStoriesRequestDto,
+                                             MultipartFile previewImage,
+                                             MultipartFile[] images) throws IOException {
+        StoriesRequestDto storiesRequestDto = mapper.readValue(
+                mapper.readValue(strStoriesRequestDto, String.class)
+                , StoriesRequestDto.class);
+        String bankId = storiesRequestDto.getBankId();
+        String platformType = storiesRequestDto.getPlatformType();
+
+        //Создание пути для картинок, если его еще нет
+        String picturesSaveDirectory = FILES_SAVE_DIRECTORY+bankId+"/"+platformType+"/";
+        dirProcess.createFolders(picturesSaveDirectory);
+
+        //Преобразование из dto в entity с сохранением картинок
+        LinkedList<MultipartFile> imageQueue = Arrays.stream(images).
+                collect(Collectors.toCollection(LinkedList::new));
+        imageQueue.addFirst(previewImage);
+        return dtoToEntityConverter.fromStoryDtoToStoryPresentation(bankId, platformType, storiesRequestDto.getStoryDtos().get(0), imageQueue);
+    }
+
     /**
      * Сохранение истории в зависимости от роли
      * @param storyPresentation
@@ -160,10 +108,10 @@ public class JsonProcessorService implements FileSaverService {
         Set<KeyCloak.Roles> roles = KeyCloak.getRoles();
         String bankId = storyPresentation.getBankId();
         String platformType = storyPresentation.getPlatform();
-        List<StoryPresentation> storyPresentationList = getStoryList(bankId, platformType);
+        List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platformType);
         storyPresentationList.add(storyPresentation);
         if (roles.contains(KeyCloak.Roles.ADMIN)){
-            putStoryToJson(storyPresentationList, bankId, platformType);
+            mapper.putStoryToJson(storyPresentationList, bankId, platformType);
             storyPresentation.setApproved(true);
         }
         else if (roles.contains(KeyCloak.Roles.USER)){
@@ -189,12 +137,12 @@ public class JsonProcessorService implements FileSaverService {
      */
     public void saveToJsonByRoles(final StoryPresentationFrames frame, MultipartFile file, Long id, String bankId, String platformType) throws IOException {
         Set<KeyCloak.Roles> roles = KeyCloak.getRoles();
-        List<StoryPresentation> storyPresentationList = getStoryList(bankId, platformType);
+        List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platformType);
         StoryPresentation storyPresentation = storyPresentationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Could not find story"));
         frame.setStory(storyPresentation);
         storyPresentationList.stream().filter(x -> x.getId().equals(id)).findFirst().map(y -> storyPresentation);
         if (roles.contains(KeyCloak.Roles.ADMIN)){
-            putStoryToJson(storyPresentationList, bankId, platformType);
+            mapper.putStoryToJson(storyPresentationList, bankId, platformType);
             storyPresentation.setApproved(true);
         }
         else if (roles.contains(KeyCloak.Roles.USER)){
@@ -211,6 +159,19 @@ public class JsonProcessorService implements FileSaverService {
         frame.setPictureUrl(presentationPictureUrl);
     }
 
+    @Override
+    public List<StoryPresentation> getUnApprovedStories(String bankId, String platform) {
+        return storyPresentationRepository.getUnApprovedStories(bankId, platform);
+    }
+
+    @Override
+    public void approvedStory(String bankId, String platform, Long id) throws IOException {
+        final var story = storyPresentationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find the story with id = %d", id)));
+        story.setApproved(true);
+        storyPresentationRepository.save(story);
+        mapper.putStoryToJson(story, bankId, platform);
+    }
 
     @Transactional
     public StoryPresentationFrames addFrame(String frameDto, MultipartFile file,
@@ -225,8 +186,8 @@ public class JsonProcessorService implements FileSaverService {
                                             String bankId, String platform, Long id) throws IOException {
 
         //Изменение JSON
-        final List<StoryPresentation> listStory = getStoryList(bankId, platform);
-        final StoryPresentation storyPresentation = getStoryModel(listStory, id);
+        final List<StoryPresentation> listStory = mapper.getStoryList(bankId, platform);
+        final StoryPresentation storyPresentation = mapper.getStoryModel(listStory, id);
         final List<StoryPresentationFrames> listFrames = storyPresentation.getStoryPresentationFrames();
         listFrames.add(frame);
         if (listFrames.size() >= MAX_COUNT_FRAME) throw new IllegalArgumentException("Cant save a frame. The maximum size is reached");
@@ -234,22 +195,6 @@ public class JsonProcessorService implements FileSaverService {
         return frame;
     }
 
-    /**
-     * Положить истории из списка в JSON
-     */
-    private void putStoryToJson(List<StoryPresentation> storyPresentationList, String bankId, String platform) throws IOException {
-        Map<String, List<StoryPresentation>> resultMap = new HashMap<>();
-        resultMap.put(STORIES, storyPresentationList);
-        File file = new File(FILES_SAVE_DIRECTORY, FileNameCreator.createJsonName(bankId, platform));
-        mapper.writerWithDefaultPrettyPrinter().writeValue(file, resultMap);
-    }
-
-    /**
-     * Вспомогательный метод для возврата определенной карточки из истории
-     * @param storyPresentation
-     * @param id
-     * @return
-     */
     private StoryPresentationFrames getFrameFromStory(StoryPresentation storyPresentation, String id){
         final StoryPresentationFrames storyPresentationFrames = storyPresentation
                 .getStoryPresentationFrames()
@@ -273,8 +218,8 @@ public class JsonProcessorService implements FileSaverService {
                 storiesRequestDto
                 , StoryPatchDto.class);
         //Берем нужную историю из списка
-        List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
-        final StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
+        List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platform);
+        final StoryPresentation storyPresentation = mapper.getStoryModel(storyPresentationList, id);
 
         //Меняем картинку
         if (file != null) {
@@ -288,7 +233,7 @@ public class JsonProcessorService implements FileSaverService {
         //обновляем значение и записываем в JSON
         String json = mapper.writeValueAsString(story);
         mapper.readerForUpdating(storyPresentation).readValue(json);
-        putStoryToJson(storyPresentationList, bankId, platform);
+        mapper.putStoryToJson(storyPresentation, bankId, platform);
     }
 
     /**
@@ -308,8 +253,8 @@ public class JsonProcessorService implements FileSaverService {
                 storyFramesRequestDto
                 , StoryFramesDto.class);
 
-        List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
-        StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
+        List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platform);
+        final StoryPresentation storyPresentation = mapper.getStoryModel(storyPresentationList, id);
         final StoryPresentationFrames storyPresentationFrames = getFrameFromStory(storyPresentation, frameId);
 
         //Меняем картинку
@@ -325,7 +270,7 @@ public class JsonProcessorService implements FileSaverService {
         //обновляем значение и записываем в JSON
         String json = mapper.writeValueAsString(story);
         mapper.readerForUpdating(storyPresentationFrames).readValue(json);
-        putStoryToJson(storyPresentationList, bankId, platform);
+        mapper.putStoryToJson(storyPresentation, bankId, platform);
     }
 
     /**
@@ -366,7 +311,7 @@ public class JsonProcessorService implements FileSaverService {
      */
     private void deleteJsonStories(String bankId, String platform, String id) throws IOException {
         //Берем список историй
-        List<StoryPresentation> list = getStoryList(bankId, platform);
+        List<StoryPresentation> list = mapper.getStoryList(bankId, platform);
         //удаляем нужную историю
         if (!list.removeIf(k -> id.equals(k.getId().toString()))){
             throw new IllegalArgumentException(String.format(
@@ -375,7 +320,7 @@ public class JsonProcessorService implements FileSaverService {
             );
         }
         //кладем в json
-        putStoryToJson(list, bankId, platform);
+        mapper.putStoryToJson(list, bankId, platform);
     }
 
     /**
@@ -450,8 +395,8 @@ public class JsonProcessorService implements FileSaverService {
     private UUID deleteJsonFrame(String bankId, String platform, String id, String frameId) throws IOException {
         UUID uuid = null;
         //Берем историю из списка историй
-        List<StoryPresentation> list = getStoryList(bankId, platform);
-        StoryPresentation story = getStoryModel(list, Long.parseLong(id));
+        List<StoryPresentation> list = mapper.getStoryList(bankId, platform);
+        StoryPresentation story = mapper.getStoryModel(list, Long.parseLong(id));
 
         //Берем все карточки историй
         List<StoryPresentationFrames> frames = story.getStoryPresentationFrames();
@@ -466,7 +411,7 @@ public class JsonProcessorService implements FileSaverService {
             ));
         }
         //Записываем в JSON
-        putStoryToJson(list, bankId, platform);
+        mapper.putStoryToJson(list, bankId, platform);
         return uuid;
     }
     /**
@@ -495,8 +440,8 @@ public class JsonProcessorService implements FileSaverService {
      * @throws IOException
      */
     public void swapFrames(Long id, String bankId, String platform, String fristUuid, String secondUuid) throws IOException {
-        final List<StoryPresentation> storyPresentationList = getStoryList(bankId, platform);
-        final StoryPresentation storyPresentation = getStoryModel(storyPresentationList, id);
+        final List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platform);
+        final StoryPresentation storyPresentation = mapper.getStoryModel(storyPresentationList, id);
         final List<StoryPresentationFrames> frames = storyPresentation.getStoryPresentationFrames();
         int first = IntStream.range(0, frames.size())
                 .filter(streamIndex -> fristUuid.equals(frames.get(streamIndex).getId().toString()))
@@ -509,7 +454,7 @@ public class JsonProcessorService implements FileSaverService {
 
         Collections.swap(frames, first, second);
         storyPresentation.setStoryPresentationFrames(frames);
-        putStoryToJson(storyPresentationList, bankId, platform);
+        mapper.putStoryToJson(storyPresentationList, bankId, platform);
     }
 
 }

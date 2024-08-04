@@ -4,8 +4,8 @@ import { BsFilePlus } from 'react-icons/bs';
 import { NavLink } from 'react-router-dom';
 
 import styles from './Sidebar.module.scss';
-import Button from '../ui/Button';
-import { logOut } from '../Security/AuthProvider';
+// import Button from '../ui/Button';
+// import { logOut } from '../Security/AuthProvider';
 
 const Sidebar = () => {
   const [open, setOpen] = React.useState(true);
@@ -37,8 +37,10 @@ const Sidebar = () => {
             {open && <div className={styles.text}>{item.name}</div>}
           </NavLink>
         ))}
+        <NavLink to={"/login"} className={styles.link} style={{position: "absolute", bottom: "10px"}}>
+          <div> Вход</div>
+        </NavLink>
       </div>
-      <Button handleOnClick={() => logOut()}></Button>
     </div>
   );
 };

@@ -10,7 +10,7 @@ module.exports = (app) => {
         })
     );
     app.use(
-        "/backend",
+        "/site",
         createProxyMiddleware({
             target: "http://localhost:8080",
             changeOrigin: true,
