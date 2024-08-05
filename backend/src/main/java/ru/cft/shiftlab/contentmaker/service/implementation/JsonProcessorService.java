@@ -291,19 +291,25 @@ public class JsonProcessorService implements FileSaverService {
                 throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
             }
         });
-        Future<?> deleteImages = executor.submit(() -> {
-            try {
-                deleteFilesStories(bankId, platform, id);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
+//        Future<?> deleteImages = executor.submit(() -> {
+//            try {
+//                deleteFilesStories(bankId, platform, id);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
         try {
             deleteJson.get();
-            deleteImages.get();
+//            deleteImages.get();
         } catch (ExecutionException ex) {
             throw ex.getCause();
         }
+        return new ResponseEntity<>(HttpStatus.valueOf(202));
+    }
+
+    public ResponseEntity<?> deleteStoriesFromDb(String bankId, String platform, Long id) throws Throwable{
+        storyPresentationRepository.deleteById(id);
+        deleteFilesStories(bankId, platform, id);
         return new ResponseEntity<>(HttpStatus.valueOf(202));
     }
     /**
@@ -326,11 +332,11 @@ public class JsonProcessorService implements FileSaverService {
     /**
      * Метод, предназначенный для удаления файлов историй из директории.
      */
-    private void deleteFilesStories(String bankId, String platform, String id) throws InterruptedException {
+    private void deleteFilesStories(String bankId, String platform, Long id) throws InterruptedException {
         File directory = dirProcess.checkDirectoryBankAndPlatformIsExist(bankId, platform);
         File[] files = directory.listFiles();
         Stream.of(files)
-                .filter(x -> x.getName().startsWith(id))
+                .filter(x -> x.getName().startsWith(id.toString()))
                 .forEach(x -> {
                     if (x.exists()) {
                         x.delete();

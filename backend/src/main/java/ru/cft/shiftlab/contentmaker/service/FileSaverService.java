@@ -82,4 +82,6 @@ public interface FileSaverService {
     void swapFrames(Long id, String bankId, String platform, String firstUUID, String secondUUID) throws IOException;
 
     void approvedStory(String bankId, String platform, Long id) throws IOException;
+
+    ResponseEntity<?> deleteStoriesFromDb(String bankId, String platform, Long id) throws Throwable;
 }

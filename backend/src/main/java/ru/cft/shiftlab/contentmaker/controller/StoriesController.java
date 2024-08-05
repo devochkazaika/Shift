@@ -68,7 +68,7 @@ public class StoriesController {
         storiesService.saveFiles(storiesRequestDto, previewImage, images);
     }
 
-    @PostMapping(path = "/approveStory")
+    @PostMapping(path = "/admin/approveStory")
     @Operation(summary = "Добавление истории на сервер.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "История добавлена на сервер.")
@@ -203,6 +203,37 @@ public class StoriesController {
             String id) throws Throwable {
 
         return storiesService.deleteService(bankId, platform, id);
+    }
+
+    @DeleteMapping("/bank/info/admin/deletefromDb")
+    @Operation(summary = "Удаление истории")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "История успешно удалена"),
+            @ApiResponse(responseCode = "404", description = "История не найдена в JSON файле"),
+            @ApiResponse(responseCode = "500", description = "Ошибка на стороне сервера(нет JSON или нет директории с файлами)")
+    })
+    public ResponseEntity<?> deleteStoryFromDb(
+            @RequestParam(name = "bankId")
+            @Parameter(description = "Название банка",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "tkbbank")
+            @WhiteListValid(message = "bankId must match the allowed")
+            String bankId,
+
+            @Parameter(description = "Тип платформы",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "ALL PLATFORMS")
+            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
+            @PlatformValid
+            String platform,
+
+            @Parameter(description = "id истории",
+                    schema = @Schema(type = "string", format = "string"),
+                    example = "0")
+            @RequestParam(name = "id")
+            Long id) throws Throwable {
+
+        return storiesService.deleteStoriesFromDb(bankId, platform, id);
     }
 
     /**

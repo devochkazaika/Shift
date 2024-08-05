@@ -27,7 +27,7 @@ const StoryAdminPanel = ({ storyArray, platform }) => {
     }
   };
   const approved = async (bankId, platform, storyId) => {
-    api.post(`/stories/approveStory?bank=${bankId}&platform=${platform}&id=${storyId.id}`);
+    api.post(`/stories/admin/approveStory?bank=${bankId}&platform=${platform}&id=${storyId.id}`);
     }
 
     return(
