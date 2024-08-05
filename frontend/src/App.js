@@ -11,6 +11,7 @@ import PrivateRoute from './components/Security/PrivateRoute';
 import AuthProvider from './components/Security/AuthProvider';
 import Login from './pages/Login';
 import StoryAdmin from './pages/StoryAdmin';
+import { AdminRoute } from './components/Security/AdminRoute';
 
 
 function App() {
@@ -49,7 +50,9 @@ function App() {
                 />
                 <Route
                   path='/unApproved'
-                  element={<StoryAdmin />}
+                  element={<AdminRoute>
+                            <StoryAdmin />
+                          </AdminRoute>}
                 />
               </Routes>
           </AuthProvider>

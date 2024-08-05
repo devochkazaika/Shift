@@ -38,8 +38,7 @@ public class StoryPresentation {
     private String bankId;
 
     @Column(name = "platform")
-    @JsonIgnore
-    private String platform;
+    private String platform = null;
 
     /**
      * Размер шрифта.

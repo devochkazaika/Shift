@@ -14,6 +14,13 @@
       margin-left: 0;
     }
   }
+  h1 {
+    margin:0em 0em;
+    position:relative;/*here triggers overflow since no width is given */
+    overflow:hidden;
+    padding: 25px 15px;
+    color: variables.$logo-color
+  }
 }
 
 .top_section {

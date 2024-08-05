@@ -4,6 +4,7 @@ import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg'
 import { deleteStory } from './../../../api/stories';
 import { useState, useEffect, React } from 'react';
 import StoryCard from '../ExistStory/StoryCard';
+import api from '../../../api/api';
 
 const StoryAdminPanel = ({ storyArray, platform }) => {
   const [stories, setStories] = useState(storyArray);
@@ -26,9 +27,7 @@ const StoryAdminPanel = ({ storyArray, platform }) => {
     }
   };
   const approved = async (bankId, platform, storyId) => {
-    console.log(bankId);
-    console.log(platform);
-    console.log(storyId);
+    api.post(`/stories/approveStory?bank=${bankId}&platform=${platform}&id=${storyId.id}`);
     }
 
     return(
@@ -39,6 +38,8 @@ const StoryAdminPanel = ({ storyArray, platform }) => {
                 <details>
                   <summary>
                     <p>{story.previewTitle}</p>
+                    <p>{story.bankId}</p>
+                    <p>{`${story.platform}`}</p>
                     <div>
                       <div className='row'>
                         <Button
