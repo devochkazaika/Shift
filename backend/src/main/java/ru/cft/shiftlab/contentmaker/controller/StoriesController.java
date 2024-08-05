@@ -200,7 +200,7 @@ public class StoriesController {
                     schema = @Schema(type = "string", format = "string"),
                     example = "0")
             @RequestParam(name = "id")
-            String id) throws Throwable {
+            Long id) throws Throwable {
 
         return storiesService.deleteService(bankId, platform, id);
     }

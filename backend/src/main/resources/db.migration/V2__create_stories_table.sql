@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS stories (
      preview_title_color VARCHAR(255),
      preview_url VARCHAR(255),
      preview_gradient VARCHAR(255),
-     approved BOOLEAN
+     approved VARCHAR(15)
 );
 
 CREATE TABLE IF NOT EXISTS frames (

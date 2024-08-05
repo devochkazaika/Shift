@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface StoryPresentationRepository extends CrudRepository<StoryPresentation, Long> {
     @EntityGraph(attributePaths = "storyPresentationFrames")
-    @Query("SELECT st FROM StoryPresentation st WHERE st.bankId = :bank AND st.platform = :platform AND st.approved = false ")
+    @Query(value = "SELECT st FROM stories st WHERE bankId = :bank AND platform = :platform AND approved = 'NOTAPPROVED' ", nativeQuery = true)
     List<StoryPresentation> getUnApprovedStories(@Param("bank") String bankId, @Param("platform") String platform);
 
     @Query("SELECT st FROM StoryPresentation st WHERE st.id = :id")

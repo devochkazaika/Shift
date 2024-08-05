@@ -22,6 +22,7 @@ import java.util.List;
 @Table(name = "stories")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StoryPresentation {
+    public enum Status {APPROVED, NOTAPPROVED, DELETED};
 
     /**
      * Идентификатор истории.
@@ -73,7 +74,8 @@ public class StoryPresentation {
 
     @JsonIgnore
     @Column(name = "approved")
-    private Boolean approved;
+    @Enumerated(EnumType.STRING)
+    private Status approved;
 
     /**
      * Список карточек истории.

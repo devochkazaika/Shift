@@ -33,7 +33,7 @@ public interface FileSaverService {
      * @param platform Тип платформы
      * @param id Id истории
      */
-    default ResponseEntity<?> deleteService(String bankId, String platform, String id) throws Throwable {
+    default ResponseEntity<?> deleteService(String bankId, String platform, Long id) throws Throwable {
         IOException e = new IOException();
         throw new RuntimeException(e);
     }

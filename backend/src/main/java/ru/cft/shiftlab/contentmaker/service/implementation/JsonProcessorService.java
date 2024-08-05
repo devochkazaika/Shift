@@ -112,10 +112,10 @@ public class JsonProcessorService implements FileSaverService {
         storyPresentationList.add(storyPresentation);
         if (roles.contains(KeyCloak.Roles.ADMIN)){
             mapper.putStoryToJson(storyPresentationList, bankId, platformType);
-            storyPresentation.setApproved(true);
+            storyPresentation.setApproved(StoryPresentation.Status.APPROVED);
         }
         else if (roles.contains(KeyCloak.Roles.USER)){
-            storyPresentation.setApproved(false);
+            storyPresentation.setApproved(StoryPresentation.Status.NOTAPPROVED);
         }
         else{
             throw new IllegalArgumentException("Unexpected role");
@@ -143,10 +143,10 @@ public class JsonProcessorService implements FileSaverService {
         storyPresentationList.stream().filter(x -> x.getId().equals(id)).findFirst().map(y -> storyPresentation);
         if (roles.contains(KeyCloak.Roles.ADMIN)){
             mapper.putStoryToJson(storyPresentationList, bankId, platformType);
-            storyPresentation.setApproved(true);
+            storyPresentation.setApproved(StoryPresentation.Status.APPROVED);
         }
         else if (roles.contains(KeyCloak.Roles.USER)){
-            storyPresentation.setApproved(false);
+            storyPresentation.setApproved(StoryPresentation.Status.NOTAPPROVED);
         }
         storyPresentationRepository.save(storyPresentation);
         storyPresentationFramesRepository.save(frame);
@@ -168,7 +168,7 @@ public class JsonProcessorService implements FileSaverService {
     public void approvedStory(String bankId, String platform, Long id) throws IOException {
         final var story = storyPresentationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find the story with id = %d", id)));
-        story.setApproved(true);
+        story.setApproved(StoryPresentation.Status.APPROVED);
         storyPresentationRepository.save(story);
         mapper.putStoryToJson(story, bankId, platform);
     }
@@ -281,7 +281,7 @@ public class JsonProcessorService implements FileSaverService {
      * @return
      * @throws Throwable
      */
-    public ResponseEntity<?> deleteService(String bankId, String platform, String id) throws Throwable {
+    public ResponseEntity<?> deleteService(String bankId, String platform, Long id) throws Throwable {
         ExecutorService executor = Executors.newFixedThreadPool(2);
         Future<?> deleteJson = executor.submit(()->{
             try {
@@ -291,16 +291,11 @@ public class JsonProcessorService implements FileSaverService {
                 throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
             }
         });
-//        Future<?> deleteImages = executor.submit(() -> {
-//            try {
-//                deleteFilesStories(bankId, platform, id);
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
+        final var storyPresentation = storyPresentationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(String.format("Could not find story with id = %d", id)));
+        storyPresentation.setApproved(StoryPresentation.Status.DELETED);
+        storyPresentationRepository.save(storyPresentation);
         try {
             deleteJson.get();
-//            deleteImages.get();
         } catch (ExecutionException ex) {
             throw ex.getCause();
         }
@@ -315,11 +310,11 @@ public class JsonProcessorService implements FileSaverService {
     /**
      * Метод, предназначенный для удаления историй из JSON.
      */
-    private void deleteJsonStories(String bankId, String platform, String id) throws IOException {
+    private void deleteJsonStories(String bankId, String platform, Long id) throws IOException {
         //Берем список историй
         List<StoryPresentation> list = mapper.getStoryList(bankId, platform);
         //удаляем нужную историю
-        if (!list.removeIf(k -> id.equals(k.getId().toString()))){
+        if (!list.removeIf(k -> id.equals(k.getId()))){
             throw new IllegalArgumentException(String.format(
                     "Could not find the frame with id = %s",
                     id)
