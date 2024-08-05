@@ -160,8 +160,13 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     @Override
-    public List<StoryPresentation> getUnApprovedStories(String bankId, String platform) {
-        return storyPresentationRepository.getUnApprovedStories(bankId, platform);
+    public List<StoryPresentation> getUnApprovedStories() {
+        return storyPresentationRepository.getUnApprovedStories();
+    }
+
+    @Override
+    public List<StoryPresentation> getDeletedStories() {
+        return storyPresentationRepository.getDeletedStories();
     }
 
     @Override

@@ -44,11 +44,22 @@ export const getStories = async (bankId, platform) => {
   }
 };
 
-export const getUnApprovedStories = async (bankId, platform) => {
+export const getUnApprovedStories = async () => {
   try {
     const response = await api.get('/stories/bank/info/getUnApprovedStories/', {
-      params: { bankId, platform },
-      responseType: 'json',
+      responseType: 'json'
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return null;
+  }
+};
+
+export const getDeletedStories = async () => {
+  try {
+    const response = await api.get('/stories/bank/info/getDeletedStories/', {
+      responseType: 'json'
     });
     return response.data;
   } catch (error) {

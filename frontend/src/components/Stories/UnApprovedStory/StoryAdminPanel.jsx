@@ -6,18 +6,20 @@ import { useState, useEffect, React } from 'react';
 import StoryCard from '../ExistStory/StoryCard';
 import api from '../../../api/api';
 
-const StoryAdminPanel = ({ storyArray, platform }) => {
+const StoryAdminPanel = ({ storyArray, storyDeleted}) => {
   const [stories, setStories] = useState(storyArray);
+  const [storiesDeleted, setStoryDeleted] = useState(storyDeleted);
   //Для обновления после удаления
   useEffect(() => {
     if (storyArray) {
       setStories(storyArray);
     }
-  }, [storyArray]);
+    setStoryDeleted(storyDeleted);
+  }, [storyArray, storyDeleted]);
   //Для удаления истории
-  const handleOnSubmit = async (story, platform) => {
+  const handleOnSubmit = async (story) => {
     try {
-      const success = await deleteStory(story, platform);
+      const success = await deleteStory(story, story.platform);
       if (success) {
         setStories(prevStories => prevStories.filter(item => item.id !== story.id));
       }
@@ -32,6 +34,7 @@ const StoryAdminPanel = ({ storyArray, platform }) => {
 
     return(
         <div>
+            <h1>Непринятые истории</h1>
             <ul className="stories">
             {stories.map((story, index) => (
                 <li className='listFrame' key={index}>
@@ -43,7 +46,7 @@ const StoryAdminPanel = ({ storyArray, platform }) => {
                     <div>
                       <div className='row'>
                         <Button
-                            handleOnClick={() => approved(story.bankId, platform, story)}
+                            handleOnClick={() => approved(story.bankId, story.platform, story)}
                             text="Сохранить"
                             type="button"
                             color="green"
@@ -52,19 +55,53 @@ const StoryAdminPanel = ({ storyArray, platform }) => {
                               text="Удалить"
                               type="button"
                               color="red"
-                              handleOnClick={() => handleOnSubmit(story, platform)}
+                              handleOnClick={() => handleOnSubmit(story, story.platform)}
                               icon={<ArrowIcon width="12px" height="12px" />}
                             />
                       </div>
                     </div>
                   </summary>
                   <div>
-                     <StoryCard key={index} story={story} storyIndex={index} platform={platform}/>
+                     <StoryCard key={index} story={story} storyIndex={index} platform={story.platform}/>
                   </div>
                 </details>
                 </li>
             ))}
             </ul>
+            <h1>Удаленные истории</h1>
+            <ul className="stories">
+            {storiesDeleted.map((story, index) => (
+                <li className='listFrame' key={index}>
+                <details>
+                  <summary>
+                    <p>{story.previewTitle}</p>
+                    <p>{story.bankId}</p>
+                    <p>{`${story.platform}`}</p>
+                    <div>
+                      <div className='row'>
+                        <Button
+                            handleOnClick={() => approved(story.bankId, story.platform, story)}
+                            text="Восстановить"
+                            type="button"
+                            color="green"
+                        />
+                        <Button
+                              text="Удалить из БД"
+                              type="button"
+                              color="red"
+                              handleOnClick={() => handleOnSubmit(story, story.platform)}
+                              icon={<ArrowIcon width="12px" height="12px" />}
+                            />
+                      </div>
+                    </div>
+                  </summary>
+                  <div>
+                     <StoryCard key={index} story={story} storyIndex={index} platform={story.platform}/>
+                  </div>
+                </details>
+                </li>
+               ))}
+              </ul>
         </div>
     );
   }

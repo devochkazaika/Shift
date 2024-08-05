@@ -39,7 +39,8 @@ public interface FileSaverService {
     }
     HttpEntity<List<StoryPresentation>> getFilePlatformJson(String bankId, String platform) throws IOException;
 
-    List<StoryPresentation> getUnApprovedStories(String bankId, String platform);
+    List<StoryPresentation> getUnApprovedStories();
+    List<StoryPresentation> getDeletedStories();
 
     /**
      * Изменение общих параметров истории, а именно previewTitle, previewTitleColor, previewGradient
