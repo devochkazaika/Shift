@@ -363,6 +363,16 @@ public class StoriesController {
                 file);
     }
 
+    @PatchMapping("/bank/info/restore/story")
+    public void restoreStory(@Parameter(description = "id истории",
+                                         schema = @Schema(type = "string", format = "string"),
+                                         example = "0")
+                                 @RequestParam(name = "id")
+                                 Long id
+    ) throws IOException {
+        storiesService.restoreStory(id);
+    }
+
     @PatchMapping("/bank/info/change/swap/frame")
     public void swapFrames(
             @RequestParam(name = "id", defaultValue="0")

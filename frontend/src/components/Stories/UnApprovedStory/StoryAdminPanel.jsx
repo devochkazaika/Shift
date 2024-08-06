@@ -1,10 +1,10 @@
 import  '../ExistStory/StoryPanelStyle.css';
 import Button from './../../ui/Button/index';
 import { ReactComponent as ArrowIcon } from '../../../assets/icons/arrow-up.svg';
-import { deleteStory } from './../../../api/stories';
 import { useState, useEffect, React } from 'react';
 import StoryCard from '../ExistStory/StoryCard';
 import api from '../../../api/api';
+import { deleteStoryFromDb } from '../../../api/stories';
 
 const StoryAdminPanel = ({ storyArray, storyDeleted}) => {
   const [stories, setStories] = useState(storyArray);
@@ -19,7 +19,7 @@ const StoryAdminPanel = ({ storyArray, storyDeleted}) => {
   //Для удаления истории
   const handleOnSubmit = async (story) => {
     try {
-      const success = await deleteStory(story, story.platform);
+      const success = await deleteStoryFromDb(story, story.platform);
       if (success) {
         setStories(prevStories => prevStories.filter(item => item.id !== story.id));
       }
@@ -30,7 +30,10 @@ const StoryAdminPanel = ({ storyArray, storyDeleted}) => {
   };
   const approved = async (bankId, platform, storyId) => {
     api.post(`/stories/admin/approveStory?bank=${bankId}&platform=${platform}&id=${storyId.id}`);
-    }
+  }
+  const restoreStory = async (storyId) => {
+    api.patch(`/stories/bank/info/restore/story?id=${storyId.id}`);
+  }
 
     return(
         <div>
@@ -80,7 +83,7 @@ const StoryAdminPanel = ({ storyArray, storyDeleted}) => {
                     <div>
                       <div className='row'>
                         <Button
-                            handleOnClick={() => approved(story.bankId, story.platform, story)}
+                            handleOnClick={() => restoreStory(story)}
                             text="Восстановить"
                             type="button"
                             color="green"

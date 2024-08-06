@@ -112,6 +112,20 @@ export const deleteStory = async (story, platform) => {
   }
 };
 
+export const deleteStoryFromDb = async (story, platform) => {
+  const toastView = createToast(defaultToastMessages.uploadingData);
+  if (!story || !Object.hasOwn(story, 'bankId') || !Object.hasOwn(story, 'id')) {
+    return false;
+  }
+  try {
+    const response = await api.delete(`/stories/bank/info/admin/deletefromDb?bankId=${story.bankId}&platform=${platform}&id=${story.id}`);
+    updateToast(toastView, response);
+    return true;
+  } catch (error) {
+    warningToast(toastView, error);
+  }
+};
+
 export const deleteFrame = async (story, frame, platform) => {
   const toastView = createToast(defaultToastMessages.uploadingData);
   try {

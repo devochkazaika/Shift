@@ -42,6 +42,8 @@ public interface FileSaverService {
     List<StoryPresentation> getUnApprovedStories();
     List<StoryPresentation> getDeletedStories();
 
+    void restoreStory(Long id) throws IOException;
+
     /**
      * Изменение общих параметров истории, а именно previewTitle, previewTitleColor, previewGradient
      * @param storiesRequestDto StoryDto + platform + bankID

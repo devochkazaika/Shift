@@ -463,4 +463,12 @@ public class JsonProcessorService implements FileSaverService {
         mapper.putStoryToJson(storyPresentationList, bankId, platform);
     }
 
+    @Override
+    public void restoreStory(Long id) throws IOException {
+        final var storyPresentation = storyPresentationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find story with id = %d", id)));
+        storyPresentation.setApproved(StoryPresentation.Status.APPROVED);
+        storyPresentationRepository.save(storyPresentation);
+        mapper.putStoryToJson(storyPresentation, storyPresentation.getBankId(), storyPresentation.getPlatform());
+    }
 }
