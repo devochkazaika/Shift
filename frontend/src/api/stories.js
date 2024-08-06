@@ -46,7 +46,7 @@ export const getStories = async (bankId, platform) => {
 
 export const getUnApprovedStories = async () => {
   try {
-    const response = await api.get('/stories/bank/info/getUnApprovedStories/', {
+    const response = await api.get('/stories/admin/bank/info/getUnApprovedStories/', {
       responseType: 'json'
     });
     return response.data;
@@ -58,7 +58,7 @@ export const getUnApprovedStories = async () => {
 
 export const getDeletedStories = async () => {
   try {
-    const response = await api.get('/stories/bank/info/getDeletedStories/', {
+    const response = await api.get('/stories/admin/bank/info/getDeletedStories/', {
       responseType: 'json'
     });
     return response.data;
@@ -118,7 +118,7 @@ export const deleteStoryFromDb = async (story, platform) => {
     return false;
   }
   try {
-    const response = await api.delete(`/stories/bank/info/admin/deletefromDb?bankId=${story.bankId}&platform=${platform}&id=${story.id}`);
+    const response = await api.delete(`/stories/admin/bank/info/deletefromDb?bankId=${story.bankId}&platform=${platform}&id=${story.id}`);
     updateToast(toastView, response);
     return true;
   } catch (error) {

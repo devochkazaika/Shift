@@ -237,8 +237,9 @@ public class JsonProcessorService implements FileSaverService {
 
         //обновляем значение и записываем в JSON
         String json = mapper.writeValueAsString(story);
+        storyPresentationRepository.save(storyPresentation);
         mapper.readerForUpdating(storyPresentation).readValue(json);
-        mapper.putStoryToJson(storyPresentation, bankId, platform);
+        mapper.putStoryToJson(storyPresentationList, bankId, platform);
     }
 
     /**
@@ -273,9 +274,10 @@ public class JsonProcessorService implements FileSaverService {
         }
 
         //обновляем значение и записываем в JSON
+        storyPresentationFramesRepository.save(storyPresentationFrames);
         String json = mapper.writeValueAsString(story);
         mapper.readerForUpdating(storyPresentationFrames).readValue(json);
-        mapper.putStoryToJson(storyPresentation, bankId, platform);
+        mapper.putStoryToJson(storyPresentationList, bankId, platform);
     }
 
     /**
@@ -467,6 +469,8 @@ public class JsonProcessorService implements FileSaverService {
     public void restoreStory(Long id) throws IOException {
         final var storyPresentation = storyPresentationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find story with id = %d", id)));
+        if (storyPresentation.getApproved().equals(StoryPresentation.Status.APPROVED)) throw new IllegalArgumentException("Story is already restored");
+
         storyPresentation.setApproved(StoryPresentation.Status.APPROVED);
         storyPresentationRepository.save(storyPresentation);
         mapper.putStoryToJson(storyPresentation, storyPresentation.getBankId(), storyPresentation.getPlatform());

@@ -68,24 +68,6 @@ public class StoriesController {
         storiesService.saveFiles(storiesRequestDto, previewImage, images);
     }
 
-    @PostMapping(path = "/admin/approveStory")
-    @Operation(summary = "Добавление истории на сервер.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "История добавлена на сервер.")
-    })
-    @ResponseStatus(HttpStatus.CREATED)
-    public void approveStory(
-            @RequestParam(value = "bank")
-            String bankId,
-
-            @RequestParam(value = "platform")
-            String platform,
-
-            @RequestParam(value = "id")
-            Long id) throws IOException {
-        storiesService.approvedStory(bankId, platform, id);
-    }
-
     @PostMapping(path = "/add/frame", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Карточка добавлена на сервер.")
@@ -142,28 +124,6 @@ public class StoriesController {
 
         return storiesService.getFilePlatformJson(bankId, platform);
     }
-
-    @GetMapping("/bank/info/getUnApprovedStories")
-    @Operation(summary = "Чтение истории с сервера.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "История прочтена с сервера."),
-            @ApiResponse(responseCode = "400", description = "Неправильные параметры")
-    })
-    @ResponseStatus(HttpStatus.OK)
-    public List<StoryPresentation> getUnApprovedStories() throws IOException {
-        return storiesService.getUnApprovedStories();
-    }
-
-    @GetMapping("/bank/info/getDeletedStories")
-    @Operation(summary = "Чтение истории с сервера.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "История прочтена с сервера."),
-            @ApiResponse(responseCode = "400", description = "Неправильные параметры")
-    })
-    @ResponseStatus(HttpStatus.OK)
-    public List<StoryPresentation> getDeletedStories() throws IOException {
-        return storiesService.getDeletedStories();
-    }
     /**
      * Метод, который обрабатывает DELETE-запрос на удаление историй.
      *
@@ -200,37 +160,6 @@ public class StoriesController {
             Long id) throws Throwable {
 
         return storiesService.deleteService(bankId, platform, id);
-    }
-
-    @DeleteMapping("/bank/info/admin/deletefromDb")
-    @Operation(summary = "Удаление истории")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "202", description = "История успешно удалена"),
-            @ApiResponse(responseCode = "404", description = "История не найдена в JSON файле"),
-            @ApiResponse(responseCode = "500", description = "Ошибка на стороне сервера(нет JSON или нет директории с файлами)")
-    })
-    public ResponseEntity<?> deleteStoryFromDb(
-            @RequestParam(name = "bankId")
-            @Parameter(description = "Название банка",
-                    schema = @Schema(type = "string", format = "string"),
-                    example = "tkbbank")
-            @WhiteListValid(message = "bankId must match the allowed")
-            String bankId,
-
-            @Parameter(description = "Тип платформы",
-                    schema = @Schema(type = "string", format = "string"),
-                    example = "ALL PLATFORMS")
-            @RequestParam(name = "platform", defaultValue="ALL PLATFORMS")
-            @PlatformValid
-            String platform,
-
-            @Parameter(description = "id истории",
-                    schema = @Schema(type = "string", format = "string"),
-                    example = "0")
-            @RequestParam(name = "id")
-            Long id) throws Throwable {
-
-        return storiesService.deleteStoriesFromDb(bankId, platform, id);
     }
 
     /**
@@ -361,16 +290,6 @@ public class StoriesController {
                 id,
                 frameId,
                 file);
-    }
-
-    @PatchMapping("/bank/info/restore/story")
-    public void restoreStory(@Parameter(description = "id истории",
-                                         schema = @Schema(type = "string", format = "string"),
-                                         example = "0")
-                                 @RequestParam(name = "id")
-                                 Long id
-    ) throws IOException {
-        storiesService.restoreStory(id);
     }
 
     @PatchMapping("/bank/info/change/swap/frame")

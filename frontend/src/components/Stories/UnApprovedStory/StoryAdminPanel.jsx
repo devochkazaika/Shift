@@ -17,7 +17,18 @@ const StoryAdminPanel = ({ storyArray, storyDeleted}) => {
     setStoryDeleted(storyDeleted);
   }, [storyArray, storyDeleted]);
   //Для удаления истории
-  const handleOnSubmit = async (story) => {
+  const deleteFromDb = async (story) => {
+    try {
+      const success = await deleteStoryFromDb(story, story.platform);
+      if (success) {
+        setStoryDeleted(prevStories => prevStories.filter(item => item.id !== story.id));
+      }
+    }
+    catch (error) {
+      console.error('Ошибка при удалении истории', error);
+    }
+  };
+  const deleteFromUnApproved = async (story) => {
     try {
       const success = await deleteStoryFromDb(story, story.platform);
       if (success) {
@@ -29,10 +40,18 @@ const StoryAdminPanel = ({ storyArray, storyDeleted}) => {
     }
   };
   const approved = async (bankId, platform, storyId) => {
-    api.post(`/stories/admin/approveStory?bank=${bankId}&platform=${platform}&id=${storyId.id}`);
+    try {
+      const success = api.post(`/stories/admin/approveStory?bank=${bankId}&platform=${platform}&id=${storyId.id}`);
+      if (success) {
+        setStories(prevStories => prevStories.filter(item => item.id !== storyId.id));
+      }
+    }
+    catch (error) {
+      console.error('Ошибка при удалении истории', error);
+    }
   }
   const restoreStory = async (storyId) => {
-    api.patch(`/stories/bank/info/restore/story?id=${storyId.id}`);
+    api.patch(`/stories/admin/bank/info/restore/story?id=${storyId.id}`);
   }
 
     return(
@@ -58,7 +77,7 @@ const StoryAdminPanel = ({ storyArray, storyDeleted}) => {
                               text="Удалить"
                               type="button"
                               color="red"
-                              handleOnClick={() => handleOnSubmit(story, story.platform)}
+                              handleOnClick={() => deleteFromUnApproved(story, story.platform)}
                               icon={<ArrowIcon width="12px" height="12px" />}
                             />
                       </div>
@@ -92,7 +111,7 @@ const StoryAdminPanel = ({ storyArray, storyDeleted}) => {
                               text="Удалить из БД"
                               type="button"
                               color="red"
-                              handleOnClick={() => handleOnSubmit(story, story.platform)}
+                              handleOnClick={() => deleteFromDb(story, story.platform)}
                               icon={<ArrowIcon width="12px" height="12px" />}
                             />
                       </div>
