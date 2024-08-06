@@ -25,7 +25,7 @@ const StoryAdminPanel = ({ storyArray, storyDeleted}) => {
       }
     }
     catch (error) {
-      console.error('Ошибка при удалении истории', error);
+      console.error('Ошибка при удалении истории из базы данных', error);
     }
   };
   const deleteFromUnApproved = async (story) => {
@@ -36,7 +36,7 @@ const StoryAdminPanel = ({ storyArray, storyDeleted}) => {
       }
     }
     catch (error) {
-      console.error('Ошибка при удалении истории', error);
+      console.error('Ошибка при удалении истории из непринятых', error);
     }
   };
   const approved = async (bankId, platform, storyId) => {
@@ -47,11 +47,19 @@ const StoryAdminPanel = ({ storyArray, storyDeleted}) => {
       }
     }
     catch (error) {
-      console.error('Ошибка при удалении истории', error);
+      console.error('Ошибка при одобрении истории', error);
     }
   }
   const restoreStory = async (storyId) => {
-    api.patch(`/stories/admin/bank/info/restore/story?id=${storyId.id}`);
+    try {
+      const success =api.patch(`/stories/admin/bank/info/restore/story?id=${storyId.id}`);
+      if (success) {
+        setStoryDeleted(prevStories => prevStories.filter(item => item.id !== storyId.id));
+      }
+    }
+    catch (error) {
+      console.error('Ошибка при восстановлении истории', error);
+    }
   }
 
     return(
