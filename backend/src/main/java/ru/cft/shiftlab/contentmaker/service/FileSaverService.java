@@ -37,15 +37,42 @@ public interface FileSaverService {
         IOException e = new IOException();
         throw new RuntimeException(e);
     }
+
+    /**
+     * Метод, возвращающий список всех историй банка и платформы
+     *
+     * @param bankId Имя банка
+     * @param platform Тип платформы
+     * @return List of stories
+     * @throws IOException
+     */
     HttpEntity<List<StoryPresentation>> getFilePlatformJson(String bankId, String platform) throws IOException;
 
+    /**
+     * Метод, возвращающий все непринятые истории
+     *
+     * @return List of unApproved stories
+     */
     List<StoryPresentation> getUnApprovedStories();
+
+    /**
+     * Метод, возвращающий все удаленные из JSON истории
+     *
+     * @return Get Deleted stories
+     */
     List<StoryPresentation> getDeletedStories();
 
+    /**
+     * Метод, восстанавливающий удаленную историю из бд
+     *
+     * @param id Id истории
+     * @throws IOException
+     */
     void restoreStory(Long id) throws IOException;
 
     /**
      * Изменение общих параметров истории, а именно previewTitle, previewTitleColor, previewGradient
+     *
      * @param storiesRequestDto StoryDto + platform + bankID
      * @param bankId Банк
      * @param platform Платформа
@@ -56,6 +83,7 @@ public interface FileSaverService {
 
     /**
      * Метод для изменения карточки в историях
+     *
      * @param storyFramesRequestDto StoryFramesDto
      * @param bankId Банк
      * @param platform Платформа
@@ -79,12 +107,50 @@ public interface FileSaverService {
      */
     ResponseEntity<?> deleteStoryFrame(String bankId, String platform, String id, String frameId) throws Throwable;
 
+    /**
+     * Метод для добавления карточки к истории
+     *
+     * @param storyFramesDto Dto новой карточки
+     * @param file Картинка новой карточки
+     * @param bankId Имя банка
+     * @param platform Тип платформы (ALL PLATFORMS | ANDROID | IOS | WEB)
+     * @param id Id истории
+     * @return Новую карточку
+     * @throws IOException
+     */
     StoryPresentationFrames addFrame(String storyFramesDto, MultipartFile file,
                                      String bankId, String platform, Long id) throws IOException;
 
+
+    /**
+     * Метод для перестановки карточек
+     *
+     * @param id Id истории
+     * @param bankId Имя банка
+     * @param platform Платформа
+     * @param firstUUID UUID первой карточки
+     * @param secondUUID UUID второй карточки
+     * @throws IOException
+     */
     void swapFrames(Long id, String bankId, String platform, String firstUUID, String secondUUID) throws IOException;
 
+    /**
+     * Метод для одобрения истории новой истории
+     *
+     * @param bankId Имя банка
+     * @param platform Платформа
+     * @param id Id истории
+     * @throws IOException
+     */
     void approvedStory(String bankId, String platform, Long id) throws IOException;
 
+    /**
+     * Метод для удаления навсегда истории. Удаления из БД
+     * @param bankId Имя банка
+     * @param platform Платформа
+     * @param id Id истории
+     * @return
+     * @throws Throwable
+     */
     ResponseEntity<?> deleteStoriesFromDb(String bankId, String platform, Long id) throws Throwable;
 }

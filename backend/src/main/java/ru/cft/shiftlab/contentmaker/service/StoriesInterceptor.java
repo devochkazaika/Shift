@@ -3,14 +3,16 @@ package ru.cft.shiftlab.contentmaker.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 import ru.cft.shiftlab.contentmaker.entity.History;
 import ru.cft.shiftlab.contentmaker.repository.HistoryRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -23,28 +25,11 @@ public class StoriesInterceptor implements HandlerInterceptor {
     HistoryRepository historyRepository;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String requestURI = request.getRequestURI();
-        if (requestURI.startsWith("/stories")) {
-            System.out.println("Request URI: " + requestURI);
-            System.out.println("Request Method: " + response);
-        }
-        return true;
-    }
-
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-                           ModelAndView modelAndView) throws Exception {
-    }
-
-    @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         String requestURI = request.getRequestURI();
-        request.getParameter("id");
         History history = new History();
         history.setTime(LocalDate.now());
         Set<String> path = Arrays.stream(requestURI.split("/")).collect(Collectors.toSet());
-        System.out.println(path);
         if (path.contains("get")) return;
         if (path.contains("stories")){
             history.setComponentType(History.ComponentType.STORIES);
@@ -59,6 +44,12 @@ public class StoriesInterceptor implements HandlerInterceptor {
                 history.setOperationType(History.OperationType.Update);
                 history.setComponentId(Long.parseLong(request.getParameter("id")));
             }
+        }
+        if (request.getParameter("bankId") != null){
+            history.setBankId(request.getParameter("bankId"));
+        }
+        if (request.getParameter("platform") != null){
+            history.setBankId(request.getParameter("platform"));
         }
         history.setStatus(statusToBd.get(response.getStatus() / 100));
         history.setUserName(request.getRemoteUser());

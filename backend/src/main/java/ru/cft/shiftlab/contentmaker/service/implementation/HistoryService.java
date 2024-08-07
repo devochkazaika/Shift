@@ -21,4 +21,9 @@ public class HistoryService implements HistoryServiceStories {
     public List<History> getBankAndPlatformHistory(String bankId, String platform) {
         return historyRepository.getHistoryByBankAndPlatform(bankId, platform);
     }
+
+    @Override
+    public void deleteHistoryByStoryId(Long id) {
+        historyRepository.deleteByStoryId(id);
+    }
 }

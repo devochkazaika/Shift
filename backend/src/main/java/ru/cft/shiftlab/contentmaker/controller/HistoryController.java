@@ -25,4 +25,5 @@ public class HistoryController {
     ) throws IOException {
             return  historyService.getStoryHistory(id);
     }
+
 }

@@ -99,8 +99,16 @@ public class StoriesController {
         return storiesService.addFrame(frameRequestDto, image, bankId, platform, id);
     }
 
+    /**
+     * Get запрос для вывода JSON записей всех историй конкретного банка и платформы
+     *
+     * @param bankId Имя банка
+     * @param platform Тип платформы (ALL PLATFORMS | ANDROID | IOS | WEB)
+     * @return list of the JSON Objects
+     * @throws IOException
+     */
     @GetMapping("/get/all")
-    @Operation(summary = "Чтение истории с сервера.")
+    @Operation(summary = "Чтение историй с сервера.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "История прочтена с сервера."),
             @ApiResponse(responseCode = "400", description = "Неправильные параметры")
@@ -163,11 +171,12 @@ public class StoriesController {
     }
 
     /**
-     * Запрос, предназначенный для удаления истории
-     * @param bankId
-     * @param platform
-     * @param storyId
-     * @param frameId
+     * Delete запрос для удаления истории
+     *
+     * @param bankId Имя банка
+     * @param platform Тип платформы (ALL PLATFORMS | ANDROID | IOS | WEB)
+     * @param storyId Id истории
+     * @param frameId UUID карточки истории
      * @throws Throwable
      */
     @DeleteMapping("/delete/frame")
@@ -209,11 +218,12 @@ public class StoriesController {
     }
 
     /**
-     * Patch-Запрос, предназначенный для изменения истории
-     * @param storiesRequestDto
-     * @param bankId
-     * @param platform
-     * @param id
+     * Patch запрос для изменения истории
+     *
+     * @param storiesRequestDto Dto с измененными параметрами истории
+     * @param bankId Имя банка
+     * @param platform Тип платформы (ALL PLATFORMS | ANDROID | IOS | WEB)
+     * @param id Id истории
      * @throws IOException
      */
     @PatchMapping("/change/story")
@@ -244,12 +254,13 @@ public class StoriesController {
     }
 
     /**
-     * Patch-Запрос, предназначенный для изменения карточки внутри истории
-     * @param storiesRequestDto
-     * @param bankId
-     * @param platform
-     * @param id
-     * @param frameId
+     * Patch запрос для изменения карточки внутри истории
+     *
+     * @param storiesRequestDto Dto измененной карточки
+     * @param bankId Имя банка
+     * @param platform Тип платформы (ALL PLATFORMS | ANDROID | IOS | WEB)
+     * @param id Id истории
+     * @param frameId Id карточки
      * @throws IOException
      */
     @PatchMapping("/change/frame")
@@ -292,6 +303,15 @@ public class StoriesController {
                 file);
     }
 
+    /**
+     * Запрос для перестановки 2 карточек в истории
+     * @param id Id истории
+     * @param bankId Имя банка
+     * @param platform Тип платформы (ALL PLATFORMS | ANDROID | IOS | WEB)
+     * @param first UUID первой карточки
+     * @param second UUID второй карточки
+     * @throws IOException
+     */
     @PatchMapping("/change/frame/swap")
     public void swapFrames(
             @RequestParam(name = "id", defaultValue="0")

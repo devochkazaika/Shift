@@ -38,6 +38,9 @@ public class StoryPresentation {
     @Column(name = "bank_id")
     private String bankId;
 
+    /**
+     * Платформа (ANDROID | WEB | IOS | ALL PLATFORMS)
+     */
     @Column(name = "platform")
     private String platform = null;
 
@@ -72,6 +75,9 @@ public class StoryPresentation {
     @Column(name = "preview_gradient")
     private String previewGradient;
 
+    /**
+     * Статус истории (APPROVED | NOTAPPROVED | DELETED)
+     */
     @JsonIgnore
     @Column(name = "approved")
     @Enumerated(EnumType.STRING)

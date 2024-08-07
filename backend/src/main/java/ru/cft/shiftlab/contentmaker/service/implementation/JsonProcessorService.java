@@ -56,6 +56,7 @@ public class JsonProcessorService implements FileSaverService {
     private final DirProcess dirProcess;
     private final StoryPresentationRepository storyPresentationRepository;
     private final StoryPresentationFramesRepository storyPresentationFramesRepository;
+    private final HistoryService historyService;
 
     public HttpEntity<List<StoryPresentation>> getFilePlatformJson(String bankId, String platform) throws IOException {
         return new HttpEntity<List<StoryPresentation>>(mapper.getStoryList(bankId, platform));
@@ -309,7 +310,9 @@ public class JsonProcessorService implements FileSaverService {
         return new ResponseEntity<>(HttpStatus.valueOf(202));
     }
 
+    @Transactional
     public ResponseEntity<?> deleteStoriesFromDb(String bankId, String platform, Long id) throws Throwable{
+        historyService.deleteHistoryByStoryId(id);
         storyPresentationRepository.deleteById(id);
         deleteFilesStories(bankId, platform, id);
         return new ResponseEntity<>(HttpStatus.valueOf(202));

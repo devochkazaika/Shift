@@ -8,5 +8,6 @@ public interface HistoryServiceStories {
     List<History> getStoryHistory(Long id);
     List<History> getBankAndPlatformHistory(String bankId, String platform);
 
+    void deleteHistoryByStoryId(Long id);
 //    List<History> getHeadHistory();
 }
