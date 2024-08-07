@@ -1,9 +1,6 @@
 package ru.cft.shiftlab.contentmaker.entity;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
@@ -14,7 +11,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "history")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Builder
+@NoArgsConstructor
 public class History {
 
     public enum Status{
@@ -52,6 +49,12 @@ public class History {
     @Column(name="status")
     @Enumerated(EnumType.STRING)
     Status status;
+
+    @Column(name="bank")
+    String bankId;
+
+    @Column(name="platform")
+    String platform;
 
     @Column(name="operation_type")
     @Enumerated(EnumType.STRING)

@@ -33,7 +33,7 @@ const warningToast = (toastView, error) => {
 
 export const getStories = async (bankId, platform) => {
   try {
-    const response = await api.get('/stories/bank/info/getJson/', {
+    const response = await api.get('/stories/get/all', {
       params: { bankId, platform },
       responseType: 'json',
     });
@@ -77,7 +77,7 @@ export const uploadStories = async (jsonPayload, previewImage, cardImages) => {
       form.append("cardImages", image);
   });
   try {
-    const response = await api.post("/stories/add", form, {
+    const response = await api.post("/stories/add/story", form, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     updateToast(toastView, response);
@@ -104,7 +104,7 @@ export const deleteStory = async (story, platform) => {
     return false;
   }
   try {
-    const response = await api.delete(`/stories/bank/info/delete?bankId=${story.bankId}&platform=${platform}&id=${story.id}`);
+    const response = await api.delete(`/stories/delete/story?bankId=${story.bankId}&platform=${platform}&id=${story.id}`);
     updateToast(toastView, response);
     return true;
   } catch (error) {
@@ -129,7 +129,7 @@ export const deleteStoryFromDb = async (story, platform) => {
 export const deleteFrame = async (story, frame, platform) => {
   const toastView = createToast(defaultToastMessages.uploadingData);
   try {
-    const response = await api.delete(`/stories/bank/info/delete/frame?bankId=${story.bankId}&platform=${platform}&storyId=${story.id}&frameId=${frame.id}`);
+    const response = await api.delete(`/stories/delete/frame?bankId=${story.bankId}&platform=${platform}&storyId=${story.id}&frameId=${frame.id}`);
     updateToast(toastView, response);
     return true;
   } catch (error) {
@@ -146,7 +146,7 @@ export const updateStory = async (story, storyIndex, jsonStory, platform) => {
   form.append("bankId", story.bankId);
   form.append("image", jsonStory[`previewUrl_${storyIndex}`]);
   try {
-    const response = await api.patch(`/stories/bank/info/change`, form, {
+    const response = await api.patch(`/stories/change/story`, form, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     updateToast(toastView, response);
@@ -166,7 +166,7 @@ export const updateFrame = async (story, platform, frame, storyIndex, frameId, f
   form.append("frameId", frameId)
   form.append("image", frame[`pictureFrame_${storyIndex}_${frameIndex}`])
   try {
-    const response = await api.patch(`/stories/bank/info/change/frame`, form, {
+    const response = await api.patch(`/stories/change/frame`, form, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     updateToast(toastView, response);
@@ -217,7 +217,7 @@ export const updateFrameOrder = async (story, platform, firstId, secondId) => {
   form.append("second", secondId);
   form.append("first", firstId);
   try {
-    const response = await api.patch(`/stories/bank/info/change/swap/frame`, form);
+    const response = await api.patch(`/stories/change/frame/swap`, form);
     toast.update(toastView, {
       ...defaultUpdateToastOptions,
       render: response.message,

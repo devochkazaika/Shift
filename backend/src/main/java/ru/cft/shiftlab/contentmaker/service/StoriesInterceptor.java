@@ -10,8 +10,8 @@ import ru.cft.shiftlab.contentmaker.repository.HistoryRepository;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class StoriesInterceptor implements HandlerInterceptor {
@@ -40,12 +40,28 @@ public class StoriesInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         String requestURI = request.getRequestURI();
-        if (requestURI.startsWith("/stories")){
-            historyRepository.save(History.builder()
-                            .status(statusToBd.get(response.getStatus()))
-                            .time(LocalDate.now())
-                            .userName(request.getRemoteUser())
-                    .build());
+        request.getParameter("id");
+        History history = new History();
+        history.setTime(LocalDate.now());
+        Set<String> path = Arrays.stream(requestURI.split("/")).collect(Collectors.toSet());
+        System.out.println(path);
+        if (path.contains("get")) return;
+        if (path.contains("stories")){
+            history.setComponentType(History.ComponentType.STORIES);
+            if (path.contains("add")){
+                history.setOperationType(History.OperationType.Create);
+            }
+            else if (path.contains("delete")){
+                history.setOperationType(History.OperationType.Delete);
+                history.setComponentId(Long.parseLong(request.getParameter("id")));
+            }
+            else if (path.contains("change")){
+                history.setOperationType(History.OperationType.Update);
+                history.setComponentId(Long.parseLong(request.getParameter("id")));
+            }
         }
+        history.setStatus(statusToBd.get(response.getStatus() / 100));
+        history.setUserName(request.getRemoteUser());
+        historyRepository.save(history);
     }
 }
