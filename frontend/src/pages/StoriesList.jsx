@@ -20,8 +20,12 @@ const StoriesList = () => {
   const [bankId, setBankId] = useState("absolutbank");
   const [platform, setPlatform] = useState("ALL PLATFORMS");
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
 
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
   const fetchData = async (bankId, platform) => {
     try {
       const response = await axios.get(
@@ -49,7 +53,7 @@ const StoriesList = () => {
           setStoriesArray([]);
         } else {
           setStoriesArray(data);
-          setCurrentPage(1)
+          setCurrentPage(1);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -58,15 +62,18 @@ const StoriesList = () => {
 
     fetchDataAsync();
   }, [bankId, platform]);
-  
-  const itemsPerPage = 2;
-  const totalPages = Math.ceil(storiesArray.length / itemsPerPage);
+
+  const totalItems = storiesArray.length;
   const startIndex = (currentPage - 1) * itemsPerPage;
 
   const currentItems = storiesArray.slice(
     startIndex,
     startIndex + itemsPerPage,
   );
+  const handleItemsPerPageChange = (newItemsPerPage) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); 
+  };
   return (
     <>
       <h1>Stories</h1>
@@ -98,8 +105,10 @@ const StoriesList = () => {
       )}
       <Pagination
         currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
+        totalItems={totalItems}
+        itemsPerPage={itemsPerPage}
+        onPageChange={handlePageChange}
+        onItemsPerPageChange={handleItemsPerPageChange}
       />
       {loading && <Loader />}
     </>
