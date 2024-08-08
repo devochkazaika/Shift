@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useState, useEffect, useRef } from "react";
 import StoryFrame from "./StoryFrame";
 import { FieldArray, Form, Formik } from "formik";

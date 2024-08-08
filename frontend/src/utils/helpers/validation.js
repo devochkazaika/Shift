@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import * as Yup from "yup";
 
 import {
@@ -217,10 +215,10 @@ export const storyPanelValidationSchema = (storyIndex) =>
         checkFileSides,
       ),
   });
+
 export const storyFrameValidationSchema = (storyIndex, frameIndex) =>
   Yup.object({
     title: Yup.string().required("Поле обязательно"),
-
     [`pictureFrame_${storyIndex}_${frameIndex}`]: Yup.mixed()
       .required("Поле обязательно")
       .test("fileFormat", "Неподходящий тип изображения", checkFileFormat)

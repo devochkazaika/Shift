@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useState, useEffect } from "react";
 import { FieldArray, Form, Formik } from "formik";
 import FormField from "../../FormField";
@@ -45,7 +44,6 @@ const StoryFrame = ({
           buttonUrl: frame.buttonUrl,
           [`pictureFrame_${storyIndex}_${frameIndex}`]: initialImage,
         }}
-        validator={() => ({})}
         onSubmit={(values) => handleOnSubmit(story, platform, values, frame.id)}
       >
         {({ values, handleChange }) => (
