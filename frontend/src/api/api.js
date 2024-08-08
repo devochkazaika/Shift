@@ -26,6 +26,7 @@ api.interceptors.response.use(
             try {
                 await refreshToken();
                 const response = await api.request(originalRequest);
+                console.log(response);
                 return response;
             }
             catch (_error) {
