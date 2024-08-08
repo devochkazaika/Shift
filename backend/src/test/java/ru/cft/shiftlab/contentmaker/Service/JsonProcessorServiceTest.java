@@ -14,9 +14,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+<<<<<<< HEAD
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+=======
+import org.mockito.MockitoAnnotations;
+>>>>>>> 38f9df2d788a4de6d0cc840dd017cee1357f7f65
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.mock.web.MockMultipartFile;
@@ -27,10 +31,13 @@ import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryPatchDto;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
-import ru.cft.shiftlab.contentmaker.repository.StoryPresentationRepository;
+<<<<<<< HEAD
 import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 import ru.cft.shiftlab.contentmaker.util.DirProcess;
 import ru.cft.shiftlab.contentmaker.util.Image.ImageContainer;
+=======
+import ru.cft.shiftlab.contentmaker.repository.BannerRepository;
+>>>>>>> 38f9df2d788a4de6d0cc840dd017cee1357f7f65
 import ru.cft.shiftlab.contentmaker.util.Image.ImageNameGenerator;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
 import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
@@ -57,6 +64,7 @@ public class JsonProcessorServiceTest {
     @Mock
     private MultipartFileToImageConverter multipartFileToImageConverter;
 
+<<<<<<< HEAD
     @Mock
     private DtoToEntityConverter dtoToEntityConverter;
 
@@ -84,6 +92,30 @@ public class JsonProcessorServiceTest {
             multipartFileToImageConverter,
             dtoToEntityConverter,
             dirProcess);
+=======
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private DtoToEntityConverter dtoToEntityConverter;
+    @Mock
+    private BannerRepository bannerRepository;
+    @Mock
+    private BankRepository bankRepository;
+
+    private JsonProcessorService service;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        dtoToEntityConverter = new DtoToEntityConverter(bannerRepository, bankRepository, new ModelMapper());
+        service = new JsonProcessorService(
+                multipartFileToImageConverter,
+                dtoToEntityConverter,
+                dirProcess);
+    }
+    private final ImageNameGenerator imageNameGenerator = new ImageNameGenerator();
+    private final DirProcess dirProcess = new DirProcess();
+
+>>>>>>> 38f9df2d788a4de6d0cc840dd017cee1357f7f65
 
 
     @Test
@@ -122,8 +154,11 @@ public class JsonProcessorServiceTest {
         var arrImg = new MultipartFile[1];
         arrImg[0] = multipartFile;
 
+<<<<<<< HEAD
         DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper(), new MultipartFileToImageConverter(new ImageNameGenerator()));
 
+=======
+>>>>>>> 38f9df2d788a4de6d0cc840dd017cee1357f7f65
         String picturesDirectory = FILES_SAVE_DIRECTORY
                 + storiesRequestDto.getBankId() + "/" + storiesRequestDto.getPlatformType();
         String fileName = "story_tkbbank_iOS.json";
@@ -143,7 +178,7 @@ public class JsonProcessorServiceTest {
         File jsonFile = Paths.get(jsonDirectory + fileName).toFile();
 
         int countFiles = getCountFilesInDir(storiesRequestDto);
-        jsonProcessorService.saveFiles("\"" + StringEscapeUtils.escapeJson(objectMapper.writeValueAsString(storiesRequestDto)) + "\"",
+        service.saveFiles("\"" + StringEscapeUtils.escapeJson(objectMapper.writeValueAsString(storiesRequestDto)) + "\"",
                 multipartFile,
                 arrImg
         );
@@ -221,7 +256,10 @@ public class JsonProcessorServiceTest {
         var arrImg = new MultipartFile[1];
         arrImg[0] = multipartFile;
 
+<<<<<<< HEAD
         DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper(), new MultipartFileToImageConverter(new ImageNameGenerator()));
+=======
+>>>>>>> 38f9df2d788a4de6d0cc840dd017cee1357f7f65
 
         String picturesDirectory = FILES_SAVE_DIRECTORY
                 + storiesRequestDto.getBankId() + "/" + storiesRequestDto.getPlatformType();
@@ -242,7 +280,7 @@ public class JsonProcessorServiceTest {
         File jsonFile = Paths.get(jsonDirectory + fileName).toFile();
 
         int countFiles = getCountFilesInDir(storiesRequestDto);
-        jsonProcessorService.saveFiles("\"" + StringEscapeUtils.escapeJson(objectMapper.writeValueAsString(storiesRequestDto)) + "\"",
+        service.saveFiles("\"" + StringEscapeUtils.escapeJson(objectMapper.writeValueAsString(storiesRequestDto)) + "\"",
                 multipartFile,
                 arrImg
         );
@@ -261,6 +299,8 @@ public class JsonProcessorServiceTest {
         for(StoryPresentationFrames card : storyFromJson.getStoryPresentationFrames()){
             card.setPictureUrl(null);
         }
+        FileUtils.deleteQuietly(jsonFile);
+        FileUtils.deleteDirectory(new File(picturesDirectory));
     }
 
     @Test
@@ -382,6 +422,13 @@ public class JsonProcessorServiceTest {
         return files.length;
     }
 
+<<<<<<< HEAD
+=======
+
+    /**
+     * Удаление stories
+     */
+>>>>>>> 38f9df2d788a4de6d0cc840dd017cee1357f7f65
     @Test
     void deleteFilesTest() throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException {
         Method method = JsonProcessorService.class.getDeclaredMethod("deleteFilesStories", String.class, String.class, String.class);
@@ -408,7 +455,13 @@ public class JsonProcessorServiceTest {
         MultipartFile multipartFile = new MockMultipartFile("fileItem",
                 img.getName(), "image/png", IOUtils.toByteArray(input));
 
+<<<<<<< HEAD
         method.invoke(jsonProcessorService, bankId, platform, "0");
+=======
+
+
+        method.invoke(service, bankId, platform, "0");
+>>>>>>> 38f9df2d788a4de6d0cc840dd017cee1357f7f65
         File file = new File(saveDirectory);
         File[] files = file.listFiles();
         Assertions.assertEquals(0, files.length);
@@ -417,11 +470,18 @@ public class JsonProcessorServiceTest {
     void deleteJsonTest() throws NoSuchMethodException, IOException, InvocationTargetException, IllegalAccessException {
         Method method = JsonProcessorService.class.getDeclaredMethod("deleteJsonStories", String.class, String.class, String.class);
         File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_tkbbank_web.json");
+<<<<<<< HEAD
         copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_test_web.json");
         File json = new File(FILES_SAVE_DIRECTORY + "/story_test_web.json");
 
         method.setAccessible(true);
         method.invoke(jsonProcessorService, "test", "WEB", "0");
+=======
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_tkbbank_web.json");
+        File json = new File(FILES_SAVE_DIRECTORY+"/story_tkbbank_web.json");
+
+        method.invoke(service, "tkbbank", "WEB", "0");
+>>>>>>> 38f9df2d788a4de6d0cc840dd017cee1357f7f65
 
         StringBuilder jsonStr = new StringBuilder();
         Files.readAllLines(json.toPath()).forEach(jsonStr::append);
@@ -446,6 +506,7 @@ public class JsonProcessorServiceTest {
             e.printStackTrace();
         }
     }
+<<<<<<< HEAD
 
     @Test
     public void changeStory_method_test() throws Exception{
@@ -629,4 +690,6 @@ public class JsonProcessorServiceTest {
 
     }
 
+=======
+>>>>>>> 38f9df2d788a4de6d0cc840dd017cee1357f7f65
 }

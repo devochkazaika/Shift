@@ -15,6 +15,10 @@ import java.util.stream.Stream;
 @Component
 @RequiredArgsConstructor
 public class FileNameCreator {
+    public enum PictureTypes{
+        PICTURE,
+        ICON
+    }
 
     /**
      * Метод, который генерирует название JSON файла.

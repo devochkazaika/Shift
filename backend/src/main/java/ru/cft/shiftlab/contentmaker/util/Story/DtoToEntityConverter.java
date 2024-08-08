@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import ru.cft.shiftlab.contentmaker.dto.BannerDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
+import ru.cft.shiftlab.contentmaker.entity.Banner;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
+import ru.cft.shiftlab.contentmaker.repository.BannerRepository;
 import ru.cft.shiftlab.contentmaker.repository.StoryPresentationFramesRepository;
 import ru.cft.shiftlab.contentmaker.repository.StoryPresentationRepository;
 import ru.cft.shiftlab.contentmaker.util.Image.ImageContainer;
@@ -26,6 +29,7 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.MAX_COUNT_FRAME;
 @RequiredArgsConstructor
 public class DtoToEntityConverter {
 
+    private final BannerRepository bannerRepository;
     private final ModelMapper modelMapper;
     private final MultipartFileToImageConverter multipartFileToImageConverter;
     private final StoryPresentationRepository storyPresentationRepository;
@@ -99,6 +103,16 @@ public class DtoToEntityConverter {
     public StoryPresentationFrames fromStoryFramesDtoToStoryPresentationFrames(StoryFramesDto storyFramesDto) {
         StoryPresentationFrames storyPresentationFrames = modelMapper.map(storyFramesDto, StoryPresentationFrames.class);
         return storyPresentationFramesRepository.save(storyPresentationFrames);
+    }
+
+    public Banner fromBannerDtoToBanner(BannerDto bannerDto,
+                                        String pictureUrl,
+                                        String iconUrl){
+        Banner banner = modelMapper.map(bannerDto, Banner.class);
+        banner.setBank(bannerDto.getBankId());
+        banner.setPicture(pictureUrl);
+        banner.setIcon(iconUrl);
+        return banner;
     }
 
 }

@@ -38,6 +38,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> IllegalArgumentHandler(IllegalArgumentException ex) {
         return new ResponseEntity<>(ex, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<?> ResourceNotFoundArgumentHandler(ResourceNotFoundException ex) {
+        return new ResponseEntity<>(ex, HttpStatus.NOT_FOUND);
+    }
     @ExceptionHandler(JsonException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<?> JsonHandler(JsonException ex) {

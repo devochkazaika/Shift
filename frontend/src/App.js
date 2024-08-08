@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './styles/globals.scss';
 import Sidebar from './components/Sidebar';
 import Stories from './pages/Stories';
-import Banners from './pages/Banners';
+// import Banners from './pages/Banners';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -40,14 +40,14 @@ function App() {
                     </PrivateRoute>
                   } 
                 />
-                <Route 
+                {/* <Route 
                   path="/banners" 
                   element={
                     <PrivateRoute>
                       <Banners />
                     </PrivateRoute>
                   } 
-                />
+                /> */}
                 <Route
                   path='/unApproved'
                   element={<AdminRoute>

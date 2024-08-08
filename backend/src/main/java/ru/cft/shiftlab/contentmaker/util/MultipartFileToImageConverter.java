@@ -67,4 +67,5 @@ public class MultipartFileToImageConverter {
 
         return (picturesSaveDirectory + previewPictureName).split("static")[1];
     }
+
 }

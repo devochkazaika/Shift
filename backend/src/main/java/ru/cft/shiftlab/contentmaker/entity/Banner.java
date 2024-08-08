@@ -1,9 +1,7 @@
 package ru.cft.shiftlab.contentmaker.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 
@@ -14,92 +12,95 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Builder
 @Setter
-@Table(name = "VW_RPT_BANNER")
+@ToString
+@Table(name = "test_banner")
 public class Banner {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
     /**
      * Код баннера.
      */
-    @Column(name = "C_CODE")
+    @Column(name = "code")
     private String code;
 
     /**
      * Название.
      */
-    @Column(name = "C_NAME")
+    @Column(name = "name")
+    @Length(max = 100)
     private String name;
 
     /**
      * Название картинки.
      */
-    @Column(name = "C_PICTURE")
+    @Column(name = "picture")
     private String picture;
 
     /**
      * Банк владельца баннера.
      */
-    @ManyToOne
-    @JoinColumn(name = "C_BANK")
-    private Bank bank;
+    @Column(name = "bank_id")
+    private String bank;
 
     /**
      * Основной баннер.
      */
     @ManyToOne
-    @JoinColumn(name = "C_MAIN_BANNER")
-    private MainBanner mainBanner;
+    @JoinColumn(name = "main_banner")
+    private Banner mainBanner;
 
     /**
      * Название иконки.
      */
-    @Column(name = "C_ICON")
+    @Column(name = "icon")
     private String icon;
 
     /**
      * Текст баннера.
      */
-    @Column(name = "C_TEXT")
+    @Column(name = "text")
+    @Length(max = 1900)
     private String text;
 
     /**
      * Ссылка для перехода при клике на баннер.
      */
-    @Column(name = "C_URL")
+    @Column(name = "url")
     private String url;
 
     /**
      * Текст ссылки.
      */
-    @Column(name = "C_URL_TEXT")
-    private String urlText;
+    @Column(name = "url_text")
+    private String textUrl;
 
     /**
      * Приоритет отображения баннера.
      */
-    @Column(name = "C_PRIORITY")
+    @Column(name = "priority")
     private Integer priority;
 
     /**
      * Код цвета кнопки.
      */
-    @Column(name = "C_COLOR")
+    @Column(name = "color")
     private String color;
 
     /**
      * Признак Доступен всем.
      */
-    @Column(name = "C_AVAILABLE_TO_ALL")
-    private boolean availableForAll;
+    @Column(name = "available")
+    private Boolean availableForAll;
 
     /**
      * Тип платформы для отображения Банера.
      */
-    @Column(name = "C_PLATFORM")
+    @Column(name = "platform")
     private String platformType;
 }

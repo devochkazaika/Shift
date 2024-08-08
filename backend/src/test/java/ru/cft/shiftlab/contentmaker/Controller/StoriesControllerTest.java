@@ -34,6 +34,7 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.mockito.Mockito.doAnswer;
@@ -114,6 +115,7 @@ public class StoriesControllerTest {
 
         andReturn.andExpect(status().isCreated());
     }
+
     public static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);

@@ -68,6 +68,11 @@ server:
   tomcat:
     max-http-form-post-size: 10485760
 
+feature-flags:
+  admin: true
+  components:
+    stories: true
+    banners: true
 #logging:
 #  level:
 #    org:

@@ -11,6 +11,9 @@ public class Constants {
 //            System.getProperty("user.dir") + "/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/" ;
 //    "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
 
+//    "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/";
+    public static final String BANNERS_SAVE_DIRECTORY =
+        String.valueOf(Paths.get("backend/src/main/resources/static").toAbsolutePath())+"/site/share/htdoc/_files/skins/mobws_banners/";
     public static final String FILES_TEST_DIRECTORY =
             System.getProperty("user.dir") + "/src/test/java/ru/cft/shiftlab/contentmaker/test_pictures/";
 
