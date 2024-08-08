@@ -22,7 +22,7 @@ public interface FileSaverService {
      * @param images Массив картинок для карточек
      * @throws RuntimeException исключение, которые может возникнуть во время работы приложения.
      */
-    default void saveFiles(String strStoriesRequestDto, MultipartFile previewImage, MultipartFile[] images) throws IOException {
+    default StoryPresentation saveFiles(String strStoriesRequestDto, MultipartFile previewImage, MultipartFile[] images) throws IOException {
         IOException e = new IOException();
         throw new RuntimeException(e);
     }

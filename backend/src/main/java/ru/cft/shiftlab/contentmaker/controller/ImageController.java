@@ -1,5 +1,6 @@
 package ru.cft.shiftlab.contentmaker.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -28,6 +29,7 @@ public class ImageController {
      * @throws IOException
      */
     @GetMapping("/site/share/htdoc/_files/skins/mobws_story/{bankId}/{platform}/{name}")
+    @Operation(summary = "Возврат картинки из пути в JSON")
     public ResponseEntity<byte[]> getImage(
             @PathVariable("bankId") String bankId,
             @PathVariable("platform") String plaform,

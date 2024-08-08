@@ -48,7 +48,7 @@ public class StoriesController {
             @ApiResponse(responseCode = "201", description = "История добавлена на сервер.")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    public void addStories(
+    public StoryPresentation addStories(
             @RequestParam(value = "json")
             @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
             String storiesRequestDto,
@@ -65,10 +65,11 @@ public class StoriesController {
                     content = @Content(mediaType = "multipart/form-data"))
             MultipartFile[] images) throws IOException {
 
-        storiesService.saveFiles(storiesRequestDto, previewImage, images);
+        return storiesService.saveFiles(storiesRequestDto, previewImage, images);
     }
 
     @PostMapping(path = "/add/frame", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Добавление карточки к истории.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Карточка добавлена на сервер.")
     })
@@ -84,7 +85,7 @@ public class StoriesController {
             @WhiteListValid(message = "bankId must match the allowed")
             @Parameter(description = "Название банка",
                     schema = @Schema(type = "string", format = "string"),
-                    example = "tkkbank")
+                    example = "tkbbank")
             String bankId,
 
             @RequestParam(value = "platform")
@@ -183,6 +184,7 @@ public class StoriesController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "История успешно удалена"),
             @ApiResponse(responseCode = "404", description = "История не найдена в JSON файле"),
+            @ApiResponse(responseCode = "404", description = "Карточка не найдена в истории"),
             @ApiResponse(responseCode = "500", description = "Ошибка на стороне сервера(нет JSON или нет директории с файлами)")
     })
     @Operation(summary = "Удаление карточки из истории")
@@ -227,6 +229,7 @@ public class StoriesController {
      * @throws IOException
      */
     @PatchMapping("/change/story")
+    @Operation(summary = "Изменение превью истории")
     public void changeStory(
             @RequestParam(value = "json")
             @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
@@ -264,6 +267,7 @@ public class StoriesController {
      * @throws IOException
      */
     @PatchMapping("/change/frame")
+    @Operation(summary = "Изменение карточки истории")
     public void changeStoryFrame(@RequestParam(value = "json")
             @Parameter(description = "DTO, содержащая информацию об историях, в виде строки JSON.")
             String storiesRequestDto,
@@ -313,6 +317,7 @@ public class StoriesController {
      * @throws IOException
      */
     @PatchMapping("/change/frame/swap")
+    @Operation(summary = "Свап 2 карточек в истори")
     public void swapFrames(
             @RequestParam(name = "id", defaultValue="0")
             Long id,

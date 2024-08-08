@@ -63,14 +63,14 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     @Override
-    public void saveFiles(String strStoriesRequestDto,
+    public StoryPresentation saveFiles(String strStoriesRequestDto,
                           MultipartFile previewImage,
                           MultipartFile[] images){
         try {
             //Преобразование в Entity с сохранением картинок
             final var storyEntity = getStoryEntity(strStoriesRequestDto, previewImage, images);
             //Сохранение
-            saveByRoles(storyEntity);
+            return saveByRoles(storyEntity);
         }
         catch (JsonProcessingException e){
             throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
@@ -105,7 +105,7 @@ public class JsonProcessorService implements FileSaverService {
      * @param storyPresentation
      * @throws IOException
      */
-    public void saveByRoles(StoryPresentation storyPresentation) throws IOException {
+    public StoryPresentation saveByRoles(StoryPresentation storyPresentation) throws IOException {
         Set<KeyCloak.Roles> roles = KeyCloak.getRoles();
         String bankId = storyPresentation.getBankId();
         String platformType = storyPresentation.getPlatform();
@@ -121,11 +121,11 @@ public class JsonProcessorService implements FileSaverService {
         else{
             throw new IllegalArgumentException("Unexpected role");
         }
-        storyPresentationRepository.save(storyPresentation);
         storyPresentation.getStoryPresentationFrames().forEach(x -> {
             x.setStory(storyPresentation);
             storyPresentationFramesRepository.save(x);
         });
+        return storyPresentationRepository.save(storyPresentation);
     }
     /**
      * Сохранение карточки в зависимости от роли

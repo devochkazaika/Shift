@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class StoriesInterceptor implements HandlerInterceptor {
     Map<Integer, History.Status> statusToBd = new HashMap<>(){{
         put(200, History.Status.SUCCESSFUL);
+        put(400, History.Status.BAD);
         put(500, History.Status.SERVER_ERROR);
     }};
     @Autowired
@@ -31,7 +32,7 @@ public class StoriesInterceptor implements HandlerInterceptor {
         history.setTime(LocalDate.now());
         Set<String> path = Arrays.stream(requestURI.split("/")).collect(Collectors.toSet());
         if (path.contains("get")) return;
-        if (path.contains("stories")){
+        else if (path.contains("stories")){
             history.setComponentType(History.ComponentType.STORIES);
             if (path.contains("add")){
                 history.setOperationType(History.OperationType.Create);
@@ -44,15 +45,15 @@ public class StoriesInterceptor implements HandlerInterceptor {
                 history.setOperationType(History.OperationType.Update);
                 history.setComponentId(Long.parseLong(request.getParameter("id")));
             }
+            if (request.getParameter("bankId") != null){
+                history.setBankId(request.getParameter("bankId"));
+            }
+            if (request.getParameter("platform") != null){
+                history.setPlatform(request.getParameter("platform"));
+            }
+            history.setStatus(statusToBd.get(response.getStatus() / 100 * 100));
+            history.setUserName(request.getRemoteUser());
+            historyRepository.save(history);
         }
-        if (request.getParameter("bankId") != null){
-            history.setBankId(request.getParameter("bankId"));
-        }
-        if (request.getParameter("platform") != null){
-            history.setBankId(request.getParameter("platform"));
-        }
-        history.setStatus(statusToBd.get(response.getStatus() / 100));
-        history.setUserName(request.getRemoteUser());
-        historyRepository.save(history);
     }
 }

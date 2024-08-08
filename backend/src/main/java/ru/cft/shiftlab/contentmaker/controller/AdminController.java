@@ -27,7 +27,7 @@ public class AdminController {
 
 
     @PostMapping(path = "/approveStory")
-    @Operation(summary = "Добавление истории на сервер.")
+    @Operation(summary = "Одобрение истории админом.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "История добавлена на сервер.")
     })
@@ -45,7 +45,7 @@ public class AdminController {
     }
 
     @GetMapping("/bank/info/getUnApprovedStories")
-    @Operation(summary = "Чтение истории с сервера.")
+    @Operation(summary = "Чтение непринятых историй с сервера.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "История прочтена с сервера."),
             @ApiResponse(responseCode = "400", description = "Неправильные параметры")
@@ -56,7 +56,7 @@ public class AdminController {
     }
 
     @GetMapping("/bank/info/getDeletedStories")
-    @Operation(summary = "Чтение истории с сервера.")
+    @Operation(summary = "Чтение удаленных историй с сервера.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "История прочтена с сервера."),
             @ApiResponse(responseCode = "400", description = "Неправильные параметры")
@@ -67,7 +67,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/bank/info/deletefromDb")
-    @Operation(summary = "Удаление истории")
+    @Operation(summary = "Удаление истории из базы данных")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "История успешно удалена"),
             @ApiResponse(responseCode = "404", description = "История не найдена в JSON файле"),
@@ -97,7 +97,13 @@ public class AdminController {
         return storiesService.deleteStoriesFromDb(bankId, platform, id);
     }
 
+    /**
+     *
+     * @param id
+     * @throws IOException
+     */
     @PatchMapping("/bank/info/restore/story")
+    @Operation(summary = "Восстановление удаленной истории")
     public void restoreStory(@Parameter(description = "id истории",
                                         schema = @Schema(type = "string", format = "string"),
                                         example = "0")
