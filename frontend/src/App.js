@@ -19,9 +19,9 @@ function App() {
         <main className="content">
           <ToastContainer />
           <Routes>
-            <Route path="/" element={<Stories />} />
-            <Route path="/stories" element={<Stories />} />
-            <Route path="/storiesList" element={<StoriesList />} />
+            <Route path="/" element={<StoriesList />} />
+            <Route path="/stories" element={<StoriesList />} />
+            <Route path="/addStories" element={<Stories />} />
             <Route path="/banners" element={<Banners />} />
           </Routes>
         </main>

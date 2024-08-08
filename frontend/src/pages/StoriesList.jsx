@@ -72,7 +72,7 @@ const StoriesList = () => {
   );
   const handleItemsPerPageChange = (newItemsPerPage) => {
     setItemsPerPage(newItemsPerPage);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
   return (
     <>
@@ -84,7 +84,7 @@ const StoriesList = () => {
           type="button"
           color="green"
           icon={<ArrowIcon width="12px" height="12px" />}
-          handleOnClick={() => navigate("/stories")}
+          handleOnClick={() => navigate("/addStories")}
         />
         <Formik enableReinitialize initialValues={initialStoryValues}>
           {(props) => (
@@ -103,13 +103,16 @@ const StoriesList = () => {
       ) : (
         <h2>Пока нет историй</h2>
       )}
-      <Pagination
-        currentPage={currentPage}
-        totalItems={totalItems}
-        itemsPerPage={itemsPerPage}
-        onPageChange={handlePageChange}
-        onItemsPerPageChange={handleItemsPerPageChange}
-      />
+      <div className="stories">
+        <Pagination
+          currentPage={currentPage}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+        />
+      </div>
+
       {loading && <Loader />}
     </>
   );

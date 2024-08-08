@@ -1,5 +1,6 @@
+/* eslint-disable  */
 import { FieldArray, Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { uploadStories } from "../api/stories";
 import { initialStoryValues } from "../utils/constants/initialValues";
@@ -11,47 +12,13 @@ import StoryForm from "../components/Stories/StoryForm";
 import AlertMessage from "../components/ui/AlertMessage";
 import Button from "../components/ui/Button";
 import Loader from "../components/ui/Loader/index";
-import StoryPanel from "../components/Stories/ExistStory/StoryPanel";
-import axios from "axios";
 
 const Stories = () => {
   const [send, setSend] = useState(false);
   const [success, setSuccess] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [storyArray, setStoryArray] = useState([]);
-  const [bankId, setBankId] = useState('absolutbank');
-  const [platform, setPlatform] = useState('ALL PLATFORMS');
-
-  const fetchData = async (bankId, platform) => {
-    try {
-      const response = await axios.get('/stories/bank/info/getJson/?bankId='+bankId+'&platform='+platform, {
-        headers: {
-        },
-        responseType: 'json'
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      return null;
-    }
-  };
-
-  useEffect(() => {
-    const fetchDataAsync = async () => {
-      try {
-        const data = await fetchData(bankId, platform);
-        if (data == null) {
-          setStoryArray([]);
-        } else {
-          setStoryArray(data);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchDataAsync();
-  }, [bankId, platform]);
+  const [bankId, setBankId] = useState("absolutbank");
+  const [platform, setPlatform] = useState("ALL PLATFORMS");
 
   const handleOnSubmit = async (values, { resetForm }) => {
     setSend(false);
@@ -63,13 +30,17 @@ const Stories = () => {
         return storyFrame.pictureUrl;
       });
       const jsonPayload = JSON.stringify(payload, null, 2);
-      const uploadResult = await uploadStories(jsonPayload, previewImage, cardImages);
+      const uploadResult = await uploadStories(
+        jsonPayload,
+        previewImage,
+        cardImages,
+      );
       setSuccess(uploadResult);
       if (uploadResult) {
         resetForm(initialStoryValues);
       }
     } catch (error) {
-      console.error('Error uploading stories:', error);
+      console.error("Error uploading stories:", error);
     } finally {
       setSend(true);
       setLoading(false);
@@ -78,7 +49,6 @@ const Stories = () => {
 
   return (
     <>
-      {storyArray.length > 0 ? <StoryPanel storyArray={storyArray} platform={platform} /> : <></>}
       {loading && <Loader />}
       <h1>Добавить Story</h1>
       <div className="stories">
@@ -90,7 +60,9 @@ const Stories = () => {
         >
           {(props) => (
             <Form>
-              <CommonForm setBankId = {setBankId} setPlatform = {setPlatform}
+              <CommonForm
+                setBankId={setBankId}
+                setPlatform={setPlatform}
                 {...props}
               />
               <FieldArray name="stories">
