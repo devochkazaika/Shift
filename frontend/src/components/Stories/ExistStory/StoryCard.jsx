@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import StoryFrame from "./StoryFrame";
-import { FieldArray, Form, Formik } from "formik";
+import { FieldArray, Form, Formik, ErrorMessage } from "formik";
 import FormField from "../../FormField";
+
 import { gradientOptions } from "./../../../utils/constants/gradient";
-import { ReactComponent as ArrowIcon } from "../../../assets/icons/arrow-up.svg";
+import { storyPanelValidationSchema } from "./../../../utils/helpers/validation";
+
 import { ReactComponent as DragIcon } from "../../../assets/icons/drag.svg";
 import Button from "../../ui/Button";
 import ColorPicker from "./../../ColorPicker/index";
@@ -14,8 +16,8 @@ import {
   fetchImage,
 } from "./../../../api/stories";
 import UploadImage from "./../../UploadImage/index";
-import { storyPanelValidationSchema } from "./../../../utils/helpers/validation";
 import AddFrame from "./AddFrame";
+import styles from "./StoryCard.module.scss";
 
 const StoryCard = ({ storyIndex, story, platform, ...props }) => {
   const [frames, setFrames] = useState(story.storyFrames);
@@ -144,7 +146,6 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
             previewGradient: story.previewGradient,
             [`previewUrl_${storyIndex}`]: initialImage,
           }}
-          validator={() => ({})}
           onSubmit={(values) => {
             updateStory(story, storyIndex, values, platform);
           }}
@@ -153,11 +154,8 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
             <Form>
               <FieldArray name="frames">
                 {() => (
-                  <div
-                    className="row"
-                    style={{ display: "flex", alignItems: "center" }}
-                  >
-                    <div style={{ width: "70%" }}>
+                  <div className={`row ${styles.wrapper}`}>
+                    <div className={styles.heading_input_size}>
                       <div>
                         <FormField
                           labelTitle="Заголовок"
@@ -190,13 +188,7 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
                         </div>
                       </div>
                     </div>
-                    <div
-                      style={{
-                        width: "30%",
-                        marginLeft: "auto",
-                        float: "right",
-                      }}
-                    >
+                    <div className={styles.gradient_input_area}>
                       <div className="input_field">
                         <FormField
                           name={`previewUrl_${storyIndex}`}
@@ -214,7 +206,7 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
         </Formik>
       </div>
       <div>
-        <h3>Story Frames:</h3>
+        <h3>Карточки</h3>
         <ul ref={draggableListRef} id={`draggable-list-${storyIndex}`}>
           {frames.map((value, index) => (
             <li
@@ -227,12 +219,7 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
                 <summary>
                   <p>
                     <DragIcon
-                      style={{
-                        cursor: "grab",
-                        marginRight: "8px",
-                        width: "20px",
-                        height: "20px",
-                      }}
+                      className={styles.drag_icon}
                     />
                     {value.title}
                   </p>
@@ -242,7 +229,6 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
                         text="Удалить"
                         type="button"
                         color="red"
-                        icon={<ArrowIcon width="12px" height="12px" />}
                         handleOnClick={() =>
                           handleOnSubmit(story, value, platform)
                         }

@@ -54,7 +54,7 @@ public class JsonProcessorServiceTest {
     private final MultipartFileToImageConverter multipartFileToImageConverter = new MultipartFileToImageConverter(new ImageNameGenerator());
 
 
-    private final DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
+    private final DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper(), new MultipartFileToImageConverter(new ImageNameGenerator()));
     private final ImageNameGenerator imageNameGenerator = new ImageNameGenerator();
     private final DirProcess dirProcess = new DirProcess();
     ObjectMapper objectMapper = new ObjectMapper();
@@ -113,7 +113,7 @@ public class JsonProcessorServiceTest {
         var arrImg = new MultipartFile[1];
         arrImg[0] = multipartFile;
 
-        DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
+        DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper(), new MultipartFileToImageConverter(new ImageNameGenerator()));
 
         String picturesDirectory = FILES_SAVE_DIRECTORY
                 + storiesRequestDto.getBankId() + "/" + storiesRequestDto.getPlatformType();
@@ -212,7 +212,7 @@ public class JsonProcessorServiceTest {
         var arrImg = new MultipartFile[1];
         arrImg[0] = multipartFile;
 
-        DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper());
+        DtoToEntityConverter dtoToEntityConverter = new DtoToEntityConverter(new ModelMapper(), new MultipartFileToImageConverter(new ImageNameGenerator()));
 
         String picturesDirectory = FILES_SAVE_DIRECTORY
                 + storiesRequestDto.getBankId() + "/" + storiesRequestDto.getPlatformType();
@@ -480,7 +480,7 @@ public class JsonProcessorServiceTest {
         String bankId = "test_bank";
         String platform = "WEB";
         String json = objectMapper.writeValueAsString(storyPatchDto);
-        copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json", System.getProperty("user.dir") + "/src/main/resources/static/backend/site/share/htdoc/_files/skins/mobws_story/"+"story_test_bank_web.json");
+        copyFile(FILES_TEST_DIRECTORY+"story_test_bank_web.json", FILES_SAVE_DIRECTORY+"story_test_bank_web.json");
 
         jsonProcessorService.changeFrameStory(json, bankId, platform,
                 0L,
@@ -600,8 +600,34 @@ public class JsonProcessorServiceTest {
                 ()->jsonProcessorService.deleteStoryFrame(bankId, platform, id, frameId)
         );
         dirProcess.deleteFolders(FILES_SAVE_DIRECTORY+"test/");
-        storyDir.delete();
+
     }
 
+    @Test
+    public void swap_frames_from_stories() throws IOException {
+        String bankId = "test_bank";
+        String platform = "WEB";
+        Long id = 0L;
+        String first = "dc430619-a772-4f80-81e5-bc66218ddd0c";
+        String second = "7b0c950b-c43b-4461-8aa8-295c308990c8";
+
+        File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_test_bank_web.json");
+        File storyDir = new File(FILES_SAVE_DIRECTORY + "/story_test_bank_web.json");
+        //копирую json file
+        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_test_bank_web.json");
+
+        jsonProcessorService.swapFrames(id, bankId, platform, first, second);
+        ObjectNode node = (ObjectNode) objectMapper.readTree(new File(FILES_SAVE_DIRECTORY + "/story_test_bank_web.json"));
+        ArrayNode arrayNode =
+                (ArrayNode) node
+                .get("stories")
+                .get(0)
+                .get("storyFrames");
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(arrayNode.get(0).get("id").toString(), "\"".concat(second).concat("\"")),
+                () -> Assertions.assertEquals(arrayNode.get(1).get("id").toString(), "\"".concat(first).concat("\""))
+        );
+
+    }
 
 }

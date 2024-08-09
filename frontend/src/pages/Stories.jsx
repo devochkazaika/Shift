@@ -5,6 +5,8 @@ import { uploadStories } from "../api/stories";
 import { initialStoryValues } from "../utils/constants/initialValues";
 import { convertToPayload } from "../utils/helpers/byteArrayFunctions";
 import { storyValidationSchema } from "../utils/helpers/validation";
+import { api } from "../utils/constants/api";
+
 
 import CommonForm from "../components/Stories/CommonForm";
 import StoryForm from "../components/Stories/StoryForm";
@@ -19,19 +21,21 @@ const Stories = () => {
   const [success, setSuccess] = useState(true);
   const [loading, setLoading] = useState(false);
   const [storyArray, setStoryArray] = useState([]);
-  const [bankId, setBankId] = useState('absolutbank');
-  const [platform, setPlatform] = useState('ALL PLATFORMS');
+  const [bankId, setBankId] = useState("absolutbank");
+  const [platform, setPlatform] = useState("ALL PLATFORMS");
 
   const fetchData = async (bankId, platform) => {
     try {
-      const response = await axios.get('/stories/bank/info/getJson/?bankId='+bankId+'&platform='+platform, {
-        headers: {
+      const response = await axios.get(
+        `${api}getJson/?bankId=` + bankId + "&platform=" + platform,
+        {
+          headers: {},
+          responseType: "json",
         },
-        responseType: 'json'
-      });
+      );
       return response.data;
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
       return null;
     }
   };
@@ -46,7 +50,7 @@ const Stories = () => {
           setStoryArray(data);
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
@@ -63,13 +67,17 @@ const Stories = () => {
         return storyFrame.pictureUrl;
       });
       const jsonPayload = JSON.stringify(payload, null, 2);
-      const uploadResult = await uploadStories(jsonPayload, previewImage, cardImages);
+      const uploadResult = await uploadStories(
+        jsonPayload,
+        previewImage,
+        cardImages,
+      );
       setSuccess(uploadResult);
       if (uploadResult) {
         resetForm(initialStoryValues);
       }
     } catch (error) {
-      console.error('Error uploading stories:', error);
+      console.error("Error uploading stories:", error);
     } finally {
       setSend(true);
       setLoading(false);
@@ -78,7 +86,11 @@ const Stories = () => {
 
   return (
     <>
-      {storyArray.length > 0 ? <StoryPanel storyArray={storyArray} platform={platform} /> : <></>}
+      {storyArray.length > 0 ? (
+        <StoryPanel storyArray={storyArray} platform={platform} />
+      ) : (
+        <></>
+      )}
       {loading && <Loader />}
       <h1>Добавить Story</h1>
       <div className="stories">
@@ -90,7 +102,9 @@ const Stories = () => {
         >
           {(props) => (
             <Form>
-              <CommonForm setBankId = {setBankId} setPlatform = {setPlatform}
+              <CommonForm
+                setBankId={setBankId}
+                setPlatform={setPlatform}
                 {...props}
               />
               <FieldArray name="stories">
