@@ -1,4 +1,4 @@
-import * as Yup from 'yup';
+import * as Yup from "yup";
 
 import {
   framesRules,
@@ -7,7 +7,7 @@ import {
   MAX_IMAGE_SIZE,
   MAX_IMAGE_WIDTH,
   SUPPORTED_FORMATS,
-} from '../constants/validation';
+} from "../constants/validation";
 
 const checkImageSides = (value) => {
   return new Promise((resolve) => {
@@ -23,7 +23,7 @@ const checkImageSides = (value) => {
 };
 
 const getStrings = (text) => {
-  return text.split('\n');
+  return text.split("\n");
 };
 
 const checkStringsCount = (value, maxStringsCount) => {
@@ -32,7 +32,10 @@ const checkStringsCount = (value, maxStringsCount) => {
 
 const checkLength = (value, maxLength) => {
   const strings = getStrings(value);
-  const valueSymbolsCount = strings.reduce((count, str) => (count += str.length), 0);
+  const valueSymbolsCount = strings.reduce(
+    (count, str) => (count += str.length),
+    0,
+  );
   return valueSymbolsCount <= maxLength;
 };
 
@@ -55,7 +58,7 @@ const checkTitleLength = (value, { createError }) => {
   return true;
 };
 
-const checkTitleStringsLength = (value, { createError}) => {
+const checkTitleStringsLength = (value, { createError }) => {
   if (!value || !checkTitleStrings(value)) return true;
   const strings = getStrings(value);
   const rule = framesRules[NUMBER_CORRECT_FRAMES_RULE];
@@ -72,7 +75,7 @@ const checkTitleStringsLength = (value, { createError}) => {
     }
   }
   return true;
-}
+};
 
 const checkFileFormat = (value) => {
   if (!value) return true;
@@ -90,7 +93,8 @@ const checkFileSize = (file) => {
 const checkFileSides = (value) => {
   if (!value) return true;
   return checkImageSides(value).then(
-    (image) => image.width <= MAX_IMAGE_WIDTH && image.height <= MAX_IMAGE_HEIGHT,
+    (image) =>
+      image.width <= MAX_IMAGE_WIDTH && image.height <= MAX_IMAGE_HEIGHT,
   );
 };
 
@@ -99,80 +103,93 @@ export const storyValidationSchema = Yup.object({
     Yup.object().shape({
       previewTitle: Yup.string(),
       previewUrl: Yup.mixed()
-        .test('fileFormat', 'Неподходящий тип изображения', checkFileFormat)
-        .test('fileSize', `Максимальный допустимый размер - ${MAX_IMAGE_SIZE}КБ`, checkFileSize)
+        .required("Поле обязательно")
+        .test("fileFormat", "Неподходящий тип изображения", checkFileFormat)
         .test(
-          'fileSides',
+          "fileSize",
+          `Максимальный допустимый размер - ${MAX_IMAGE_SIZE}КБ`,
+          checkFileSize,
+        )
+        .test(
+          "fileSides",
           `Максимальный допустимый размер - ${MAX_IMAGE_WIDTH}x${MAX_IMAGE_HEIGHT}px`,
           checkFileSides,
         ),
       storyFrames: Yup.array().of(
         Yup.object().shape({
           title: Yup.string()
-            .required('Поле обязательно')
+            .required("Поле обязательно")
             .test(
-              'titleStrings',
+              "titleStrings",
               `Максимальное кол-во строк в заголовке - ${framesRules.length}`,
               checkTitleStrings,
             )
-            .test('titleLength', checkTitleLength)
-            .test('titleStringsLength', checkTitleStringsLength),
+            .test("titleLength", checkTitleLength)
+            .test("titleStringsLength", checkTitleStringsLength),
           text: Yup.string()
             .notRequired()
-            .when('title', (titleValue, textSchema) => {
-              if (!titleValue || !checkTitleStrings(titleValue)) return textSchema;
+            .when("title", (titleValue, textSchema) => {
+              if (!titleValue || !checkTitleStrings(titleValue))
+                return textSchema;
               const titleStringsCount = getStrings(titleValue).length;
               const rule = framesRules[titleStringsCount - 1];
 
-              return textSchema.test('textValidation', (value, { createError }) => {
-                if (!value) return true;
+              return textSchema.test(
+                "textValidation",
+                (value, { createError }) => {
+                  if (!value) return true;
 
-                if (!checkStringsCount(value, rule.maxTextStrings))
-                  return createError({
-                    message: `Максимальное кол-во строк в тексте - ${rule.maxTextStrings}`,
-                  });
-
-                if (!checkLength(value, rule.maxTextLength))
-                  return createError({
-                    message: `Максимальное кол-во символов в тексте - ${rule.maxTextLength}`,
-                  });
-                const strings = getStrings(value);
-                for (const string of strings) {
-                  if (string.length < rule.minLength) {
+                  if (!checkStringsCount(value, rule.maxTextStrings))
                     return createError({
-                      message: `Пустая строка`,
+                      message: `Максимальное кол-во строк в тексте - ${rule.maxTextStrings}`,
                     });
-                  }
-                }
 
-                return true;
-              });
+                  if (!checkLength(value, rule.maxTextLength))
+                    return createError({
+                      message: `Максимальное кол-во символов в тексте - ${rule.maxTextLength}`,
+                    });
+                  const strings = getStrings(value);
+                  for (const string of strings) {
+                    if (string.length < rule.minLength) {
+                      return createError({
+                        message: `Пустая строка`,
+                      });
+                    }
+                  }
+
+                  return true;
+                },
+              );
             }),
           pictureUrl: Yup.mixed()
             .nullable()
-            .required('Поле обязательно')
-            .test('fileFormat', 'Неподходящий тип изображения', checkFileFormat)
-            .test('fileSize', `Максимальный допустимый размер - ${MAX_IMAGE_SIZE}КБ`, checkFileSize)
+            .required("Поле обязательно")
+            .test("fileFormat", "Неподходящий тип изображения", checkFileFormat)
             .test(
-              'fileSides',
+              "fileSize",
+              `Максимальный допустимый размер - ${MAX_IMAGE_SIZE}КБ`,
+              checkFileSize,
+            )
+            .test(
+              "fileSides",
               `Максимальный допустимый размер - ${MAX_IMAGE_WIDTH}x${MAX_IMAGE_HEIGHT}px`,
               checkFileSides,
             ),
-          linkText: Yup.string().when('visibleLinkOrButtonOrNone', {
-            is: 'LINK',
-            then: Yup.string().required('Поле обязательно'),
+          linkText: Yup.string().when("visibleLinkOrButtonOrNone", {
+            is: "LINK",
+            then: Yup.string().required("Поле обязательно"),
           }),
-          linkUrl: Yup.string().when('visibleLinkOrButtonOrNone', {
-            is: 'LINK',
-            then: Yup.string().required('Поле обязательно'),
+          linkUrl: Yup.string().when("visibleLinkOrButtonOrNone", {
+            is: "LINK",
+            then: Yup.string().required("Поле обязательно"),
           }),
-          buttonText: Yup.string().when('visibleLinkOrButtonOrNone', {
-            is: 'BUTTON',
-            then: Yup.string().required('Поле обязательно'),
+          buttonText: Yup.string().when("visibleLinkOrButtonOrNone", {
+            is: "BUTTON",
+            then: Yup.string().required("Поле обязательно"),
           }),
-          buttonUrl: Yup.string().when('visibleLinkOrButtonOrNone', {
-            is: 'BUTTON',
-            then: Yup.string().required('Поле обязательно'),
+          buttonUrl: Yup.string().when("visibleLinkOrButtonOrNone", {
+            is: "BUTTON",
+            then: Yup.string().required("Поле обязательно"),
           }),
         }),
       ),
@@ -180,87 +197,39 @@ export const storyValidationSchema = Yup.object({
   ),
 });
 
+export const storyPanelValidationSchema = (storyIndex) =>
+  Yup.object({
+    previewTitle: Yup.string().required("Поле обязательно"),
+    [`previewUrl_${storyIndex}`]: Yup.mixed()
+      .required("Поле обязательно")
+      .nullable()
+      .test("fileFormat", "Неподходящий тип изображения", checkFileFormat)
+      .test(
+        "fileSize",
+        `Максимальный допустимый размер - ${MAX_IMAGE_SIZE}КБ`,
+        checkFileSize,
+      )
+      .test(
+        "fileSides",
+        `Максимальный допустимый размер - ${MAX_IMAGE_WIDTH}x${MAX_IMAGE_HEIGHT}px`,
+        checkFileSides,
+      ),
+  });
 
-export const storyPanelValidationSchema = Yup.object({
-  previewTitle: Yup.string().required('Поле обязательно'),
-  previewUrl: Yup.mixed()
-    .required()
-    .nullable()
-    .test('fileFormat', 'Неподходящий тип изображения', checkFileFormat)
-    .test('fileSize', `Максимальный допустимый размер - ${MAX_IMAGE_SIZE}КБ`, checkFileSize)
-    .test(
-      'fileSides',
-      `Максимальный допустимый размер - ${MAX_IMAGE_WIDTH}x${MAX_IMAGE_HEIGHT}px`,
-      checkFileSides,
-    ),
-  storyFrames: Yup.array().of(
-    Yup.object().shape({
-      title: Yup.string()
-        .required('Поле обязательно')
-        .test(
-          'titleStrings',
-          `Максимальное кол-во строк в заголовке - ${framesRules.length}`,
-          checkTitleStrings,
-        )
-        .test('titleLength', checkTitleLength)
-        .test('titleStringsLength', checkTitleStringsLength),
-      text: Yup.string()
-        .notRequired()
-        .when('title', (titleValue, textSchema) => {
-          if (!titleValue || !checkTitleStrings(titleValue)) return textSchema;
-          const titleStringsCount = getStrings(titleValue).length;
-          const rule = framesRules[titleStringsCount - 1];
-
-          return textSchema.test('textValidation', (value, { createError }) => {
-            if (!value) return true;
-
-            if (!checkStringsCount(value, rule.maxTextStrings))
-              return createError({
-                message: `Максимальное кол-во строк в тексте - ${rule.maxTextStrings}`,
-              });
-
-            if (!checkLength(value, rule.maxTextLength))
-              return createError({
-                message: `Максимальное кол-во символов в тексте - ${rule.maxTextLength}`,
-              });
-            const strings = getStrings(value);
-            for (const string of strings) {
-              if (string.length < rule.minLength) {
-                return createError({
-                  message: 'Пустая строка',
-                });
-              }
-            }
-
-            return true;
-          });
-        }),
-      pictureUrl: Yup.mixed()
-        .nullable()
-        .required('Поле обязательно')
-        .test('fileFormat', 'Неподходящий тип изображения', checkFileFormat)
-        .test('fileSize', `Максимальный допустимый размер - ${MAX_IMAGE_SIZE}КБ`, checkFileSize)
-        .test(
-          'fileSides',
-          `Максимальный допустимый размер - ${MAX_IMAGE_WIDTH}x${MAX_IMAGE_HEIGHT}px`,
-          checkFileSides,
-        ),
-      linkText: Yup.string().when('visibleLinkOrButtonOrNone', {
-        is: 'LINK',
-        then: Yup.string().required('Поле обязательно'),
-      }),
-      linkUrl: Yup.string().when('visibleLinkOrButtonOrNone', {
-        is: 'LINK',
-        then: Yup.string().required('Поле обязательно'),
-      }),
-      buttonText: Yup.string().when('visibleLinkOrButtonOrNone', {
-        is: 'BUTTON',
-        then: Yup.string().required('Поле обязательно'),
-      }),
-      buttonUrl: Yup.string().when('visibleLinkOrButtonOrNone', {
-        is: 'BUTTON',
-        then: Yup.string().required('Поле обязательно'),
-      }),
-    }),
-  ),
-});
+export const storyFrameValidationSchema = (storyIndex, frameIndex) =>
+  Yup.object({
+    title: Yup.string().required("Поле обязательно"),
+    [`pictureFrame_${storyIndex}_${frameIndex}`]: Yup.mixed()
+      .required("Поле обязательно")
+      .test("fileFormat", "Неподходящий тип изображения", checkFileFormat)
+      .test(
+        "fileSize",
+        `Максимальный допустимый размер - ${MAX_IMAGE_SIZE}КБ`,
+        checkFileSize,
+      )
+      .test(
+        "fileSides",
+        `Максимальный допустимый размер - ${MAX_IMAGE_WIDTH}x${MAX_IMAGE_HEIGHT}px`,
+        checkFileSides,
+      ),
+  });

@@ -139,7 +139,7 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
       <div>
         <Formik
           enableReinitialize
-          validationSchema={storyPanelValidationSchema}
+          validationSchema={storyPanelValidationSchema(storyIndex)}
           initialValues={{
             previewTitle: story.previewTitle,
             previewTitleColor: story.previewTitleColor,
@@ -164,11 +164,6 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
                           value={values.previewTitle}
                           onChange={handleChange}
                           {...props}
-                        />
-                        <ErrorMessage
-                          name="previewTitle"
-                          component="div"
-                          className="error-message"
                         />
                       </div>
                       <FormField
@@ -200,20 +195,8 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
                           component={UploadImage}
                           type="file"
                         />
-                        <ErrorMessage
-                          name="previewUrl"
-                          component="div"
-                          className="error-message"
-                        />
                       </div>
-                      <Button
-                        handleOnClick={() =>
-                          updateStory(story, storyIndex, values, platform)
-                        }
-                        text="Изменить"
-                        type="button"
-                        color="green"
-                      />
+                      <Button text="Изменить" type="submit" color="green" />
                     </div>
                   </div>
                 )}
