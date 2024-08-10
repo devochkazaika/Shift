@@ -1,0 +1,19 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+
+  .heading_input_size {
+    width: 70%;
+  }
+  .gradient_input_area {
+    width: 30%;
+    margin-left: auto;
+    float: right;
+  }
+}
+.drag_icon {
+  cursor: grab;
+  margin-right: 8px;
+  width: 20px;
+  height: 20px;
+}

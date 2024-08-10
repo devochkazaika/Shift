@@ -1,7 +1,6 @@
 import StoryCard from "./StoryCard";
 import "./StoryPanelStyle.css";
 import Button from "./../../ui/Button/index";
-import { ReactComponent as ArrowIcon } from "../../../assets/icons/arrow-up.svg";
 import { deleteStory } from "./../../../api/stories";
 import { useState, useEffect, React } from "react";
 
@@ -30,7 +29,7 @@ const StoryPanel = ({ storyArray, platform }) => {
   return (
     <div>
       <ul className="stories">
-        <h2>{platform}</h2>
+          <h2>{platform}</h2>
         {stories.map((story, index) => (
           <li className="listFrame" key={index}>
             <details>
@@ -43,7 +42,6 @@ const StoryPanel = ({ storyArray, platform }) => {
                       type="button"
                       color="red"
                       handleOnClick={() => handleOnSubmit(story, platform)}
-                      icon={<ArrowIcon width="12px" height="12px" />}
                     />
                   </div>
                 </div>
