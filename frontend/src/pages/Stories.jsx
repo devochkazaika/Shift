@@ -62,6 +62,8 @@ const Stories = () => {
               <CommonForm
                 setBankId={setBankId}
                 setPlatform={setPlatform}
+                bankId={bankId}
+                platform={platform}
                 {...props}
               />
               <FieldArray name="stories">
