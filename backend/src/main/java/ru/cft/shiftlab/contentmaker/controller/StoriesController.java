@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,6 +32,10 @@ import java.util.List;
 @RequestMapping("/stories")
 @RequiredArgsConstructor
 @Validated
+@ConditionalOnProperty(
+        name = "feature-flags.components.stories",
+        havingValue = "true"
+)
 public class StoriesController {
     private final FileSaverService storiesService;
 

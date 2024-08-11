@@ -1,20 +1,23 @@
 import React, { createContext, useContext } from 'react';
-
-import {Navigate } from 'react-router-dom';
-import TokenService from './TokenService';
-
+import { useKeycloak } from "@react-keycloak/web";
 
 
 const NavigationContext = createContext();
 
+
 const PrivateRoute = ({ children }) => {
-    if (!TokenService.getLocalAccessToken()) {
-      return <Navigate to="/login" />;
-    }
-    return children;
-  };
-  
-  export default PrivateRoute;
+  const { keycloak, initialized } = useKeycloak();
+
+  if (!initialized) {
+    return <div>Loading...</div>;
+  }
+
+  const isLoggedIn = keycloak.authenticated;
+
+  return isLoggedIn ? children : keycloak.login();
+ };
+ 
+ export default PrivateRoute;
 
 
 export const useNavigation = () => useContext(NavigationContext);

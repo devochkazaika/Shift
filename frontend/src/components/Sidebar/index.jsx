@@ -5,22 +5,42 @@ import { NavLink } from 'react-router-dom';
 
 import styles from './Sidebar.module.scss';
 import { AdminRoute } from '../Security/AdminRoute';
+import keycloak from '../Security/Keycloak';
 
-const Sidebar = () => {
+const Sidebar = (flags) => {
   const [open, setOpen] = React.useState(true);
 
+  const handleLogout = () => {
+    keycloak.logout(); 
+  };
+
   const menuItems = [
-    {
-      path: '/stories',
+    // {
+    //   path: '/story',
+    //   name: 'Stories',
+    //   icon: <BsFilePlus />,
+    // },
+    // {
+    //   path: '/banners',
+    //   name: 'Banners',
+    //   icon: <BsFilePlus />,
+    // },
+  ];
+  if (!flags.stories){
+    menuItems.push({
+      path: '/story',
       name: 'Stories',
       icon: <BsFilePlus />,
-    },
-    {
+    })
+  }
+  if (!flags.banners){
+    menuItems.push({
       path: '/banners',
       name: 'Banners',
       icon: <BsFilePlus />,
-    },
-  ];
+    })
+  }
+  {console.log(flags)}
   const adminItems = [
     {
       path: '/unApproved',
@@ -56,9 +76,9 @@ const Sidebar = () => {
             </NavLink>
           </AdminRoute>
         ))}
-        <NavLink to={"/login"} className={styles.link}>
-          <div> Вход</div>
-        </NavLink>
+        <button onClick={handleLogout} className={styles.link} style={{"background": "none", "border": "none"}}>
+          {open && <div>Войти</div>}
+        </button>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './styles/globals.scss';
 import Sidebar from './components/Sidebar';
@@ -8,57 +8,32 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import PrivateRoute from './components/Security/PrivateRoute';
-import AuthProvider from './components/Security/AuthProvider';
-import Login from './pages/Login';
 import StoryAdmin from './pages/StoryAdmin';
 import { AdminRoute } from './components/Security/AdminRoute';
+import { ReactKeycloakProvider } from '@react-keycloak/web';
+import keycloak from './components/Security/Keycloak';
+import { getFlags } from './api/api';
 
 
 function App() {
+  const flags = useState(getFlags);
+  console.log(flags);
   return (
-    <BrowserRouter>
-      <div className="main_container">
-        <Sidebar />
-        <main className="content">
-          <ToastContainer />
-          <AuthProvider>
+    <ReactKeycloakProvider authClient={keycloak}>
+      <BrowserRouter>
+        <div className="main_container">
+          <Sidebar flags={flags} />
+          <main className="content">
+            <ToastContainer />
             <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route
-                path="/"
-                element={
-                  <PrivateRoute>
-                    <Stories />
-                  </PrivateRoute>
-                }
-                />
-                <Route 
-                  path="/stories" 
-                  element={
-                    <PrivateRoute>
-                      <Stories />
-                    </PrivateRoute>
-                  } 
-                />
-                {/* <Route 
-                  path="/banners" 
-                  element={
-                    <PrivateRoute>
-                      <Banners />
-                    </PrivateRoute>
-                  } 
-                /> */}
-                <Route
-                  path='/unApproved'
-                  element={<AdminRoute>
-                            <StoryAdmin />
-                          </AdminRoute>}
-                />
-              </Routes>
-          </AuthProvider>
-        </main>
-      </div>
-    </BrowserRouter>
+              {flags.stories ? <Route path="/" element={<PrivateRoute><Stories /></PrivateRoute>} /> : <></>}
+              {flags.stories ? <Route path="/story" element={<PrivateRoute><Stories /></PrivateRoute>} /> : <></> }
+              <Route path="/unApproved" element={<AdminRoute><StoryAdmin /></AdminRoute>} />
+            </Routes>
+          </main>
+        </div>
+      </BrowserRouter>
+    </ReactKeycloakProvider>
   );
 }
 

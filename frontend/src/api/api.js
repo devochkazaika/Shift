@@ -1,13 +1,12 @@
 import axios from 'axios';
-import { refreshToken } from '../components/Security/TokenProcess';
-import TokenService from '../components/Security/TokenService';
+import keycloak from '../components/Security/Keycloak';
 
 const api = axios.create({
     baseURL: 'http://localhost:8080',
  });
 
 api.interceptors.request.use(function (config) {
-    const token = TokenService.getLocalAccessToken();
+    const token = keycloak.token;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -24,19 +23,22 @@ api.interceptors.response.use(
         if (error.response.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             try {
-                await refreshToken();
                 const response = await api.request(originalRequest);
                 console.log(response);
                 return response;
             }
             catch (_error) {
-                TokenService.updateLocalAccessToken(null);
-                window.navigate('/login')
+              keycloak.login();
+              window.navigate('/login')
             }
         }
 
         return Promise.reject(error);
     }
 );
+export const getFlags = async  () =>{
+  const flags = await api.get("/access/get", {responseType: 'json'});
+  return flags.data;
+}
 
 export default api;

@@ -17,15 +17,23 @@ public class AccessController {
     @Value("${feature-flags.components.banners}")
     Boolean banners;
 
+    @Value("${feature-flags.components.stories}")
+    Boolean stories;
+
+    @Value("${feature-flags.components.admin_panel}")
+    Boolean adminPanel;
+
     @AllArgsConstructor
     @Getter
     @Setter
     public class Flags{
         Boolean banners;
+        Boolean stories;
+        Boolean admin_panel;
     }
 
     @GetMapping("/get")
     public Flags getFlags(){
-        return new Flags(banners);
+        return new Flags(banners, stories, adminPanel);
     }
 }
