@@ -12,10 +12,13 @@ const PrivateRoute = ({ children }) => {
     return <div>Loading...</div>;
   }
 
-  const isLoggedIn = keycloak.authenticated;
-
-  return isLoggedIn ? children : keycloak.login();
- };
+  if (keycloak.authenticated) {
+    return children;
+  } else {
+    keycloak.login();
+    return null;
+  }
+};
  
  export default PrivateRoute;
 

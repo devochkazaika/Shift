@@ -20,26 +20,5 @@
       "buttonUrl" : "",
       "gradient" : "EMPTY"
     } ]
-  }, {
-    "id" : 1,
-    "bankId" : "absolutbank",
-    "platform" : "ALL PLATFORMS",
-    "previewTitle" : "ыфвфывфыв",
-    "previewTitleColor" : "#000",
-    "previewUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/1_0.jpg",
-    "previewGradient" : "EMPTY",
-    "storyFrames" : [ {
-      "id" : "a5db9d33-95c8-4e83-a3fa-6e1147474032",
-      "title" : "фывфыв",
-      "text" : "ыфвфывфыв",
-      "textColor" : "#000",
-      "pictureUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/1_a5db9d33-95c8-4e83-a3fa-6e1147474032.jpg",
-      "visibleButtonOrNone" : "NONE",
-      "buttonText" : "",
-      "buttonTextColor" : "#000",
-      "buttonBackgroundColor" : "#fff",
-      "buttonUrl" : "",
-      "gradient" : "EMPTY"
-    } ]
   } ]
 }
