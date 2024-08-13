@@ -53,12 +53,19 @@ spring:
       name: admin
       password: password
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none  # Avoid auto schema creation if using Flyway
+    database-platform: org.hibernate.dialect.Oracle12cDialect  # Use appropriate dialect
   datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5433/content_maker
-    username: admin
-    password: password
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@//localhost:1521/ORCLCDB
+    username: system
+    password: Oracle_123
+    initialization-mode: always
+    properties:
+      user: system
+      password: Oracle_123
+      oracle.jdbc.OracleConnection.DEFAULTNAMESPACE: SYSDBA
 
   servlet:
     multipart:
@@ -71,8 +78,8 @@ server:
 feature-flags:
   admin: true
   components:
-    stories: false
-    banners: true
+    stories: true
+    banners: false
 #logging:
 #  level:
 #    org:

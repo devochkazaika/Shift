@@ -36,9 +36,15 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
-export const getFlags = async  () =>{
-  const flags = await api.get("/access/get", {responseType: 'json'});
-  return flags.data;
+export const getFlags = async () =>{
+  try {
+    const response = await api.get("/access/get", { responseType: 'json' });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching flags:", error);
+    throw error;
+  }
 }
 
 export default api;

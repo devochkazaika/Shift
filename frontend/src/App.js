@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './styles/globals.scss';
 import Sidebar from './components/Sidebar';
@@ -16,8 +16,20 @@ import { getFlags } from './api/api';
 
 
 function App() {
-  const flags = useState(getFlags);
-  console.log(flags);
+  const [flags, setFlags] = useState(null); // Initialize with null
+
+  useEffect(() => {
+    const fetchFlags = async () => {
+      const fetchedFlags = await getFlags();
+      setFlags(fetchedFlags); // Set flags after fetching
+    };
+    fetchFlags();
+  }, []); // Run only once on mount
+
+  if (!flags) {
+    return <div>Loading...</div>; // Optional: Loading state while flags are being fetched
+  }
+
   return (
     <ReactKeycloakProvider authClient={keycloak}>
       <BrowserRouter>
