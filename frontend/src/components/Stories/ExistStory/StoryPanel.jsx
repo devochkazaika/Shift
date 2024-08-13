@@ -29,6 +29,7 @@ const StoryPanel = ({ storyArray, platform }) => {
   return (
     <div>
       <ul className="stories">
+          <h2>{platform}</h2>
         {stories.map((story, index) => (
           <li className="listFrame" key={index}>
             <details>

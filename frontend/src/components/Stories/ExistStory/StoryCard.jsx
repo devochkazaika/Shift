@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import StoryFrame from "./StoryFrame";
-import { FieldArray, Form, Formik, ErrorMessage } from "formik";
+import { FieldArray, Form, Formik } from "formik";
 import FormField from "../../FormField";
 
 import { gradientOptions } from "./../../../utils/constants/gradient";
@@ -157,6 +157,7 @@ const StoryCard = ({ storyIndex, story, platform, ...props }) => {
                   <div className={`row ${styles.wrapper}`}>
                     <div className={styles.heading_input_size}>
                       <div>
+                      <h3>Превью</h3>
                         <FormField
                           labelTitle="Заголовок"
                           name="previewTitle"

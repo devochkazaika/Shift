@@ -1,5 +1,5 @@
 import { FieldArray, Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { getStories, uploadStories } from "../api/stories";
 import { initialStoryValues } from "../utils/constants/initialValues";
@@ -17,7 +17,6 @@ const Stories = () => {
   const [send, setSend] = useState(false);
   const [success, setSuccess] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [storyArray, setStoryArray] = useState([]);
   const [bankId, setBankId] = useState("absolutbank");
   const [platform, setPlatform] = useState("ALL PLATFORMS");
 
@@ -67,11 +66,6 @@ const Stories = () => {
 
   return (
     <>
-      {storyArray.length > 0 ? (
-        <StoryPanel storyArray={storyArray} platform={platform} />
-      ) : (
-        <></>
-      )}
       {loading && <Loader />}
       <h1>Добавить Story</h1>
       <div className="stories">
@@ -86,6 +80,8 @@ const Stories = () => {
               <CommonForm
                 setBankId={setBankId}
                 setPlatform={setPlatform}
+                bankId={bankId}
+                platform={platform}
                 {...props}
               />
               <FieldArray name="stories">
