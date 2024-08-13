@@ -5,8 +5,6 @@ import { getStories, uploadStories } from "../api/stories";
 import { initialStoryValues } from "../utils/constants/initialValues";
 import { convertToPayload } from "../utils/helpers/byteArrayFunctions";
 import { storyValidationSchema } from "../utils/helpers/validation";
-import { api } from "../utils/constants/api";
-
 
 import CommonForm from "../components/Stories/CommonForm";
 import StoryForm from "../components/Stories/StoryForm";
@@ -22,22 +20,6 @@ const Stories = () => {
   const [storyArray, setStoryArray] = useState([]);
   const [bankId, setBankId] = useState("absolutbank");
   const [platform, setPlatform] = useState("ALL PLATFORMS");
-
-  const fetchData = async (bankId, platform) => {
-    try {
-      const response = await axios.get(
-        `${api}getJson/?bankId=` + bankId + "&platform=" + platform,
-        {
-          headers: {},
-          responseType: "json",
-        },
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      return null;
-    }
-  };
 
   useEffect(() => {
     const fetchDataAsync = async () => {
