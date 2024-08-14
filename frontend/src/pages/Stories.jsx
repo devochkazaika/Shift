@@ -1,7 +1,7 @@
 import { FieldArray, Form, Formik } from "formik";
 import React, { useState } from "react";
 
-import { getStories, uploadStories } from "../api/stories";
+import {uploadStories } from "../api/stories";
 import { initialStoryValues } from "../utils/constants/initialValues";
 import { convertToPayload } from "../utils/helpers/byteArrayFunctions";
 import { storyValidationSchema } from "../utils/helpers/validation";
@@ -11,7 +11,7 @@ import StoryForm from "../components/Stories/StoryForm";
 import AlertMessage from "../components/ui/AlertMessage";
 import Button from "../components/ui/Button";
 import Loader from "../components/ui/Loader/index";
-import StoryPanel from "../components/Stories/ExistStory/StoryPanel";
+
 
 const Stories = () => {
   const [send, setSend] = useState(false);
@@ -20,22 +20,6 @@ const Stories = () => {
   const [bankId, setBankId] = useState("absolutbank");
   const [platform, setPlatform] = useState("ALL PLATFORMS");
 
-  useEffect(() => {
-    const fetchDataAsync = async () => {
-      try {
-        const data = await getStories(bankId, platform);
-        if (data == null) {
-          setStoryArray([]);
-        } else {
-          setStoryArray(data);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchDataAsync();
-  }, [bankId, platform]);
 
   const handleOnSubmit = async (values, { resetForm }) => {
     setSend(false);

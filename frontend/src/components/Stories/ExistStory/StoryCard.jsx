@@ -19,7 +19,7 @@ import UploadImage from "./../../UploadImage/index";
 import AddFrame from "./AddFrame";
 import styles from "./StoryCard.module.scss";
 
-const StoryCard = ({ storyIndex, story, platform, ...props }) => {
+const StoryCard = ({ storyIndex, story, platform, button, ...props }) => {
   const [frames, setFrames] = useState(story.storyFrames);
   const [initialImage, setInitialImage] = useState(null);
   const draggableListRef = useRef(null);

@@ -62,6 +62,7 @@ public class JsonProcessorService implements FileSaverService {
         return new HttpEntity<List<StoryPresentation>>(mapper.getStoryList(bankId, platform));
     }
 
+
     @Override
     public StoryPresentation saveFiles(String strStoriesRequestDto,
                           MultipartFile previewImage,
@@ -171,6 +172,16 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     @Override
+    public List<StoryPresentation> getUnApprovedStories(String bankId, String platform) {
+        return storyPresentationRepository.getUnApprovedStories(bankId, platform);
+    }
+
+    @Override
+    public List<StoryPresentation> getDeletedStories(String bankId, String platform) {
+        return storyPresentationRepository.getDeletedStories(bankId, platform);
+    }
+
+    @Override
     public void approvedStory(String bankId, String platform, Long id) throws IOException {
         final var story = storyPresentationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find the story with id = %d", id)));
@@ -219,6 +230,7 @@ public class JsonProcessorService implements FileSaverService {
      * @param id
      * @throws IOException
      */
+    @Transactional
     public void changeStory(String storiesRequestDto, MultipartFile file, String bankId, String platform, Long id) throws IOException {
         StoryPatchDto story = mapper.readValue(
                 storiesRequestDto

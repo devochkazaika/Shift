@@ -2,14 +2,15 @@
 import { Form, Formik } from "formik";
 import React, {useEffect, useState } from "react";
 
-import { initialStoryValues } from "../utils/constants/initialValues";
-import CommonForm from "../components/Stories/CommonForm";
-import Loader from "../components/ui/Loader/index";
-import StoryPanel from "../components/Stories/ExistStory/StoryPanel";
-import { Pagination } from "../components/Pagination/Pagination";
-import { getStories } from "../api/stories";
+import { initialStoryValues } from "../../../utils/constants/initialValues";
+import CommonForm from "../CommonForm";
+import Loader from "../../ui/Loader/index";
+import { Pagination } from "../../Pagination/Pagination";
+import { getDeletedStoriesByBank } from "../../../api/stories";
+import Button from "../../ui/Button";
+import StoryDeletedPanel from "./StoryDeletedPanel";
 
-const StoriesList = ({children}) => {
+const StoryDeletedList = ({children}) => {
   const [loading, setLoading] = useState(false);
   const [storiesArray, setStoriesArray] = useState([]);
 
@@ -26,7 +27,7 @@ const StoriesList = ({children}) => {
   useEffect(() => {
     const fetchDataAsync = async () => {
       try {
-        const data = await getStories(bankId, platform);
+        const data = await getDeletedStoriesByBank(bankId, platform);
         if (data == null) {
           setStoriesArray([]);
         } else {
@@ -54,10 +55,8 @@ const StoriesList = ({children}) => {
   };
   return (
     <>
-      <h1>Stories</h1>
-
+      <h1>Удаленные истории</h1>
       <div className="stories">
-        {children}
         <Formik enableReinitialize initialValues={initialStoryValues}>
           {(props) => (
             <Form>
@@ -71,7 +70,7 @@ const StoriesList = ({children}) => {
         </Formik>
       </div>
       {storiesArray.length > 0 ? (
-        <StoryPanel storyArray={currentItems} platform={platform} />
+        <StoryDeletedPanel storyArray={currentItems} platform={platform} />
       ) : (
         <h2>Пока нет историй</h2>
       )}
@@ -90,4 +89,4 @@ const StoriesList = ({children}) => {
   );
 };
 
-export default StoriesList;
+export default StoryDeletedList;

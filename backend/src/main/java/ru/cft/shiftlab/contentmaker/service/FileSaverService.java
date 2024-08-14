@@ -55,12 +55,15 @@ public interface FileSaverService {
      */
     List<StoryPresentation> getUnApprovedStories();
 
+    List<StoryPresentation> getUnApprovedStories(String bankId, String platform);
+
     /**
      * Метод, возвращающий все удаленные из JSON истории
      *
      * @return Get Deleted stories
      */
     List<StoryPresentation> getDeletedStories();
+    List<StoryPresentation> getDeletedStories(String bankId, String platform);
 
     /**
      * Метод, восстанавливающий удаленную историю из бд

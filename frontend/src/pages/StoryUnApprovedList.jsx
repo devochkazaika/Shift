@@ -2,14 +2,15 @@
 import { Form, Formik } from "formik";
 import React, {useEffect, useState } from "react";
 
-import { initialStoryValues } from "../utils/constants/initialValues";
-import CommonForm from "../components/Stories/CommonForm";
-import Loader from "../components/ui/Loader/index";
-import StoryPanel from "../components/Stories/ExistStory/StoryPanel";
 import { Pagination } from "../components/Pagination/Pagination";
-import { getStories } from "../api/stories";
+import StoryPanel from "../components/Stories/ExistStory/StoryPanel";
+import Loader from "../components/ui/Loader";
+import CommonForm from "../components/Stories/CommonForm";
+import { initialStoryValues } from "../utils/constants/initialValues";
+import { getUnApprovedStoriesByBank } from "../api/stories";
+import StoryUnApprovedCard from "../components/Stories/UnApprovedStory/StoryUnApproveCard";
 
-const StoriesList = ({children}) => {
+const StoryUnApprovedList = ({children}) => {
   const [loading, setLoading] = useState(false);
   const [storiesArray, setStoriesArray] = useState([]);
 
@@ -26,7 +27,7 @@ const StoriesList = ({children}) => {
   useEffect(() => {
     const fetchDataAsync = async () => {
       try {
-        const data = await getStories(bankId, platform);
+        const data = await getUnApprovedStoriesByBank(bankId, platform);
         if (data == null) {
           setStoriesArray([]);
         } else {
@@ -54,7 +55,7 @@ const StoriesList = ({children}) => {
   };
   return (
     <>
-      <h1>Stories</h1>
+      <h1>Непринятые истории</h1>
 
       <div className="stories">
         {children}
@@ -71,7 +72,7 @@ const StoriesList = ({children}) => {
         </Formik>
       </div>
       {storiesArray.length > 0 ? (
-        <StoryPanel storyArray={currentItems} platform={platform} />
+        <StoryUnApprovedCard storyArray={currentItems} platform={platform} />
       ) : (
         <h2>Пока нет историй</h2>
       )}
@@ -90,4 +91,4 @@ const StoriesList = ({children}) => {
   );
 };
 
-export default StoriesList;
+export default StoryUnApprovedList;

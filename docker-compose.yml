@@ -7,7 +7,7 @@ services:
       - '8080:8080'
     environment:
       - SPRING.PROFILES.ACTIVE=default
-  postgres:
+  postgres-keycloak:
     image: postgres:latest
     environment:
       POSTGRES_DB: content_maker
@@ -24,22 +24,39 @@ services:
       - 5433:5432
     networks:
       - keycloak_demo
-  oracle-db:
-    image: container-registry.oracle.com/database/enterprise:latest
+  postgres-entity:
+    image: postgres:latest
+    container_name: postgres-entity
     environment:
-      - ORACLE_SID=ORCLCDB
-      - ORACLE_PDB=ORCLPDB1
-      - ORACLE_PWD=Oracle_123
-    ports:
-      - 1521:1521
-    volumes:
-      - oracle-data:/opt/oracle/oradata
-      - oracle-backup:/opt/oracle/backup
+      POSTGRES_DB: content_maker
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    expose:
+      - "1542"
     healthcheck:
-      test: ["CMD", "sqlplus", "-L", "sys/Oracle_123@//localhost:1521/ORCLCDB as sysdba", "@healthcheck.sql"]
+      test: [ "CMD-SHELL", "pg_isready -U admin -d content_maker -p 1542" ]
       interval: 30s
       timeout: 10s
       retries: 5
+    command: ["postgres", "-c", "port=1542"]
+    ports:
+      - "1542:1542"
+#  oracle-db:
+#    image: container-registry.oracle.com/database/enterprise:latest
+#    environment:
+#      - ORACLE_SID=ORCLCDB
+#      - ORACLE_PDB=ORCLPDB1
+#      - ORACLE_PWD=Oracle_123
+#    ports:
+#      - 1521:1521
+#    volumes:
+#      - oracle-data:/opt/oracle/oradata
+#      - oracle-backup:/opt/oracle/backup
+#    healthcheck:
+#      test: ["CMD", "sqlplus", "-L", "sys/Oracle_123@//localhost:1521/ORCLCDB as sysdba", "@healthcheck.sql"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
 
 
   keycloak:
@@ -50,7 +67,7 @@ services:
     command: start-dev --import-realm
     environment:
       KC_DB: postgres
-      KC_DB_URL_HOST: postgres
+      KC_DB_URL_HOST: postgres-keycloak
       KC_DB_URL_DATABASE: content_maker
       KC_DB_PASSWORD: password
       KC_DB_USERNAME: admin
@@ -65,7 +82,7 @@ services:
     ports:
       - 8081:8080
     depends_on:
-      postgres:
+      postgres-keycloak:
         condition: service_healthy
     networks:
       - keycloak_demo

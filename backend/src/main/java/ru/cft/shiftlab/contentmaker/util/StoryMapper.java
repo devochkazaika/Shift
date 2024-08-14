@@ -59,9 +59,4 @@ public class StoryMapper extends ObjectMapper {
         return (list == null) ? new ArrayList<StoryPresentation>() : list;
     }
 
-    public Long getLastId(List<StoryPresentation> storyPresentationList){
-        return storyPresentationList.stream()
-                .mapToLong(StoryPresentation::getId)
-                .max().orElse(0L)+1;
-    }
 }

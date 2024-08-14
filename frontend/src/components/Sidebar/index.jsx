@@ -16,7 +16,7 @@ const Sidebar = ({ flags }) => {
       const items = [];
       if (flags.stories) {
         items.push({
-          path: '/story',
+          path: '/',
           name: 'Stories',
           icon: <BsFilePlus />,
         });
@@ -59,7 +59,11 @@ const Sidebar = ({ flags }) => {
         <AdminRoute>
           <NavLink to="/unApproved" className={styles.link}>
             <div className={styles.icon}><BsFilePlus /></div>
-            {open && <div className={styles.text}>Не принятые</div>}
+            {open && <div className={styles.text}>Непринятые</div>}
+          </NavLink>
+          <NavLink to="/deleted" className={styles.link}>
+            <div className={styles.icon}><BsFilePlus /></div>
+            {open && <div className={styles.text}>Удаленные</div>}
           </NavLink>
         </AdminRoute>
         <button onClick={handleLogout} className={styles.link} style={{ background: "none", border: "none" }}>

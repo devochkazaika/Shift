@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -40,8 +41,11 @@ public class History {
     @Column(name="component_id")
     Long componentId;
 
+    @Column(name="day")
+    LocalDate day;
+
     @Column(name="time")
-    LocalDate time;
+    LocalTime time;
 
     @Column(name="user_name")
     String userName;
@@ -63,6 +67,7 @@ public class History {
     @Column(name="Component_type")
     @Enumerated(EnumType.STRING)
     ComponentType componentType;
+
 
 
 }

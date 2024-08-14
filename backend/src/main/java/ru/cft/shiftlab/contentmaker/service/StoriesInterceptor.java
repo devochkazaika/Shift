@@ -9,6 +9,7 @@ import ru.cft.shiftlab.contentmaker.repository.HistoryRepository;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +30,8 @@ public class StoriesInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         String requestURI = request.getRequestURI();
         History history = new History();
-        history.setTime(LocalDate.now());
+        history.setTime(LocalTime.now());
+        history.setDay(LocalDate.now());
         Set<String> path = Arrays.stream(requestURI.split("/")).collect(Collectors.toSet());
         if (path.contains("get")) return;
         else if (path.contains("stories")){

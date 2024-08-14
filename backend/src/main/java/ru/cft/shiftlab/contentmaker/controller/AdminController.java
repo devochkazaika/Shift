@@ -45,7 +45,7 @@ public class AdminController {
     }
 
     @GetMapping("/bank/info/getUnApprovedStories")
-    @Operation(summary = "Чтение непринятых историй с сервера.")
+    @Operation(summary = "Чтение ВСЕХ непринятых историй с сервера.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "История прочтена с сервера."),
             @ApiResponse(responseCode = "400", description = "Неправильные параметры")
@@ -55,8 +55,32 @@ public class AdminController {
         return storiesService.getUnApprovedStories();
     }
 
+    @GetMapping("/getDeletedStories")
+    @Operation(summary = "Чтение удаленных историй банка и платформы с сервера.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "История прочтена с сервера."),
+            @ApiResponse(responseCode = "400", description = "Неправильные параметры")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    public List<StoryPresentation> getDeletedStories(@RequestParam("bankId") String bankId,
+                                                     @RequestParam("platform") String platform) throws IOException {
+        return storiesService.getDeletedStories(bankId, platform);
+    }
+
+    @GetMapping("getUnApprovedStories")
+    @Operation(summary = "Чтение непринятых историй банка и платформы с сервера.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "История прочтена с сервера."),
+            @ApiResponse(responseCode = "400", description = "Неправильные параметры")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    public List<StoryPresentation> getUnApprovedStories(@RequestParam("bankId") String bankId,
+                                                        @RequestParam("platform") String platform) throws IOException {
+        return storiesService.getUnApprovedStories(bankId, platform);
+    }
+
     @GetMapping("/bank/info/getDeletedStories")
-    @Operation(summary = "Чтение удаленных историй с сервера.")
+    @Operation(summary = "Чтение ВСЕХ удаленных историй с сервера.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "История прочтена с сервера."),
             @ApiResponse(responseCode = "400", description = "Неправильные параметры")

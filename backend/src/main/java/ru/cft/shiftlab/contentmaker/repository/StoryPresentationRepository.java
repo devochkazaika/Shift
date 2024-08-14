@@ -14,8 +14,14 @@ public interface StoryPresentationRepository extends CrudRepository<StoryPresent
     @Query(value = "SELECT * FROM stories WHERE approved = 'NOTAPPROVED'", nativeQuery = true)
     List<StoryPresentation> getUnApprovedStories();
 
+    @Query(value = "SELECT * FROM stories WHERE approved = 'NOTAPPROVED' and bank_id = :bank and platform = :platform", nativeQuery = true)
+    List<StoryPresentation> getUnApprovedStories(@Param("bank") String bankId, @Param("platform") String platform);
+
     @Query(value = "SELECT * FROM stories WHERE approved = 'DELETED'", nativeQuery = true)
     List<StoryPresentation> getDeletedStories();
+
+    @Query(value = "SELECT * FROM stories WHERE approved = 'DELETED' and bank_id = :bank and platform = :platform", nativeQuery = true)
+    List<StoryPresentation> getDeletedStories(@Param("bank") String bankId, @Param("platform") String platform);
 
     @Query("SELECT st FROM StoryPresentation st WHERE st.id = :id")
     Optional<StoryPresentation> findById(@Param("id") Long id);
