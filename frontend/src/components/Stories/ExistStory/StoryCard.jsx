@@ -2,33 +2,30 @@ import React, { useState, useEffect, useRef } from "react";
 import StoryFrame from "./StoryFrame";
 import { FieldArray, Form, Formik } from "formik";
 import FormField from "../../FormField";
-
-import { gradientOptions } from "./../../../utils/constants/gradient";
-import { storyPanelValidationSchema } from "./../../../utils/helpers/validation";
-
-import { ReactComponent as DragIcon } from "../../../assets/icons/drag.svg";
+import { gradientOptions } from "../../../utils/constants/gradient";
+import { storyPanelValidationSchema } from "../../../utils/helpers/validation";
 import Button from "../../ui/Button";
-import ColorPicker from "./../../ColorPicker/index";
+import { ReactComponent as DragIcon } from "../../../assets/icons/drag.svg";
+import ColorPicker from "../../ColorPicker";
 import {
   deleteFrame,
   updateStory,
   updateFrameOrder,
   fetchImage,
-} from "./../../../api/stories";
-import UploadImage from "./../../UploadImage/index";
+} from "../../../api/stories";
+import UploadImage from "../../UploadImage";
 import AddFrame from "./AddFrame";
 import styles from "./StoryCard.module.scss";
 
-const StoryCard = ({ storyIndex, story, platform, button, ...props }) => {
-  const [frames, setFrames] = useState(story.storyFrames);
+const StoryCard = ({ storyIndex, story, platform, changeable, ...props }) => {
+  const [frames, setFrames] = useState(story.storyFrames || []);
   const [initialImage, setInitialImage] = useState(null);
   const draggableListRef = useRef(null);
 
   useEffect(() => {
-    if (!initialImage) {
+    if (!initialImage && story.previewUrl) {
       fetchImage(story.previewUrl, setInitialImage);
     }
-
     if (story && story.storyFrames) {
       setFrames(story.storyFrames);
     }
@@ -48,7 +45,7 @@ const StoryCard = ({ storyIndex, story, platform, button, ...props }) => {
       if (e.target.tagName === "LI") {
         e.target.classList.remove("dragging");
         const newOrder = Array.from(draggableList.children).map(
-          (child) => child.id,
+          (child) => child.id
         );
 
         let changedIds = [];
@@ -65,12 +62,12 @@ const StoryCard = ({ storyIndex, story, platform, button, ...props }) => {
               story,
               platform,
               changedIds[0],
-              changedIds[1],
+              changedIds[1]
             );
             setFrames((prevFrames) =>
               prevFrames.sort(
-                (a, b) => newOrder.indexOf(a.id) - newOrder.indexOf(b.id),
-              ),
+                (a, b) => newOrder.indexOf(a.id) - newOrder.indexOf(b.id)
+              )
             );
           } catch (error) {
             console.error("Ошибка при обновлении порядка фреймов:", error);
@@ -104,7 +101,7 @@ const StoryCard = ({ storyIndex, story, platform, button, ...props }) => {
             return closest;
           }
         },
-        { offset: Number.NEGATIVE_INFINITY },
+        { offset: Number.NEGATIVE_INFINITY }
       ).element;
     };
 
@@ -123,89 +120,89 @@ const StoryCard = ({ storyIndex, story, platform, button, ...props }) => {
       });
       draggableList.removeEventListener("dragover", handleDragOver);
     };
-  }, [frames, story, platform, storyIndex]);
+  }, [frames, story, platform]);
 
-  const handleOnSubmit = async (story, frame, platform) => {
+  const handleOnSubmit = async (frame) => {
     const success = await deleteFrame(story, frame, platform);
     if (success) {
       setFrames((prevFrames) =>
-        prevFrames.filter((item) => item.id !== frame.id),
+        prevFrames.filter((item) => item.id !== frame.id)
       );
     }
   };
 
   return (
     <div>
-      <div>
-        <Formik
-          enableReinitialize
-          validationSchema={storyPanelValidationSchema(storyIndex)}
-          initialValues={{
-            previewTitle: story.previewTitle,
-            previewTitleColor: story.previewTitleColor,
-            previewGradient: story.previewGradient,
-            [`previewUrl_${storyIndex}`]: initialImage,
-          }}
-          onSubmit={(values) => {
-            updateStory(story, storyIndex, values, platform);
-          }}
-        >
-          {({ values, handleChange }) => (
-            <Form>
-              <FieldArray name="frames">
-                {() => (
-                  <div className={`row ${styles.wrapper}`}>
-                    <div className={styles.heading_input_size}>
-                      <div>
+      <Formik
+        enableReinitialize
+        validationSchema={storyPanelValidationSchema(storyIndex)}
+        initialValues={{
+          previewTitle: story.previewTitle,
+          previewTitleColor: story.previewTitleColor,
+          previewGradient: story.previewGradient,
+          [`previewUrl_${storyIndex}`]: initialImage,
+        }}
+        onSubmit={(values) => {
+          updateStory(story, storyIndex, values, platform);
+        }}
+      >
+        {({ values, handleChange }) => (
+          <Form>
+            <FieldArray name="frames">
+              {() => (
+                <div className={`row ${styles.wrapper}`}>
+                  <div className={styles.heading_input_size}>
+                    <div>
                       <h3>Превью</h3>
-                        <FormField
-                          labelTitle="Заголовок"
-                          name="previewTitle"
-                          type="text"
-                          value={values.previewTitle}
-                          onChange={handleChange}
-                          {...props}
-                        />
-                      </div>
                       <FormField
-                        name="previewTitleColor"
-                        labelTitle="Цвет заголовка"
-                        value={values.previewTitleColor}
-                        component={ColorPicker}
+                        labelTitle="Заголовок"
+                        name="previewTitle"
+                        type="text"
+                        value={values.previewTitle}
                         onChange={handleChange}
                         {...props}
                       />
-                      <div className="frame">
-                        <div>
-                          <FormField
-                            name="previewGradient"
-                            labelTitle="Градиент"
-                            value={values.previewGradient}
-                            onChange={handleChange}
-                            as="select"
-                            options={gradientOptions}
-                            {...props}
-                          />
-                        </div>
-                      </div>
                     </div>
-                    <div className={styles.gradient_input_area}>
-                      <div className="input_field">
+                    <FormField
+                      name="previewTitleColor"
+                      labelTitle="Цвет заголовка"
+                      value={values.previewTitleColor}
+                      component={ColorPicker}
+                      onChange={handleChange}
+                      {...props}
+                    />
+                    <div className="frame">
+                      <div>
                         <FormField
-                          name={`previewUrl_${storyIndex}`}
-                          component={UploadImage}
-                          type="file"
+                          name="previewGradient"
+                          labelTitle="Градиент"
+                          value={values.previewGradient}
+                          onChange={handleChange}
+                          as="select"
+                          options={gradientOptions}
+                          {...props}
                         />
                       </div>
-                      <Button text="Изменить" type="submit" color="green" />
                     </div>
                   </div>
-                )}
-              </FieldArray>
-            </Form>
-          )}
-        </Formik>
-      </div>
+                  <div className={styles.gradient_input_area}>
+                    <div className="input_field">
+                      <FormField
+                        name={`previewUrl_${storyIndex}`}
+                        component={UploadImage}
+                        type="file"
+                      />
+                    </div>
+                    {!changeable && (
+                      <Button text="Изменить" type="submit" color="green" />
+                    )}
+                  </div>
+                </div>
+              )}
+            </FieldArray>
+          </Form>
+        )}
+      </Formik>
       <div>
         <h3>Карточки</h3>
         <ul ref={draggableListRef} id={`draggable-list-${storyIndex}`}>
@@ -217,29 +214,38 @@ const StoryCard = ({ storyIndex, story, platform, button, ...props }) => {
               draggable="true"
             >
               <details>
-                <summary>
-                  <p>
-                    <DragIcon
-                      className={styles.drag_icon}
-                    />
+                <summary
+                  style={{display: "flex", justifyContent: "center", height: "50px"}}
+                >
+                  <DragIcon
+                    style={{ marginTop: "5px" }}
+                    className={styles.drag_icon}
+                  />
+                  <p
+                    style={{
+                      margin: "0",
+                      paddingTop: "2px"
+                    }}
+                  >
                     {value.title}
                   </p>
-                  <div>
+                  {!changeable && (
                     <div>
-                      <Button
-                        text="Удалить"
-                        type="button"
-                        color="red"
-                        handleOnClick={() =>
-                          handleOnSubmit(story, value, platform)
-                        }
-                      />
+                      <div>
+                        <Button
+                          text="Удалить"
+                          type="button"
+                          color="red"
+                          handleOnClick={() => handleOnSubmit(value)}
+                        />
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </summary>
                 <div>
                   <StoryFrame
                     key={index}
+                    changeable={changeable}
                     frame={value}
                     frameIndex={index}
                     storyIndex={storyIndex}
@@ -252,20 +258,22 @@ const StoryCard = ({ storyIndex, story, platform, button, ...props }) => {
             </li>
           ))}
         </ul>
-        <div>
-          <details id="addFrame">
-            <summary>Добавить карточку</summary>
-            <div>
-              <AddFrame
-                setFrames={setFrames}
-                frames={frames}
-                storyIndex={storyIndex}
-                story={story}
-                platform={platform}
-              />
-            </div>
-          </details>
-        </div>
+        {!changeable && (
+          <div>
+            <details id="addFrame">
+              <summary>Добавить карточку</summary>
+              <div>
+                <AddFrame
+                  setFrames={setFrames}
+                  frames={frames}
+                  storyIndex={storyIndex}
+                  story={story}
+                  platform={platform}
+                />
+              </div>
+            </details>
+          </div>
+        )}
       </div>
     </div>
   );

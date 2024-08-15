@@ -11,6 +11,7 @@ import { storyFrameValidationSchema } from "./../../../utils/helpers/validation"
 const StoryFrame = ({
   story,
   frame,
+  changeable,
   frameIndex,
   storyIndex,
   platform,
@@ -166,11 +167,14 @@ const StoryFrame = ({
                       component={UploadImage}
                       {...props}
                     />
+                    {!changeable ? 
                     <div className="row">
                       <div className="input_field">
                         <Button text="Изменить" type="submit" color="green" />
                       </div>
                     </div>
+                    : <></>
+                    }
                   </div>
                 </div>
               )}

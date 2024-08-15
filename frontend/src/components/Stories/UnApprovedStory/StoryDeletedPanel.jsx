@@ -75,6 +75,7 @@ const StoryDeletedPanel = ({ storyArray, platform }) => {
                   key={index}
                   story={story}
                   storyIndex={index}
+                  changeable={true}
                   platform={platform}
                 />
               </div>
