@@ -27,10 +27,10 @@ public class SecurityConfiguration  {
                 .csrf().disable()
             .authorizeHttpRequests((authz) ->
                     authz
-                            .antMatchers("/stories/bank/info/**").hasAnyRole("ADMIN", "USER")
-                            .antMatchers("/backend/**").authenticated()
-                            .antMatchers("/stories/add/**").authenticated()
-                            .antMatchers("/stories/add").authenticated()
+//                            .antMatchers("/stories/bank/info/**").hasAnyRole("ADMIN", "USER")
+//                            .antMatchers("/backend/**").authenticated()
+//                            .antMatchers("/stories/add/**").authenticated()
+//                            .antMatchers("/stories/add").authenticated()
                             .anyRequest().permitAll()
             )
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));

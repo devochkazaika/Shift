@@ -29,7 +29,7 @@ public class KeyCloakConfiguration {
     @Bean
     public Keycloak createBeanKeycloak() {
         var t = KeycloakBuilder.builder()
-                .serverUrl("http://localhost:8081")
+                .serverUrl("http://keycloak:8080")
                 .grantType(OAuth2Constants.PASSWORD)
                 .realm(REALM)
                 .clientId(CLIENTID)
