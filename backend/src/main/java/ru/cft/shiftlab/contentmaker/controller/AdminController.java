@@ -39,7 +39,7 @@ public class AdminController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     public void approveStory(
-            @RequestParam(value = "bank")
+            @RequestParam(value = "bankId")
             String bankId,
 
             @RequestParam(value = "platform")

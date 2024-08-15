@@ -52,7 +52,7 @@ function App() {
                     }
                   />
                   <Route path="/story" element={<PrivateRoute><Stories /></PrivateRoute>} />
-                  <Route path="/addStories" element={<Stories />} />
+                  <Route path="/addStories" element={<PrivateRoute><Stories /></PrivateRoute>} />
                 </>
               )}
               <Route path="/unApproved" element={

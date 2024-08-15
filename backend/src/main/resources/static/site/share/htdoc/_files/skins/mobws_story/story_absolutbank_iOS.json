@@ -1,24 +1,3 @@
 {
-  "stories" : [ {
-    "id" : 9,
-    "bankId" : "absolutbank",
-    "platform" : "IOS",
-    "previewTitle" : "фывфыв",
-    "previewTitleColor" : "#000",
-    "previewUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/IOS/9_0.jpg",
-    "previewGradient" : "EMPTY",
-    "storyFrames" : [ {
-      "id" : "de399c38-ca47-4a98-b81f-99241a91849a",
-      "title" : "фывфыв",
-      "text" : "вфыфыв",
-      "textColor" : "#000",
-      "pictureUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/IOS/9_de399c38-ca47-4a98-b81f-99241a91849a.jpg",
-      "visibleButtonOrNone" : "NONE",
-      "buttonText" : "",
-      "buttonTextColor" : "#000",
-      "buttonBackgroundColor" : "#fff",
-      "buttonUrl" : "",
-      "gradient" : "EMPTY"
-    } ]
-  } ]
+  "stories" : [ ]
 }
