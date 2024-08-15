@@ -12,6 +12,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Autowired
     private StoriesInterceptor storiesInterceptor;
 
+    /**
+     * Добавление перехватчика запросов для сохранения истории операций
+     * @param registry
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(storiesInterceptor).addPathPatterns("/stories/**");

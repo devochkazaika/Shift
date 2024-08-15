@@ -10,16 +10,28 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Контроллера для возврата флагов доступа для фронта
+ */
 @RestController()
 @RequestMapping("/access")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AccessController {
+    /**
+     * Доступность банеров
+     */
     @Value("${feature-flags.components.banners}")
     Boolean banners;
 
+    /**
+     * Доступность историй
+     */
     @Value("${feature-flags.components.stories}")
     Boolean stories;
 
+    /**
+     * Доступность админки
+     */
     @Value("${feature-flags.components.admin_panel}")
     Boolean adminPanel;
 

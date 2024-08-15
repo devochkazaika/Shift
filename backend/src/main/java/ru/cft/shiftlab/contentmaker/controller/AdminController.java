@@ -25,7 +25,13 @@ import java.util.List;
 public class AdminController {
     private final FileSaverService storiesService;
 
-
+    /**
+     * Одобрение истории админом и последующее сохранение в JSON, а также изменение статуса на APPROVED
+     * @param bankId
+     * @param platform
+     * @param id
+     * @throws IOException
+     */
     @PostMapping(path = "/approveStory")
     @Operation(summary = "Одобрение истории админом.")
     @ApiResponses(value = {
@@ -42,17 +48,6 @@ public class AdminController {
             @RequestParam(value = "id")
             Long id) throws IOException {
         storiesService.approvedStory(bankId, platform, id);
-    }
-
-    @GetMapping("/bank/info/getUnApprovedStories")
-    @Operation(summary = "Чтение ВСЕХ непринятых историй с сервера.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "История прочтена с сервера."),
-            @ApiResponse(responseCode = "400", description = "Неправильные параметры")
-    })
-    @ResponseStatus(HttpStatus.OK)
-    public List<StoryPresentation> getUnApprovedStories() throws IOException {
-        return storiesService.getUnApprovedStories();
     }
 
     @GetMapping("/getDeletedStories")
@@ -79,16 +74,6 @@ public class AdminController {
         return storiesService.getUnApprovedStories(bankId, platform);
     }
 
-    @GetMapping("/bank/info/getDeletedStories")
-    @Operation(summary = "Чтение ВСЕХ удаленных историй с сервера.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "История прочтена с сервера."),
-            @ApiResponse(responseCode = "400", description = "Неправильные параметры")
-    })
-    @ResponseStatus(HttpStatus.OK)
-    public List<StoryPresentation> getDeletedStories() throws IOException {
-        return storiesService.getDeletedStories();
-    }
 
     @DeleteMapping("/bank/info/deletefromDb")
     @Operation(summary = "Удаление истории из базы данных")

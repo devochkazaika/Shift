@@ -26,9 +26,9 @@ const StoryUnApprovedCard = ({ storyArray, platform }) => {
       console.error("Ошибка при удалении истории", error);
     }
   };
-  const approve = async (story) => {
+  const approve = async (story, platform) => {
     try {
-      const success = await api.patch(`/stories/admin/approveStory?bank=${story.bankId}&platform=${story.platform}%id=${story.id}`);
+      const success = await api.post(`/stories/admin/approveStory?bankId=${story.bankId}&platform=${platform}&id=${story.id}`);
       if (success) {
         setStories((prevStories) =>
           prevStories.filter((item) => item.id !== story.id),
@@ -60,7 +60,7 @@ const StoryUnApprovedCard = ({ storyArray, platform }) => {
                       text="Принять"
                       type="button"
                       color="green"
-                      handleOnClick={() => approve(story)}
+                      handleOnClick={() => approve(story, platform)}
                     />
                   </div>
                 </div>

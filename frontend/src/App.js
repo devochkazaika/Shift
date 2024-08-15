@@ -13,7 +13,7 @@ import keycloak from './components/Security/Keycloak';
 import PrivateRoute from './components/Security/PrivateRoute';
 import { AdminRoute } from './components/Security/AdminRoute';
 import Button from './components/ui/Button';
-import StoryDeletedList from './components/Stories/UnApprovedStory/StoryDeletedList';
+import StoryDeletedList from './pages/StoryDeletedList';
 import StoryUnApprovedList from './pages/StoryUnApprovedList';
 
 function App() {

@@ -2,13 +2,13 @@
 import { Form, Formik } from "formik";
 import React, {useEffect, useState } from "react";
 
-import { initialStoryValues } from "../../../utils/constants/initialValues";
-import CommonForm from "../CommonForm";
-import Loader from "../../ui/Loader/index";
-import { Pagination } from "../../Pagination/Pagination";
-import { getDeletedStoriesByBank } from "../../../api/stories";
-import Button from "../../ui/Button";
-import StoryDeletedPanel from "./StoryDeletedPanel";
+import { initialStoryValues } from "../utils/constants/initialValues";
+import CommonForm from "../components/Stories/CommonForm";
+import Loader from "../components/ui/Loader/index";
+import { Pagination } from "../components/Pagination/Pagination";
+import { getDeletedStoriesByBank } from "../api/stories";
+import Button from "../components/ui/Button";
+import StoryDeletedPanel from "../components/Stories/UnApprovedStory/StoryDeletedPanel";
 
 const StoryDeletedList = ({children}) => {
   const [loading, setLoading] = useState(false);
