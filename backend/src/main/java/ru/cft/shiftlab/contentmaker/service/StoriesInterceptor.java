@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import ru.cft.shiftlab.contentmaker.entity.History;
+import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.repository.HistoryRepository;
+import ru.cft.shiftlab.contentmaker.repository.StoryPresentationRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +27,8 @@ public class StoriesInterceptor implements HandlerInterceptor {
     }};
     @Autowired
     HistoryRepository historyRepository;
+    @Autowired
+    StoryPresentationRepository storyPresentationRepository;
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
@@ -38,7 +42,10 @@ public class StoriesInterceptor implements HandlerInterceptor {
             history.setComponentType(History.ComponentType.STORIES);
             if (path.contains("add")){
                 history.setOperationType(History.OperationType.Create);
-                history.setComponentId(historyRepository.getLastHistory().getId());
+                var story = storyPresentationRepository.findTopByOrderByIdDesc();
+                history.setComponentId(story.getId());
+                history.setBankId(story.getBankId());
+                history.setPlatform(story.getPlatform());
             }
             else if (path.contains("delete")){
                 history.setOperationType(History.OperationType.Delete);

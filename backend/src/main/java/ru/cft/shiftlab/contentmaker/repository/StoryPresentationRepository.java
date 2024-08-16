@@ -14,6 +14,8 @@ public interface StoryPresentationRepository extends CrudRepository<StoryPresent
     @Query(value = "SELECT * FROM stories WHERE approved = 'NOTAPPROVED'", nativeQuery = true)
     List<StoryPresentation> getUnApprovedStories();
 
+    StoryPresentation findTopByOrderByIdDesc();
+
     @Query(value = "SELECT * FROM stories WHERE approved = 'NOTAPPROVED' and bank_id = :bank and platform = :platform", nativeQuery = true)
     List<StoryPresentation> getUnApprovedStories(@Param("bank") String bankId, @Param("platform") String platform);
 

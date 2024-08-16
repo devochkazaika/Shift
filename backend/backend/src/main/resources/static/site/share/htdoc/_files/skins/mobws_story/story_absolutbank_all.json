@@ -20,5 +20,68 @@
       "buttonUrl" : "",
       "gradient" : "EMPTY"
     } ]
+  }, {
+    "id" : 4,
+    "bankId" : "absolutbank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitle" : "wfdsfsaf",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/4_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "693f1233-60fc-4c88-b293-ae69ddae8520",
+      "title" : "dsfsdf",
+      "text" : "dfssdf",
+      "textColor" : "#000",
+      "pictureUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/4_693f1233-60fc-4c88-b293-ae69ddae8520.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 5,
+    "bankId" : "absolutbank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitle" : "sdfsdf",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/5_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "8ddf2be3-6f09-48c3-865f-60d2e51707dc",
+      "title" : "sddsf",
+      "text" : "svsdv",
+      "textColor" : "#000",
+      "pictureUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/5_8ddf2be3-6f09-48c3-865f-60d2e51707dc.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 6,
+    "bankId" : "absolutbank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitle" : "asd",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/6_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "a22e291e-de3b-46ee-8fe9-bd53f9d392e2",
+      "title" : "asdasd",
+      "text" : "asdasd",
+      "textColor" : "#000",
+      "pictureUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/6_a22e291e-de3b-46ee-8fe9-bd53f9d392e2.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
   } ]
 }

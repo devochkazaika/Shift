@@ -6,6 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.cft.shiftlab.contentmaker.entity.History;
+import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 
 import java.util.List;
 
@@ -13,9 +14,6 @@ import java.util.List;
 public interface HistoryRepository extends CrudRepository<History, Long> {
     @Query(value = "select his from History his where his.componentId = :id and his.componentType = 'STORIES'")
     List<History> getHistoryByStoryId(@Param("id") Long id);
-
-    @Query(value = "SELECT * FROM history WHERE component_type = 'STORIES' ORDER BY component_id DESC LIMIT 1", nativeQuery = true)
-    History getLastHistory();
 
     @Query("select his from History his where his.bankId = :bank and his.platform = :platform and his.componentType = 'STORIES'")
     List<History> getHistoryByBankAndPlatform(@Param("bank") String bank, @Param("platform") String platform);
