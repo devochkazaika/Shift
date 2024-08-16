@@ -67,12 +67,13 @@ spring:
 server:
   tomcat:
     max-http-form-post-size: 10485760
+  port: 8081
 
 feature-flags:
-  admin: true
   components:
     stories: true
     banners: false
+    admin_panel: true
 #logging:
 #  level:
 #    org:
