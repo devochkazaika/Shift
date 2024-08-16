@@ -38,14 +38,15 @@ public class StoriesInterceptor implements HandlerInterceptor {
             history.setComponentType(History.ComponentType.STORIES);
             if (path.contains("add")){
                 history.setOperationType(History.OperationType.Create);
+                history.setComponentId(historyRepository.getLastHistory().getId());
             }
             else if (path.contains("delete")){
                 history.setOperationType(History.OperationType.Delete);
-//                history.setComponentId(Long.parseLong(request.getParameter("id")));
+                history.setComponentId(Long.parseLong(request.getParameter("id")));
             }
             else if (path.contains("change")){
                 history.setOperationType(History.OperationType.Update);
-//                history.setComponentId(Long.parseLong(request.getParameter("id")));
+                history.setComponentId(Long.parseLong(request.getParameter("id")));
             }
             if (request.getParameter("bankId") != null){
                 history.setBankId(request.getParameter("bankId"));
