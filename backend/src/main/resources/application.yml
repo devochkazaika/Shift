@@ -21,7 +21,7 @@ preview:
 keycloak:
   realm: content-maker
   resource: maker
-  auth-server-url: http://keycloak:8080/auth
+  auth-server-url: http://keycloak:8081/auth
   use-resource-role-mappings: true
   principal-attribute: preferred_username
 
@@ -43,6 +43,7 @@ spring:
     oauth2:
       resource server:
         jwt:
+          client-id: maker
           issuer-uri: http://keycloak:8080/realms/content-maker
       client:
         registration:

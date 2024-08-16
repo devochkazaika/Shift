@@ -20,38 +20,53 @@ import java.util.stream.Stream;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfiguration  {
+public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors().disable()
                 .csrf().disable()
-            .authorizeHttpRequests((authz) ->
-                    authz
+                .authorizeHttpRequests((authz) ->
+                                authz
 //                            .antMatchers("/stories/bank/info/**").hasAnyRole("ADMIN", "USER")
 //                            .antMatchers("/backend/**").authenticated()
 //                            .antMatchers("/stories/add/**").authenticated()
 //                            .antMatchers("/stories/add").authenticated()
-                            .anyRequest().permitAll()
-            )
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+                                        .anyRequest().permitAll()
+                )
+
+                .oauth2ResourceServer(oauth2 ->
+                        oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
         return http.build();
     }
 
     @Bean
-    public JwtAuthenticationConverter jwtAuthenticationConverter(){
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
         var converter = new JwtAuthenticationConverter();
         final var jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         converter.setPrincipalClaimName("preferred_username");
         converter.setJwtGrantedAuthoritiesConverter(jwt -> {
             var authorities = jwtGrantedAuthoritiesConverter.convert(jwt);
-            var roles = ((Map<String, List<String>>) jwt.getClaimAsMap("resource_access").get("maker")).get("roles");
+            Map<String, Object> resourceAccess = jwt.getClaimAsMap("resource_access");
+
+            if (resourceAccess == null || !resourceAccess.containsKey("maker")) {
+                return authorities;
+            }
+
+            Map<String, List<String>> makerAccess = (Map<String, List<String>>) resourceAccess.get("maker");
+            if (makerAccess == null || !makerAccess.containsKey("roles")) {
+                return authorities;
+            }
+
+            List<String> roles = makerAccess.get("roles");
+            System.out.println("Roles extracted from JWT: " + roles);
+
             return Stream.concat(
                     authorities.stream(),
                     roles.stream()
-                            .map(role -> "ROLE_"+role)
+                            .map(role -> "ROLE_" + role)
                             .map(SimpleGrantedAuthority::new)
                             .map(GrantedAuthority.class::cast)
-                    ).collect(Collectors.toList());
+            ).collect(Collectors.toList());
         });
         return converter;
     }
