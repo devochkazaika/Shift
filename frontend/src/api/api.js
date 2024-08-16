@@ -2,7 +2,7 @@ import axios from 'axios';
 import keycloak from '../components/Security/Keycloak';
 
 const api = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: 'http://localhost:8081',
  });
 
 api.interceptors.request.use(function (config) {

@@ -5,14 +5,14 @@ module.exports = (app) => {
     app.use(
         "/stories",
         createProxyMiddleware({
-            target: "http://localhost:8080",
+            target: "http://localhost:8081",
             changeOrigin: true,
         })
     );
     app.use(
         "/site",
         createProxyMiddleware({
-            target: "http://localhost:8080",
+            target: "http://localhost:8081",
             changeOrigin: true,
         })
     );

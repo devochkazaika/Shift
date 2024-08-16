@@ -1,6 +1,5 @@
 version: '3'
 services:
-
   postgres-keycloak:
     image: postgres:latest
     container_name: postgres-keycloak
@@ -16,9 +15,10 @@ services:
     volumes:
       - ./docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
     ports:
-      - 5433:5432
+      - 5432:5432
     networks:
       - keycloak_demo
+
   postgres-entity:
     image: postgres:latest
     container_name: postgres-entity
@@ -31,7 +31,7 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     expose:
-      - "1544"
+      - "1542"
     networks:
       - keycloak_demo
     healthcheck:
@@ -41,41 +41,28 @@ services:
       retries: 5
     command: ["postgres", "-c", "port=1542"]
     ports:
-      - "1542:1544"
-#  oracle-db:
-#    image: container-registry.oracle.com/database/enterprise:latest
-#    environment:
-#      - ORACLE_SID=ORCLCDB
-#      - ORACLE_PDB=ORCLPDB1
-#      - ORACLE_PWD=Oracle_123
-#    ports:
-#      - 1521:1521
-#    volumes:
-#      - oracle-data:/opt/oracle/oradata
-#      - oracle-backup:/opt/oracle/backup
-#    healthcheck:
-#      test: ["CMD", "sqlplus", "-L", "sys/Oracle_123@//localhost:1521/ORCLCDB as sysdba", "@healthcheck.sql"]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 5
+      - "1542:1542"
 
   backend:
     build:
       dockerfile: Dockerfile
       context: ./backend
+    hostname: content
     container_name: static-content-backend
     depends_on:
       postgres-entity:
         condition: service_healthy
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-entity:1542/content_maker
+      - KEYCLOAK_AUTH_SERVER_URL=http://keycloak:8080/auth
     networks:
       - keycloak_demo
     ports:
-      - '8080:8081'
+      - '8081:8081'
 
   keycloak:
     container_name: keycloak
+    hostname: content
     image: quay.io/keycloak/keycloak:latest
     build:
       context: ./config
@@ -95,20 +82,13 @@ services:
         target: /opt/keycloak/data/import/realm-export.json
         read_only: true
     ports:
-      - 8081:8080
+      - 8080:8080
     depends_on:
       postgres-keycloak:
         condition: service_healthy
     networks:
       - keycloak_demo
 
-  frontend:
-    build: 'frontend/'
-    container_name: static-content-frontend
-    ports:
-      - '3232:80'
-    links:
-      - backend
 
 networks:
   keycloak_demo:
