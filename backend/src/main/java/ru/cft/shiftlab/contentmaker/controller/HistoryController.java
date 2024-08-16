@@ -37,4 +37,11 @@ public class HistoryController {
         return  historyService.getHistoryByBankAndPlatform(bank, platform);
     }
 
+    @GetMapping("/history/stories/getAllHistory")
+    @ResponseStatus(HttpStatus.OK)
+    public List<History> getAllHistory(
+    ) throws IOException {
+        return  historyService.getAllHistory();
+    }
+
 }

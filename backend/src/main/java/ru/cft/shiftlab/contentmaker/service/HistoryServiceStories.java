@@ -12,4 +12,6 @@ public interface HistoryServiceStories {
 //    List<History> getHeadHistory();
 
     List<History> getHistoryByBankAndPlatform(String bank, String platform);
+
+    List<History> getAllHistory();
 }

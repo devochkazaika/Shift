@@ -18,6 +18,11 @@ public class HistoryService implements HistoryServiceStories {
     }
 
     @Override
+    public List<History> getAllHistory() {
+        return historyRepository.getAllHistory();
+    }
+
+    @Override
     public List<History> getBankAndPlatformHistory(String bankId, String platform) {
         return historyRepository.getHistoryByBankAndPlatform(bankId, platform);
     }
