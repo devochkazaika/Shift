@@ -58,7 +58,6 @@ public class SecurityConfiguration {
             }
 
             List<String> roles = makerAccess.get("roles");
-            System.out.println("Roles extracted from JWT: " + roles);
 
             return Stream.concat(
                     authorities.stream(),

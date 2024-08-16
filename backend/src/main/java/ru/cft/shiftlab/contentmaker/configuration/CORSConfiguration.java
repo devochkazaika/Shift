@@ -17,8 +17,6 @@ public class CORSConfiguration implements Filter {
     final HttpServletResponse response = (HttpServletResponse) res;
     HttpServletRequest request = (HttpServletRequest) req;
 
-    System.out.println("CORS Filter: " + request.getMethod() + " request to " + request.getRequestURI());
-
     response.setHeader("Access-Control-Allow-Origin", "*");
     response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE, PATCH");
     response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
