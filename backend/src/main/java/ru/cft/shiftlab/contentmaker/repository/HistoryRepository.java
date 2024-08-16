@@ -21,4 +21,5 @@ public interface HistoryRepository extends CrudRepository<History, Long> {
     @Modifying
     @Query("delete from History his where his.componentId = :id and his.componentType = 'STORIES'")
     void deleteByStoryId(Long id);
+
 }

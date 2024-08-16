@@ -26,4 +26,15 @@ public class HistoryController {
             return  historyService.getStoryHistory(id);
     }
 
+    @GetMapping("/history/stories/getByBankAndPlatform")
+    @ResponseStatus(HttpStatus.OK)
+    public List<History> getHistoryStory(
+            @RequestParam(name = "bankId")
+            String bank,
+            @RequestParam(name = "platform")
+            String platform
+    ) throws IOException {
+        return  historyService.getHistoryByBankAndPlatform(bank, platform);
+    }
+
 }
