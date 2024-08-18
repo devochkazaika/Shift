@@ -258,3 +258,16 @@ export const updateFrameOrder = async (story, platform, firstId, secondId) => {
     warningToast(toastView, error);
   }
 };
+
+
+export const getAllHistory= async () => {
+  try {
+    const response = await api.get('/history/stories/getAllHistory', {
+      responseType: 'json',
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return null;
+  }
+};

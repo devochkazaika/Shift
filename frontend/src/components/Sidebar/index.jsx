@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { FaBars } from 'react-icons/fa';
-import { BsFilePlus } from 'react-icons/bs';
-import { NavLink } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { FaBars } from "react-icons/fa";
+import { BsFilePlus } from "react-icons/bs";
+import { NavLink } from "react-router-dom";
 
-import styles from './Sidebar.module.scss';
-import { AdminRoute } from '../Security/AdminRoute';
-import keycloak from '../Security/Keycloak';
+import styles from "./Sidebar.module.scss";
+import { AdminRoute } from "../Security/AdminRoute";
+import keycloak from "../Security/Keycloak";
 
 const Sidebar = ({ flags }) => {
   const [open, setOpen] = useState(true);
@@ -16,15 +16,15 @@ const Sidebar = ({ flags }) => {
       const items = [];
       if (flags.stories) {
         items.push({
-          path: '/',
-          name: 'Stories',
+          path: "/",
+          name: "Stories",
           icon: <BsFilePlus />,
         });
       }
       if (flags.banners) {
         items.push({
-          path: '/banners',
-          name: 'Banners',
+          path: "/banners",
+          name: "Banners",
           icon: <BsFilePlus />,
         });
       }
@@ -37,7 +37,7 @@ const Sidebar = ({ flags }) => {
   };
 
   return (
-    <div className={`${styles.sidebar} ${!open ? styles.collapsed : ''}`}>
+    <div className={`${styles.sidebar} ${!open ? styles.collapsed : ""}`}>
       <div className={styles.top_section}>
         {open && <span className={styles.logo}>Faktura</span>}
         <div className={styles.bars}>
@@ -52,21 +52,32 @@ const Sidebar = ({ flags }) => {
           </NavLink>
         ))}
         <AdminRoute>
-          <h1 className='textSidebar'>
+          <h1 className="textSidebar">
             <span>ADMIN</span>
           </h1>
         </AdminRoute>
         <AdminRoute>
           <NavLink to="/unApproved" className={styles.link}>
-            <div className={styles.icon}><BsFilePlus /></div>
+            <div className={styles.icon}>
+              <BsFilePlus />
+            </div>
             {open && <div className={styles.text}>Непринятые</div>}
           </NavLink>
           <NavLink to="/deleted" className={styles.link}>
-            <div className={styles.icon}><BsFilePlus /></div>
+            <div className={styles.icon}>
+              <BsFilePlus />
+            </div>
             {open && <div className={styles.text}>Удаленные</div>}
           </NavLink>
+          <NavLink to="/history" className={styles.link}>
+            {open && <div className={styles.text}>История операции</div>}
+          </NavLink>
         </AdminRoute>
-        <button onClick={handleLogout} className={styles.link} style={{ background: "none", border: "none" }}>
+        <button
+          onClick={handleLogout}
+          className={styles.link}
+          style={{ background: "none", border: "none" }}
+        >
           {open && <div>Выйти</div>}
         </button>
       </div>

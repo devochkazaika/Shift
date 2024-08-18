@@ -28,9 +28,9 @@ export const Pagination = ({
         value={itemsPerPage}
         onChange={handleItemsPerPageChange}
       >
-        <option value="2">2</option>
         <option value="4">4</option>
         <option value="8">8</option>
+        <option value="16">16</option>
       </select>
 
       <span style={{ marginRight: "10px" }}>

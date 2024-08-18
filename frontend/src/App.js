@@ -15,6 +15,7 @@ import { AdminRoute } from './components/Security/AdminRoute';
 import Button from './components/ui/Button';
 import StoryDeletedList from './pages/StoryDeletedList';
 import StoryUnApprovedList from './pages/StoryUnApprovedList';
+import History from './pages/HistoryList';
 
 function App() {
   const [flags, setFlags] = useState(null);
@@ -52,6 +53,8 @@ function App() {
                     }
                   />
                   <Route path="/story" element={<PrivateRoute><Stories /></PrivateRoute>} />
+                  <Route path="/history" element={<PrivateRoute><History /></PrivateRoute>} />
+
                   <Route path="/addStories" element={<PrivateRoute><Stories /></PrivateRoute>} />
                 </>
               )}
