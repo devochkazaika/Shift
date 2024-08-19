@@ -193,10 +193,25 @@ public class JsonProcessorService implements FileSaverService {
     @Transactional
     public StoryPresentationFrames addFrame(String frameDto, MultipartFile file,
                           String bankId, String platform, Long id) throws IOException {
+        var story = storyPresentationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find the story with id = %d", id)));
         StoryPresentationFrames frame = mapper.readValue(
                 frameDto
                 , StoryPresentationFrames.class);
-        return addFrameEntity(frame, file, bankId, platform, id);
+        frame.setStory(story);
+        frame = storyPresentationFramesRepository.save(frame);
+        story.getStoryPresentationFrames().add(frame);
+        final var storynew = storyPresentationRepository.save(story);
+        final var storyList = mapper.getStoryList(bankId, platform);
+        storyList.stream()
+                .filter(x -> x.getId().equals(id))
+                .findFirst()
+                .ifPresent(x -> {
+                    int index = storyList.indexOf(x);
+                    storyList.set(index, storynew);
+                });
+        mapper.putStoryToJson(storyList, bankId, platform);
+        return frame;
     }
     @Transactional
     public StoryPresentationFrames addFrameEntity(StoryPresentationFrames frame, MultipartFile file,
