@@ -1,0 +1,120 @@
+{
+  "stories" : [ {
+    "id" : 12,
+    "bankId" : "absolutbank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitle" : "Первая история",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/12_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "64191ee3-f011-4c79-9645-9707beb03581",
+      "title" : "Вторая карточка",
+      "text" : "Текст для второй карточки",
+      "textColor" : "#000",
+      "pictureUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/12_64191ee3-f011-4c79-9645-9707beb03581.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 13,
+    "bankId" : "absolutbank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitle" : "История про котиков",
+    "previewTitleColor" : "#912828ff",
+    "previewUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/13_0.jpg",
+    "previewGradient" : "HALF",
+    "storyFrames" : [ {
+      "id" : "4572395c-043a-4eb4-b33c-e535478cc201",
+      "title" : "Карточка с котом",
+      "text" : "Текст про кота",
+      "textColor" : "#000",
+      "pictureUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/13_4572395c-043a-4eb4-b33c-e535478cc201.jpg",
+      "visibleButtonOrNone" : "BUTTON",
+      "buttonText" : "Кнопка кошачья",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#892727ff",
+      "buttonUrl" : "http://localhost:8082",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 11,
+    "bankId" : "absolutbank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitle" : "Первая история",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/11_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "7c8fec35-bce5-4000-be91-e78fd1a12fe4",
+      "title" : "Первая карточка",
+      "text" : "Текст для первой карточки",
+      "textColor" : "#000",
+      "pictureUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/11_7c8fec35-bce5-4000-be91-e78fd1a12fe4.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 14,
+    "bankId" : "absolutbank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitle" : "История отдыха",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/14_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "cf25363c-73a8-48b4-8e08-abc9ee024729",
+      "title" : "Второй день",
+      "text" : "Второй день было еще лучше",
+      "textColor" : "#000",
+      "pictureUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/14_cf25363c-73a8-48b4-8e08-abc9ee024729.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    }, {
+      "id" : "09067188-d8d3-4aa7-8c34-73b906a34a5f",
+      "title" : "Третий день",
+      "text" : "Sample text for the story.",
+      "textColor" : "#f81c1cff",
+      "pictureUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/14_09067188-d8d3-4aa7-8c34-73b906a34a5f.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "Click Here",
+      "buttonTextColor" : "#FFFFFF",
+      "buttonBackgroundColor" : "#0000FF",
+      "buttonUrl" : "https://example.com",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 18,
+    "bankId" : "absolutbank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitle" : "История юзера",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/18_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "57e1adea-c90d-4b27-b1f5-058e4a93dc05",
+      "title" : "Первая карточка",
+      "text" : "Какой-то текст",
+      "textColor" : "#000",
+      "pictureUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/18_57e1adea-c90d-4b27-b1f5-058e4a93dc05.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  } ]
+}

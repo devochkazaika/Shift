@@ -72,7 +72,7 @@ server:
 feature-flags:
   components:
     stories: true
-    banners: false
+    banners: true
     admin_panel: true
 #logging:
 #  level:

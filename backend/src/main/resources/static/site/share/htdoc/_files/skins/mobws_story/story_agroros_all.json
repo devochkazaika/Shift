@@ -1,0 +1,24 @@
+{
+  "stories" : [ {
+    "id" : 17,
+    "bankId" : "agroros",
+    "platform" : "ALL PLATFORMS",
+    "previewTitle" : "Банк Алроса",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "/site/share/htdoc/_files/skins/mobws_story/agroros/ALL PLATFORMS/17_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "7500bf85-d340-43e5-8e73-b1692e283476",
+      "title" : "фывфыв",
+      "text" : "фывфыв",
+      "textColor" : "#000",
+      "pictureUrl" : "/site/share/htdoc/_files/skins/mobws_story/agroros/ALL PLATFORMS/17_7500bf85-d340-43e5-8e73-b1692e283476.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  } ]
+}

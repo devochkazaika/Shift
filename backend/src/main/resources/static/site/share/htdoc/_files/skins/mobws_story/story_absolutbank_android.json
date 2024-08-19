@@ -1,0 +1,24 @@
+{
+  "stories" : [ {
+    "id" : 15,
+    "bankId" : "absolutbank",
+    "platform" : "ANDROID",
+    "previewTitle" : "История андроид",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ANDROID/15_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "9eb3a2ea-6f31-4d6b-a027-7a90934a9886",
+      "title" : "Карточка андр",
+      "text" : "Какой-то текст",
+      "textColor" : "#000",
+      "pictureUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ANDROID/15_9eb3a2ea-6f31-4d6b-a027-7a90934a9886.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  } ]
+}

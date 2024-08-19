@@ -2,6 +2,7 @@ package ru.cft.shiftlab.contentmaker.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +36,26 @@ public class BannerController {
     @ResponseStatus(HttpStatus.CREATED)
     public void addBanner(
             @RequestParam(value = "json")
+                    @Parameter(example = "{\n" +
+                            "    \"bankName\": \"tkbbank\",\n" +
+                            "    \"platformType\": \"WEB\",\n" +
+                            "    \"priority\": 2,\n" +
+                            "    \"availableForAll\": true,\n" +
+                            "    \"siteSection\": \"hz\",\n" +
+                            "    \"name\": \"new mainBanner\",\n" +
+                            "    \"code\": \"b\",\n" +
+                            "    \"url\": \"http://asdasd\",\n" +
+                            "    \"textUrl\": \"http://asdasd\",\n" +
+                            "    \"color\": \"green\",\n" +
+                            "    \"text\": \"ASDasdasdasdasd\"\n" +
+                            "}")
             String bannerDto,
             @RequestPart(value = "previewImage",required = true)
+            @Parameter(name = "картинка для внешнего банера")
             MultipartFile picture,
+
             @RequestPart(value = "cardImages",required = true)
+            @Parameter(name = "картинка для внутреннего банера")
             MultipartFile icon) throws IOException {
         bannerProcessorService.addBanner(bannerDto,
                 picture,
@@ -107,10 +124,23 @@ public class BannerController {
     @PatchMapping(value = "/change/banner")
     @Operation(summary = "Изменение банера")
     @ResponseStatus(HttpStatus.OK)
-    public void changeBanner(@RequestParam(value = "json")
-                             String bannerDto,
-                             @RequestParam(value = "code")
-                             String code) throws JsonProcessingException {
+    public void changeBanner(
+            @RequestPart(value = "json") @Parameter(example = "{\n" +
+                    "    \"bankName\": \"tkbbank\",\n" +
+                    "    \"platformType\": \"WEB\",\n" +
+                    "    \"priority\": 2,\n" +
+                    "    \"availableForAll\": true,\n" +
+                    "    \"siteSection\": \"hz\",\n" +
+                    "    \"name\": \"new mainBanner\",\n" +
+                    "    \"code\": \"code\",\n" +
+                    "    \"url\": \"http://asdasd\",\n" +
+                    "    \"textUrl\": \"http://asdasd\",\n" +
+                    "    \"color\": \"green\",\n" +
+                    "    \"text\": \"ASDasdasdasdasd\"\n" +
+                    "}") String bannerDto,
+            @RequestParam(value = "code") String code) throws JsonProcessingException {
+
         bannerProcessorService.patchBanner(bannerDto, code);
     }
+
 }
