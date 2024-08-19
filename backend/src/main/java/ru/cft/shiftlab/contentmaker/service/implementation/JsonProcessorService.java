@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -142,7 +143,13 @@ public class JsonProcessorService implements FileSaverService {
         List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platformType);
         StoryPresentation storyPresentation = storyPresentationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Could not find story"));
         frame.setStory(storyPresentation);
-        storyPresentationList.stream().filter(x -> x.getId().equals(id)).findFirst().map(y -> storyPresentation);
+        storyPresentationList.stream()
+                .filter(x -> x.getId().equals(id))
+                .findFirst()
+                .ifPresent(x -> {
+                    int index = storyPresentationList.indexOf(x);
+                    storyPresentationList.set(index, storyPresentation);
+                });
         if (roles.contains(KeyCloak.Roles.ADMIN)){
             mapper.putStoryToJson(storyPresentationList, bankId, platformType);
             storyPresentation.setApproved(StoryPresentation.Status.APPROVED);
@@ -198,31 +205,7 @@ public class JsonProcessorService implements FileSaverService {
         StoryPresentationFrames frame = mapper.readValue(
                 frameDto
                 , StoryPresentationFrames.class);
-        frame.setStory(story);
-        frame = storyPresentationFramesRepository.save(frame);
-        story.getStoryPresentationFrames().add(frame);
-        final var storynew = storyPresentationRepository.save(story);
-        final var storyList = mapper.getStoryList(bankId, platform);
-        storyList.stream()
-                .filter(x -> x.getId().equals(id))
-                .findFirst()
-                .ifPresent(x -> {
-                    int index = storyList.indexOf(x);
-                    storyList.set(index, storynew);
-                });
-        mapper.putStoryToJson(storyList, bankId, platform);
-        return frame;
-    }
-    @Transactional
-    public StoryPresentationFrames addFrameEntity(StoryPresentationFrames frame, MultipartFile file,
-                                            String bankId, String platform, Long id) throws IOException {
-
-        //Изменение JSON
-        final List<StoryPresentation> listStory = mapper.getStoryList(bankId, platform);
-        final StoryPresentation storyPresentation = mapper.getStoryModel(listStory, id);
-        final List<StoryPresentationFrames> listFrames = storyPresentation.getStoryPresentationFrames();
-        listFrames.add(frame);
-        if (listFrames.size() >= MAX_COUNT_FRAME) throw new IllegalArgumentException("Cant save a frame. The maximum size is reached");
+        //Сохранение в БД и в JSON
         saveToJsonByRoles(frame, file, id, bankId, platform);
         return frame;
     }
@@ -389,35 +372,13 @@ public class JsonProcessorService implements FileSaverService {
      * @param id       id истории
      * @param frameId  UUID карточки
      */
+    @Modifying
     public ResponseEntity<?> deleteStoryFrame(String bankId, String platform, String id, String frameId) throws Throwable {
         ExecutorService executor = Executors.newFixedThreadPool(2);
-        //для передачи UUID между потоками
-        Exchanger<UUID> exchanger = new Exchanger<>();
-        Future<?> deleteJson = executor.submit(()->{
-            try {
-                exchanger.exchange(deleteJsonFrame(bankId, platform, id, frameId));
-            }
-            catch (IOException e){
-                throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (IndexOutOfBoundsException e){
-                throw new IllegalArgumentException(String.format("Frame with id=%s doesnt exist", frameId));
-            }
-        });
-        Future<?> deleteImages = executor.submit(() -> {
-            try {
-                deleteFileFrame(bankId, platform, id, exchanger.exchange(null));
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        try {
-            deleteJson.get();
-            deleteImages.get();
-        } catch (ExecutionException ex) {
-            throw ex.getCause();
-        }
+
+        UUID uuid = deleteJsonFrame(bankId, platform, id, frameId);
+        deleteFileFrame(bankId, platform, id, uuid);
+        deleteFrameFromDb(uuid);
         return new ResponseEntity<>(HttpStatus.valueOf(202));
     }
 
@@ -440,6 +401,7 @@ public class JsonProcessorService implements FileSaverService {
         List<StoryPresentationFrames> frames = story.getStoryPresentationFrames();
         //Получаем UUID нужной истории и удаляем ее
         uuid = UUID.fromString(frameId);
+        deleteFrameFromDb(uuid);
 
         if (frames.size() == 1) throw new IllegalArgumentException("Can't delete a single frame");
         if (!frames.removeIf(x -> x.getId().equals(UUID.fromString(frameId)))){
@@ -451,6 +413,14 @@ public class JsonProcessorService implements FileSaverService {
         //Записываем в JSON
         mapper.putStoryToJson(list, bankId, platform);
         return uuid;
+    }
+
+    @Transactional
+    public void deleteFrameFromDb(UUID uuid) {
+        var story = storyPresentationFramesRepository.findById(uuid).orElse(null);
+        if (story != null) {
+            storyPresentationFramesRepository.deleteById(uuid);
+        }
     }
     /**
      * Метод, предназначенный для удаления файлов при удалении карточки
