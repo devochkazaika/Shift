@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
-import './styles/globals.scss';
-import Sidebar from './components/Sidebar';
-import Stories from './pages/Stories';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { getFlags } from './api/api';
+import React, { useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import "./styles/globals.scss";
+import Sidebar from "./components/Sidebar";
+import Stories from "./pages/Stories";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { getFlags } from "./api/api";
 
 import StoriesList from "./pages/StoriesList";
-import { ReactKeycloakProvider } from '@react-keycloak/web';
-import keycloak from './components/Security/Keycloak';
-import PrivateRoute from './components/Security/PrivateRoute';
-import { AdminRoute } from './components/Security/AdminRoute';
-import Button from './components/ui/Button';
-import StoryDeletedList from './pages/StoryDeletedList';
-import StoryUnApprovedList from './pages/StoryUnApprovedList';
-import History from './pages/HistoryList';
+import { ReactKeycloakProvider } from "@react-keycloak/web";
+import keycloak from "./components/Security/Keycloak";
+import PrivateRoute from "./components/Security/PrivateRoute";
+import { AdminRoute } from "./components/Security/AdminRoute";
+import Button from "./components/ui/Button";
+import StoryDeletedList from "./pages/StoryDeletedList";
+import StoryUnApprovedList from "./pages/StoryUnApprovedList";
+import History from "./pages/HistoryList";
+import BannersAdd from "./pages/BannersAdd";
 
 function App() {
   const [flags, setFlags] = useState(null);
@@ -52,20 +53,52 @@ function App() {
                       </PrivateRoute>
                     }
                   />
-                  <Route path="/story" element={<PrivateRoute><Stories /></PrivateRoute>} />
-                  <Route path="/history" element={<PrivateRoute><History /></PrivateRoute>} />
+                  <Route
+                    path="/story"
+                    element={
+                      <PrivateRoute>
+                        <Stories />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/history"
+                    element={
+                      <PrivateRoute>
+                        <History />
+                      </PrivateRoute>
+                    }
+                  />
 
-                  <Route path="/addStories" element={<PrivateRoute><Stories /></PrivateRoute>} />
+                  <Route
+                    path="/addStories"
+                    element={
+                      <PrivateRoute>
+                        <Stories />
+                      </PrivateRoute>
+                    }
+                  />
                 </>
               )}
-              <Route path="/unApproved" element={
-                <PrivateRoute>
-                  <AdminRoute>
+              <Route
+                path="/unApproved"
+                element={
+                  <PrivateRoute>
+                    <AdminRoute>
                       <StoryUnApprovedList />
-                  </AdminRoute>
-                </PrivateRoute>} />
-              <Route path="/deleted" element={<PrivateRoute><StoryDeletedList /></PrivateRoute>} />
-              {/* <Route path="/banners" element={<Banners />} /> */}
+                    </AdminRoute>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/deleted"
+                element={
+                  <PrivateRoute>
+                    <StoryDeletedList />
+                  </PrivateRoute>
+                }
+              />
+              <Route path="/banners" element={<BannersAdd />} />
             </Routes>
           </main>
         </div>
