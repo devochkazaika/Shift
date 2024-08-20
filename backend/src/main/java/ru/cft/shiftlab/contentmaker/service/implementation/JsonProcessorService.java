@@ -58,6 +58,13 @@ public class JsonProcessorService implements FileSaverService {
     private final StoryPresentationFramesRepository storyPresentationFramesRepository;
     private final HistoryService historyService;
 
+    /**
+     * Возврат всех историй банка + платформы
+     * @param bankId Имя банка
+     * @param platform Тип платформы
+     * @return
+     * @throws IOException
+     */
     public HttpEntity<List<StoryPresentation>> getFilePlatformJson(String bankId, String platform) throws IOException {
         return new HttpEntity<List<StoryPresentation>>(mapper.getStoryList(bankId, platform));
     }
