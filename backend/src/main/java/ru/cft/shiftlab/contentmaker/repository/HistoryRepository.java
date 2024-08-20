@@ -12,13 +12,16 @@ import java.util.List;
 
 @Repository
 public interface HistoryRepository extends CrudRepository<History, Long> {
-    @Query(value = "select his from History his where his.componentId = :id and his.componentType = 'STORIES'")
+    @Query(value = "select his from History his where his.componentId = :id and his.componentType = 'STORIES' " +
+            "ORDER BY his.day DESC, his.time DESC")
     List<History> getHistoryByStoryId(@Param("id") Long id);
 
-    @Query("select his from History his where his.bankId = :bank and his.platform = :platform and his.componentType = 'STORIES'")
+    @Query("select his from History his where his.bankId = :bank and his.platform = :platform and his.componentType = 'STORIES' " +
+            "ORDER BY his.day DESC, his.time DESC")
     List<History> getHistoryByBankAndPlatform(@Param("bank") String bank, @Param("platform") String platform);
 
-    @Query("select his from History his where his.componentType = 'STORIES'")
+    @Query("select his from History his where his.componentType = 'STORIES' " +
+            "ORDER BY his.day DESC, his.time DESC")
     List<History> getAllHistory();
 
     @Modifying

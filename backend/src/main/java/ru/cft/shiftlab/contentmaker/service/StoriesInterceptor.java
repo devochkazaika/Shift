@@ -57,6 +57,7 @@ public class StoriesInterceptor implements HandlerInterceptor {
                 history.setOperationType(History.OperationType.Update);
                 history.setComponentId(Long.parseLong(request.getParameter("id")));
             }
+            else return;
             if (request.getParameter("bankId") != null){
                 history.setBankId(request.getParameter("bankId"));
             }

@@ -138,11 +138,21 @@ public class JsonProcessorService implements FileSaverService {
      * @param platformType
      * @throws IOException
      */
-    public void saveToJsonByRoles(final StoryPresentationFrames frame, MultipartFile file, Long id, String bankId, String platformType) throws IOException {
+    public void saveToJsonByRoles(StoryPresentationFrames frame, MultipartFile file, Long id, String bankId, String platformType) throws IOException {
         Set<KeyCloak.Roles> roles = KeyCloak.getRoles();
         List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platformType);
         StoryPresentation storyPresentation = storyPresentationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Could not find story"));
+        if (storyPresentation.getStoryPresentationFrames().size() >= MAX_COUNT_FRAME) throw new IllegalArgumentException("Could not save frame because max count is achieved");
         frame.setStory(storyPresentation);
+        frame = storyPresentationFramesRepository.save(frame);
+        storyPresentation.getStoryPresentationFrames().add(frame);
+        //добавление картинки в JSON
+        String presentationPictureUrl = multipartFileToImageConverter.parsePicture(
+                new ImageContainer(file),
+                FILES_SAVE_DIRECTORY+bankId+"/"+platformType+"/",
+                id,
+                frame.getId());
+        frame.setPictureUrl(presentationPictureUrl);
         storyPresentationList.stream()
                 .filter(x -> x.getId().equals(id))
                 .findFirst()
@@ -157,15 +167,6 @@ public class JsonProcessorService implements FileSaverService {
         else if (roles.contains(KeyCloak.Roles.USER)){
             storyPresentation.setApproved(StoryPresentation.Status.NOTAPPROVED);
         }
-        storyPresentationRepository.save(storyPresentation);
-        storyPresentationFramesRepository.save(frame);
-        //добавление картинки в JSON
-        String presentationPictureUrl = multipartFileToImageConverter.parsePicture(
-                new ImageContainer(file),
-                FILES_SAVE_DIRECTORY+bankId+"/"+platformType+"/",
-                id,
-                frame.getId());
-        frame.setPictureUrl(presentationPictureUrl);
     }
 
     @Override
@@ -361,7 +362,6 @@ public class JsonProcessorService implements FileSaverService {
 
     }
 
-
     /**
      * Метод, предназначенный для удаления одной карточки из историй.
      * deleteJsonFrame - удаляет frame из JSON
@@ -374,8 +374,6 @@ public class JsonProcessorService implements FileSaverService {
      */
     @Modifying
     public ResponseEntity<?> deleteStoryFrame(String bankId, String platform, String id, String frameId) throws Throwable {
-        ExecutorService executor = Executors.newFixedThreadPool(2);
-
         UUID uuid = deleteJsonFrame(bankId, platform, id, frameId);
         deleteFileFrame(bankId, platform, id, uuid);
         deleteFrameFromDb(uuid);
@@ -401,13 +399,12 @@ public class JsonProcessorService implements FileSaverService {
         List<StoryPresentationFrames> frames = story.getStoryPresentationFrames();
         //Получаем UUID нужной истории и удаляем ее
         uuid = UUID.fromString(frameId);
-        deleteFrameFromDb(uuid);
 
         if (frames.size() == 1) throw new IllegalArgumentException("Can't delete a single frame");
         if (!frames.removeIf(x -> x.getId().equals(UUID.fromString(frameId)))){
             throw new IllegalArgumentException(String.format(
                     "Could not find the frame with id = %s",
-                    id
+                    frameId
             ));
         }
         //Записываем в JSON
