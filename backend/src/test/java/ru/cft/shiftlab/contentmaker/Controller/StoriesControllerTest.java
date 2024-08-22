@@ -129,7 +129,7 @@ public class StoriesControllerTest {
         String bank = "testBanksad";
         String platform = "WEB";
 
-        Mockito.when(jsonProcessorService.deleteService(bank, platform, "1"))
+        Mockito.when(jsonProcessorService.deleteService(bank, platform, 1L))
                 .thenReturn(new ResponseEntity<>(HttpStatus.valueOf(202)));
         mockMvc.perform(delete("/stories/bank/info/delete")
                         .param("bankId", bank)
@@ -140,7 +140,7 @@ public class StoriesControllerTest {
                 .andExpect(status().is(400));
         //Перебор всех доступных BankId
         for (Map.Entry<String, String> x : WhiteList.whitelistBank.entrySet()) {
-            Mockito.when(jsonProcessorService.deleteService(x.getKey(), platform, "1"))
+            Mockito.when(jsonProcessorService.deleteService(x.getKey(), platform, 1L))
                     .thenReturn(new ResponseEntity<>(HttpStatus.valueOf(202)));
             mockMvc.perform(delete("/stories/bank/info/delete")
                             .param("bankId", x.getKey())
@@ -156,7 +156,7 @@ public class StoriesControllerTest {
         String bank = "tkbbank";
         String platform = "asdasdasd";
 
-        Mockito.when(jsonProcessorService.deleteService(bank, platform, "1"))
+        Mockito.when(jsonProcessorService.deleteService(bank, platform, 1L))
                 .thenReturn(new ResponseEntity<>(HttpStatus.valueOf(202)));
         mockMvc.perform(delete("/stories/bank/info/delete")
                         .param("bankId", bank)
@@ -167,7 +167,7 @@ public class StoriesControllerTest {
                 .andExpect(status().is(400));
         //Перебор всех доступных Platform
         for (String x : PlatformValidator.platforms) {
-            Mockito.when(jsonProcessorService.deleteService(bank, x, "1"))
+            Mockito.when(jsonProcessorService.deleteService(bank, x, 1L))
                     .thenReturn(new ResponseEntity<>(HttpStatus.valueOf(202)));
             mockMvc.perform(delete("/stories/bank/info/delete")
                             .param("bankId", bank)
@@ -184,7 +184,7 @@ public class StoriesControllerTest {
     public void delete_story_successfull_test() throws Throwable {
         String bank = "tkbbank";
         String platform = "WEB";
-        Mockito.when(jsonProcessorService.deleteService(bank, platform, "0"))
+        Mockito.when(jsonProcessorService.deleteService(bank, platform, 0L))
                 .thenReturn(new ResponseEntity<>(HttpStatus.valueOf(202)));;
         mockMvc.perform(delete("/stories/bank/info/delete")
                 .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -198,7 +198,7 @@ public class StoriesControllerTest {
     public void delete_story_with_bad_bank_test() throws Throwable {
         String bank = "asdasd";
         String platform = "WEB";
-        Mockito.when(jsonProcessorService.deleteService(bank, platform, "0"))
+        Mockito.when(jsonProcessorService.deleteService(bank, platform, 0L))
                 .thenReturn(new ResponseEntity<>(HttpStatus.valueOf(202)));;
         mockMvc.perform(delete("/stories/bank/info/delete")
                         .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -211,7 +211,7 @@ public class StoriesControllerTest {
     public void delete_story_with_bad_platform_test() throws Throwable {
         String bank = "tkbbank";
         String platform = "asdasdasd";
-        Mockito.when(jsonProcessorService.deleteService(bank, platform, "0"))
+        Mockito.when(jsonProcessorService.deleteService(bank, platform, 0L))
                 .thenReturn(new ResponseEntity<>(HttpStatus.valueOf(202)));;
         mockMvc.perform(delete("/stories/bank/info/delete")
                         .contentType(MediaType.MULTIPART_FORM_DATA)

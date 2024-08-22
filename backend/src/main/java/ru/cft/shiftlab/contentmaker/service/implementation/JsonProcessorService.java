@@ -146,6 +146,7 @@ public class JsonProcessorService implements FileSaverService {
         frame.setStory(storyPresentation);
         frame = storyPresentationFramesRepository.save(frame);
         storyPresentation.getStoryPresentationFrames().add(frame);
+
         //добавление картинки в JSON
         String presentationPictureUrl = multipartFileToImageConverter.parsePicture(
                 new ImageContainer(file),
