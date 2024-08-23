@@ -1,4 +1,4 @@
-CREATE TABLE  history
+CREATE TABLE IF NOT EXISTS history
 (
     id SERIAL PRIMARY KEY NOT NULL,
     component_type varchar(30),
@@ -9,6 +9,5 @@ CREATE TABLE  history
     component_id BIGINT,
     day date,
     time time,
-    user_name varchar(255),
-    CONSTRAINT fk_story FOREIGN KEY (component_id) REFERENCES stories(id)
+    user_name varchar(255)
 );

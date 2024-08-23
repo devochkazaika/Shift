@@ -24,6 +24,7 @@ import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Контроллер, обрабатывающий запросы для работы с Story.
@@ -338,22 +339,11 @@ public class StoriesController {
             @PlatformValid
             String platform,
 
-            @RequestParam(name = "first")
-            @UUIDValid
-            @Parameter(description = "UUID 1-ой карточки истории",
-                    schema = @Schema(type = "string", format = "string"),
-                    example = "55151a3b-c9f6-409a-b185-604b2a9afe86")
-            String first,
-
-            @RequestParam(name = "second")
-            @UUIDValid
-            @Parameter(description = "UUID 2-ой карточки истории",
-                    schema = @Schema(type = "string", format = "string"),
-                    example = "55151a3b-c9f6-409a-b185-604b2a9afe86")
-            String second
+            @RequestParam(name = "newOrder")
+            List<String> newOrder
     ) throws IOException {
         storiesService.swapFrames(
-                id, bankId, platform, first, second
+                id, bankId, platform, newOrder
         );
     }
 }

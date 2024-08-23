@@ -8,6 +8,7 @@ import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Интерфейс, предназначенный для сохранения файлов в определенную директорию.
@@ -131,11 +132,9 @@ public interface FileSaverService {
      * @param id Id истории
      * @param bankId Имя банка
      * @param platform Платформа
-     * @param firstUUID UUID первой карточки
-     * @param secondUUID UUID второй карточки
      * @throws IOException
      */
-    void swapFrames(Long id, String bankId, String platform, String firstUUID, String secondUUID) throws IOException;
+    void swapFrames(Long id, String bankId, String platform, List<String> newOrder) throws IOException;
 
     /**
      * Метод для одобрения истории новой истории

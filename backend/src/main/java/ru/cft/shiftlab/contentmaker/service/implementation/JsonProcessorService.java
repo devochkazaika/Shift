@@ -154,18 +154,16 @@ public class JsonProcessorService implements FileSaverService {
                 id,
                 frame.getId());
         frame.setPictureUrl(presentationPictureUrl);
-        storyPresentationList.stream()
-                .filter(x -> x.getId().equals(id))
-                .findFirst()
-                .ifPresent(x -> {
-                    int index = storyPresentationList.indexOf(x);
-                    storyPresentationList.set(index, storyPresentation);
-                });
+        final StoryPresentation st = storyPresentationList.stream().filter(x-> x.getId().equals(id)).findFirst()
+                .orElseThrow(() -> new RuntimeException("Unexpected exception"));
+        st.getStoryPresentationFrames().add(frame);
+
         if (roles.contains(KeyCloak.Roles.ADMIN)){
             mapper.putStoryToJson(storyPresentationList, bankId, platformType);
             storyPresentation.setApproved(StoryPresentation.Status.APPROVED);
         }
         else if (roles.contains(KeyCloak.Roles.USER)){
+            mapper.putStoryToJson(storyPresentationList, bankId, platformType);
             storyPresentation.setApproved(StoryPresentation.Status.NOTAPPROVED);
         }
     }
@@ -250,9 +248,9 @@ public class JsonProcessorService implements FileSaverService {
 
         //обновляем значение и записываем в JSON
         String json = mapper.writeValueAsString(story);
-        storyPresentationRepository.save(storyPresentation);
         mapper.readerForUpdating(storyPresentation).readValue(json);
         mapper.putStoryToJson(storyPresentationList, bankId, platform);
+        storyPresentationRepository.save(storyPresentation);
     }
 
     /**
@@ -287,9 +285,9 @@ public class JsonProcessorService implements FileSaverService {
         }
 
         //обновляем значение и записываем в JSON
-        storyPresentationFramesRepository.save(storyPresentationFrames);
         String json = mapper.writeValueAsString(story);
         mapper.readerForUpdating(storyPresentationFrames).readValue(json);
+        storyPresentationFramesRepository.save(storyPresentationFrames);
         mapper.putStoryToJson(storyPresentationList, bankId, platform);
     }
 
@@ -445,22 +443,25 @@ public class JsonProcessorService implements FileSaverService {
      * @param secondUuid
      * @throws IOException
      */
-    public void swapFrames(Long id, String bankId, String platform, String fristUuid, String secondUuid) throws IOException {
+    public void swapFrames(Long id, String bankId, String platform, List<String> newOrder) throws IOException {
         final List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platform);
         final StoryPresentation storyPresentation = mapper.getStoryModel(storyPresentationList, id);
         final List<StoryPresentationFrames> frames = storyPresentation.getStoryPresentationFrames();
-        int first = IntStream.range(0, frames.size())
-                .filter(streamIndex -> fristUuid.equals(frames.get(streamIndex).getId().toString()))
-                .findFirst()
-                .orElse(-1);
-        int second = IntStream.range(0, frames.size())
-                .filter(streamIndex -> secondUuid.equals(frames.get(streamIndex).getId().toString()))
-                .findFirst()
-                .orElse(-1);
 
-        Collections.swap(frames, first, second);
+        for (int i=0; i<newOrder.size()-1; i++){
+            for (int j=0; j<newOrder.size(); j++){
+                if (frames.get(j).getId().equals(UUID.fromString(newOrder.get(i)))){
+                    StoryPresentationFrames temp = frames.get(i);
+                    frames.set(i, frames.get(j));
+                    frames.set(j, temp);
+                    break;
+                }
+            }
+        }
+
         storyPresentation.setStoryPresentationFrames(frames);
         mapper.putStoryToJson(storyPresentationList, bankId, platform);
+        storyPresentationRepository.save(storyPresentation);
     }
 
     @Override
