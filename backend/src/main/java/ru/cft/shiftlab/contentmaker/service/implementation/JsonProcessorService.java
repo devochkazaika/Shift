@@ -287,6 +287,7 @@ public class JsonProcessorService implements FileSaverService {
         //обновляем значение и записываем в JSON
         String json = mapper.writeValueAsString(story);
         mapper.readerForUpdating(storyPresentationFrames).readValue(json);
+        storyPresentationFrames.setStory(storyPresentation);
         storyPresentationFramesRepository.save(storyPresentationFrames);
         mapper.putStoryToJson(storyPresentationList, bankId, platform);
     }
@@ -447,6 +448,7 @@ public class JsonProcessorService implements FileSaverService {
         final List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platform);
         final StoryPresentation storyPresentation = mapper.getStoryModel(storyPresentationList, id);
         final List<StoryPresentationFrames> frames = storyPresentation.getStoryPresentationFrames();
+        frames.stream().forEach(x -> x.setStory(storyPresentation));
 
         for (int i=0; i<newOrder.size()-1; i++){
             for (int j=0; j<newOrder.size(); j++){

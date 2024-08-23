@@ -1,0 +1,24 @@
+{
+  "stories" : [ {
+    "id" : 27,
+    "bankId" : "absolutbank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitle" : "История",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/27_0.jpg",
+    "previewGradient" : "HALF",
+    "storyFrames" : [ {
+      "id" : "aa87cd87-ee94-44b6-9284-d1154b812092",
+      "title" : "Карточка 1",
+      "text" : "Текст",
+      "textColor" : "#000",
+      "pictureUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/27_aa87cd87-ee94-44b6-9284-d1154b812092.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  } ]
+}

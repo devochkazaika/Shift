@@ -1,0 +1,45 @@
+{
+  "stories" : [ {
+    "id" : 22,
+    "bankId" : "absolutbank",
+    "platform" : "ANDROID",
+    "previewTitle" : "Ист",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ANDROID/22_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "babdecda-2d24-42f6-8469-0d2a0df4a3d7",
+      "title" : "Карточка",
+      "text" : "фффффффф",
+      "textColor" : "#9f2929ff",
+      "pictureUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ANDROID/22_babdecda-2d24-42f6-8469-0d2a0df4a3d7.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 24,
+    "bankId" : "absolutbank",
+    "platform" : "ANDROID",
+    "previewTitle" : "История 2",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ANDROID/24_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "fbf5e7cd-c824-4480-a29f-c5aa162cb2d7",
+      "title" : "Карточка 1",
+      "text" : "Текст для карточки",
+      "textColor" : "#972828ff",
+      "pictureUrl" : "/site/share/htdoc/_files/skins/mobws_story/absolutbank/ANDROID/24_fbf5e7cd-c824-4480-a29f-c5aa162cb2d7.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  } ]
+}
