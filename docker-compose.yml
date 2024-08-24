@@ -89,6 +89,16 @@ services:
     networks:
       - keycloak_demo
 
+  mongo-container:
+    image: mongo:latest
+    environment:
+        - MONGO_INITDB_ROOT_USERNAME=admin
+        - MONGO_INITDB_ROOT_PASSWORD=password
+        - MONGO_INITDB_DATABASE=content
+    ports:
+      - "27017:27017"
+    command: mongod
+
 
 networks:
   keycloak_demo:
@@ -100,3 +110,4 @@ volumes:
   oracle-data:
   oracle-backup:
   db-data:
+  mongo_data:

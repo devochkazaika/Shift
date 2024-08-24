@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BannerDto {
-    String bankId;
+    String bankName;
     String code;
     String name;
     String platformType;

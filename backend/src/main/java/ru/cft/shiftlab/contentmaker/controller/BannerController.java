@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +21,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/banners")
 @RequiredArgsConstructor
-@ConditionalOnProperty(
-        name = "feature-flags.components.banners",
-        havingValue = "true"
-)
 public class BannerController {
     private final BannerProcessorService bannerProcessorService;
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -35,7 +30,7 @@ public class BannerController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     public void addBanner(
-            @RequestParam(value = "json")
+            @RequestPart(value = "json")
                     @Parameter(example = "{\n" +
                             "    \"bankName\": \"tkbbank\",\n" +
                             "    \"platformType\": \"WEB\",\n" +

@@ -46,7 +46,7 @@ public class Banner {
      * Банк владельца баннера.
      */
     @Column(name = "bank_id")
-    private String bank;
+    private String bankName;
 
     /**
      * Основной баннер.

@@ -238,15 +238,14 @@ export const addFrame = async (story, storyIndex, frame, platform) => {
   }
 };
 
-export const updateFrameOrder = async (story, platform, firstId, secondId) => {
+export const updateFrameOrder = async (story, platform, newOrder) => {
   const toastView = createToast(defaultToastMessages.uploadingData);
 
   const form = new FormData();
   form.append("bankId", story.bankId);
   form.append("platform", platform);
   form.append("id", story.id);
-  form.append("second", secondId);
-  form.append("first", firstId);
+  form.append("newOrder", newOrder);
   try {
     const response = await api.patch(`/stories/change/frame/swap`, form);
     toast.update(toastView, {

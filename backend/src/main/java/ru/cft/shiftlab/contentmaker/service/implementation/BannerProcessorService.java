@@ -131,7 +131,7 @@ public class BannerProcessorService implements BannerService {
      */
     private String[] saveImage(BannerDto bannerDto, MultipartFile picture,
                             MultipartFile icon) throws IOException {
-        String bankId = bannerDto.getBankId();
+        String bankId = bannerDto.getBankName();
         String picturesSaveDirectory = BANNERS_SAVE_DIRECTORY;
         dirProcess.createFolders(picturesSaveDirectory+bankId+"/");
         String pictureName = multipartFileToImageConverter.convertMultipartFileToImageAndSave(

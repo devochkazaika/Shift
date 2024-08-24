@@ -44,33 +44,29 @@ const StoryCard = ({ storyIndex, story, platform, changeable, ...props }) => {
     const handleDragEnd = async (e) => {
       if (e.target.tagName === "LI") {
         e.target.classList.remove("dragging");
-        const newOrder = Array.from(draggableList.children).map(
-          (child) => child.id
-        );
-
-        let changedIds = [];
+    
+        const newOrder = Array.from(draggableList.children).map(child => child.id);
+    
+        // Check if the order has changed
+        let isOrderChanged = false;
         for (let i = 0; i < newOrder.length; i++) {
           if (newOrder[i] !== initialOrder[i]) {
-            changedIds.push(initialOrder[i], newOrder[i]);
+            isOrderChanged = true;
             break;
           }
         }
-
-        if (changedIds.length === 2) {
+    
+        if (isOrderChanged) {
           try {
-            await updateFrameOrder(
-              story,
-              platform,
-              changedIds[0],
-              changedIds[1]
-            );
-            setFrames((prevFrames) =>
-              prevFrames.sort(
-                (a, b) => newOrder.indexOf(a.id) - newOrder.indexOf(b.id)
-              )
+            console.log(newOrder);
+            await updateFrameOrder(story, platform, newOrder);
+            setFrames(prevFrames =>
+              prevFrames.sort((a, b) => newOrder.indexOf(a.id) - newOrder.indexOf(b.id))
             );
           } catch (error) {
-            console.error("Ошибка при обновлении порядка фреймов:", error);
+            console.error("Error updating frame order:", error);
+            // If an error occurs, revert to the original order
+            setFrames(prevFrames => [...prevFrames]); 
           }
         }
       }

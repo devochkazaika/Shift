@@ -29,10 +29,10 @@ public interface BannerRepository extends CrudRepository<Banner, Long> {
     void updateBannerByMainBanner(@Param("bannerId") Long bannerId,
                                   @Param("mainCodeId") Long mainCodeId);
 
-    @Query(value = "SELECT b FROM Banner as b where b.bank = :bank")
+    @Query(value = "SELECT b FROM Banner as b where b.bankName = :bank")
     Optional<ArrayList<Banner>> findBannerByBank(@Param("bank") String bank);
 
-    @Query(value = "SELECT b FROM Banner as b where b.bank = :bank and b.platformType = :platform")
+    @Query(value = "SELECT b FROM Banner as b where b.bankName = :bank and b.platformType = :platform")
     List<Banner> findBannerByBankAndPlatform(@Param("bank") String bank,
                                                             @Param("platform") String platform);
 
