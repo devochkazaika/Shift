@@ -35,18 +35,18 @@ export const initialStoryValues = {
   ],
 };
 
-export const initialBannerValues = {
-  title: 'asdasd',
-  text: '',
-  textColor: '#000',
-  gradient: 'EMPTY',
-  visibleLinkOrButtonOrNone: 'BUTTON',
-  pictureUrl: null,
-  linkText: '',
-  linkUrl: '',
-  buttonText: '',
-  buttonTextColor: '#000',
-  buttonBackgroundColor: '#fff',
-  buttonUrl: '',
-};
+// export const initialBannerValues = {
+//   title: 'asdasd',
+//   text: '',
+//   textColor: '#000',
+//   gradient: 'EMPTY',
+//   visibleLinkOrButtonOrNone: 'BUTTON',
+//   pictureUrl: null,
+//   linkText: '',
+//   linkUrl: '',
+//   buttonText: '',
+//   buttonTextColor: '#000',
+//   buttonBackgroundColor: '#fff',
+//   buttonUrl: '',
+// };
 

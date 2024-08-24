@@ -10,7 +10,7 @@ const MainBannerFields = ({ storyIndex, ...props }) => {
         <FormField
           className="title"
           labelTitle="Наименование"
-          name={`stories.${storyIndex}.previewTitle`}
+          name={`mainBannerTitle`}
           as="textarea"
           {...props}
         />
@@ -19,7 +19,7 @@ const MainBannerFields = ({ storyIndex, ...props }) => {
         <FormField
           className="title"
           labelTitle="Код"
-          name={`stories.${storyIndex}.previewTitle`}
+          name={`mainBannerCode`}
           as="textarea"
           {...props}
         />
@@ -27,7 +27,7 @@ const MainBannerFields = ({ storyIndex, ...props }) => {
       <div className="input_field">
         <FormField
           labelTitle="Изображение"
-          name={`stories.${storyIndex}.previewUrl`}
+          name={`mainBanner.previewUrl`}
           component={UploadImage}
           {...props}
         />
@@ -35,7 +35,7 @@ const MainBannerFields = ({ storyIndex, ...props }) => {
       <div className="input_field">
         <FormField
           labelTitle="Ссылка"
-          name={`stories.${storyIndex}.buttonUrl`}
+          name={`mainBanner.buttonUrl`}
           type="text"
           {...props}
         />

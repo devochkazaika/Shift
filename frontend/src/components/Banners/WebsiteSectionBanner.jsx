@@ -7,29 +7,28 @@ const WebsiteSectionBanner = () => {
   return (
     <div>
       <div className="input_field">
-        <FormField name={`gradient`} as="select" options={webSectionsOptions} />
+        <FormField
+          name={`webSection`}
+          as="select"
+          options={webSectionsOptions}
+        />
       </div>
       <div className="input_field">
-        <FormField
-          labelTitle="Приоритет"
-          name={`stories.buttonUrl`}
-          type="text"
-        />
+        <FormField labelTitle="Приоритет" name={`priority`} type="text" />
       </div>
       <div className="row">
         <FormField
           labelTitle="Всем пользователям"
-          name={`visibleButtonOrNone`}
-          value="BUTTON"
-          id={`ButtonIntarectiveType`}
+          name={`isAllUsers`}
+          value="allUsers"
           type="checkbox"
         />
       </div>
       <div className="row">
         <FormField
           labelTitle="Активен"
-          name={`visibleButtonOrNone`}
-          value="BUTTON"
+          name={`isBannerActive`}
+          value="active"
           id={`ButtonIntarectiveType`}
           type="checkbox"
         />
