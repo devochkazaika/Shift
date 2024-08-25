@@ -112,7 +112,7 @@ public class BannerProcessorService implements BannerService {
             return banner;
         }
         catch (Exception e){
-            if (bannerRepository.findBannerByCode(banner.getCode()).orElse(null) == null){
+            if (bannerRepository.findBannerByCode(banner.getCode()).orElse(null) != null){
                 throw new StaticContentException("Banner with code " + banner.getCode() + " is already exist",
                         "500");
             }
