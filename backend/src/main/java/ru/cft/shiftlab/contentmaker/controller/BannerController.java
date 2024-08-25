@@ -116,7 +116,7 @@ public class BannerController {
         bannerProcessorService.deleteBannerCascade(code);
     }
 
-    @PatchMapping(value = "/change/banner")
+    @PatchMapping(value = "/change/banner", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Изменение банера")
     @ResponseStatus(HttpStatus.OK)
     public void changeBanner(
