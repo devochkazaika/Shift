@@ -133,7 +133,7 @@ public class BannerController {
                     "    \"color\": \"green\",\n" +
                     "    \"text\": \"ASDasdasdasdasd\"\n" +
                     "}") String bannerDto,
-            @RequestParam(value = "code") String code) throws JsonProcessingException {
+            @RequestPart(value = "code") String code) throws JsonProcessingException {
 
         bannerProcessorService.patchBanner(bannerDto, code);
     }
