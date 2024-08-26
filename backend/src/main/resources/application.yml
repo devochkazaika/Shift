@@ -66,7 +66,7 @@ spring:
       max-request-size: 1000MB
 server:
   tomcat:
-    max-http-form-post-size: 10485760
+    max-http-form-post-size:  10485760
   port: 8081
 
 feature-flags:
@@ -74,6 +74,10 @@ feature-flags:
     stories: true
     banners: true
     admin_panel: true
+
+file_path_to_save:
+  stories: "src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/"
+  banners: "src/main/resources/static/site/share/htdoc/_files/skins/mobws_banners/"
 #logging:
 #  level:
 #    org:

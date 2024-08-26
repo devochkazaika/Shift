@@ -55,8 +55,7 @@ public class MultipartFileToImageConverter {
                 picturesSaveDirectory,
                 imageNameGenerator.generateImageName(picturesSaveDirectory, id, uuid)
         );
-
-        return (picturesSaveDirectory + previewPictureName).split("static")[1];
+        return picturesSaveDirectory + previewPictureName;
     }
     public String parsePicture(ImageContainer imageContainer, String picturesSaveDirectory, Long id) throws IOException {
         String previewPictureName = convertMultipartFileToImageAndSave(
@@ -64,8 +63,8 @@ public class MultipartFileToImageConverter {
                 picturesSaveDirectory,
                 imageNameGenerator.generateImageName(picturesSaveDirectory, id)
         );
-
-        return (picturesSaveDirectory + previewPictureName).split("static")[1];
+        System.out.println(picturesSaveDirectory);
+        return picturesSaveDirectory + previewPictureName;
     }
 
 }

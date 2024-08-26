@@ -1,0 +1,24 @@
+{
+  "stories" : [ {
+    "id" : 8,
+    "bankId" : "absolutbank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitle" : "фывфыв",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "nullabsolutbank/ALL PLATFORMS/8_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "22733486-745d-42bd-b53d-e2e1d9048fff",
+      "title" : "фывф",
+      "text" : "ывфыв",
+      "textColor" : "#000",
+      "pictureUrl" : "nullabsolutbank/ALL PLATFORMS/8_22733486-745d-42bd-b53d-e2e1d9048fff.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  } ]
+}
