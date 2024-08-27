@@ -71,6 +71,13 @@ public class JsonProcessorService implements FileSaverService {
     }
 
 
+    /**
+     * Сохранение истории
+     * @param strStoriesRequestDto DTO с информацией о Stories.
+     * @param previewImage Картинка для preview
+     * @param images Массив картинок для карточек
+     * @return
+     */
     @Override
     public StoryPresentation saveFiles(String strStoriesRequestDto,
                           MultipartFile previewImage,
@@ -120,6 +127,7 @@ public class JsonProcessorService implements FileSaverService {
         String platformType = storyPresentation.getPlatform();
         List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platformType);
         storyPresentationList.add(storyPresentation);
+
         if (roles.contains(KeyCloak.Roles.ADMIN)){
             mapper.putStoryToJson(storyPresentationList, bankId, platformType);
             storyPresentation.setApproved(StoryPresentation.Status.APPROVED);
@@ -195,6 +203,13 @@ public class JsonProcessorService implements FileSaverService {
         return storyPresentationRepository.getDeletedStories(bankId, platform);
     }
 
+    /**
+     * Подтверждение истории админом и последующее сохранение в JSON
+     * @param bankId Имя банка
+     * @param platform Платформа
+     * @param id Id истории
+     * @throws IOException
+     */
     @Override
     public void approvedStory(String bankId, String platform, Long id) throws IOException {
         final var story = storyPresentationRepository.findById(id)
@@ -447,8 +462,6 @@ public class JsonProcessorService implements FileSaverService {
      * @param id
      * @param bankId
      * @param platform
-     * @param fristUuid
-     * @param secondUuid
      * @throws IOException
      */
     public void swapFrames(Long id, String bankId, String platform, List<String> newOrder) throws IOException {
@@ -473,6 +486,11 @@ public class JsonProcessorService implements FileSaverService {
         storyPresentationRepository.save(storyPresentation);
     }
 
+    /**
+     * Метод для восстановления истории из бд
+     * @param id Id истории
+     * @throws IOException
+     */
     @Override
     public void restoreStory(Long id) throws IOException {
         final var storyPresentation = storyPresentationRepository.findById(id)

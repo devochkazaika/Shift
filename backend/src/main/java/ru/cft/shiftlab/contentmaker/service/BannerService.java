@@ -8,13 +8,49 @@ import java.io.IOException;
 import java.util.List;
 
 public interface BannerService {
-    void setMainBanner(String code, String codeMainBanner);
+    /**
+     * Сохранение банера в БД
+     * @param bannerRequestDto
+     * @param picture
+     * @param icon
+     * @throws IOException
+     */
     void addBanner(String bannerRequestDto,
                    MultipartFile picture,
                    MultipartFile icon) throws IOException;
+
+    /**
+     * Установка банеру MainBanner
+     * @param code
+     * @param codeMainBanner
+     */
+    void setMainBanner(String code, String codeMainBanner);
+
+    /**
+     * Возврат всех банеров банка + платформы
+     * @param bankId
+     * @param platform
+     * @return
+     */
     List<Banner> getBannersList(String bankId, String platform);
 
+    /**
+     * Удаление банера
+     * @param code
+     */
     void deleteBanner(String code);
+
+    /**
+     * Удаление банера вместе с его MainBanner
+     * @param code
+     */
     void deleteBannerCascade(String code);
+
+    /**
+     * Изменение параметров банера
+     * @param bannerDto
+     * @param code
+     * @throws JsonProcessingException
+     */
     void patchBanner(String bannerDto, String code) throws JsonProcessingException;
 }

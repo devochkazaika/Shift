@@ -79,12 +79,14 @@ public class BannerController {
     })
     @ResponseStatus(HttpStatus.OK)
     public List<Banner> getAllBannersByBank(
-            @RequestParam(value = "id")
+            @RequestParam(value = "bankId")
             @WhiteListValid
+                    @Parameter(name = "имя банка", example = "tkkbank")
             String bankId,
 
             @RequestParam(value = "platform")
             @PlatformValid
+                @Parameter(name = "Платформа", example = "ALL PLATFORMS")
             String platform
             ){
         return bannerProcessorService.getBannersList(bankId, platform);
@@ -104,7 +106,7 @@ public class BannerController {
     }
 
     @DeleteMapping(value = "/delete/cascade")
-    @Operation(summary = "Удаление банера")
+    @Operation(summary = "Удаление банера вместе с его MainBanner")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Банер успешно удален вместе с mainBanner")
     })
