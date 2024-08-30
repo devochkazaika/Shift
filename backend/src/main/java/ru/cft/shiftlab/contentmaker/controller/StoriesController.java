@@ -15,8 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
-import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
+import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
+import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.PlatformValid;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.UUIDValid;
@@ -24,7 +24,6 @@ import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Контроллер, обрабатывающий запросы для работы с Story.

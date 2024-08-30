@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
+import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 
 import java.io.File;
@@ -33,7 +33,7 @@ public class StoryMapper extends ObjectMapper {
         Map<String, List<StoryPresentation>> resultMap = new HashMap<>();
         resultMap.put(STORIES, storyPresentationList);
         File file = new File(FILES_SAVE_DIRECTORY, FileNameCreator.createJsonName(bankId, platform));
-        writerWithDefaultPrettyPrinter().writeValue(file, resultMap);
+        writeValue(file, resultMap);
     }
     public void putStoryToJson(StoryPresentation storyPresentation, String bankId, String platform) throws IOException {
         final var storyList = getStoryList(bankId, platform);

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import ru.cft.shiftlab.contentmaker.entity.History;
-import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.repository.HistoryRepository;
 import ru.cft.shiftlab.contentmaker.repository.StoryPresentationRepository;
 
@@ -42,10 +41,10 @@ public class StoriesInterceptor implements HandlerInterceptor {
             history.setComponentType(History.ComponentType.STORIES);
             if (path.contains("add")){
                 history.setOperationType(History.OperationType.Create);
-                var story = storyPresentationRepository.findTopByOrderByIdDesc();
-                history.setComponentId(story.getId());
-                history.setBankId(story.getBankId());
-                history.setPlatform(story.getPlatform());
+//                var story = storyPresentationRepository.findTopByOrderByIdDesc();
+//                history.setComponentId(story.getId());
+//                history.setBankId(story.getBankId());
+//                history.setPlatform(story.getPlatform());
             }
             else if (path.contains("delete")){
                 history.setOperationType(History.OperationType.Delete);

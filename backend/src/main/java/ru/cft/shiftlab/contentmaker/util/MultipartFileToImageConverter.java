@@ -46,7 +46,7 @@ public class MultipartFileToImageConverter {
         BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
         File outputfile = new File(directory, fileName);
         ImageIO.write(bufferedImage, fileFormat, outputfile);
-        return fileName;
+        return outputfile.getAbsolutePath().replaceAll("\\\\", "/");
     }
 
     public String parsePicture(ImageContainer imageContainer, String picturesSaveDirectory, Long id, UUID uuid) throws IOException {
@@ -55,7 +55,7 @@ public class MultipartFileToImageConverter {
                 picturesSaveDirectory,
                 imageNameGenerator.generateImageName(picturesSaveDirectory, id, uuid)
         );
-        return picturesSaveDirectory + previewPictureName;
+        return previewPictureName;
     }
     public String parsePicture(ImageContainer imageContainer, String picturesSaveDirectory, Long id) throws IOException {
         String previewPictureName = convertMultipartFileToImageAndSave(
@@ -64,7 +64,7 @@ public class MultipartFileToImageConverter {
                 imageNameGenerator.generateImageName(picturesSaveDirectory, id)
         );
         System.out.println(picturesSaveDirectory);
-        return picturesSaveDirectory + previewPictureName;
+        return previewPictureName;
     }
 
 }

@@ -58,7 +58,7 @@ const BannersAdd = () => {
           enableReinitialize
           initialValues={{
             bankName: "tkbbank",
-            platformType: "WEB",
+            platform: "WEB",
             priority: 2,
             availableForAll: true,
             siteSection: "hz",

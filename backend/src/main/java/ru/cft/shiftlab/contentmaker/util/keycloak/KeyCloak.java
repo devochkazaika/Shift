@@ -25,7 +25,7 @@ public class KeyCloak {
                     .orElseThrow(() -> new IllegalArgumentException("Unexpected role"));
         }
     }
-    public static Set<Roles> getRoles(){
+    public Set<Roles> getRoles(){
         return SecurityContextHolder.getContext().getAuthentication()
                 .getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)

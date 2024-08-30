@@ -1,4 +1,4 @@
-package ru.cft.shiftlab.contentmaker.entity;
+package ru.cft.shiftlab.contentmaker.entity.stories;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -7,6 +7,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -18,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
+@Builder
 @Entity
 @Table(name = "stories")
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -42,6 +44,7 @@ public class StoryPresentation {
      * Платформа (ANDROID | WEB | IOS | ALL PLATFORMS)
      */
     @Column(name = "platform")
+    @Builder.Default
     private String platform = null;
 
     /**
@@ -87,7 +90,8 @@ public class StoryPresentation {
      * Список карточек истории.
      */
     @JsonProperty("storyFrames")
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "story")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Transient
+    @Builder.Default
     private List<StoryPresentationFrames> storyPresentationFrames = new ArrayList<>();
-
 }

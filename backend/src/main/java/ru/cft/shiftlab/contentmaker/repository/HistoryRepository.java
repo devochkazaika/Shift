@@ -6,7 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.cft.shiftlab.contentmaker.entity.History;
-import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
 
 import java.util.List;
 

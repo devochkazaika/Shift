@@ -32,7 +32,7 @@ public class StoriesRequestDto {
 
     @NotBlank(message = "platformType is not specified")
     @PlatformValid
-    private String platformType;
+    private String platform;
 
     /**
      * Информация об историях.

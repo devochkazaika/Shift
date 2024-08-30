@@ -106,7 +106,7 @@ export const uploadStories = async (jsonPayload, previewImage, cardImages) => {
 
 export const fetchImage = async (url, setImage) => {
   try {
-    const response = await api.get(`${url}`, { responseType: 'arraybuffer' });
+    const response = await api.get(`image?path=${url}`, { responseType: 'arraybuffer' });
     const blob = new Blob([response.data], { type: response.headers['content-type'] });
     const file = new File([blob], "initial_image.jpg", { type: blob.type });
     setImage(file);

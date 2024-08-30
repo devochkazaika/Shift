@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
+import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentationFrames;
 
 import java.util.UUID;
 

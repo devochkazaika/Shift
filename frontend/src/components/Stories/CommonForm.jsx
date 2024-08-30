@@ -27,10 +27,10 @@ const CommonForm = ( {setBankId, setPlatform, ...props }) => {
               labelTitle="Все платформы"
               id="AllPlatformType"
               type="radio"
-              name={`platformType`}
+              name={`platform`}
               value="ALL PLATFORMS"
-              checked={props.values.platformType === "ALL PLATFORMS"}
-              onChange={setPlatform(props.values.platformType)}
+              checked={props.values.platform === "ALL PLATFORMS"}
+              onChange={setPlatform(props.values.platform)}
               {...props}
             />
           </label>
@@ -40,10 +40,10 @@ const CommonForm = ( {setBankId, setPlatform, ...props }) => {
               labelTitle="Android"
               id="AndroidPlatformType"
               type="radio"
-              name={`platformType`}
+              name={`platform`}
               value="ANDROID"
-              onChange={setPlatform(props.values.platformType)}
-              checked={props.values.platformType === "ANDROID"}
+              onChange={setPlatform(props.values.platform)}
+              checked={props.values.platform === "ANDROID"}
               {...props}
             />
           </label>
@@ -53,10 +53,10 @@ const CommonForm = ( {setBankId, setPlatform, ...props }) => {
               labelTitle="IOS"
               id="IOSPlatformType"
               type="radio"
-              name={`platformType`}
+              name={`platform`}
               value="IOS"
-              onChange={setPlatform(props.values.platformType)}
-              checked={props.values.platformType === "IOS"}
+              onChange={setPlatform(props.values.platform)}
+              checked={props.values.platform === "IOS"}
               {...props}
             />
           </label>
@@ -65,10 +65,10 @@ const CommonForm = ( {setBankId, setPlatform, ...props }) => {
               labelTitle="Web"
               id="WebPlatformType"
               type="radio"
-              name={`platformType`}
+              name={`platform`}
               value="WEB"
-              onChange={setPlatform(props.values.platformType)}
-              checked={props.values.platformType === "WEB"}
+              onChange={setPlatform(props.values.platform)}
+              checked={props.values.platform === "WEB"}
               {...props}
             />
           </label>

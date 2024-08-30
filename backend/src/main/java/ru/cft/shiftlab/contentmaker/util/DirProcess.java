@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
-import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
+import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 
 import java.io.File;

@@ -15,8 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryPatchDto;
-import ru.cft.shiftlab.contentmaker.entity.StoryPresentation;
-import ru.cft.shiftlab.contentmaker.entity.StoryPresentationFrames;
+import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
+import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 import ru.cft.shiftlab.contentmaker.repository.StoryPresentationFramesRepository;
 import ru.cft.shiftlab.contentmaker.repository.StoryPresentationRepository;
@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
@@ -58,6 +57,7 @@ public class JsonProcessorService implements FileSaverService {
     private final StoryPresentationRepository storyPresentationRepository;
     private final StoryPresentationFramesRepository storyPresentationFramesRepository;
     private final HistoryService historyService;
+    private final KeyCloak keyCloak;
 
     /**
      * Возврат всех историй банка + платформы
@@ -75,16 +75,21 @@ public class JsonProcessorService implements FileSaverService {
      * Сохранение истории
      * @param strStoriesRequestDto DTO с информацией о Stories.
      * @param previewImage Картинка для preview
-     * @param images Массив картинок для карточек
+     * @param imagesFrame Массив картинок для карточек
      * @return
      */
     @Override
     public StoryPresentation saveFiles(String strStoriesRequestDto,
                           MultipartFile previewImage,
-                          MultipartFile[] images){
+                          MultipartFile[] imagesFrame){
         try {
-            //Преобразование в Entity с сохранением картинок
-            final var storyEntity = getStoryEntity(strStoriesRequestDto, previewImage, images);
+            LinkedList<MultipartFile> images = new LinkedList<>(Arrays.asList(imagesFrame));
+            images.addFirst(previewImage);
+            StoriesRequestDto storiesRequestDto = mapper.readValue(
+                    mapper.readValue(strStoriesRequestDto, String.class)
+                    , StoriesRequestDto.class);
+            //Сохранение в БД
+            var storyEntity = saveStoryEntity(storiesRequestDto, images);
             //Сохранение
             return saveByRoles(storyEntity);
         }
@@ -96,25 +101,33 @@ public class JsonProcessorService implements FileSaverService {
         }
     }
 
-    private StoryPresentation getStoryEntity(String strStoriesRequestDto,
-                                             MultipartFile previewImage,
-                                             MultipartFile[] images) throws IOException {
-        StoriesRequestDto storiesRequestDto = mapper.readValue(
-                mapper.readValue(strStoriesRequestDto, String.class)
-                , StoriesRequestDto.class);
-        String bankId = storiesRequestDto.getBankId();
-        String platformType = storiesRequestDto.getPlatformType();
-
+    private StoryPresentation saveStoryEntity(StoriesRequestDto storiesRequestDto,
+                                                  LinkedList<MultipartFile> images) throws IOException {
         //Создание пути для картинок, если его еще нет
-        String picturesSaveDirectory = FILES_SAVE_DIRECTORY+bankId+"/"+platformType+"/";
+        String picturesSaveDirectory = FILES_SAVE_DIRECTORY+storiesRequestDto.getBankId()+"/"+storiesRequestDto.getPlatform()+"/";
         dirProcess.createFolders(picturesSaveDirectory);
-
-        //Преобразование из dto в entity с сохранением картинок
-        LinkedList<MultipartFile> imageQueue = Arrays.stream(images).
-                collect(Collectors.toCollection(LinkedList::new));
-        imageQueue.addFirst(previewImage);
-        return dtoToEntityConverter.fromStoryDtoToStoryPresentation(bankId, platformType, storiesRequestDto.getStoryDtos().get(0), imageQueue);
+        StoryPresentation storyPresentation = dtoToEntityConverter.fromStoryRequestDtoToStoryPresentation(storiesRequestDto);
+        final StoryPresentation story = storyPresentationRepository.save(storyPresentation);
+        final List<StoryPresentationFrames> storyPresentationFrames = storyPresentation.getStoryPresentationFrames();
+        String previewUrl = multipartFileToImageConverter.parsePicture(
+                new ImageContainer(images.removeFirst()),
+                picturesSaveDirectory,
+                story.getId());
+        storyPresentation.setPreviewUrl(previewUrl);
+        for (int i=0; i<storyPresentationFrames.size(); i++){
+            final StoryPresentationFrames frame = storyPresentationFrames.get(i);
+            frame.setStory(story);
+            frame.setPictureUrl(multipartFileToImageConverter.parsePicture(
+                    new ImageContainer(images.removeFirst()),
+                    picturesSaveDirectory,
+                    story.getId(),
+                    frame.getId()));
+            storyPresentationFramesRepository.save(frame);
+            storyPresentationFrames.set(i, frame);
+        }
+        return storyPresentationRepository.save(storyPresentation);
     }
+
 
     /**
      * Сохранение истории в зависимости от роли
@@ -122,7 +135,7 @@ public class JsonProcessorService implements FileSaverService {
      * @throws IOException
      */
     public StoryPresentation saveByRoles(StoryPresentation storyPresentation) throws IOException {
-        Set<KeyCloak.Roles> roles = KeyCloak.getRoles();
+        Set<KeyCloak.Roles> roles = keyCloak.getRoles();
         String bankId = storyPresentation.getBankId();
         String platformType = storyPresentation.getPlatform();
         List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platformType);
@@ -154,7 +167,7 @@ public class JsonProcessorService implements FileSaverService {
      * @throws IOException
      */
     public void saveToJsonByRoles(StoryPresentationFrames frame, MultipartFile file, Long id, String bankId, String platformType) throws IOException {
-        Set<KeyCloak.Roles> roles = KeyCloak.getRoles();
+        Set<KeyCloak.Roles> roles = keyCloak.getRoles();
         List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platformType);
         StoryPresentation storyPresentation = storyPresentationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Could not find story"));
         if (storyPresentation.getStoryPresentationFrames().size() >= MAX_COUNT_FRAME) throw new IllegalArgumentException("Could not save frame because max count is achieved");
@@ -221,7 +234,7 @@ public class JsonProcessorService implements FileSaverService {
 
     @Transactional
     public StoryPresentationFrames addFrame(String frameDto, MultipartFile file,
-                          String bankId, String platform, Long id) throws IOException {
+                                            String bankId, String platform, Long id) throws IOException {
         var story = storyPresentationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find the story with id = %d", id)));
         StoryPresentationFrames frame = mapper.readValue(

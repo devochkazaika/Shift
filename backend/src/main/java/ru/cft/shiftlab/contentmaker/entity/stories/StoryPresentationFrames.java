@@ -1,10 +1,7 @@
-package ru.cft.shiftlab.contentmaker.entity;
+package ru.cft.shiftlab.contentmaker.entity.stories;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -19,6 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 @Table(name = "frames")
+@Builder
 public class StoryPresentationFrames {
     @Id
     @GeneratedValue(generator = "UUID")

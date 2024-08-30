@@ -1,0 +1,87 @@
+{
+  "stories" : [ {
+    "id" : 21,
+    "bankId" : "absolutbank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitle" : "asdasd",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "F:\\JAVA\\CWT\\content-maker\\backend\\src\\main\\resources\\static\\site\\share\\htdoc\\_files\\skins\\mobws_story\\absolutbank\\ALL PLATFORMS\\21_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "4d866afe-44db-4e03-8799-7c712e2aca01",
+      "title" : "asdasd",
+      "text" : "dasdSD",
+      "textColor" : "#000",
+      "pictureUrl" : "F:\\JAVA\\CWT\\content-maker\\backend\\src\\main\\resources\\static\\site\\share\\htdoc\\_files\\skins\\mobws_story\\absolutbank\\ALL PLATFORMS\\21_4d866afe-44db-4e03-8799-7c712e2aca01.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 22,
+    "bankId" : "absolutbank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitle" : "asdasd",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "F:\\JAVA\\CWT\\content-maker\\backend\\src\\main\\resources\\static\\site\\share\\htdoc\\_files\\skins\\mobws_story\\absolutbank\\ALL PLATFORMS\\22_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "2c942c4a-7dbf-4a24-9039-27caf56b7883",
+      "title" : "asda",
+      "text" : "sdasd",
+      "textColor" : "#000",
+      "pictureUrl" : "F:\\JAVA\\CWT\\content-maker\\backend\\src\\main\\resources\\static\\site\\share\\htdoc\\_files\\skins\\mobws_story\\absolutbank\\ALL PLATFORMS\\22_2c942c4a-7dbf-4a24-9039-27caf56b7883.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 23,
+    "bankId" : "absolutbank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitle" : "asdasd",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "F:/JAVA/CWT/content-maker/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/23_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "64b05969-9813-44b8-971d-cac5dbc7f497",
+      "title" : "asdasd",
+      "text" : "asdasd",
+      "textColor" : "#000",
+      "pictureUrl" : "F:/JAVA/CWT/content-maker/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/23_64b05969-9813-44b8-971d-cac5dbc7f497.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  }, {
+    "id" : 24,
+    "bankId" : "absolutbank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitle" : "asdasd",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "F:/JAVA/CWT/content-maker/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/24_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "0dcc4400-c8af-48d0-9244-b23147c37363",
+      "title" : "asd",
+      "text" : "asdasd",
+      "textColor" : "#000",
+      "pictureUrl" : "F:/JAVA/CWT/content-maker/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/24_0dcc4400-c8af-48d0-9244-b23147c37363.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  } ]
+}
