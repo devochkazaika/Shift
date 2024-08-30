@@ -15,14 +15,14 @@ import java.nio.file.Paths;
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/image")
 public class ImageController {
     /**
      * Get запрос для получения картинки
      * @return Array of bytes
      * @throws IOException
      */
-    @GetMapping("image")
+    @GetMapping("")
     @Operation(summary = "Возврат картинки из пути в JSON")
     public ResponseEntity<byte[]> getImage(
             @RequestParam("path") String path

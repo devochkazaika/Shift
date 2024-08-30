@@ -31,12 +31,8 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.MAX_COUNT_FRAME;
 @Component
 @RequiredArgsConstructor
 public class DtoToEntityConverter {
-
-    private final BannerRepository bannerRepository;
     private final ModelMapper modelMapper;
     private final MultipartFileToImageConverter multipartFileToImageConverter;
-    private final StoryPresentationRepository storyPresentationRepository;
-    private final StoryPresentationFramesRepository storyPresentationFramesRepository;
 
     public StoryPresentation fromStoryRequestDtoToStoryPresentation(StoriesRequestDto storyDto) {
         StoryPresentation storyPresentation = modelMapper.map(storyDto.getStoryDtos().get(0), StoryPresentation.class);
@@ -45,53 +41,6 @@ public class DtoToEntityConverter {
         ArrayList<StoryPresentationFrames> frames = (ArrayList<StoryPresentationFrames>) storyDto.getStoryDtos().get(0).getStoryFramesDtos().stream()
                 .map(this::fromStoryFramesDtoToStoryPresentationFrames).collect(Collectors.toList());
         storyPresentation.setStoryPresentationFrames(frames);
-        return storyPresentation;
-    }
-    /**
-     * Метод для конвертации StoryDto в StoryPresentation.
-     *
-     * @param bankId            уникальный идентификатор банка, который отправил запрос.
-     * @param storyDto          DTO, которую нужно конвертировать в Entity.
-     * @return StoryPresentation, полученный после конвертации StoryDto.
-     */
-    public StoryPresentation fromStoryDtoToStoryPresentation(StoryDto storyDto) {
-        StoryPresentation storyPresentation = modelMapper.map(storyDto, StoryPresentation.class);
-        return storyPresentation;
-    }
-
-    public StoryPresentation fromStoryDtoToStoryPresentation(String bankId,
-                                                             String platform,
-                                                             StoryDto storyDto,
-                                                             LinkedList<MultipartFile> frameUrl) throws IOException {
-        //проверка на максимальное допустимое число карточек в истории
-        var countStoryFrames = storyDto.getStoryFramesDtos().size();
-        if (countStoryFrames == 0 || countStoryFrames > MAX_COUNT_FRAME){
-            throw new IllegalArgumentException("Bad count of the story frames");
-        }
-
-        StoryPresentation storyPresentation = modelMapper.map(storyDto, StoryPresentation.class);
-        storyPresentation.setBankId(bankId);
-        storyPresentation.setPlatform(platform);
-        String filePath = FILES_SAVE_DIRECTORY+bankId+"/"+platform+"/";
-
-        //сама история
-        String previewUrl = multipartFileToImageConverter.parsePicture(
-                new ImageContainer(frameUrl.removeFirst()),
-                filePath,
-                storyPresentation.getId());
-        storyPresentation.setPreviewUrl(previewUrl);
-
-        //карточки
-        for(StoryFramesDto storyFramesDto : storyDto.getStoryFramesDtos()) {
-            var frame = modelMapper.map(storyFramesDto, StoryPresentationFrames.class);
-            frame.setPictureUrl(multipartFileToImageConverter.parsePicture(
-                    new ImageContainer(frameUrl.removeFirst()),
-                    FILES_SAVE_DIRECTORY+bankId+"/"+platform+"/",
-                    storyPresentation.getId(),
-                    frame.getId()));
-            storyPresentation.getStoryPresentationFrames().add(frame);
-            frame.setStory(storyPresentation);
-        }
         return storyPresentation;
     }
 
@@ -103,7 +52,7 @@ public class DtoToEntityConverter {
      */
     public StoryPresentationFrames fromStoryFramesDtoToStoryPresentationFrames(StoryFramesDto storyFramesDto) {
         StoryPresentationFrames storyPresentationFrames = modelMapper.map(storyFramesDto, StoryPresentationFrames.class);
-        return storyPresentationFramesRepository.save(storyPresentationFrames);
+        return storyPresentationFrames;
     }
 
     public Banner fromBannerDtoToBanner(BannerDto bannerDto,

@@ -134,7 +134,7 @@ public class JsonProcessorService implements FileSaverService {
      * @param storyPresentation
      * @throws IOException
      */
-    public StoryPresentation saveByRoles(StoryPresentation storyPresentation) throws IOException {
+    private StoryPresentation saveByRoles(StoryPresentation storyPresentation) throws IOException {
         Set<KeyCloak.Roles> roles = keyCloak.getRoles();
         String bankId = storyPresentation.getBankId();
         String platformType = storyPresentation.getPlatform();
@@ -166,7 +166,7 @@ public class JsonProcessorService implements FileSaverService {
      * @param platformType
      * @throws IOException
      */
-    public void saveToJsonByRoles(StoryPresentationFrames frame, MultipartFile file, Long id, String bankId, String platformType) throws IOException {
+    public StoryPresentation saveToJsonByRoles(StoryPresentationFrames frame, MultipartFile file, Long id, String bankId, String platformType) throws IOException {
         Set<KeyCloak.Roles> roles = keyCloak.getRoles();
         List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platformType);
         StoryPresentation storyPresentation = storyPresentationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Could not find story"));
@@ -194,6 +194,7 @@ public class JsonProcessorService implements FileSaverService {
             mapper.putStoryToJson(storyPresentationList, bankId, platformType);
             storyPresentation.setApproved(StoryPresentation.Status.NOTAPPROVED);
         }
+        return storyPresentation;
     }
 
     @Override
@@ -224,12 +225,13 @@ public class JsonProcessorService implements FileSaverService {
      * @throws IOException
      */
     @Override
-    public void approvedStory(String bankId, String platform, Long id) throws IOException {
+    public StoryPresentation approvedStory(String bankId, String platform, Long id) throws IOException {
         final var story = storyPresentationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find the story with id = %d", id)));
         story.setApproved(StoryPresentation.Status.APPROVED);
         storyPresentationRepository.save(story);
         mapper.putStoryToJson(story, bankId, platform);
+        return story;
     }
 
     @Transactional
@@ -357,8 +359,10 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     @Transactional
+    @Modifying
     public ResponseEntity<?> deleteStoriesFromDb(String bankId, String platform, Long id) throws Throwable{
         historyService.deleteHistoryByStoryId(id);
+        storyPresentationFramesRepository.deleteByStoryId(id);
         storyPresentationRepository.deleteById(id);
         deleteFilesStories(bankId, platform, id);
         return new ResponseEntity<>(HttpStatus.valueOf(202));

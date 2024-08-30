@@ -14,4 +14,8 @@ public interface StoryPresentationFramesRepository extends CrudRepository<StoryP
     @Query("DELETE FROM StoryPresentationFrames where id = :id")
     @Modifying
     void deleteById(@Param("id") UUID id);
+
+    @Query("DELETE FROM StoryPresentationFrames where story.id = :id")
+    @Modifying
+    void deleteByStoryId(@Param("id") Long id);
 }

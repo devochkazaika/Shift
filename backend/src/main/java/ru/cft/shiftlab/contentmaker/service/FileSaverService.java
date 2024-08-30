@@ -143,7 +143,7 @@ public interface FileSaverService {
      * @param id Id истории
      * @throws IOException
      */
-    void approvedStory(String bankId, String platform, Long id) throws IOException;
+    StoryPresentation approvedStory(String bankId, String platform, Long id) throws IOException;
 
     /**
      * Метод для удаления навсегда истории. Удаления из БД
@@ -154,4 +154,5 @@ public interface FileSaverService {
      * @throws Throwable
      */
     ResponseEntity<?> deleteStoriesFromDb(String bankId, String platform, Long id) throws Throwable;
+
 }
