@@ -26,8 +26,6 @@ public class StoryMapper extends ObjectMapper {
         setSerializationInclusion(JsonInclude.Include.NON_NULL);
         configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
-    private final MultipartFileToImageConverter multipartFileToImageConverter;
-    private final DtoToEntityConverter dtoToEntityConverter;
     private final DirProcess dirProcess;
     public void putStoryToJson(List<StoryPresentation> storyPresentationList, String bankId, String platform) throws IOException {
         Map<String, List<StoryPresentation>> resultMap = new HashMap<>();

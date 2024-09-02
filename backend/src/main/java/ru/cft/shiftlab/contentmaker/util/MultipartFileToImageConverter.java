@@ -63,7 +63,6 @@ public class MultipartFileToImageConverter {
                 picturesSaveDirectory,
                 imageNameGenerator.generateImageName(picturesSaveDirectory, id)
         );
-        System.out.println(picturesSaveDirectory);
         return previewPictureName;
     }
 

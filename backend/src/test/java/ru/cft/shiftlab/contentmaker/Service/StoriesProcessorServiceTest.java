@@ -1,6 +1,7 @@
 package ru.cft.shiftlab.contentmaker.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
+import ru.cft.shiftlab.contentmaker.dto.StoryPatchDto;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.repository.BannerRepository;
@@ -28,6 +30,7 @@ import ru.cft.shiftlab.contentmaker.repository.StoryPresentationRepository;
 import ru.cft.shiftlab.contentmaker.service.implementation.HistoryService;
 import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
 import ru.cft.shiftlab.contentmaker.util.DirProcess;
+import ru.cft.shiftlab.contentmaker.util.Image.ImageContainer;
 import ru.cft.shiftlab.contentmaker.util.Image.ImageNameGenerator;
 import ru.cft.shiftlab.contentmaker.util.MultipartBodyProcess;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
@@ -40,6 +43,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -61,16 +67,17 @@ public class StoriesProcessorServiceTest {
     private StoryPresentationFramesRepository storyPresentationFramesRepository;
 
     ObjectMapper objectMapper = new ObjectMapper();
+    MultipartFile result;
 
     @Mock
     private DirProcess dirProcess;
     @Mock
     private HistoryService historyService;
 
+    StoryMapper realMapper = new StoryMapper(new DirProcess());
+
     @Mock
-    private StoryMapper storyMapper;
-
-
+    StoryMapper storyMapper = Mockito.spy(realMapper);
     @Mock
     private KeyCloak keyCloak;
 
@@ -96,14 +103,23 @@ public class StoriesProcessorServiceTest {
         Mockito.when(storyPresentationRepository.save(any())).thenReturn(storyPresentation);
         Mockito.when(storyPresentationFramesRepository.save(any())).thenReturn(firstFrame);
         Mockito.doCallRealMethod().when(modelMapper).map(any(), any(StoryPresentation.class));
-        Mockito.when(storyMapper.writerWithDefaultPrettyPrinter()).thenCallRealMethod();
         try {
-            Mockito.doCallRealMethod().when(storyMapper).writeValue(any(File.class), any(Map.class));
-            Mockito.doCallRealMethod().when(storyMapper).putStoryToJson(any(List.class), any(), any());
             Mockito.doCallRealMethod().when(dirProcess).createFolders(any());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        Path path = Paths.get(FILES_TEST_DIRECTORY + "sample.png");
+        String name = "image.png";
+        String originalFileName = "image.png";
+        String contentType = "image/*";
+        byte[] content = null;
+        try {
+            content = Files.readAllBytes(path);
+        } catch (final IOException e) {
+        }
+        result = new MockMultipartFile(name,
+                originalFileName, contentType, content);
     }
 
     StoryFramesDto storyFramesDto = new StoryFramesDto(
@@ -148,16 +164,16 @@ public class StoriesProcessorServiceTest {
             .storyPresentationFrames(new ArrayList<>(Arrays.asList(firstFrame)))
             .build();
 
+    StoryPatchDto storyPatchDto = StoryPatchDto.builder()
+            .previewTitleColor("asdas")
+            .previewTitleColor("test")
+            .build();
+
 
     @Test
     @DisplayName("Сохранение истории")
     void save_story() throws IOException {
-        // Prepare the input JSON string
         String storiesRequestJson = storyMapper.writeValueAsString(storiesRequestDto);
-
-        // Mock the deserialization of the JSON
-        Mockito.when(storyMapper.readValue(eq(storiesRequestJson), eq(StoriesRequestDto.class)))
-                .thenReturn(storiesRequestDto);
 
         File img =  new File(FILES_TEST_DIRECTORY, "sample.png");
 
@@ -186,7 +202,6 @@ public class StoriesProcessorServiceTest {
     @DisplayName("Сохранение сущности истории в зависимости для ADMIN")
     public void save_story_by_role_ADMIN_test() throws IOException, InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         Mockito.when(keyCloak.getRoles()).thenReturn(new HashSet<KeyCloak.Roles>(Arrays.asList(KeyCloak.Roles.ADMIN)));
-        Mockito.doCallRealMethod().when(storyMapper).putStoryToJson(any(List.class), any(), any());
 
         Method method = JsonProcessorService.class.getDeclaredMethod("saveByRoles",
                 StoryPresentation.class);
@@ -201,7 +216,6 @@ public class StoriesProcessorServiceTest {
     @DisplayName("Сохранение сущности истории в зависимости для USER")
     public void save_story_by_role_USER_test() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Mockito.when(keyCloak.getRoles()).thenReturn(new HashSet<KeyCloak.Roles>(Arrays.asList(KeyCloak.Roles.USER)));
-        Mockito.doCallRealMethod().when(storyMapper).putStoryToJson(any(List.class), any(), any());
 
         Method method = JsonProcessorService.class.getDeclaredMethod("saveByRoles",
                 StoryPresentation.class);
@@ -223,15 +237,82 @@ public class StoriesProcessorServiceTest {
 
     @Test
     @DisplayName("Сохранение карточки в зависимости от роли - ADMIN")
-    public void save_frame_by_role_admin_test() throws IOException {
+    public void save_frame_by_role_admin_test() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Mockito.when(keyCloak.getRoles()).thenReturn(new HashSet<KeyCloak.Roles>(Arrays.asList(KeyCloak.Roles.ADMIN)));
         Mockito.when(storyMapper.getStoryList(storiesRequestDto.getBankId(), storiesRequestDto.getPlatform()))
                 .thenReturn(new ArrayList<>(Arrays.asList(storyPresentation)));
         Mockito.when(storyPresentationRepository.findById(15L)).thenReturn(Optional.of(storyPresentation));
         Mockito.when(storyPresentationFramesRepository.save(any())).thenReturn(secondFrame);
 
+        Method method = JsonProcessorService.class.getDeclaredMethod("saveToJsonByRoles",
+                StoryPresentationFrames.class, MultipartFile.class, Long.class, String.class, String.class);
+        method.setAccessible(true); //делает метод публичным
 
+        var story = (StoryPresentation) method.invoke(service, secondFrame, result, 15L, storiesRequestDto.getBankId(), storiesRequestDto.getPlatform());
 
+        Assertions.assertEquals(story.getApproved(), StoryPresentation.Status.APPROVED);
+        verify(storyMapper, times(1)).putStoryToJson(any(List.class), eq("tkbbank"), eq("IOS"));
     }
 
+    @Test
+    @DisplayName("Тест для возврата карточки из истории")
+    public void get_frame_from_story_test() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method method = JsonProcessorService.class.getDeclaredMethod("getFrameFromStory",
+                StoryPresentation.class, String.class);
+        method.setAccessible(true); //делает метод публичным
+
+        StoryPresentationFrames storyPresentationFrames = (StoryPresentationFrames) method.invoke(service, storyPresentation, firstFrame.getId().toString());
+        Assertions.assertEquals(storyPresentationFrames, firstFrame);
+    }
+
+    @Test
+    @DisplayName("Тест для возврата карточки из истории для выброса ошибки ")
+    public void get_frame_from_story_test_throw_exception() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method method = JsonProcessorService.class.getDeclaredMethod("getFrameFromStory",
+                StoryPresentation.class, String.class);
+        method.setAccessible(true); //делает метод публичным
+
+        Assertions.assertThrows(InvocationTargetException.class,
+                () -> method.invoke(service, storyPresentation, UUID.randomUUID().toString()));
+    }
+
+    @Test
+    @DisplayName("Тест на изменение истории")
+    public void change_story_test() throws IOException {
+        Mockito.when(multipartFileToImageConverter.parsePicture(any(ImageContainer.class), anyString(), any()))
+                .thenReturn("норм путь");
+
+
+        verify(multipartFileToImageConverter, times(1)).parsePicture(any(), anyString(), any());
+        verify(storyMapper, times(1)).readerForUpdating(any());
+        verify(storyMapper, times(1)).putStoryToJson(any(List.class), any(), any());
+    }
+
+    @Test
+    @DisplayName("Тест на изменение карточки истории")
+    public void change_frame_story_test() throws IOException {
+        Mockito.when(storyMapper.getStoryList(any(), any())).thenReturn(new ArrayList<>(Arrays.asList(storyPresentation)));
+        Mockito.when(storyMapper.getStoryModel(any(), any())).thenReturn(storyPresentation);
+
+        Mockito.when(multipartFileToImageConverter.parsePicture(any(ImageContainer.class), anyString(), any()))
+                .thenReturn("норм путь");
+        Mockito.when(storyMapper.writeValueAsString(storyPresentation)).thenCallRealMethod();
+
+        ObjectMapper realMapper = new ObjectMapper();
+        ObjectMapper spyMapper = Mockito.spy(realMapper);
+
+        service.changeFrameStory(spyMapper.writeValueAsString(storyFramesDto),
+                storiesRequestDto.getBankId(), storiesRequestDto.getPlatform(),
+                15L, firstFrame.getId().toString(), result);
+
+        verify(multipartFileToImageConverter, times(1)).parsePicture(any(), anyString(), any());
+        verify(storyMapper, times(1)).readerForUpdating(any());
+        verify(storyMapper, times(1)).putStoryToJson(any(List.class), any(), any());
+    }
+
+    @Test
+    @DisplayName("Тест на удаление истории")
+    public void delete_story_test(){
+
+    }
 }

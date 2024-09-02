@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Контроллера для возврата флагов доступа для фронта
  */
-@RestController()
+@RestController
 @RequestMapping("/access")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AccessController {

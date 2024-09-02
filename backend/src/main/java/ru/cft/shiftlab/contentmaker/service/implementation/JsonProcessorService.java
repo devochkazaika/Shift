@@ -166,7 +166,7 @@ public class JsonProcessorService implements FileSaverService {
      * @param platformType
      * @throws IOException
      */
-    public StoryPresentation saveToJsonByRoles(StoryPresentationFrames frame, MultipartFile file, Long id, String bankId, String platformType) throws IOException {
+    private StoryPresentation saveToJsonByRoles(StoryPresentationFrames frame, MultipartFile file, Long id, String bankId, String platformType) throws IOException {
         Set<KeyCloak.Roles> roles = keyCloak.getRoles();
         List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platformType);
         StoryPresentation storyPresentation = storyPresentationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Could not find story"));
@@ -266,7 +266,7 @@ public class JsonProcessorService implements FileSaverService {
      * @throws IOException
      */
     @Transactional
-    public void changeStory(String storiesRequestDto, MultipartFile file, String bankId, String platform, Long id) throws IOException {
+    public StoryPresentation changeStory(String storiesRequestDto, MultipartFile file, String bankId, String platform, Long id) throws IOException {
         StoryPatchDto story = mapper.readValue(
                 storiesRequestDto
                 , StoryPatchDto.class);
@@ -287,7 +287,7 @@ public class JsonProcessorService implements FileSaverService {
         String json = mapper.writeValueAsString(story);
         mapper.readerForUpdating(storyPresentation).readValue(json);
         mapper.putStoryToJson(storyPresentationList, bankId, platform);
-        storyPresentationRepository.save(storyPresentation);
+        return storyPresentationRepository.save(storyPresentation);
     }
 
     /**

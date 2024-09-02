@@ -82,7 +82,7 @@ public interface FileSaverService {
      * @param id id истории
      * @throws IOException
      */
-    void changeStory(String storiesRequestDto, MultipartFile file, String bankId, String platform, Long id) throws IOException;
+    StoryPresentation changeStory(String storiesRequestDto, MultipartFile file, String bankId, String platform, Long id) throws IOException;
 
     /**
      * Метод для изменения карточки в историях
