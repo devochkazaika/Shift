@@ -1,3 +1,36 @@
 {
-  "stories" : [ ]
+  "stories" : [ {
+    "id" : 4,
+    "bankId" : "absolutbank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitle" : "Рандомный заголовок",
+    "previewTitleColor" : "#000",
+    "previewUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/4_0.jpg",
+    "previewGradient" : "EMPTY",
+    "storyFrames" : [ {
+      "id" : "d1efa71f-4693-4e35-b8bd-430c7318ffff",
+      "title" : "Воплощайте самые смелые желания",
+      "text" : "Определяйте цели и воплощайте желания в реальность.\nПозвольте себе осуществить желаемое в новом году!",
+      "textColor" : "#ffff",
+      "pictureUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/4_d1efa71f-4693-4e35-b8bd-430c7318ffff.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "Click Here",
+      "buttonTextColor" : "#FFFFFF",
+      "buttonBackgroundColor" : "#0000FF",
+      "buttonUrl" : "https://example.com",
+      "gradient" : "EMPTY"
+    }, {
+      "id" : "ee79286b-0adf-4bad-b396-caf85fcd7f5f",
+      "title" : "Воплощайте самые смелые желания",
+      "text" : "Определяйте цели и воплощайте желания в реальность.\nПозвольте себе осуществить желаемое в новом году!",
+      "textColor" : "#932525ff",
+      "pictureUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/4_ee79286b-0adf-4bad-b396-caf85fcd7f5f.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "#000",
+      "buttonBackgroundColor" : "#fff",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
+    } ]
+  } ]
 }

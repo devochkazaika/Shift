@@ -91,7 +91,7 @@ public class JsonProcessorService implements FileSaverService {
             //Сохранение в БД
             var storyEntity = saveStoryEntity(storiesRequestDto, images);
             //Сохранение
-            return saveByRoles(storyEntity);
+                return saveByRoles(storyEntity);
         }
         catch (JsonProcessingException e){
             throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
@@ -117,13 +117,13 @@ public class JsonProcessorService implements FileSaverService {
         for (int i=0; i<storyPresentationFrames.size(); i++){
             final StoryPresentationFrames frame = storyPresentationFrames.get(i);
             frame.setStory(story);
+            frame.setId(storyPresentationFramesRepository.save(frame).getId());
             frame.setPictureUrl(multipartFileToImageConverter.parsePicture(
                     new ImageContainer(images.removeFirst()),
                     picturesSaveDirectory,
                     story.getId(),
                     frame.getId()));
-            storyPresentationFramesRepository.save(frame);
-            storyPresentationFrames.set(i, frame);
+            storyPresentationFrames.set(i, storyPresentationFramesRepository.save(frame));
         }
         return storyPresentationRepository.save(storyPresentation);
     }

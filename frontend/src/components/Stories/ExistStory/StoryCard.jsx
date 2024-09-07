@@ -46,8 +46,6 @@ const StoryCard = ({ storyIndex, story, platform, changeable, ...props }) => {
         e.target.classList.remove("dragging");
     
         const newOrder = Array.from(draggableList.children).map(child => child.id);
-    
-        // Check if the order has changed
         let isOrderChanged = false;
         for (let i = 0; i < newOrder.length; i++) {
           if (newOrder[i] !== initialOrder[i]) {
@@ -65,7 +63,6 @@ const StoryCard = ({ storyIndex, story, platform, changeable, ...props }) => {
             );
           } catch (error) {
             console.error("Error updating frame order:", error);
-            // If an error occurs, revert to the original order
             setFrames(prevFrames => [...prevFrames]); 
           }
         }

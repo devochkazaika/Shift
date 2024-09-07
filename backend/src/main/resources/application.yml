@@ -32,6 +32,13 @@ files:
       filesSaveDirectory: "/content-maker/backend/src/main/resources/site/share/htdoc/_files/skins/mobws_story/"
 
 spring:
+#  mvc:
+#    static-path-pattern: /content/**
+#
+#  web:
+#    resources:
+#      static-locations: /content/**
+
   flyway:
     enabled: true
     locations:

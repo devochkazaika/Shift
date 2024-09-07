@@ -1,20 +1,20 @@
 // TODO : переработать framesRules
 export const framesRules = [
   {
-    maxTitleLength: 17,
+    maxTitleLength: 36,
     maxTitleStrings: 1,
     maxTextLength: 245,
     maxTextStrings: 7,
-    maxTitleStringLength: 17,
+    maxTitleStringLength: 36, //нужно поменять
     maxTextStringLength: 35,
     minLength: 1,
   },
   {
-    maxTitleLength: 34,
+    maxTitleLength: 51, //нужно поменять
     maxTitleStrings: 2,
     maxTextLength: 210,
     maxTextStrings: 6,
-    maxTitleStringLength: 17,
+    maxTitleStringLength: 30,
     maxTextStringLength: 35,
     minLength: 1,
   },
@@ -23,7 +23,7 @@ export const framesRules = [
     maxTitleStrings: 3,
     maxTextLength: 140,
     maxTextStrings: 4,
-    maxTitleStringLength: 17,
+    maxTitleStringLength: 36,
     maxTextStringLength: 35,
     minLength: 1,
   },

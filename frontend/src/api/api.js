@@ -5,6 +5,8 @@ const api = axios.create({
     baseURL: 'http://localhost:8081',
  });
 
+export const baseURL = 'http://localhost:8081';
+
 api.interceptors.request.use(function (config) {
     const token = keycloak.token;
     if (token) {

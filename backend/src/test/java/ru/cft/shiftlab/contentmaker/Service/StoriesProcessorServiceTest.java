@@ -49,8 +49,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_TEST_DIRECTORY;
 
 public class StoriesProcessorServiceTest {
@@ -102,9 +101,9 @@ public class StoriesProcessorServiceTest {
         );
         Mockito.when(storyPresentationRepository.save(any())).thenReturn(storyPresentation);
         Mockito.when(storyPresentationFramesRepository.save(any())).thenReturn(firstFrame);
-        Mockito.doCallRealMethod().when(modelMapper).map(any(), any(StoryPresentation.class));
+        doCallRealMethod().when(modelMapper).map(any(), any(StoryPresentation.class));
         try {
-            Mockito.doCallRealMethod().when(dirProcess).createFolders(any());
+            doCallRealMethod().when(dirProcess).createFolders(any());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -312,7 +311,12 @@ public class StoriesProcessorServiceTest {
 
     @Test
     @DisplayName("Тест на удаление истории")
-    public void delete_story_test(){
+    public void delete_story_test() throws Throwable {
+        Mockito.when(storyPresentationRepository.findById(15L)).thenReturn(Optional.of(storyPresentation));
+        Mockito.when(storyMapper.getStoryList(any(), any())).thenReturn(new ArrayList<>(Arrays.asList(storyPresentation)));
+        doCallRealMethod().when(storyMapper).putStoryToJson(storyPresentation, storyPresentation.getBankId(), storyPresentation.getPlatform());
+
+        service.deleteService(storyPresentation.getBankId(), storyPresentation.getPlatform(), storyPresentation.getId());
 
     }
 }
