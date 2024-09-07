@@ -41,22 +41,22 @@ services:
     ports:
       - "1542:1542"
 
-  backend:
-    build:
-      dockerfile: Dockerfile
-      context: ./backend
-    hostname: content
-    container_name: static-content-backend
-    depends_on:
-      postgres-entity:
-        condition: service_healthy
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-entity:1542/content_maker
-      - KEYCLOAK_AUTH_SERVER_URL=http://keycloak:8080/auth
-    networks:
-      - keycloak_demo
-    ports:
-      - '8081:8081'
+#  backend:
+#    build:
+#      dockerfile: Dockerfile
+#      context: ./backend
+#    hostname: content
+#    container_name: static-content-backend
+#    depends_on:
+#      postgres-entity:
+#        condition: service_healthy
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-entity:1542/content_maker
+#      - KEYCLOAK_AUTH_SERVER_URL=http://keycloak:8080/auth
+#    networks:
+#      - keycloak_demo
+#    ports:
+#      - '8081:8081'
 
   keycloak:
     container_name: keycloak
@@ -87,15 +87,15 @@ services:
     networks:
       - keycloak_demo
 
-  mongo-container:
-    image: mongo:latest
-    environment:
-        - MONGO_INITDB_ROOT_USERNAME=admin
-        - MONGO_INITDB_ROOT_PASSWORD=password
-        - MONGO_INITDB_DATABASE=content
-    ports:
-      - "27017:27017"
-    command: mongod
+#  mongo-container:
+#    image: mongo:latest
+#    environment:
+#        - MONGO_INITDB_ROOT_USERNAME=admin
+#        - MONGO_INITDB_ROOT_PASSWORD=password
+#        - MONGO_INITDB_DATABASE=content
+#    ports:
+#      - "27017:27017"
+#    command: mongod
 
 
 networks:
