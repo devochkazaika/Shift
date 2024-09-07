@@ -84,7 +84,6 @@ const StoriesList = ({children}) => {
           onItemsPerPageChange={handleItemsPerPageChange}
         />
       </div>
-
       {loading && <Loader />}
     </>
   );

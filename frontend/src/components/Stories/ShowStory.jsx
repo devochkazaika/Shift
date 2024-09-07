@@ -35,14 +35,6 @@ const ShowStory = (stories) => {
         <>
         {console.log(ind)}
         <div style={{display: "flex"}}>
-        <div className="slide">
-            {(ind > 0) ? <Button
-                text="<"
-                type="button"
-                color="green"
-                handleOnClick={() => leftFrame()}
-            /> : <></>}
-        </div>
         <div className={styles.container}>
             <div className="lines">
             {frameArray.slice(0, frameArray.length).map((frame, index) => (
@@ -54,7 +46,7 @@ const ShowStory = (stories) => {
                         height: "3px", // Высота линии
                         marginRight: "1%",
                         border: "none", // Убираем стандартное обрамление
-                        opacity: "80%"
+                        opacity: "80%",
                     }} 
                     key={index} 
                 />
@@ -65,7 +57,7 @@ const ShowStory = (stories) => {
                         height: "3px", // Высота линии
                         marginRight: "1%",
                         border: "none", // Убираем стандартное обрамление
-                        opacity: "80%"
+                        opacity: "80%",
                     }} 
                     key={index} 
                 />
@@ -77,20 +69,30 @@ const ShowStory = (stories) => {
                     alt="Story frame"
                     className="background-image"
                 />
-                <div className="text-overlay">
-                    <h1>{frameArray[ind].title}</h1>
-                    <p>{frameArray[ind].text}</p>
-                    <p>Позвольте себе осуществить желаемое в новом году!</p>
+                <div>
+                    <div className="left">
+                        {(ind > 0) ? <Button
+                            text="<"
+                            type="button"
+                            color="grey"
+                            handleOnClick={() => leftFrame()}
+                        /> : <></>}
+                    </div>
+                    <div className="right">
+                        {(frameArray.length-1 > ind) ? <Button
+                            text=">"
+                            type="button"
+                            color="grey"
+                            handleOnClick={() => rightFrame()}
+                        /> : <></>}
+                    </div>
                 </div>
+                <div className="text-overlay">
+                    <h1 style={{color: frameArray[ind].textColor}}>{frameArray[ind].title}</h1>
+                    <p style={{color: frameArray[ind].textColor}}>{frameArray[ind].text}</p>
+                </div>
+
             </div>
-        </div>
-        <div className="slide">
-            {(frameArray.length-1 > ind) ? <Button
-                text=">"
-                type="button"
-                color="green"
-                handleOnClick={() => rightFrame()}
-            /> : <></>}
         </div>
         </div>
         </>

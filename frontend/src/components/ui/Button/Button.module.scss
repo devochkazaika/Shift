@@ -35,4 +35,13 @@
       transition: variables.$transition-all-fast;
     }
   }
+
+  &:global(.grey) {
+    background-color: variables.$grey-color;
+
+    &:hover {
+      background-color: variables.$grey-hover-color;
+      transition: variables.$transition-all-fast;
+    }
+  }
 }

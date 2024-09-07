@@ -3,6 +3,7 @@ import "./StoryPanelStyle.css";
 import Button from "./../../ui/Button/index";
 import { deleteStory } from "./../../../api/stories";
 import { useState, useEffect, React } from "react";
+import ShowStory from "../ShowStory";
 
 const StoryPanel = ({ storyArray, platform }) => {
   const [stories, setStories] = useState(storyArray);
@@ -46,13 +47,19 @@ const StoryPanel = ({ storyArray, platform }) => {
                   </div>
                 </div>
               </summary>
-              <div>
-                <StoryCard
-                  key={index}
-                  story={story}
-                  storyIndex={index}
-                  platform={platform}
-                />
+              <div style={{display: "flex"}}>
+                <div style={{width: "70%", paddingRight: "30px"}}>
+                  <StoryCard
+                    key={index}
+                    story={story}
+                    storyIndex={index}
+                    platform={platform}
+                  />
+                </div>
+                <div style={{width: "30%", paddingRight: "4px"}}>
+                  <h2>Примерный вид</h2>
+                  <ShowStory stories={story}/>
+                </div>
               </div>
             </details>
           </li>
