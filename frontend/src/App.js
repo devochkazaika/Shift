@@ -49,7 +49,7 @@ function App() {
                     path="/"
                     element={
                       <PrivateRoute>
-                        <StoriesList>
+                        <StoriesList showStory={flags.show_story}>
                           <AddButton />
                         </StoriesList>
                       </PrivateRoute>

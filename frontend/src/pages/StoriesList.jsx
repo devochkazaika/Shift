@@ -9,7 +9,7 @@ import StoryPanel from "../components/Stories/ExistStory/StoryPanel";
 import { Pagination } from "../components/Pagination/Pagination";
 import { getStories } from "../api/stories";
 
-const StoriesList = ({children}) => {
+const StoriesList = ({showStory, children}) => {
   const [loading, setLoading] = useState(false);
   const [storiesArray, setStoriesArray] = useState([]);
 
@@ -71,7 +71,7 @@ const StoriesList = ({children}) => {
         </Formik>
       </div>
       {storiesArray.length > 0 ? (
-        <StoryPanel storyArray={currentItems} platform={platform} />
+        <StoryPanel showStory={showStory} storyArray={currentItems} platform={platform} />
       ) : (
         <h2>Пока нет историй</h2>
       )}

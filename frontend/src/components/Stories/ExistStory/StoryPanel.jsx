@@ -5,7 +5,7 @@ import { deleteStory } from "./../../../api/stories";
 import { useState, useEffect, React } from "react";
 import ShowStory from "../ShowStory";
 
-const StoryPanel = ({ storyArray, platform }) => {
+const StoryPanel = ({showStory, storyArray, platform }) => {
   const [stories, setStories] = useState(storyArray);
   //Для обновления после удаления
   useEffect(() => {
@@ -56,10 +56,11 @@ const StoryPanel = ({ storyArray, platform }) => {
                     platform={platform}
                   />
                 </div>
-                <div style={{width: "30%", paddingRight: "4px"}}>
-                  <h2>Примерный вид</h2>
-                  <ShowStory stories={story}/>
-                </div>
+                {(showStory) ? 
+                  <div style={{width: "30%", paddingRight: "4px"}}>
+                    <ShowStory stories={story}/>
+                  </div>
+                : <></>}
               </div>
             </details>
           </li>

@@ -79,8 +79,10 @@ server:
 feature-flags:
   components:
     stories: true
+    show_story: false
     banners: true
     admin_panel: true
+
 
 file_path_to_save:
   stories: "src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/"
