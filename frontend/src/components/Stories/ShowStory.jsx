@@ -90,6 +90,25 @@ const ShowStory = (stories) => {
                 <div className="text-overlay">
                     <h1 style={{color: frameArray[ind].textColor}}>{frameArray[ind].title}</h1>
                     <p style={{color: frameArray[ind].textColor}}>{frameArray[ind].text}</p>
+                    {frameArray[ind].visibleButtonOrNone!="NONE" ? 
+                    <div style={{textAlign: "center"}}>
+                        <button 
+                            style={{
+                                color: frameArray[ind].buttonTextColor,
+                                backgroundColor: frameArray[ind].buttonBackgroundColor,
+                                fontSize: "clamp(16px, 2.5vw, 50px)",
+                                padding: "5px 5px",
+                                textOverflow: "ellipsis",
+                                height: "40%",
+                                width: "90%",
+                                overflow: "hidden",
+                                textAlign: "center"
+                            }}
+                        >
+                            <div style={{fontSize: "25px", maxWidth: "100%", wordBreak: "break-word"}}>{frameArray[ind].buttonText}</div>
+                        </button>
+                    </div>
+                    : <></>}
                 </div>
 
             </div>
