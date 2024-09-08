@@ -28,6 +28,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authz) ->
                                 authz
                                         .antMatchers("/stories/admin/**").hasRole("ADMIN")
+                                        .antMatchers("/stories/change/**").hasAnyRole("ADMIN")
                                         .antMatchers("/stories/**").hasAnyRole("ADMIN", "USER")
                                         .anyRequest().permitAll()
                 )
