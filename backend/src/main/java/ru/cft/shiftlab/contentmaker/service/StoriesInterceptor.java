@@ -1,5 +1,9 @@
 package ru.cft.shiftlab.contentmaker.service;
 
+import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -28,7 +32,7 @@ public class StoriesInterceptor implements HandlerInterceptor {
     HistoryRepository historyRepository;
     @Autowired
     StoryPresentationRepository storyPresentationRepository;
-
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(StoriesInterceptor.class);
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         String requestURI = request.getRequestURI();
@@ -36,36 +40,41 @@ public class StoriesInterceptor implements HandlerInterceptor {
         history.setTime(LocalTime.now());
         history.setDay(LocalDate.now());
         Set<String> path = Arrays.stream(requestURI.split("/")).collect(Collectors.toSet());
-        if (path.contains("get")) return;
-        else if (path.contains("stories")){
-            history.setComponentType(History.ComponentType.STORIES);
-            if (path.contains("add")){
-                history.setOperationType(History.OperationType.Create);
-                var story = storyPresentationRepository.findTopByOrderByIdDesc();
-                history.setComponentId(story.getId());
-                history.setBankId(story.getBankId());
-                history.setPlatform(story.getPlatform());
-            }
-            else if (path.contains("delete")){
-                history.setOperationType(History.OperationType.Delete);
-                if (request.getParameter("id") != null) {
+        try{
+            if (path.contains("get")) return;
+            else if (path.contains("stories")){
+                history.setComponentType(History.ComponentType.STORIES);
+                if (path.contains("add")){
+                    history.setOperationType(History.OperationType.Create);
+                    var story = storyPresentationRepository.findTopByOrderByIdDesc();
+                    history.setComponentId(story.getId());
+                    history.setBankId(story.getBankId());
+                    history.setPlatform(story.getPlatform());
+                }
+                else if (path.contains("delete")){
+                    history.setOperationType(History.OperationType.Delete);
+                    if (request.getParameter("id") != null) {
+                        history.setComponentId(Long.parseLong(request.getParameter("id")));
+                    }
+                }
+                else if (path.contains("change")){
+                    history.setOperationType(History.OperationType.Update);
                     history.setComponentId(Long.parseLong(request.getParameter("id")));
                 }
+                else return;
+                if (request.getParameter("bankId") != null){
+                    history.setBankId(request.getParameter("bankId"));
+                }
+                if (request.getParameter("platform") != null){
+                    history.setPlatform(request.getParameter("platform"));
+                }
+                history.setStatus(statusToBd.get(response.getStatus() / 100 * 100));
+                history.setUserName(request.getRemoteUser());
+                historyRepository.save(history);
             }
-            else if (path.contains("change")){
-                history.setOperationType(History.OperationType.Update);
-                history.setComponentId(Long.parseLong(request.getParameter("id")));
-            }
-            else return;
-            if (request.getParameter("bankId") != null){
-                history.setBankId(request.getParameter("bankId"));
-            }
-            if (request.getParameter("platform") != null){
-                history.setPlatform(request.getParameter("platform"));
-            }
-            history.setStatus(statusToBd.get(response.getStatus() / 100 * 100));
-            history.setUserName(request.getRemoteUser());
-            historyRepository.save(history);
+        }
+        catch (Exception e){
+            log.info("Операция не сохранилась - " + e.getMessage());;
         }
     }
 }

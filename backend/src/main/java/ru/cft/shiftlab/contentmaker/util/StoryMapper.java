@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
+import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 
 import java.io.File;
@@ -44,10 +45,12 @@ public class StoryMapper extends ObjectMapper {
      */
     public StoryPresentation getStoryModel(List<StoryPresentation> storyPresentationList,
                                            Long id) throws IOException {
-        return storyPresentationList.stream()
+        var story = storyPresentationList.stream()
                 .filter(x-> x.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Could not find the story with id=" + id));
+        story.getStoryPresentationFrames().forEach(x -> x.setStory(story));
+        return story;
     }
 
     public List<StoryPresentation> getStoryList(String bankId, String platform) throws IOException {

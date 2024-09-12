@@ -157,6 +157,19 @@ public class JsonProcessorService implements FileSaverService {
         });
         return storyPresentationRepository.save(storyPresentation);
     }
+
+    //Если истории не существует в БД, но существует в JSON
+    private void saveStoryToDbIfNotExist(final StoryPresentation st,
+                                     Long id){
+        //Если не сохранена сама история
+        var story = storyPresentationRepository.findById(id).orElse(
+                storyPresentationRepository.save(st)
+        );
+        st.setId(story.getId());
+        //Если карточки не сохранены
+        storyPresentationFramesRepository.saveAll(st.getStoryPresentationFrames());
+    }
+
     /**
      * Сохранение карточки в зависимости от роли
      * @param frame
@@ -167,34 +180,39 @@ public class JsonProcessorService implements FileSaverService {
      * @throws IOException
      */
     private StoryPresentation saveToJsonByRoles(StoryPresentationFrames frame, MultipartFile file, Long id, String bankId, String platformType) throws IOException {
-        Set<KeyCloak.Roles> roles = keyCloak.getRoles();
         List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platformType);
-        StoryPresentation storyPresentation = storyPresentationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Could not find story"));
-        if (storyPresentation.getStoryPresentationFrames().size() >= MAX_COUNT_FRAME) throw new IllegalArgumentException("Could not save frame because max count is achieved");
-        frame.setStory(storyPresentation);
-        frame = storyPresentationFramesRepository.save(frame);
-        storyPresentation.getStoryPresentationFrames().add(frame);
 
-        //добавление картинки в JSON
+        // нахождение истории в JSON
+        final StoryPresentation story = mapper.getStoryModel(storyPresentationList, id);
+        saveStoryToDbIfNotExist(story, id);
+
+        // Сохранение карточки
+        if (story.getStoryPresentationFrames().size() >= MAX_COUNT_FRAME) throw new IllegalArgumentException("Could not save frame because max count is achieved");
+        frame.setStory(story);
+        frame = storyPresentationFramesRepository.save(frame);
+        story.getStoryPresentationFrames().add(frame);
+
+        // Добавление картинки в JSON
         String presentationPictureUrl = multipartFileToImageConverter.parsePicture(
                 new ImageContainer(file),
                 FILES_SAVE_DIRECTORY+bankId+"/"+platformType+"/",
                 id,
                 frame.getId());
         frame.setPictureUrl(presentationPictureUrl);
-        final StoryPresentation st = storyPresentationList.stream().filter(x-> x.getId().equals(id)).findFirst()
-                .orElseThrow(() -> new RuntimeException("Unexpected exception"));
-        st.getStoryPresentationFrames().add(frame);
+        story.getStoryPresentationFrames().add(frame);
 
-        if (roles.contains(KeyCloak.Roles.ADMIN)){
-            mapper.putStoryToJson(storyPresentationList, bankId, platformType);
-            storyPresentation.setApproved(StoryPresentation.Status.APPROVED);
-        }
-        else if (roles.contains(KeyCloak.Roles.USER)){
-            mapper.putStoryToJson(storyPresentationList, bankId, platformType);
-            storyPresentation.setApproved(StoryPresentation.Status.NOTAPPROVED);
-        }
-        return storyPresentation;
+        // Сохранение в зависимости от роли (ПОКА НЕ ДОПИСАНО)
+//        Set<KeyCloak.Roles> roles = keyCloak.getRoles();
+//        if (roles.contains(KeyCloak.Roles.ADMIN)){
+//            mapper.putStoryToJson(storyPresentationList, bankId, platformType);
+//            story.setApproved(StoryPresentation.Status.APPROVED);
+//        }
+//        else if (roles.contains(KeyCloak.Roles.USER)){
+//            mapper.putStoryToJson(storyPresentationList, bankId, platformType);
+//            story.setApproved(StoryPresentation.Status.NOTAPPROVED);
+//        }
+        mapper.putStoryToJson(storyPresentationList, bankId, platformType);
+        return story;
     }
 
     @Override
@@ -237,8 +255,6 @@ public class JsonProcessorService implements FileSaverService {
     @Transactional
     public StoryPresentationFrames addFrame(String frameDto, MultipartFile file,
                                             String bankId, String platform, Long id) throws IOException {
-        var story = storyPresentationRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find the story with id = %d", id)));
         StoryPresentationFrames frame = mapper.readValue(
                 frameDto
                 , StoryPresentationFrames.class);
