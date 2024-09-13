@@ -38,22 +38,22 @@ const ShowStory = (stories) => {
                 (index <= ind) ?
                 <hr 
                     style={{
-                        backgroundColor: "white", // Изменяем цвет линии
+                        backgroundColor: "white",
                         width: `${100 / frameArray.length}%`,
-                        height: "3px", // Высота линии
+                        height: "3px",
                         marginRight: "1%",
-                        border: "none", // Убираем стандартное обрамление
+                        border: "none",
                         opacity: "80%",
                     }} 
                     key={index} 
                 />
                 : <hr 
                     style={{
-                        backgroundColor: "grey", // Цвет линии для остальных элементов
+                        backgroundColor: "grey", 
                         width: `${100 / frameArray.length}%`,
-                        height: "3px", // Высота линии
+                        height: "3px",
                         marginRight: "1%",
-                        border: "none", // Убираем стандартное обрамление
+                        border: "none",
                         opacity: "80%",
                     }} 
                     key={index} 
@@ -68,20 +68,24 @@ const ShowStory = (stories) => {
                 />
                 <div>
                     <div className="left">
-                        {(ind > 0) ? <Button
+                        {(ind > 0) ? <div style={{opacity: "60%"}}>
+                            <Button
                             text="<"
                             type="button"
                             color="grey"
-                            handleOnClick={() => leftFrame()}
-                        /> : <></>}
+                            handleOnClick={() => leftFrame()}/>
+                        </div>
+                             : <></>}
                     </div>
                     <div className="right">
-                        {(frameArray.length-1 > ind) ? <Button
+                        {(frameArray.length-1 > ind) ? <div style={{opacity: "60%"}}>
+                            <Button
                             text=">"
                             type="button"
                             color="grey"
-                            handleOnClick={() => rightFrame()}
-                        /> : <></>}
+                            handleOnClick={() => rightFrame()}/>
+                        </div>    
+                         : <></>}
                     </div>
                 </div>
                 <div className="text-overlay">
