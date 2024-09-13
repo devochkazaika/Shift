@@ -21,19 +21,16 @@ const ShowStory = (stories) => {
         if (frameArray.length-1 > ind){
             setIndex(ind+1);
         }
-        console.log(ind);
     };
 
     const leftFrame = () => {
         if (ind > 0){
             setIndex(ind-1);
         }
-        console.log(ind);
     };
 
     return (
         <>
-        {console.log(ind)}
         <div style={{display: "flex"}}>
         <div className={styles.container}>
             <div className="lines">

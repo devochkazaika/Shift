@@ -17,6 +17,7 @@ const createToast = (toastContent) => {
 };
 
 const updateToast = (toastView, response) => {
+  console.log(response);
   toast.update(toastView, {
     ...defaultUpdateToastOptions,
     render: response.message,
@@ -32,6 +33,23 @@ const warningToast = (toastView, error) => {
     });
     return false;
   }
+};
+
+// const serverError = (toastView) => {
+//   toast.update(toastView, {
+//     ...defaultUpdateToastOptions,
+//     render: "500 - Ошибка на стороне сервера",
+//     type: "error",
+//   });
+// }
+
+const errorFrameSize = (toastView) => {
+    toast.update(toastView, {
+      ...defaultUpdateToastOptions,
+      render: "Недопустимое количество карточек",
+      type: "warning",
+    });
+    return false;
 };
 
 
@@ -227,14 +245,14 @@ export const addFrame = async (story, storyIndex, frame, platform) => {
   form.append("bankId", story.bankId);
   form.append("image", frame[`pictureUrl_${storyIndex}_add`]);
   try {
-    const response = await api.post(`/stories/add/frame`, form);
-    toast.update(toastView, {
-      ...defaultUpdateToastOptions,
-      render: response.message,
+    const response = await api.post(`/stories/add/frame`, form, {
+      headers: { "Content-Type": "multipart/form-data" },
     });
+    console.log(response.data);
+    updateToast(toastView, response);
     return response;
-  } catch (error) {
-    warningToast(toastView, error);
+  } catch (exception) {
+    errorFrameSize(toastView);
   }
 };
 
