@@ -158,7 +158,9 @@ public class JsonProcessorService implements FileSaverService {
         return storyPresentationRepository.save(storyPresentation);
     }
 
-    //Если истории не существует в БД, но существует в JSON
+    /**
+     * Если истории не существует в БД, но существует в JSON
+     */
     private void saveStoryToDbIfNotExist(final StoryPresentation st,
                                      Long id){
         //Если не сохранена сама история
@@ -190,7 +192,6 @@ public class JsonProcessorService implements FileSaverService {
         if (story.getStoryPresentationFrames().size() >= MAX_COUNT_FRAME) throw new IllegalArgumentException("Could not save frame because max count is achieved");
         frame.setStory(story);
         frame = storyPresentationFramesRepository.save(frame);
-        story.getStoryPresentationFrames().add(frame);
 
         // Добавление картинки в JSON
         String presentationPictureUrl = multipartFileToImageConverter.parsePicture(
@@ -283,27 +284,31 @@ public class JsonProcessorService implements FileSaverService {
      */
     @Transactional
     public StoryPresentation changeStory(String storiesRequestDto, MultipartFile file, String bankId, String platform, Long id) throws IOException {
-        StoryPatchDto story = mapper.readValue(
+        StoryPatchDto storyDto = mapper.readValue(
                 storiesRequestDto
                 , StoryPatchDto.class);
-        //Берем нужную историю из списка
+        // Берем нужную историю из списка
         List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platform);
-        final StoryPresentation storyPresentation = mapper.getStoryModel(storyPresentationList, id);
+        final StoryPresentation storyEntity = mapper.getStoryModel(storyPresentationList, id);
 
-        //Меняем картинку
+        // Меняем картинку
         if (file != null) {
             String pictureUrl = multipartFileToImageConverter.parsePicture(
                     new ImageContainer(file),
                     FILES_SAVE_DIRECTORY + bankId + "/" + platform + "/",
                     id);
-            storyPresentation.setPreviewUrl(pictureUrl);
+            storyEntity.setPreviewUrl(pictureUrl);
         }
 
-        //обновляем значение и записываем в JSON
-        String json = mapper.writeValueAsString(story);
-        mapper.readerForUpdating(storyPresentation).readValue(json);
+        // Обновляем значение и записываем в JSON
+        String json = mapper.writeValueAsString(storyDto);
+        mapper.readerForUpdating(storyEntity).readValue(json);
         mapper.putStoryToJson(storyPresentationList, bankId, platform);
-        return storyPresentationRepository.save(storyPresentation);
+
+        // Если карточки не сохранены
+        saveStoryToDbIfNotExist(storyEntity, id);
+
+        return storyPresentationRepository.save(storyEntity);
     }
 
     /**
@@ -324,8 +329,10 @@ public class JsonProcessorService implements FileSaverService {
                 , StoryFramesDto.class);
 
         List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platform);
-        final StoryPresentation storyPresentation = mapper.getStoryModel(storyPresentationList, id);
-        final StoryPresentationFrames storyPresentationFrames = getFrameFromStory(storyPresentation, frameId);
+        final StoryPresentation storyEntity = mapper.getStoryModel(storyPresentationList, id);
+        final StoryPresentationFrames storyPresentationFrames = getFrameFromStory(storyEntity, frameId);
+        // Если история и карточки не сохранены в БД
+        saveStoryToDbIfNotExist(storyEntity, id);
 
         //Меняем картинку
         if (file != null) {
@@ -340,7 +347,7 @@ public class JsonProcessorService implements FileSaverService {
         //обновляем значение и записываем в JSON
         String json = mapper.writeValueAsString(story);
         mapper.readerForUpdating(storyPresentationFrames).readValue(json);
-        storyPresentationFrames.setStory(storyPresentation);
+        storyPresentationFrames.setStory(storyEntity);
         storyPresentationFramesRepository.save(storyPresentationFrames);
         mapper.putStoryToJson(storyPresentationList, bankId, platform);
     }
@@ -354,23 +361,12 @@ public class JsonProcessorService implements FileSaverService {
      * @throws Throwable
      */
     public ResponseEntity<?> deleteService(String bankId, String platform, Long id) throws Throwable {
-        ExecutorService executor = Executors.newFixedThreadPool(2);
-        Future<?> deleteJson = executor.submit(()->{
-            try {
-                deleteJsonStories(bankId, platform, id);
-            }
-            catch (IOException e){
-                throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
-            }
-        });
+        deleteJsonStories(bankId, platform, id);
+
         final var storyPresentation = storyPresentationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(String.format("Could not find story with id = %d", id)));
         storyPresentation.setApproved(StoryPresentation.Status.DELETED);
         storyPresentationRepository.save(storyPresentation);
-        try {
-            deleteJson.get();
-        } catch (ExecutionException ex) {
-            throw ex.getCause();
-        }
+
         return new ResponseEntity<>(HttpStatus.valueOf(202));
     }
 
@@ -386,18 +382,27 @@ public class JsonProcessorService implements FileSaverService {
     /**
      * Метод, предназначенный для удаления историй из JSON.
      */
-    private void deleteJsonStories(String bankId, String platform, Long id) throws IOException {
+    private StoryPresentation deleteJsonStories(String bankId, String platform, Long id) throws IOException {
         //Берем список историй
         List<StoryPresentation> list = mapper.getStoryList(bankId, platform);
+
         //удаляем нужную историю
-        if (!list.removeIf(k -> id.equals(k.getId()))){
-            throw new IllegalArgumentException(String.format(
-                    "Could not find the frame with id = %s",
-                    id)
-            );
+        StoryPresentation storyDeleted = null;
+        for (int i = 0; i < list.size(); i++) {
+            storyDeleted = list.get(i);
+            if (storyDeleted.getId().equals(id)) {
+                list.remove(i);
+                break;
+            }
         }
+        if (storyDeleted == null) throw new IllegalArgumentException(String.format(
+                "Could not find the frame with id = %s",
+                id)
+        );
+
         //кладем в json
         mapper.putStoryToJson(list, bankId, platform);
+        return storyDeleted;
     }
 
     /**
