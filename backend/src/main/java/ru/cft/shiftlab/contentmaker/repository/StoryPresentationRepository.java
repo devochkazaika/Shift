@@ -22,7 +22,7 @@ public interface StoryPresentationRepository extends CrudRepository<StoryPresent
     @Query(value = "SELECT * FROM stories WHERE approved = 'DELETED'", nativeQuery = true)
     List<StoryPresentation> getDeletedStories();
 
-    @Query(value = "SELECT * FROM stories WHERE approved = 'DELETED' and bank_id = :bank and platform = :platform", nativeQuery = true)
+    @Query(value = "SELECT st FROM StoryPresentation st WHERE st.approved = 'DELETED' and st.bankId = :bank and st.platform = :platform")
     List<StoryPresentation> getDeletedStories(@Param("bank") String bankId, @Param("platform") String platform);
 
     @Query("SELECT st FROM StoryPresentation st WHERE st.id = :id")

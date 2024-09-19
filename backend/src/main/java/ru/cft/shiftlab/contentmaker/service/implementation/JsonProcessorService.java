@@ -233,6 +233,8 @@ public class JsonProcessorService implements FileSaverService {
 
     @Override
     public List<StoryPresentation> getDeletedStories(String bankId, String platform) {
+        var story = storyPresentationRepository.getDeletedStories(bankId, platform);
+
         return storyPresentationRepository.getDeletedStories(bankId, platform);
     }
 

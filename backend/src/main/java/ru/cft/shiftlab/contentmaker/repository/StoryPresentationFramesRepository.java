@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentationFrames;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -18,4 +19,7 @@ public interface StoryPresentationFramesRepository extends CrudRepository<StoryP
     @Query("DELETE FROM StoryPresentationFrames where story.id = :id")
     @Modifying
     void deleteByStoryId(@Param("id") Long id);
+
+    @Query("select st FROM StoryPresentationFrames st where st.story.id = :id")
+    List<StoryPresentationFrames> getDeletedFramesFromStory(@Param("id") Long id);
 }
