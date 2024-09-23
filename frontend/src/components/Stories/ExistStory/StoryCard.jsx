@@ -154,7 +154,9 @@ const StoryCard = ({ storyIndex, story, platform, changeStory, changeable, showS
                         name="previewTitle"
                         type="text"
                         value={values.previewTitle}
-                        onChange={setFieldValue}
+                        onChange={(e) => {
+                          setFieldValue('previewTitle', e.target.value);
+                        }}
                         {...props}
                       />
                     </div>
@@ -163,7 +165,9 @@ const StoryCard = ({ storyIndex, story, platform, changeStory, changeable, showS
                       labelTitle="Цвет заголовка"
                       value={values.previewTitleColor}
                       component={ColorPicker}
-                      onChange={setFieldValue}
+                      onChange={(e) => {
+                        setFieldValue('previewTitleColor', e.target.value);
+                      }}
                       {...props}
                     />
                     <div className="frame">
@@ -172,7 +176,9 @@ const StoryCard = ({ storyIndex, story, platform, changeStory, changeable, showS
                           name="previewGradient"
                           labelTitle="Градиент"
                           value={values.previewGradient}
-                          onChange={changeStory}
+                          onChange={(e) => {
+                            setFieldValue('previewGradient', e.target.value);
+                          }}
                           as="select"
                           options={gradientOptions}
                           {...props}

@@ -3,10 +3,10 @@
     "id" : 7,
     "bankId" : "absolutbank",
     "platform" : "ALL PLATFORMS",
-    "previewTitle" : "sdadas",
-    "previewTitleColor" : "#000",
+    "previewTitle" : "sdadasasdasdasdasd",
+    "previewTitleColor" : "#d82828ff",
     "previewUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/7_0.jpg",
-    "previewGradient" : "EMPTY",
+    "previewGradient" : "HALF",
     "storyFrames" : [ {
       "id" : "59476a17-bfa5-49a4-a49d-7c927a8ef23e",
       "title" : " ",
