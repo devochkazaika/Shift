@@ -17,7 +17,7 @@ import UploadImage from "../../UploadImage";
 import AddFrame from "./AddFrame";
 import styles from "./StoryCard.module.scss";
 
-const StoryCard = ({ storyIndex, story, platform, changeable, ...props }) => {
+const StoryCard = ({ storyIndex, story, platform, changeStory, changeable, showStory, ...props }) => {
   const [frames, setFrames] = useState(story.storyFrames || []);
   const [initialImage, setInitialImage] = useState(null);
   const draggableListRef = useRef(null);
@@ -124,6 +124,8 @@ const StoryCard = ({ storyIndex, story, platform, changeable, ...props }) => {
     }
   };
 
+
+
   return (
     <div>
       <Formik
@@ -139,7 +141,7 @@ const StoryCard = ({ storyIndex, story, platform, changeable, ...props }) => {
           updateStory(story, storyIndex, values, platform);
         }}
       >
-        {({ values, handleChange }) => (
+        {({ values, setFieldValue }) => (
           <Form>
             <FieldArray name="frames">
               {() => (
@@ -152,7 +154,7 @@ const StoryCard = ({ storyIndex, story, platform, changeable, ...props }) => {
                         name="previewTitle"
                         type="text"
                         value={values.previewTitle}
-                        onChange={handleChange}
+                        onChange={setFieldValue}
                         {...props}
                       />
                     </div>
@@ -161,7 +163,7 @@ const StoryCard = ({ storyIndex, story, platform, changeable, ...props }) => {
                       labelTitle="Цвет заголовка"
                       value={values.previewTitleColor}
                       component={ColorPicker}
-                      onChange={handleChange}
+                      onChange={setFieldValue}
                       {...props}
                     />
                     <div className="frame">
@@ -170,7 +172,7 @@ const StoryCard = ({ storyIndex, story, platform, changeable, ...props }) => {
                           name="previewGradient"
                           labelTitle="Градиент"
                           value={values.previewGradient}
-                          onChange={handleChange}
+                          onChange={changeStory}
                           as="select"
                           options={gradientOptions}
                           {...props}
@@ -244,6 +246,8 @@ const StoryCard = ({ storyIndex, story, platform, changeable, ...props }) => {
                     storyIndex={storyIndex}
                     story={story}
                     platform={platform}
+                    showStory={showStory}
+                    changeStory={changeStory}
                     {...props}
                   />
                 </div>

@@ -5,9 +5,9 @@
     margin-top: 10px;
     top: 0;
     left: 0;
-    width: 450px;
-    height: 750px;
-    display: inline-block;
+    width: 350px;
+    height: 625px;
+    display: flex;
 }
 
 .background-image {

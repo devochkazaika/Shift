@@ -18,15 +18,34 @@ const StoryPanel = ({showStory, storyArray, platform }) => {
     try {
       const success = await deleteStory(story, platform);
       if (success) {
-        setStories((prevStories) =>
-          prevStories.filter((item) => item.id !== story.id),
-        );
+        setStories((prevStories) => {
+          const updatedStories = prevStories.filter((item) => item.id !== story.id);
+          return updatedStories;
+        });
       }
     } catch (error) {
       console.error("Ошибка при удалении истории", error);
     }
   };
 
+  const handleUpdateStory = (value, storyIndex, frameId, field) => {
+    // Создаем копию массива stories
+    let newStories = [...stories];
+  
+    // Находим нужный storyFrames по индексу storyIndex
+    newStories[storyIndex].storyFrames = newStories[storyIndex].storyFrames.map(frame => {
+      if (frame.id === frameId) {
+        return {
+          ...frame,
+          [field]: value
+        };
+      }
+      return frame;
+    });
+  
+    // Обновляем состояние
+    setStories(newStories);
+  };
   return (
     <div>
       <ul className="stories">
@@ -48,19 +67,31 @@ const StoryPanel = ({showStory, storyArray, platform }) => {
                 </div>
               </summary>
               <div style={{display: "flex"}}>
-                <div style={{width: "70%", paddingRight: "30px"}}>
-                  <StoryCard
-                    key={index}
-                    story={story}
-                    storyIndex={index}
-                    platform={platform}
-                  />
-                </div>
                 {(showStory) ? 
-                  <div style={{width: "30%", paddingRight: "4px"}}>
-                    <ShowStory stories={story}/>
+                  <>
+                  <div style={{width: "70%", paddingRight: "30px"}}>
+                    <StoryCard
+                      key={index}
+                      story={story}
+                      storyIndex={index}
+                      platform={platform}
+                      changeStory={handleUpdateStory}
+                    />
                   </div>
-                : <></>}
+                  <div style={{width: "30%", paddingRight: "4px"}}>
+                    <ShowStory stories={storyArray[index]}/>
+                  </div>
+                  </>
+                : <>
+                  <div style={{width: "100%", paddingRight: "30px"}}>
+                    <StoryCard
+                      key={index}
+                      story={story}
+                      storyIndex={index}
+                      platform={platform}
+                    />
+                  </div>
+                  </>}
               </div>
             </details>
           </li>

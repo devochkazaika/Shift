@@ -23,6 +23,7 @@ const FormField = (props) => {
         type={props.type}
         component={props.component}
         as={props.as}
+        onChange={props.onChange || field.onChange}
         value={props.value || field.value}
         checked={props.checked}
         className={`${props.type !== 'radio' && styles.field} ${

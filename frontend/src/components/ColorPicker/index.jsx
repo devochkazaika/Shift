@@ -18,6 +18,7 @@ const ColorPicker = ({ field, form }) => {
   const handleColorChange = (c) => {
     let hexColor = '#' + rgbHex(c.rgb.r, c.rgb.g, c.rgb.b, c.rgb.a);
     form.setFieldValue(field.name, hexColor);
+    field.onChange(hexColor);
   };
 
   return (
@@ -32,5 +33,6 @@ const ColorPicker = ({ field, form }) => {
     </div>
   );
 };
+
 
 export default ColorPicker;

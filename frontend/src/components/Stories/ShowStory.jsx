@@ -1,5 +1,4 @@
 import React, {useEffect, useState } from "react";
-// import styles from '../UploadImage/PreviewImage/PreviewImage.module.scss';
 import { baseURL } from "../../api/api";
 import styles from "./showstory.css"
 import Button from "../ui/Button";
@@ -14,8 +13,8 @@ const ShowStory = (stories) => {
     useEffect( () => {
         if (stories) setStoriesArray(stories["stories"]);
         if (storiesArray) setStory(storiesArray);
-        setFrameArray(story["storyFrames"])
-    }, [storiesArray]);
+        setFrameArray(story["storyFrames"]);
+    }, [stories]);
 
     const rightFrame = () => {
         if (frameArray.length-1 > ind){
