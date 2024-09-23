@@ -5,7 +5,7 @@ import rgbHex from 'rgb-hex';
 import useOutsideClick from '../../hooks/useOutsideClick';
 import styles from './ColorPicker.module.scss';
 
-const ColorPicker = ({ field, form }) => {
+const ColorPicker = ({ field, form, onChange }) => {
   const [modalShown, toggleModal] = React.useState(false);
   const colorAreaRef = React.useRef();
 
@@ -18,7 +18,9 @@ const ColorPicker = ({ field, form }) => {
   const handleColorChange = (c) => {
     let hexColor = '#' + rgbHex(c.rgb.r, c.rgb.g, c.rgb.b, c.rgb.a);
     form.setFieldValue(field.name, hexColor);
-    field.onChange(hexColor);
+    if (onChange) {
+      onChange({ target: { name: field.name, value: hexColor } });
+    }
   };
 
   return (

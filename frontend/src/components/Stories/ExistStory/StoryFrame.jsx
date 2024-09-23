@@ -59,8 +59,8 @@ const StoryFrame = ({
                     value={values.title}
                     type="text"
                     onChange={(e) => {
-                      setFieldValue('title', e.target.value); // Правильное использование setFieldValue
-                      changeStory(e.target.value, storyIndex, frame.id, "title"); // Ваша дополнительная логика
+                      setFieldValue('title', e.target.value);
+                      changeStory(e.target.value, storyIndex, frame.id, "title");
                     }}
                     {...props}
                   />
@@ -72,8 +72,8 @@ const StoryFrame = ({
                       as={"textarea"}
                       type="text"
                       onChange={(e) => {
-                        setFieldValue(e);
-                        values.text = e.target.value;
+                        console.log(e.target.value)
+                        setFieldValue('text', e.target.value);
                         changeStory(e.target.value, storyIndex, frame.id, "text");
                       }}
                       {...props}
@@ -84,8 +84,7 @@ const StoryFrame = ({
                       value={values.textColor}
                       component={ColorPicker}
                       onChange={(e) => {
-                        setFieldValue(e);
-                        values.textColor = e.target.value;
+                        setFieldValue('textColor', e.target.value);
                         changeStory(e.target.value, storyIndex, frame.id, "textColor");
                       }}
                       {...props}
@@ -98,8 +97,7 @@ const StoryFrame = ({
                     as="select"
                     options={gradientOptions}
                     onChange={(e) => {
-                      setFieldValue(e);
-                      values.gradient = e.target.value;
+                      setFieldValue('gradient', e.target.value);
                       changeStory(e.target.value, storyIndex, frame.id, "gradient");
                     }}
                     {...props}
@@ -115,8 +113,7 @@ const StoryFrame = ({
                           type="radio"
                           checked={values.visibleButtonOrNone === "BUTTON"}
                           onChange={(e) => {
-                            setFieldValue(e);
-                            values.visibleButtonOrNone = e.target.value;
+                            setFieldValue('visibleButtonOrNone', e.target.value);
                             changeStory(e.target.value, storyIndex, frame.id, "visibleButtonOrNone");
                           }}
                           {...props}
@@ -131,8 +128,7 @@ const StoryFrame = ({
                           type="radio"
                           checked={values.visibleButtonOrNone === "NONE"}
                           onChange={(e) => {
-                            setFieldValue(e);
-                            values.visibleButtonOrNone = e.target.value;
+                            setFieldValue('visibleButtonOrNone', e.target.value);
                             changeStory(e.target.value, storyIndex, frame.id, "visibleButtonOrNone");
                           }}
                           {...props}
@@ -164,9 +160,8 @@ const StoryFrame = ({
                             component={ColorPicker}
                             value={values.buttonTextColor}
                             onChange={(e) => {
-                              setFieldValue(e);
-                              values.buttonTextColor = e.target.value;
-                              changeStory(e, storyIndex, frame.id, "buttonTextColor");
+                              setFieldValue('buttonTextColor', e.target.value);
+                              changeStory(e.target.value, storyIndex, frame.id, "buttonTextColor");
                             }}
                             {...props}
                           />
@@ -176,8 +171,7 @@ const StoryFrame = ({
                             component={ColorPicker}
                             value={values.buttonBackgroundColor}
                             onChange={(e) => {
-                              setFieldValue(e);
-                              values.buttonBackgroundColor = e.target.value;
+                              setFieldValue('buttonBackgroundColor', e.target.value);
                               changeStory(e.target.value, storyIndex, frame.id, "buttonBackgroundColor");
                             }}
                             {...props}

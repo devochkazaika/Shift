@@ -87,29 +87,53 @@ const ShowStory = (stories) => {
                          : <></>}
                     </div>
                 </div>
-                <div className="text-overlay">
-                    <h1 style={{color: frameArray[ind].textColor}}>{frameArray[ind].title}</h1>
-                    <p style={{color: frameArray[ind].textColor}}>{frameArray[ind].text}</p>
-                    {frameArray[ind].visibleButtonOrNone!="NONE" ? 
-                    <div style={{textAlign: "center"}}>
-                        <button 
-                            style={{
-                                color: frameArray[ind].buttonTextColor,
-                                backgroundColor: frameArray[ind].buttonBackgroundColor,
-                                fontSize: "clamp(16px, 2.5vw, 50px)",
-                                padding: "5px 5px",
-                                textOverflow: "ellipsis",
-                                height: "40%",
-                                width: "90%",
-                                overflow: "hidden",
-                                textAlign: "center"
-                            }}
-                        >
-                            <div style={{fontSize: "25px", maxWidth: "100%", wordBreak: "break-word"}}>{frameArray[ind].buttonText}</div>
-                        </button>
-                    </div>
-                    : <></>}
+                <div className="text-overlay" style={{ display: "flex", flexDirection: "column-reverse", justifyContent: "flex-start", height: "100%", width: "100%" }}>
+                    {frameArray[ind].visibleButtonOrNone !== "NONE" && (
+                        <div style={{ textAlign: "center", paddingTop: "10%" }}>
+                            <button
+                                style={{
+                                    color: frameArray[ind].buttonTextColor,
+                                    backgroundColor: frameArray[ind].buttonBackgroundColor,
+                                    fontSize: "1px",
+                                    // padding: "5px px",
+                                    textOverflow: "ellipsis",
+                                    height: "35px",
+                                    width: "95%",
+                                    overflow: "hidden",
+                                    textAlign: "center",
+                                    boxSizing: "border-box"
+                                }}
+                            >
+                                <div style={{ fontSize: "12px", paddingLeft: "10px", fontFamily: 'Verdana', textAlign: "center", overflowWrap: "break-word" }}>
+                                    {frameArray[ind].buttonText}
+                                </div>
+                            </button>
+                        </div>
+                    )}
+                    <p style={{
+                        color: frameArray[ind].textColor,
+                        wordWrap: "break-word", /* Для переноса текста */
+                        width: "100%", /* Ограничение по ширине */
+                        overflow: "hidden",
+                        boxSizing: "border-box",
+                        whiteSpace: "pre-wrap",
+                        fontSize: "12px",
+                        fontWeight: "550",
+                    }}>
+                        {frameArray[ind].text}
+                    </p>
+                    <h1 style={{
+                        color: frameArray[ind].textColor,
+                        wordWrap: "break-word", /* Для переноса текста */
+                        width: "100%", /* Ограничение по ширине */
+                        overflow: "hidden", /* Если необходимо скрыть текст при переполнении */
+                        boxSizing: "border-box",
+                        fontSize: "25px"
+                    }}>
+                        {frameArray[ind].title}
+                    </h1>
                 </div>
+
 
             </div>
         </div>
