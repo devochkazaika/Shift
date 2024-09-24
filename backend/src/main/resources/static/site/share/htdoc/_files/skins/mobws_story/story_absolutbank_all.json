@@ -8,18 +8,6 @@
     "previewUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/7_0.jpg",
     "previewGradient" : "HALF",
     "storyFrames" : [ {
-      "id" : "59476a17-bfa5-49a4-a49d-7c927a8ef23e",
-      "title" : " ",
-      "text" : "Самые востребованные клады у наших клиентов",
-      "textColor" : "#ffffffff",
-      "pictureUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/7_59476a17-bfa5-49a4-a49d-7c927a8ef23e.jpg",
-      "visibleButtonOrNone" : "NONE",
-      "buttonText" : "ОФОРМИТЬ ВКЛАД",
-      "buttonTextColor" : "#ffffffff",
-      "buttonBackgroundColor" : "#df550ff0",
-      "buttonUrl" : "",
-      "gradient" : "EMPTY"
-    }, {
       "id" : "d6488ae6-233f-4a8c-b547-d5cd99277b11",
       "title" : "4 место - всеми любимый Вклад «Любимый» до 18% на 1 год",
       "text" : "Этот вклад выбирает клиенты, которые\n-хотят зафиксировать высокую ставку на целый год\n- ежемесячно снимают проценты по вкладу и живут на них.\nСовет: Если вам нужна ежемесячная прибавка в ваш бюджет, то этот вклад для Вас.",
@@ -30,6 +18,18 @@
       "buttonTextColor" : "#FFFFFF",
       "buttonBackgroundColor" : "#e9610dff",
       "buttonUrl" : "https://example.com",
+      "gradient" : "EMPTY"
+    }, {
+      "id" : "59476a17-bfa5-49a4-a49d-7c927a8ef23e",
+      "title" : " ",
+      "text" : "Самые востребованные клады у наших клиентов\nasdasdasdasd",
+      "textColor" : "#ffffffff",
+      "pictureUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/7_59476a17-bfa5-49a4-a49d-7c927a8ef23e.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "ОФОРМИТЬ ВКЛАД",
+      "buttonTextColor" : "#ffffffff",
+      "buttonBackgroundColor" : "#df550ff0",
+      "buttonUrl" : "",
       "gradient" : "EMPTY"
     } ]
   } ]

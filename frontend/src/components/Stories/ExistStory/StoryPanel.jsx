@@ -53,7 +53,7 @@ const StoryPanel = ({showStory, storyArray, platform }) => {
         {stories.map((story, index) => (
           <li className="listFrame" key={index}>
             <details>
-              <summary>
+              <summary draggable="true">
                 <p>{story.previewTitle}</p>
                 <div>
                   <div>
