@@ -18,6 +18,7 @@ const ColorPicker = ({ field, form, onChange }) => {
   const handleColorChange = (c) => {
     let hexColor = '#' + rgbHex(c.rgb.r, c.rgb.g, c.rgb.b, c.rgb.a);
     form.setFieldValue(field.name, hexColor);
+    // При нестандартном onChange у form
     if (onChange) {
       onChange({ target: { name: field.name, value: hexColor } });
     }

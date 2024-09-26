@@ -17,6 +17,14 @@ import UploadImage from "../../UploadImage";
 import AddFrame from "./AddFrame";
 import styles from "./StoryCard.module.scss";
 
+/*
+  storyIndex - порядко истории внутри story
+  story - список истори
+  platform - платформа (IOS | WEB | ANDROID | ALL PLATFORMS)
+  changeStory - флаг, отвественный за показ компонент для изменения
+  changeable - можно ли изменять или нет
+  showStory - показывать ли превью истории или нет
+*/
 const StoryCard = ({ storyIndex, story, platform, changeStory, changeable, showStory, ...props }) => {
   const [frames, setFrames] = useState(story.storyFrames || []);
   const [initialImage, setInitialImage] = useState(null);
@@ -123,8 +131,6 @@ const StoryCard = ({ storyIndex, story, platform, changeStory, changeable, showS
       );
     }
   };
-
-
 
   return (
     <div>

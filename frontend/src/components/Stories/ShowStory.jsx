@@ -16,6 +16,7 @@ const ShowStory = (stories) => {
         setFrameArray(story["storyFrames"]);
     }, [stories]);
 
+    // Перелистывание карточек внутри истории
     const rightFrame = () => {
         if (frameArray.length-1 > ind){
             setIndex(ind+1);
@@ -106,8 +107,6 @@ const ShowStory = (stories) => {
                         {frameArray[ind].title}
                     </h1>
                 </div>
-
-
             </div>
         </div>
         </div>

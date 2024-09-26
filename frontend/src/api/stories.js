@@ -3,7 +3,6 @@ import {
   defaultUpdateToastOptions,
 } from "../utils/constants/toastOptions";
 import { toast } from "react-toastify";
-
 import { defaultToastMessages } from "../utils/constants/defaultToastMessages";
 import api from "./api";
 
@@ -17,7 +16,6 @@ const createToast = (toastContent) => {
 };
 
 const updateToast = (toastView, response) => {
-  console.log(response);
   toast.update(toastView, {
     ...defaultUpdateToastOptions,
     render: response.message,
@@ -35,14 +33,9 @@ const warningToast = (toastView, error) => {
   }
 };
 
-// const serverError = (toastView) => {
-//   toast.update(toastView, {
-//     ...defaultUpdateToastOptions,
-//     render: "500 - Ошибка на стороне сервера",
-//     type: "error",
-//   });
-// }
-
+/*
+  Показ ошибки при неправильном количестве карточек у истории
+*/
 const errorFrameSize = (toastView) => {
     toast.update(toastView, {
       ...defaultUpdateToastOptions,
@@ -51,7 +44,6 @@ const errorFrameSize = (toastView) => {
     });
     return false;
 };
-
 
 export const getStories = async (bankId, platform) => {
   try {
