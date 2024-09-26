@@ -40,19 +40,19 @@ services:
     ports:
       - "1542:1542"
 
-  backend:
-    build:
-      dockerfile: ./config/Dockerfile
-      context: .
-    container_name: backend
-    hostname: backend
-    depends_on:
-      postgres-entity:
-        condition: service_healthy
-    networks:
-      - keycloak_demo
-    ports:
-      - '8081:8081'
+#  backend:
+#    build:
+#      dockerfile: ./config/Dockerfile
+#      context: .
+#    container_name: backend
+#    hostname: backend
+#    depends_on:
+#      postgres-entity:
+#        condition: service_healthy
+#    networks:
+#      - keycloak_demo
+#    ports:
+#      - '8081:8081'
 
   keycloak:
     container_name: keycloak

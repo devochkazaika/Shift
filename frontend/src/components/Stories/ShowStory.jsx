@@ -33,6 +33,7 @@ const ShowStory = (stories) => {
         <>
         <div style={{display: "flex"}}>
         <div className={styles.container}>
+            {/* Полоска для отображения номера истории */}
             <div className="lines">
             {frameArray.slice(0, frameArray.length).map((frame, index) => (
                 (index <= ind) ?

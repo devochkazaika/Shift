@@ -1,6 +1,6 @@
 {
   "stories" : [ {
-    "id" : 7,
+    "id" : 1,
     "bankId" : "absolutbank",
     "platform" : "ALL PLATFORMS",
     "previewTitle" : "sdadasasdasdasdasd",
@@ -20,16 +20,16 @@
       "buttonUrl" : "https://example.com",
       "gradient" : "EMPTY"
     }, {
-      "id" : "59476a17-bfa5-49a4-a49d-7c927a8ef23e",
-      "title" : " ",
-      "text" : "Самые востребованные клады у наших клиентов\nasdasdasdasd",
-      "textColor" : "#ffffffff",
-      "pictureUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/7_59476a17-bfa5-49a4-a49d-7c927a8ef23e.jpg",
+      "id" : "2c98a59a-8721-4031-9b7d-f27273433076",
+      "title" : "Воплощайте самые смелые желания!",
+      "text" : "Определяйте цели  и воплощайте желания в реальность.\nПозвольте себе осуществить желания в новом году!",
+      "textColor" : "#ffff",
+      "pictureUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/7_2c98a59a-8721-4031-9b7d-f27273433076.jpg",
       "visibleButtonOrNone" : "NONE",
-      "buttonText" : "ОФОРМИТЬ ВКЛАД",
-      "buttonTextColor" : "#ffffffff",
-      "buttonBackgroundColor" : "#df550ff0",
-      "buttonUrl" : "",
+      "buttonText" : "Click Here",
+      "buttonTextColor" : "#FFFFFF",
+      "buttonBackgroundColor" : "#0000FF",
+      "buttonUrl" : "https://example.com",
       "gradient" : "EMPTY"
     } ]
   } ]
