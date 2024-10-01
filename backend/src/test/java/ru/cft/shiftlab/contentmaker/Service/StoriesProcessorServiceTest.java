@@ -174,7 +174,7 @@ public class StoriesProcessorServiceTest {
     @Test
     @DisplayName("Save story")
     void save_story() throws IOException {
-        String storiesRequestJson = storyMapper.writeValueAsString(storiesRequestDto);
+        String storiesRequestJson = storyMapper.writeValueAsString(storyMapper.writeValueAsString(storiesRequestDto));
 
         File img =  new File(FILES_TEST_DIRECTORY, "sample.png");
 
