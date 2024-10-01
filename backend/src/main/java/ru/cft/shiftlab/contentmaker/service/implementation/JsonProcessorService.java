@@ -91,7 +91,7 @@ public class JsonProcessorService implements FileSaverService {
             //Сохранение в БД
             var storyEntity = saveStoryEntity(storiesRequestDto, images);
             //Сохранение
-                return saveByRoles(storyEntity);
+            return saveByRoles(storyEntity);
         }
         catch (JsonProcessingException e){
             throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");

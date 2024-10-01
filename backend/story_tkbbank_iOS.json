@@ -1,0 +1,14 @@
+{
+  "stories" : [ {
+    "id" : 15,
+    "bankId" : "tkbbank",
+    "platform" : "IOS",
+    "storyFrames" : [ {
+      "id" : "d462aa5b-11ab-477b-a20f-b63d3d7fd704",
+      "title" : "mainText",
+      "text" : "Text card",
+      "textColor" : "FF0000",
+      "visibleButtonOrNone" : "NONE"
+    } ]
+  } ]
+}

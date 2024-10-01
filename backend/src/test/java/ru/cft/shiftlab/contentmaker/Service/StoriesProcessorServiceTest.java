@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -16,6 +17,7 @@ import org.mockito.stubbing.OngoingStubbing;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
@@ -52,6 +54,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_TEST_DIRECTORY;
 
+@ExtendWith(SpringExtension.class)
 public class StoriesProcessorServiceTest {
     @Mock
     private MultipartFileToImageConverter multipartFileToImageConverter;
@@ -75,8 +78,7 @@ public class StoriesProcessorServiceTest {
 
     StoryMapper realMapper = new StoryMapper(new DirProcess());
 
-    @Mock
-    StoryMapper storyMapper = Mockito.spy(realMapper);
+    StoryMapper storyMapper = new StoryMapper(new DirProcess());
     @Mock
     private KeyCloak keyCloak;
 
@@ -85,7 +87,7 @@ public class StoriesProcessorServiceTest {
 
     @BeforeEach
     public void setUp() {
-        // Инициализация моков
+//        // Инициализация моков
         MockitoAnnotations.openMocks(this);
 
         // Передача моков в конструктор сервиса
@@ -99,8 +101,8 @@ public class StoriesProcessorServiceTest {
                 historyService,
                 keyCloak
         );
-        Mockito.when(storyPresentationRepository.save(any())).thenReturn(storyPresentation);
-        Mockito.when(storyPresentationFramesRepository.save(any())).thenReturn(firstFrame);
+        when(storyPresentationRepository.save(any())).thenReturn(storyPresentation);
+        when(storyPresentationFramesRepository.save(any())).thenReturn(firstFrame);
         doCallRealMethod().when(modelMapper).map(any(), any(StoryPresentation.class));
         try {
             doCallRealMethod().when(dirProcess).createFolders(any());
@@ -170,7 +172,7 @@ public class StoriesProcessorServiceTest {
 
 
     @Test
-    @DisplayName("Сохранение истории")
+    @DisplayName("Save story")
     void save_story() throws IOException {
         String storiesRequestJson = storyMapper.writeValueAsString(storiesRequestDto);
 
@@ -198,7 +200,7 @@ public class StoriesProcessorServiceTest {
     }
 
     @Test
-    @DisplayName("Сохранение сущности истории в зависимости для ADMIN")
+    @DisplayName("Save story by role = admin")
     public void save_story_by_role_ADMIN_test() throws IOException, InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         Mockito.when(keyCloak.getRoles()).thenReturn(new HashSet<KeyCloak.Roles>(Arrays.asList(KeyCloak.Roles.ADMIN)));
 
@@ -212,7 +214,7 @@ public class StoriesProcessorServiceTest {
     }
 
     @Test
-    @DisplayName("Сохранение сущности истории в зависимости для USER")
+    @DisplayName("Save story entity by role = user")
     public void save_story_by_role_USER_test() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Mockito.when(keyCloak.getRoles()).thenReturn(new HashSet<KeyCloak.Roles>(Arrays.asList(KeyCloak.Roles.USER)));
 
@@ -226,7 +228,7 @@ public class StoriesProcessorServiceTest {
     }
 
     @Test
-    @DisplayName("Одобрение истории администратором")
+    @DisplayName("Accept story by admin")
     public void approve_story_by_admin_test() throws IOException {
         Mockito.when(storyPresentationRepository.findById(any())).thenReturn(Optional.of(storyPresentation));
 
@@ -235,7 +237,7 @@ public class StoriesProcessorServiceTest {
     }
 
     @Test
-    @DisplayName("Сохранение карточки в зависимости от роли - ADMIN")
+    @DisplayName("Save story by role = admin")
     public void save_frame_by_role_admin_test() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Mockito.when(keyCloak.getRoles()).thenReturn(new HashSet<KeyCloak.Roles>(Arrays.asList(KeyCloak.Roles.ADMIN)));
         Mockito.when(storyMapper.getStoryList(storiesRequestDto.getBankId(), storiesRequestDto.getPlatform()))
@@ -254,7 +256,7 @@ public class StoriesProcessorServiceTest {
     }
 
     @Test
-    @DisplayName("Тест для возврата карточки из истории")
+    @DisplayName("Get stories")
     public void get_frame_from_story_test() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = JsonProcessorService.class.getDeclaredMethod("getFrameFromStory",
                 StoryPresentation.class, String.class);
@@ -265,7 +267,7 @@ public class StoriesProcessorServiceTest {
     }
 
     @Test
-    @DisplayName("Тест для возврата карточки из истории для выброса ошибки ")
+    @DisplayName("Get story with throw exception")
     public void get_frame_from_story_test_throw_exception() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = JsonProcessorService.class.getDeclaredMethod("getFrameFromStory",
                 StoryPresentation.class, String.class);
@@ -276,7 +278,7 @@ public class StoriesProcessorServiceTest {
     }
 
     @Test
-    @DisplayName("Тест на изменение истории")
+    @DisplayName("Change story test")
     public void change_story_test() throws IOException {
         Mockito.when(multipartFileToImageConverter.parsePicture(any(ImageContainer.class), anyString(), any()))
                 .thenReturn("норм путь");
@@ -288,7 +290,7 @@ public class StoriesProcessorServiceTest {
     }
 
     @Test
-    @DisplayName("Тест на изменение карточки истории")
+    @DisplayName("Change card story")
     public void change_frame_story_test() throws IOException {
         Mockito.when(storyMapper.getStoryList(any(), any())).thenReturn(new ArrayList<>(Arrays.asList(storyPresentation)));
         Mockito.when(storyMapper.getStoryModel(any(), any())).thenReturn(storyPresentation);
@@ -310,7 +312,7 @@ public class StoriesProcessorServiceTest {
     }
 
     @Test
-    @DisplayName("Тест на удаление истории")
+    @DisplayName("Delete story")
     public void delete_story_test() throws Throwable {
         Mockito.when(storyPresentationRepository.findById(15L)).thenReturn(Optional.of(storyPresentation));
         Mockito.when(storyMapper.getStoryList(any(), any())).thenReturn(new ArrayList<>(Arrays.asList(storyPresentation)));

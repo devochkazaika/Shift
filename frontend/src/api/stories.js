@@ -100,9 +100,11 @@ export const uploadStories = async (jsonPayload, previewImage, cardImages) => {
   const form = new FormData();
   form.append("json", JSON.stringify(jsonPayload));
   form.append("previewImage", previewImage);
+
   cardImages.map((image) => {
     form.append("cardImages", image);
   });
+  console.log(jsonPayload);
   try {
     const response = await api.post("/stories/add/story", form, {
       headers: { "Content-Type": "multipart/form-data" },
