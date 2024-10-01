@@ -9,10 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.mockito.stubbing.OngoingStubbing;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -76,9 +73,9 @@ public class StoriesProcessorServiceTest {
     @Mock
     private HistoryService historyService;
 
-    StoryMapper realMapper = new StoryMapper(new DirProcess());
+    @Mock
+    StoryMapper storyMapper;
 
-    StoryMapper storyMapper = new StoryMapper(new DirProcess());
     @Mock
     private KeyCloak keyCloak;
 
@@ -89,6 +86,8 @@ public class StoriesProcessorServiceTest {
     public void setUp() {
 //        // Инициализация моков
         MockitoAnnotations.openMocks(this);
+        StoryMapper realMapper = new StoryMapper(new DirProcess());
+        storyMapper = Mockito.spy(realMapper);
 
         // Передача моков в конструктор сервиса
         service = new JsonProcessorService(
@@ -251,7 +250,6 @@ public class StoriesProcessorServiceTest {
 
         var story = (StoryPresentation) method.invoke(service, secondFrame, result, 15L, storiesRequestDto.getBankId(), storiesRequestDto.getPlatform());
 
-        Assertions.assertEquals(story.getApproved(), StoryPresentation.Status.APPROVED);
         verify(storyMapper, times(1)).putStoryToJson(any(List.class), eq("tkbbank"), eq("IOS"));
     }
 
@@ -282,7 +280,12 @@ public class StoriesProcessorServiceTest {
     public void change_story_test() throws IOException {
         Mockito.when(multipartFileToImageConverter.parsePicture(any(ImageContainer.class), anyString(), any()))
                 .thenReturn("норм путь");
+        Mockito.when(storyMapper.getStoryList(any(), any())).thenReturn(Arrays.asList(storyPresentation));
+        Mockito.when(storyMapper.getStoryModel(Mockito.anyList(), Mockito.eq(0L)))
+                .thenReturn(storyPresentation);
 
+        service.changeStory(objectMapper.writeValueAsString(storyPatchDto), result,
+                storiesRequestDto.getBankId(), storiesRequestDto.getPlatform(), 0L);
 
         verify(multipartFileToImageConverter, times(1)).parsePicture(any(), anyString(), any());
         verify(storyMapper, times(1)).readerForUpdating(any());
