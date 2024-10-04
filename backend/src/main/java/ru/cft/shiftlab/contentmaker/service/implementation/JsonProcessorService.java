@@ -58,6 +58,7 @@ public class JsonProcessorService implements FileSaverService {
     private final StoryPresentationFramesRepository storyPresentationFramesRepository;
     private final HistoryService historyService;
     private final KeyCloak keyCloak;
+    private final StoryMapper storyMapper;
 
     /**
      * Возврат всех историй банка + платформы
@@ -363,9 +364,17 @@ public class JsonProcessorService implements FileSaverService {
      * @throws Throwable
      */
     public ResponseEntity<?> deleteService(String bankId, String platform, Long id) throws Throwable {
+        final var storyPresentation = storyPresentationRepository.findById(id).orElseGet(() -> {
+            StoryPresentation story = null;
+            try {
+                story = storyMapper.getStoryModel(storyMapper.getStoryList(bankId, platform), id);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            storyPresentationRepository.save(story);
+            return story;
+        });
         deleteJsonStories(bankId, platform, id);
-
-        final var storyPresentation = storyPresentationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(String.format("Could not find story with id = %d", id)));
         storyPresentation.setApproved(StoryPresentation.Status.DELETED);
         storyPresentationRepository.save(storyPresentation);
 
