@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -24,15 +25,20 @@ public class ImageController {
      */
     @GetMapping("")
     @Operation(summary = "Возврат картинки из пути в JSON")
-    public ResponseEntity<byte[]> getImage(
+    public ResponseEntity<?> getImage(
             @RequestParam("path") String path
     ) throws IOException {
         Resource resource = new FileSystemResource(path);
-        Path file = Paths.get(resource.getURI());
-        byte[] data = Files.readAllBytes(file);
+        try {
+            Path file = Paths.get(resource.getURI());
+            byte[] data = Files.readAllBytes(file);
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(data);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(data);
+        }
+        catch (NoSuchFileException e){
+            return ResponseEntity.status(500).body("Could not find image");
+        }
     }
 }

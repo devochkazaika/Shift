@@ -24,108 +24,12 @@
       "title" : "Воплощайте самые смелые желания!",
       "text" : "Определяйте цели  и воплощайте желания в реальность.\nПозвольте себе осуществить желания в новом году!",
       "textColor" : "#ffff",
-      "pictureUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/7_2c98a59a-8721-4031-9b7d-f27273433076.jpg",
+      "pictureUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/1_2c98a59a-8721-4031-9b7d-f27273433076.jpg",
       "visibleButtonOrNone" : "NONE",
       "buttonText" : "Click Here",
       "buttonTextColor" : "#FFFFFF",
       "buttonBackgroundColor" : "#0000FF",
       "buttonUrl" : "https://example.com",
-      "gradient" : "EMPTY"
-    }, {
-      "id" : "8037b517-4efc-4f65-aa7e-6d95e1b453ec",
-      "title" : "Sample Titleasdasd",
-      "text" : "Sample text for the story.",
-      "textColor" : "#ffff",
-      "pictureUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/1_8037b517-4efc-4f65-aa7e-6d95e1b453ec.jpg",
-      "visibleButtonOrNone" : "BUTTON",
-      "buttonText" : "Click Here",
-      "buttonTextColor" : "#FFFFFF",
-      "buttonBackgroundColor" : "#0000FF",
-      "buttonUrl" : "https://example.com",
-      "gradient" : "EMPTY"
-    } ]
-  }, {
-    "id" : 10,
-    "bankId" : "absolutbank",
-    "platform" : "ALL PLATFORMS",
-    "previewTitle" : "asdasd",
-    "previewTitleColor" : "#000",
-    "previewUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/10_0.jpg",
-    "previewGradient" : "EMPTY",
-    "storyFrames" : [ {
-      "id" : "fc6862ce-017a-46f8-8797-8b76fec6bd2b",
-      "title" : "asdas",
-      "text" : "dasd",
-      "textColor" : "#000",
-      "pictureUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/10_fc6862ce-017a-46f8-8797-8b76fec6bd2b.jpg",
-      "visibleButtonOrNone" : "NONE",
-      "buttonText" : "",
-      "buttonTextColor" : "#000",
-      "buttonBackgroundColor" : "#fff",
-      "buttonUrl" : "",
-      "gradient" : "EMPTY"
-    } ]
-  }, {
-    "id" : 11,
-    "bankId" : "absolutbank",
-    "platform" : "ALL PLATFORMS",
-    "previewTitle" : "asdasd",
-    "previewTitleColor" : "#000",
-    "previewUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/11_0.jpg",
-    "previewGradient" : "EMPTY",
-    "storyFrames" : [ {
-      "id" : "29189e63-24ae-4afc-921c-2e88d9f11da7",
-      "title" : "asdasd",
-      "text" : "sadasd",
-      "textColor" : "#000",
-      "pictureUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/11_29189e63-24ae-4afc-921c-2e88d9f11da7.jpg",
-      "visibleButtonOrNone" : "NONE",
-      "buttonText" : "",
-      "buttonTextColor" : "#000",
-      "buttonBackgroundColor" : "#fff",
-      "buttonUrl" : "",
-      "gradient" : "EMPTY"
-    } ]
-  }, {
-    "id" : 12,
-    "bankId" : "absolutbank",
-    "platform" : "ALL PLATFORMS",
-    "previewTitle" : "asdasd",
-    "previewTitleColor" : "#000",
-    "previewUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/12_0.jpg",
-    "previewGradient" : "EMPTY",
-    "storyFrames" : [ {
-      "id" : "122b4fb1-3ebd-443b-8ea2-e0e38400cab7",
-      "title" : "asdasd",
-      "text" : "asdasd",
-      "textColor" : "#000",
-      "pictureUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/12_122b4fb1-3ebd-443b-8ea2-e0e38400cab7.jpg",
-      "visibleButtonOrNone" : "NONE",
-      "buttonText" : "",
-      "buttonTextColor" : "#000",
-      "buttonBackgroundColor" : "#fff",
-      "buttonUrl" : "",
-      "gradient" : "EMPTY"
-    } ]
-  }, {
-    "id" : 13,
-    "bankId" : "absolutbank",
-    "platform" : "ALL PLATFORMS",
-    "previewTitle" : "asdasd",
-    "previewTitleColor" : "#000",
-    "previewUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/13_0.jpg",
-    "previewGradient" : "EMPTY",
-    "storyFrames" : [ {
-      "id" : "2f4254ab-4873-47bf-8db3-76f7c942ac4b",
-      "title" : "asdas",
-      "text" : "dasd",
-      "textColor" : "#000",
-      "pictureUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/13_2f4254ab-4873-47bf-8db3-76f7c942ac4b.jpg",
-      "visibleButtonOrNone" : "NONE",
-      "buttonText" : "",
-      "buttonTextColor" : "#000",
-      "buttonBackgroundColor" : "#fff",
-      "buttonUrl" : "",
       "gradient" : "EMPTY"
     } ]
   } ]

@@ -364,6 +364,7 @@ public class JsonProcessorService implements FileSaverService {
      * @throws Throwable
      */
     public ResponseEntity<?> deleteService(String bankId, String platform, Long id) throws Throwable {
+        // Если истории нет в БД, но есть в JSON, тогда сохраняется в БД и удаляется из JSON
         final var storyPresentation = storyPresentationRepository.findById(id).orElseGet(() -> {
             StoryPresentation story = null;
             try {
