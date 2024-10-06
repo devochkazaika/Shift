@@ -7,7 +7,9 @@ CREATE TABLE IF NOT EXISTS stories (
      preview_title_color VARCHAR(255),
      preview_url VARCHAR(255),
      preview_gradient VARCHAR(255),
-     approved VARCHAR(15)
+     approved VARCHAR(15),
+     id_main_story int,
+     CONSTRAINT fk_story FOREIGN KEY (id_main_story) REFERENCES stories(id)
 );
 
 CREATE TABLE IF NOT EXISTS frames (

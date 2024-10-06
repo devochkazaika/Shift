@@ -21,10 +21,11 @@ import java.util.List;
 @EqualsAndHashCode
 @Builder
 @Entity
+@With
 @Table(name = "stories")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StoryPresentation {
-    public enum Status {APPROVED, NOTAPPROVED, DELETED};
+public class StoryPresentation  {
+    public enum Status {APPROVED, NOTAPPROVED, DELETED, CHANGED};
 
     /**
      * Идентификатор истории.
@@ -93,4 +94,11 @@ public class StoryPresentation {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy="story")
     @Builder.Default
     private List<StoryPresentationFrames> storyPresentationFrames = new ArrayList<>();
+
+    /**
+     * Список запросов на изменение
+     */
+    @JoinColumn(name = "id_main_story")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<StoryPresentation> storyPresentationChanged;
 }

@@ -293,7 +293,10 @@ public class JsonProcessorService implements FileSaverService {
                 , StoryPatchDto.class);
         // Берем нужную историю из списка
         List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platform);
-        final StoryPresentation storyEntity = mapper.getStoryModel(storyPresentationList, id);
+        StoryPresentation storyEntity = mapper.getStoryModel(storyPresentationList, id);
+
+        // Если карточки не сохранены в бд
+        saveStoryToDbIfNotExist(storyEntity, id);
 
         // Меняем картинку
         if (file != null) {
@@ -306,13 +309,25 @@ public class JsonProcessorService implements FileSaverService {
 
         // Обновляем значение и записываем в JSON
         String json = mapper.writeValueAsString(storyDto);
-        mapper.readerForUpdating(storyEntity).readValue(json);
-        mapper.putStoryToJson(storyPresentationList, bankId, platform);
+        Set<KeyCloak.Roles> roles = keyCloak.getRoles();
+        if (roles.contains(KeyCloak.Roles.ADMIN)) {
+            mapper.readerForUpdating(storyEntity).readValue(json);
+            mapper.putStoryToJson(storyPresentationList, bankId, platform);
+            storyEntity.setApproved(StoryPresentation.Status.APPROVED);
+            storyEntity = storyPresentationRepository.save(storyEntity);
+        }
+        else if (roles.contains(KeyCloak.Roles.USER)) {
+            var changedStory = storyEntity.withId(null);
+            mapper.readerForUpdating(changedStory).readValue(json);
+            changedStory.setApproved(StoryPresentation.Status.CHANGED);
+            changedStory.setStoryPresentationChanged(null);
+            storyEntity.getStoryPresentationChanged().add(changedStory);
+            storyEntity.setApproved(StoryPresentation.Status.APPROVED);
+            storyEntity = storyPresentationRepository.save(storyEntity);
+        }
 
-        // Если карточки не сохранены
-        saveStoryToDbIfNotExist(storyEntity, id);
 
-        return storyPresentationRepository.save(storyEntity);
+        return storyEntity;
     }
 
     /**
