@@ -1,6 +1,7 @@
 package ru.cft.shiftlab.contentmaker.service.implementation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -49,6 +50,7 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.MAX_COUNT_FRAME;
 @Setter
 @ConfigurationProperties(prefix = "files.save.directory")
 @Log4j2
+//@AllArgsConstructor
 public class JsonProcessorService implements FileSaverService {
     private final StoryMapper mapper;
     private final MultipartFileToImageConverter multipartFileToImageConverter;
@@ -58,7 +60,6 @@ public class JsonProcessorService implements FileSaverService {
     private final StoryPresentationFramesRepository storyPresentationFramesRepository;
     private final HistoryService historyService;
     private final KeyCloak keyCloak;
-    private final StoryMapper storyMapper;
 
     /**
      * Возврат всех историй банка + платформы
@@ -368,7 +369,7 @@ public class JsonProcessorService implements FileSaverService {
         final var storyPresentation = storyPresentationRepository.findById(id).orElseGet(() -> {
             StoryPresentation story = null;
             try {
-                story = storyMapper.getStoryModel(storyMapper.getStoryList(bankId, platform), id);
+                story = mapper.getStoryModel(mapper.getStoryList(bankId, platform), id);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

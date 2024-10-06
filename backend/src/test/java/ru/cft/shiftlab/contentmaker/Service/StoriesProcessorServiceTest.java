@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.*;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.OngoingStubbing;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -52,6 +53,7 @@ import static org.mockito.Mockito.*;
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_TEST_DIRECTORY;
 
 @ExtendWith(SpringExtension.class)
+@RunWith(MockitoJUnitRunner.class)
 public class StoriesProcessorServiceTest {
     @Mock
     private MultipartFileToImageConverter multipartFileToImageConverter;
@@ -281,8 +283,9 @@ public class StoriesProcessorServiceTest {
         Mockito.when(multipartFileToImageConverter.parsePicture(any(ImageContainer.class), anyString(), any()))
                 .thenReturn("норм путь");
         Mockito.when(storyMapper.getStoryList(any(), any())).thenReturn(Arrays.asList(storyPresentation));
-        Mockito.when(storyMapper.getStoryModel(Mockito.anyList(), Mockito.eq(0L)))
-                .thenReturn(storyPresentation);
+        Mockito.doReturn(storyPresentation)
+                .when(storyMapper)
+                .getStoryModel(Mockito.anyList(), Mockito.eq(0L));
 
         service.changeStory(objectMapper.writeValueAsString(storyPatchDto), result,
                 storiesRequestDto.getBankId(), storiesRequestDto.getPlatform(), 0L);
@@ -296,7 +299,8 @@ public class StoriesProcessorServiceTest {
     @DisplayName("Change card story")
     public void change_frame_story_test() throws IOException {
         Mockito.when(storyMapper.getStoryList(any(), any())).thenReturn(new ArrayList<>(Arrays.asList(storyPresentation)));
-        Mockito.when(storyMapper.getStoryModel(any(), any())).thenReturn(storyPresentation);
+        Mockito.doReturn(storyPresentation)
+                .when(storyMapper).getStoryModel(any(), any());
 
         Mockito.when(multipartFileToImageConverter.parsePicture(any(ImageContainer.class), anyString(), any()))
                 .thenReturn("норм путь");
@@ -309,9 +313,9 @@ public class StoriesProcessorServiceTest {
                 storiesRequestDto.getBankId(), storiesRequestDto.getPlatform(),
                 15L, firstFrame.getId().toString(), result);
 
-        verify(multipartFileToImageConverter, times(1)).parsePicture(any(), anyString(), any());
+        verify(multipartFileToImageConverter, times(1)).parsePicture(any(), any(), any(), any());
         verify(storyMapper, times(1)).readerForUpdating(any());
-        verify(storyMapper, times(1)).putStoryToJson(any(List.class), any(), any());
+        verify(storyMapper, times(1)).putStoryToJson(anyList(), any(), any());
     }
 
     @Test
