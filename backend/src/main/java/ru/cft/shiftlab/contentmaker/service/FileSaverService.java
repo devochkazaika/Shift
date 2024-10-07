@@ -155,4 +155,6 @@ public interface FileSaverService {
      */
     ResponseEntity<?> deleteStoriesFromDb(String bankId, String platform, Long id) throws Throwable;
 
+    List<StoryPresentation> getChangedRequest(String bank, String platform);
+
 }

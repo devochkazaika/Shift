@@ -28,4 +28,7 @@ public interface StoryPresentationRepository extends CrudRepository<StoryPresent
     @Query("SELECT st FROM StoryPresentation st WHERE st.id = :id")
     Optional<StoryPresentation> findById(@Param("id") Long id);
 
+    @Query("Select st from StoryPresentation st where st.bankId = :bank and st.platform = :platform and st.approved = 'CHANGED'")
+    List<StoryPresentation> getChangeRequest(@Param("bank") String bank, @Param("platform") String platform);
+
 }

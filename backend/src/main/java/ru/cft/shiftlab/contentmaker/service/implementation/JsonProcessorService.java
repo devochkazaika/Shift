@@ -314,7 +314,6 @@ public class JsonProcessorService implements FileSaverService {
             mapper.readerForUpdating(storyEntity).readValue(json);
             mapper.putStoryToJson(storyPresentationList, bankId, platform);
             storyEntity.setApproved(StoryPresentation.Status.APPROVED);
-            storyEntity = storyPresentationRepository.save(storyEntity);
         }
         else if (roles.contains(KeyCloak.Roles.USER)) {
             var changedStory = storyEntity.withId(null);
@@ -323,8 +322,9 @@ public class JsonProcessorService implements FileSaverService {
             changedStory.setStoryPresentationChanged(null);
             storyEntity.getStoryPresentationChanged().add(changedStory);
             storyEntity.setApproved(StoryPresentation.Status.APPROVED);
-            storyEntity = storyPresentationRepository.save(storyEntity);
+            storyPresentationRepository.save(changedStory);
         }
+        storyEntity = storyPresentationRepository.save(storyEntity);
 
 
         return storyEntity;
@@ -566,5 +566,11 @@ public class JsonProcessorService implements FileSaverService {
         storyPresentation.setApproved(StoryPresentation.Status.APPROVED);
         storyPresentationRepository.save(storyPresentation);
         mapper.putStoryToJson(storyPresentation, storyPresentation.getBankId(), storyPresentation.getPlatform());
+    }
+
+    @Override
+    public List<StoryPresentation> getChangedRequest(String bank, String platform) {
+        var li = storyPresentationRepository.getChangeRequest(bank, platform);
+        return li;
     }
 }

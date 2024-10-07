@@ -121,4 +121,15 @@ public class AdminController {
     ) throws IOException {
         storiesService.restoreStory(id);
     }
+
+    @GetMapping("/bank/info/getChangeRequest")
+    public List<StoryPresentation> getChangeRequest(
+            @RequestParam(name = "bank")
+            String bank,
+            @RequestParam(name = "platform")
+            String platform
+    ){
+        return storiesService.getChangedRequest(bank, platform);
+    }
+
 }
