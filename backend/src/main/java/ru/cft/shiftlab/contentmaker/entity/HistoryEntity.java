@@ -13,7 +13,7 @@ import java.time.LocalTime;
 @Table(name = "history")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
-public class History {
+public class HistoryEntity {
 
     public enum Status{
         SUCCESSFUL,
@@ -25,6 +25,7 @@ public class History {
         Create,
         Delete,
         Update,
+        Change
     }
 
     public enum ComponentType{

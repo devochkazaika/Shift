@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.cft.shiftlab.contentmaker.entity.History;
+import ru.cft.shiftlab.contentmaker.entity.HistoryEntity;
 import ru.cft.shiftlab.contentmaker.service.HistoryServiceStories;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class HistoryController {
 
     @GetMapping("/history/stories/get")
     @ResponseStatus(HttpStatus.OK)
-    public List<History> getHistoryStory(
+    public List<HistoryEntity> getHistoryStory(
             @RequestParam(name = "id")
             Long id
     ) throws IOException {
@@ -28,7 +28,7 @@ public class HistoryController {
 
     @GetMapping("/history/stories/getByBankAndPlatform")
     @ResponseStatus(HttpStatus.OK)
-    public List<History> getHistoryStory(
+    public List<HistoryEntity> getHistoryStory(
             @RequestParam(name = "bankId")
             String bank,
             @RequestParam(name = "platform")
@@ -39,7 +39,7 @@ public class HistoryController {
 
     @GetMapping("/history/stories/getAllHistory")
     @ResponseStatus(HttpStatus.OK)
-    public List<History> getAllHistory(
+    public List<HistoryEntity> getAllHistory(
     ) throws IOException {
         return  historyService.getAllHistory();
     }

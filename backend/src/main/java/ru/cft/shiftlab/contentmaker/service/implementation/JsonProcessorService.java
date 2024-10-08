@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.cft.shiftlab.contentmaker.aop.History;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryPatchDto;
@@ -279,6 +280,41 @@ public class JsonProcessorService implements FileSaverService {
         return storyPresentationFrames;
     }
 
+    private StoryPresentation changeStoryByUser(StoryPresentation story, List<StoryPresentation> storyPresentationList,
+                                                String json, MultipartFile file) throws IOException {
+        // Меняем картинку
+        if (file != null) {
+            String pictureUrl = multipartFileToImageConverter.parsePicture(
+                    new ImageContainer(file),
+                    FILES_SAVE_DIRECTORY + story.getBankId() + "/" + story.getBankId() + "/",
+                    story.getId());
+            story.setPreviewUrl(pictureUrl);
+        }
+        mapper.readerForUpdating(story).readValue(json);
+        mapper.putStoryToJson(storyPresentationList, story.getBankId(), story.getPlatform());
+        story = storyPresentationRepository.save(story);
+        return story;
+    }
+
+    private StoryPresentation changeStoryByAdmin(StoryPresentation story, List<StoryPresentation> storyPresentationList,
+                                                 String json, MultipartFile file) throws IOException {
+        var changedStory = story.withId(null);
+        mapper.readerForUpdating(changedStory).readValue(json);
+        changedStory.setApproved(StoryPresentation.Status.CHANGED);
+        changedStory.setStoryPresentationFrames(null);
+        storyPresentationRepository.save(changedStory);
+        // Создаем картинку картинку
+        if (file != null) {
+            String pictureUrl = multipartFileToImageConverter.parsePicture(
+                    new ImageContainer(file),
+                    FILES_SAVE_DIRECTORY + story.getBankId() + "/" + story.getPlatform() + "/",
+                    story.getId(),
+                    changedStory.getId());
+            changedStory.setPreviewUrl(pictureUrl);
+        }
+        return storyPresentationRepository.save(changedStory);
+    }
+
     /**
      * Изменение общих параметров истории, а именно previewTitle, previewTitleColor, previewGradient
      * @param storiesRequestDto
@@ -303,34 +339,10 @@ public class JsonProcessorService implements FileSaverService {
         String json = mapper.writeValueAsString(storyDto);
         Set<KeyCloak.Roles> roles = keyCloak.getRoles();
         if (roles.contains(KeyCloak.Roles.ADMIN)) {
-            // Меняем картинку
-            if (file != null) {
-                String pictureUrl = multipartFileToImageConverter.parsePicture(
-                        new ImageContainer(file),
-                        FILES_SAVE_DIRECTORY + bankId + "/" + platform + "/",
-                        id);
-                storyEntity.setPreviewUrl(pictureUrl);
-            }
-            mapper.readerForUpdating(storyEntity).readValue(json);
-            mapper.putStoryToJson(storyPresentationList, bankId, platform);
-            storyEntity = storyPresentationRepository.save(storyEntity);
+            changeStoryByUser(storyEntity, storyPresentationList, json, file);
         }
         else if (roles.contains(KeyCloak.Roles.USER)) {
-            var changedStory = storyEntity.withId(null);
-            mapper.readerForUpdating(changedStory).readValue(json);
-            changedStory.setApproved(StoryPresentation.Status.CHANGED);
-            changedStory.setStoryPresentationFrames(null);
-            storyPresentationRepository.save(changedStory);
-            // Создаем картинку картинку
-            if (file != null) {
-                String pictureUrl = multipartFileToImageConverter.parsePicture(
-                        new ImageContainer(file),
-                        FILES_SAVE_DIRECTORY + bankId + "/" + platform + "/",
-                        id,
-                        changedStory.getId());
-                changedStory.setPreviewUrl(pictureUrl);
-            }
-            storyPresentationRepository.save(changedStory);
+            changeStoryByAdmin(storyEntity, storyPresentationList, json, file);
         }
 
         return storyEntity;
@@ -595,5 +607,10 @@ public class JsonProcessorService implements FileSaverService {
         mainStory = storyMapper.updateStoryEntity(mainStory, changingStory);
         mainStory.setApproved(StoryPresentation.Status.APPROVED);
         return storyPresentationRepository.save(mainStory);
+    }
+
+    @Modifying
+    public void rollBackChangeRequest(Long idOperation){
+
     }
 }

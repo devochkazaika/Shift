@@ -345,4 +345,9 @@ public class StoriesController {
                 id, bankId, platform, newOrder
         );
     }
+
+    @DeleteMapping("/story/rollback")
+    public void rollBackChangeRequest(){
+
+    }
 }

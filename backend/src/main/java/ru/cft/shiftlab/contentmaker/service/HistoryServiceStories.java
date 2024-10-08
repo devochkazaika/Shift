@@ -1,17 +1,17 @@
 package ru.cft.shiftlab.contentmaker.service;
 
-import ru.cft.shiftlab.contentmaker.entity.History;
+import ru.cft.shiftlab.contentmaker.entity.HistoryEntity;
 
 import java.util.List;
 
 public interface HistoryServiceStories {
-    List<History> getStoryHistory(Long id);
-    List<History> getBankAndPlatformHistory(String bankId, String platform);
+    List<HistoryEntity> getStoryHistory(Long id);
+    List<HistoryEntity> getBankAndPlatformHistory(String bankId, String platform);
 
     void deleteHistoryByStoryId(Long id);
 //    List<History> getHeadHistory();
 
-    List<History> getHistoryByBankAndPlatform(String bank, String platform);
+    List<HistoryEntity> getHistoryByBankAndPlatform(String bank, String platform);
 
-    List<History> getAllHistory();
+    List<HistoryEntity> getAllHistory();
 }
