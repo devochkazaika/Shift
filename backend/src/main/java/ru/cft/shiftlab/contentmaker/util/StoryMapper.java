@@ -60,4 +60,12 @@ public class StoryMapper extends ObjectMapper {
         return (list == null) ? new ArrayList<StoryPresentation>() : list;
     }
 
+    public StoryPresentation updateStoryEntity(final StoryPresentation main, StoryPresentation change){
+        main.setFontSize(change.getFontSize());
+        main.setPreviewGradient(change.getPreviewGradient());
+        main.setPreviewTitleColor(change.getPreviewTitleColor());
+        main.setPreviewTitle(change.getPreviewTitle());
+        return main;
+    }
+
 }

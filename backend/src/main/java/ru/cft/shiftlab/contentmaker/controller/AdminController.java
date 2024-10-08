@@ -132,4 +132,15 @@ public class AdminController {
         return storiesService.getChangedRequest(bank, platform);
     }
 
+    @GetMapping("/bank/info/updatePreview")
+    public StoryPresentation updatePreview(
+            @RequestParam(name = "changing")
+            Long first,
+            @RequestParam(name = "changeable")
+            Long second)
+    {
+        return storiesService.updatePreview(first, second);
+    }
+
+
 }

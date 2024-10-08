@@ -65,5 +65,13 @@ public class MultipartFileToImageConverter {
         );
         return previewPictureName;
     }
+    public String parsePicture(ImageContainer imageContainer, String picturesSaveDirectory, Long id, Long secondId) throws IOException {
+        String previewPictureName = convertMultipartFileToImageAndSave(
+                imageContainer.getNextImage(),
+                picturesSaveDirectory,
+                imageNameGenerator.generateImageName(picturesSaveDirectory, id, secondId)
+        );
+        return previewPictureName;
+    }
 
 }

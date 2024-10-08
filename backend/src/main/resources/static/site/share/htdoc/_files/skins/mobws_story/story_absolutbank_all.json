@@ -1,15 +1,14 @@
 {
   "stories" : [ {
-    "id" : 8,
+    "id" : 1,
     "bankId" : "absolutbank",
     "platform" : "ALL PLATFORMS",
-    "previewTitle" : "mayaaaa",
+    "previewTitle" : "mayaaaa123",
     "previewTitleColor" : "#d82828ff",
-    "previewUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/8_0.jpg",
+    "previewUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/1_0.jpg",
     "previewGradient" : "HALF",
-    "storyPresentationChanged" : [ ],
     "storyFrames" : [ {
-      "id" : "469c3911-6954-4129-8391-829a8553264c",
+      "id" : "664d462f-77b6-4a65-94e6-ccddc1818cba",
       "title" : "4 место - всеми любимый Вклад «Любимый» до 18% на 1 год",
       "text" : "Этот вклад выбирает клиенты, которые\n-хотят зафиксировать высокую ставку на целый год\n- ежемесячно снимают проценты по вкладу и живут на них.\nСовет: Если вам нужна ежемесячная прибавка в ваш бюджет, то этот вклад для Вас.",
       "textColor" : "#ffff",
@@ -21,7 +20,7 @@
       "buttonUrl" : "https://example.com",
       "gradient" : "EMPTY"
     }, {
-      "id" : "2e6ae04a-9336-4cc5-802f-ce086e823a27",
+      "id" : "eaf234fd-27c8-44c4-aa73-2a80ae6d9bbf",
       "title" : "Воплощайте самые смелые желания!",
       "text" : "Определяйте цели  и воплощайте желания в реальность.\nПозвольте себе осуществить желания в новом году!",
       "textColor" : "#ffff",

@@ -157,4 +157,6 @@ public interface FileSaverService {
 
     List<StoryPresentation> getChangedRequest(String bank, String platform);
 
+    StoryPresentation updatePreview(Long changing, Long changeable);
+
 }

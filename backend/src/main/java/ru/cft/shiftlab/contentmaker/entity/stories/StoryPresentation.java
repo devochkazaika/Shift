@@ -95,10 +95,4 @@ public class StoryPresentation  {
     @Builder.Default
     private List<StoryPresentationFrames> storyPresentationFrames = new ArrayList<>();
 
-    /**
-     * Список запросов на изменение
-     */
-    @JoinColumn(name = "id_main_story")
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<StoryPresentation> storyPresentationChanged;
 }

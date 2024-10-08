@@ -60,6 +60,7 @@ public class JsonProcessorService implements FileSaverService {
     private final StoryPresentationFramesRepository storyPresentationFramesRepository;
     private final HistoryService historyService;
     private final KeyCloak keyCloak;
+    private final StoryMapper storyMapper;
 
     /**
      * Возврат всех историй банка + платформы
@@ -298,34 +299,39 @@ public class JsonProcessorService implements FileSaverService {
         // Если карточки не сохранены в бд
         saveStoryToDbIfNotExist(storyEntity, id);
 
-        // Меняем картинку
-        if (file != null) {
-            String pictureUrl = multipartFileToImageConverter.parsePicture(
-                    new ImageContainer(file),
-                    FILES_SAVE_DIRECTORY + bankId + "/" + platform + "/",
-                    id);
-            storyEntity.setPreviewUrl(pictureUrl);
-        }
-
         // Обновляем значение и записываем в JSON
         String json = mapper.writeValueAsString(storyDto);
         Set<KeyCloak.Roles> roles = keyCloak.getRoles();
         if (roles.contains(KeyCloak.Roles.ADMIN)) {
+            // Меняем картинку
+            if (file != null) {
+                String pictureUrl = multipartFileToImageConverter.parsePicture(
+                        new ImageContainer(file),
+                        FILES_SAVE_DIRECTORY + bankId + "/" + platform + "/",
+                        id);
+                storyEntity.setPreviewUrl(pictureUrl);
+            }
             mapper.readerForUpdating(storyEntity).readValue(json);
             mapper.putStoryToJson(storyPresentationList, bankId, platform);
-            storyEntity.setApproved(StoryPresentation.Status.APPROVED);
+            storyEntity = storyPresentationRepository.save(storyEntity);
         }
         else if (roles.contains(KeyCloak.Roles.USER)) {
             var changedStory = storyEntity.withId(null);
             mapper.readerForUpdating(changedStory).readValue(json);
             changedStory.setApproved(StoryPresentation.Status.CHANGED);
-            changedStory.setStoryPresentationChanged(null);
-            storyEntity.getStoryPresentationChanged().add(changedStory);
-            storyEntity.setApproved(StoryPresentation.Status.APPROVED);
+            changedStory.setStoryPresentationFrames(null);
+            storyPresentationRepository.save(changedStory);
+            // Создаем картинку картинку
+            if (file != null) {
+                String pictureUrl = multipartFileToImageConverter.parsePicture(
+                        new ImageContainer(file),
+                        FILES_SAVE_DIRECTORY + bankId + "/" + platform + "/",
+                        id,
+                        changedStory.getId());
+                changedStory.setPreviewUrl(pictureUrl);
+            }
             storyPresentationRepository.save(changedStory);
         }
-        storyEntity = storyPresentationRepository.save(storyEntity);
-
 
         return storyEntity;
     }
@@ -388,8 +394,8 @@ public class JsonProcessorService implements FileSaverService {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            storyPresentationRepository.save(story);
-            return story;
+
+            return storyPresentationRepository.save(story);
         });
         deleteJsonStories(bankId, platform, id);
         storyPresentation.setApproved(StoryPresentation.Status.DELETED);
@@ -572,5 +578,22 @@ public class JsonProcessorService implements FileSaverService {
     public List<StoryPresentation> getChangedRequest(String bank, String platform) {
         var li = storyPresentationRepository.getChangeRequest(bank, platform);
         return li;
+    }
+
+    @Modifying
+    @Transactional
+    public StoryPresentation updatePreview(Long changing, Long changeable){
+        var mainStory = storyPresentationRepository.findById(changeable).orElseThrow(
+                () -> new IllegalArgumentException("Could not find story with id = " + changeable)
+        );
+        var changingStory = storyPresentationRepository.findById(changing).orElseThrow(
+                () -> new IllegalArgumentException("Could not find story with id = " + changing)
+        );
+        var file = new File(changingStory.getPreviewUrl());
+        new File(mainStory.getPreviewUrl()).delete();
+        file.renameTo(new File(mainStory.getPreviewUrl()));
+        mainStory = storyMapper.updateStoryEntity(mainStory, changingStory);
+        mainStory.setApproved(StoryPresentation.Status.APPROVED);
+        return storyPresentationRepository.save(mainStory);
     }
 }
