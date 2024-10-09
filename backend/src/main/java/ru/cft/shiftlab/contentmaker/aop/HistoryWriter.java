@@ -3,6 +3,7 @@ package ru.cft.shiftlab.contentmaker.aop;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -76,26 +77,24 @@ public class HistoryWriter {
         resultDeleteStories(joinPoint, history, arguments);
     }
 
-    public void resultFrames(ProceedingJoinPoint joinPoint, HistoryEntity history, Object[] arguments) {
-        StoryPresentationFrames result;
-        history.setComponentType(HistoryEntity.ComponentType.STORIES);
+
+    private StoryPresentationFrames historyFrameSave(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
+        history.setOperationType(HistoryEntity.OperationType.Create);
+        history.setComponentType(HistoryEntity.ComponentType.FRAMES);
+        Object[] arguments = joinPoint.getArgs();
+        StoryPresentationFrames result = null;
         try {
             result = (StoryPresentationFrames) joinPoint.proceed();
-
-            history.setBankId((String) arguments[3]);
-            history.setPlatform((String) arguments[4]);
-
+            history.setBankId((String) arguments[2]);
+            history.setPlatform((String) arguments[3]);
+            history.setComponentId((Long) arguments[4]);
             history.setStatus(HistoryEntity.Status.SUCCESSFUL);
-            history.setAdditional_uuid(UUID.fromString((String) arguments[5]));
+            history.setAdditional_uuid(result.getId());
         } catch (Throwable e) {
-            log.error(e.getMessage(), e);
+//            log.error(e.getMessage(), e);
             history.setStatus(HistoryEntity.Status.BAD);
         }
-    }
-
-    private void historyFrameSave(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
-        history.setOperationType(HistoryEntity.OperationType.Create);
-
+        return result;
     }
 
     @Around("@annotation(ru.cft.shiftlab.contentmaker.aop.History)")
@@ -117,8 +116,8 @@ public class HistoryWriter {
                 historyStoryDeleting(joinPoint, history);
                 break;
             case "addFrame":
+                return historyFrameSave(joinPoint, history);
 
-                break;
         }
         history.setUserName(keycloak.getUserName());
         history.setDay(LocalDate.now());

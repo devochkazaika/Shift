@@ -259,6 +259,7 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     @Transactional
+    @History(operationType = "create")
     public StoryPresentationFrames addFrame(String frameDto, MultipartFile file,
                                             String bankId, String platform, Long id) throws IOException {
         StoryPresentationFrames frame = mapper.readValue(
@@ -357,7 +358,6 @@ public class JsonProcessorService implements FileSaverService {
      * @param frameId
      * @throws IOException
      */
-    @History(operationType = "change")
     public void changeFrameStory(String storyFramesRequestDto, MultipartFile file,
                                  String bankId, String platform,
                                  Long id,
@@ -480,7 +480,8 @@ public class JsonProcessorService implements FileSaverService {
      * @param frameId  UUID карточки
      */
     @Modifying
-    @History(operationType = "delete")
+//    @History(operationType = "delete")
+    @Transactional
     public ResponseEntity<?> deleteStoryFrame(String bankId, String platform, String id, String frameId) throws Throwable {
         UUID uuid = deleteJsonFrame(bankId, platform, id, frameId);
         deleteFileFrame(bankId, platform, id, uuid);
@@ -520,7 +521,7 @@ public class JsonProcessorService implements FileSaverService {
         return uuid;
     }
 
-    @Transactional
+    @Modifying
     public void deleteFrameFromDb(UUID uuid) {
         var story = storyPresentationFramesRepository.findById(uuid).orElse(null);
         if (story != null) {
