@@ -14,4 +14,6 @@ public interface HistoryServiceStories {
     List<HistoryEntity> getHistoryByBankAndPlatform(String bank, String platform);
 
     List<HistoryEntity> getAllHistory();
+
+    void rollBack(Long idHistory);
 }

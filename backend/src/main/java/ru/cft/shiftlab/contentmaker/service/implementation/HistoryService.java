@@ -44,7 +44,7 @@ public class HistoryService implements HistoryServiceStories {
     private void rollBackStories(HistoryEntity history) throws Throwable {
         switch (history.getOperationType()){
             case Create:
-                storiesService.deleteService(history.getBankId(), history.getPlatform(), history.getComponentId());
+                storiesService.deleteStoriesFromDb(history.getBankId(), history.getPlatform(), history.getComponentId());
                 break;
 //            case Delete:
 //
@@ -73,7 +73,12 @@ public class HistoryService implements HistoryServiceStories {
         );
         switch (history.getComponentType()){
             case STORIES:
-                rollBackStories(history);
+                try {
+                    rollBackStories(history);
+                }
+                catch (Throwable e){
+                    throw new RuntimeException("Could not rollback");
+                }
                 break;
             case FRAMES:
                 rollBackFrames(history);
