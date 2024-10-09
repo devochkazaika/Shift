@@ -12,6 +12,8 @@ import java.util.List;
 @Service
 public class HistoryService implements HistoryServiceStories {
     private final HistoryRepository historyRepository;
+    private final JsonProcessorService storiesService;
+
     @Override
     public List<HistoryEntity> getStoryHistory(Long id) {
         return historyRepository.getHistoryByStoryId(id);
@@ -36,4 +38,51 @@ public class HistoryService implements HistoryServiceStories {
     public List<HistoryEntity> getHistoryByBankAndPlatform(String bank, String platform) {
         return historyRepository.getHistoryByBankAndPlatform(bank, platform);
     }
+
+
+
+    private void rollBackStories(HistoryEntity history) throws Throwable {
+        switch (history.getOperationType()){
+            case Create:
+                storiesService.deleteService(history.getBankId(), history.getPlatform(), history.getComponentId());
+                break;
+//            case Delete:
+//
+//                break;
+            case Update:
+//                storiesService.deleteService(history.getBankId(), history.getPlatform(), history.getComponentId());
+                break;
+            case Change:
+                storiesService.deleteStoriesFromDb(history.getBankId(), history.getPlatform(), history.getComponentId());
+
+                break;
+        }
+    }
+
+    private void rollBackFrames(HistoryEntity history){
+
+    }
+
+    private void rollBackBanners(HistoryEntity history){
+
+    }
+
+    public void rollBack(Long idHistory){
+        HistoryEntity history = historyRepository.findById(idHistory).orElseThrow(
+                () -> new IllegalArgumentException("History not found")
+        );
+        switch (history.getComponentType()){
+            case STORIES:
+                rollBackStories(history);
+                break;
+            case FRAMES:
+                rollBackFrames(history);
+                break;
+            case BANNERS:
+                rollBackBanners(history);
+                break;
+        }
+
+    }
+
 }
