@@ -8,6 +8,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.cft.shiftlab.contentmaker.entity.HistoryEntity;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
@@ -25,8 +26,9 @@ public class HistoryWriter {
     private final HistoryRepository historyRepository;
     private final KeyCloak keycloak;
 
-    private void resultCreate(ProceedingJoinPoint joinPoint, HistoryEntity history) {
+    private void resultCreateStories(ProceedingJoinPoint joinPoint, HistoryEntity history) {
         StoryPresentation result;
+        history.setComponentType(HistoryEntity.ComponentType.STORIES);
         try {
             result = (StoryPresentation) joinPoint.proceed();
             history.setBankId(result.getBankId());
@@ -39,23 +41,37 @@ public class HistoryWriter {
         }
     }
 
-    private void historyStoryChanging(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
-        StoryPresentation result = null;
+    private void resultDeleteStories(ProceedingJoinPoint joinPoint, HistoryEntity history, Object[] arguments) {
+        ResponseEntity<?> result;
         history.setComponentType(HistoryEntity.ComponentType.STORIES);
+        try {
+            result = (ResponseEntity<?>) joinPoint.proceed();
+            history.setBankId(arguments[0].toString());
+            history.setPlatform(arguments[1].toString());
+            history.setStatus(HistoryEntity.Status.getStatus(result.getStatusCodeValue()));
+            history.setComponentId((Long) arguments[2]);
+        } catch (Throwable e) {
+            log.error(e.getMessage(), e);
+            history.setStatus(HistoryEntity.Status.BAD);
+        }
+    }
+
+    private void historyStoryChanging(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
         history.setOperationType(HistoryEntity.OperationType.Change);
-        resultCreate(joinPoint, history);
+        resultCreateStories(joinPoint, history);
     }
     private void historyStorySaving(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
-        StoryPresentation result = null;
-        history.setComponentType(HistoryEntity.ComponentType.STORIES);
         history.setOperationType(HistoryEntity.OperationType.Create);
-        resultCreate(joinPoint, history);
+        resultCreateStories(joinPoint, history);
     }
     private void historyStoryApproving(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
-        StoryPresentation result = null;
-        history.setComponentType(HistoryEntity.ComponentType.STORIES);
         history.setOperationType(HistoryEntity.OperationType.Update);
-        resultCreate(joinPoint, history);
+        resultCreateStories(joinPoint, history);
+    }
+    private void historyStoryDeleting(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
+        history.setOperationType(HistoryEntity.OperationType.Delete);
+        Object[] arguments = joinPoint.getArgs();
+        resultDeleteStories(joinPoint, history, arguments);
     }
 
     @Around("@annotation(ru.cft.shiftlab.contentmaker.aop.History)")
@@ -72,7 +88,9 @@ public class HistoryWriter {
                 break;
             case "approveStory":
                 historyStoryApproving(joinPoint, history);
-
+                break;
+            case "deleteService":
+                historyStoryDeleting(joinPoint, history);
         }
         history.setUserName(keycloak.getUserName());
         history.setDay(LocalDate.now());

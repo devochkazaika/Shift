@@ -59,7 +59,6 @@ public class JsonProcessorService implements FileSaverService {
     private final DirProcess dirProcess;
     private final StoryPresentationRepository storyPresentationRepository;
     private final StoryPresentationFramesRepository storyPresentationFramesRepository;
-    private final HistoryService historyService;
     private final KeyCloak keyCloak;
     private final StoryMapper storyMapper;
 
@@ -400,6 +399,7 @@ public class JsonProcessorService implements FileSaverService {
      * @return
      * @throws Throwable
      */
+    @History(operationType = "delete")
     public ResponseEntity<?> deleteService(String bankId, String platform, Long id) throws Throwable {
         // Если истории нет в БД, но есть в JSON, тогда сохраняется в БД и удаляется из JSON
         final var storyPresentation = storyPresentationRepository.findById(id).orElseGet(() -> {
@@ -422,7 +422,6 @@ public class JsonProcessorService implements FileSaverService {
     @Transactional
     @Modifying
     public ResponseEntity<?> deleteStoriesFromDb(String bankId, String platform, Long id) throws Throwable{
-        historyService.deleteHistoryByStoryId(id);
         storyPresentationFramesRepository.deleteByStoryId(id);
         storyPresentationRepository.deleteById(id);
         deleteFilesStories(bankId, platform, id);

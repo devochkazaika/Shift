@@ -18,7 +18,13 @@ public class HistoryEntity {
     public enum Status{
         SUCCESSFUL,
         BAD,
-        SERVER_ERROR
+        SERVER_ERROR;
+        public static Status getStatus(int statusCode){
+            if(statusCode / 100 == 2) return SUCCESSFUL;
+            if(statusCode / 100 == 4) return BAD;
+            if(statusCode / 100 == 5) return SERVER_ERROR;
+            return SUCCESSFUL;
+        }
     }
 
     public enum OperationType{
