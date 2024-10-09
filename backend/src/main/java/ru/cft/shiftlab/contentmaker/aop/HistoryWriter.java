@@ -51,6 +51,12 @@ public class HistoryWriter {
         history.setOperationType(HistoryEntity.OperationType.Create);
         resultCreate(joinPoint, history);
     }
+    private void historyStoryApproving(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
+        StoryPresentation result = null;
+        history.setComponentType(HistoryEntity.ComponentType.STORIES);
+        history.setOperationType(HistoryEntity.OperationType.Update);
+        resultCreate(joinPoint, history);
+    }
 
     @Around("@annotation(ru.cft.shiftlab.contentmaker.aop.History)")
     public Object aroundAddingAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -64,6 +70,9 @@ public class HistoryWriter {
             case "saveFiles":
                 historyStorySaving(joinPoint, history);
                 break;
+            case "approveStory":
+                historyStoryApproving(joinPoint, history);
+
         }
         history.setUserName(keycloak.getUserName());
         history.setDay(LocalDate.now());

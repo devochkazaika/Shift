@@ -233,7 +233,7 @@ public class StoriesProcessorServiceTest {
     public void approve_story_by_admin_test() throws IOException {
         Mockito.when(storyPresentationRepository.findById(any())).thenReturn(Optional.of(storyPresentation));
 
-        service.approvedStory(storiesRequestDto.getBankId(), storiesRequestDto.getPlatform(), storyPresentation.getId());
+        service.approveStory(storiesRequestDto.getBankId(), storiesRequestDto.getPlatform(), storyPresentation.getId());
         verify(storyMapper, times(1)).putStoryToJson(any(StoryPresentation.class), eq("tkbbank"), eq("IOS"));
     }
 

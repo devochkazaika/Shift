@@ -251,7 +251,8 @@ public class JsonProcessorService implements FileSaverService {
      * @throws IOException
      */
     @Override
-    public StoryPresentation approvedStory(String bankId, String platform, Long id) throws IOException {
+    @History(operationType = "update")
+    public StoryPresentation approveStory(String bankId, String platform, Long id) throws IOException {
         final var story = storyPresentationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find the story with id = %d", id)));
         story.setApproved(StoryPresentation.Status.APPROVED);

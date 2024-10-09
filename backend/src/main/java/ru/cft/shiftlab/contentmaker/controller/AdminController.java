@@ -47,7 +47,7 @@ public class AdminController {
 
             @RequestParam(value = "id")
             Long id) throws IOException {
-        storiesService.approvedStory(bankId, platform, id);
+        storiesService.approveStory(bankId, platform, id);
     }
 
     @GetMapping("/getDeletedStories")
