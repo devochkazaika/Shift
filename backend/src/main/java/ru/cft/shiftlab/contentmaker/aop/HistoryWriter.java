@@ -25,10 +25,8 @@ public class HistoryWriter {
     private final HistoryRepository historyRepository;
     private final KeyCloak keycloak;
 
-    private void historyStoryChanging(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
-        StoryPresentation result = null;
-        history.setComponentType(HistoryEntity.ComponentType.STORIES);
-        history.setOperationType(HistoryEntity.OperationType.Change);
+    private void resultCreate(ProceedingJoinPoint joinPoint, HistoryEntity history) {
+        StoryPresentation result;
         try {
             result = (StoryPresentation) joinPoint.proceed();
             history.setBankId(result.getBankId());
@@ -41,6 +39,19 @@ public class HistoryWriter {
         }
     }
 
+    private void historyStoryChanging(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
+        StoryPresentation result = null;
+        history.setComponentType(HistoryEntity.ComponentType.STORIES);
+        history.setOperationType(HistoryEntity.OperationType.Change);
+        resultCreate(joinPoint, history);
+    }
+    private void historyStorySaving(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
+        StoryPresentation result = null;
+        history.setComponentType(HistoryEntity.ComponentType.STORIES);
+        history.setOperationType(HistoryEntity.OperationType.Create);
+        resultCreate(joinPoint, history);
+    }
+
     @Around("@annotation(ru.cft.shiftlab.contentmaker.aop.History)")
     public Object aroundAddingAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
         log.info("Aspect triggered for method: " + joinPoint.getSignature().getName());
@@ -49,6 +60,9 @@ public class HistoryWriter {
         switch (methodSignature.getName()){
             case "changeStory":
                 historyStoryChanging(joinPoint, history);
+                break;
+            case "saveFiles":
+                historyStorySaving(joinPoint, history);
                 break;
         }
         history.setUserName(keycloak.getUserName());

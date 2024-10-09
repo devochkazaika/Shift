@@ -83,6 +83,7 @@ public class JsonProcessorService implements FileSaverService {
      * @return
      */
     @Override
+    @History(operationType = "create")
     public StoryPresentation saveFiles(String strStoriesRequestDto,
                           MultipartFile previewImage,
                           MultipartFile[] imagesFrame){
