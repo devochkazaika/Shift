@@ -480,7 +480,6 @@ public class JsonProcessorService implements FileSaverService {
      * @param frameId  UUID карточки
      */
     @Modifying
-//    @History(operationType = "delete")
     @Transactional
     public ResponseEntity<?> deleteStoryFrame(String bankId, String platform, String id, String frameId) throws Throwable {
         UUID uuid = deleteJsonFrame(bankId, platform, id, frameId);

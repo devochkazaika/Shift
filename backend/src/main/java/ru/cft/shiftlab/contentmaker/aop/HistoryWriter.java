@@ -102,6 +102,7 @@ public class HistoryWriter {
         log.info("Aspect triggered for method: " + joinPoint.getSignature().getName());
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         HistoryEntity history = new HistoryEntity();
+        Object result = null;
         switch (methodSignature.getName()){
             case "changeStory":
                 historyStoryChanging(joinPoint, history);
@@ -116,13 +117,14 @@ public class HistoryWriter {
                 historyStoryDeleting(joinPoint, history);
                 break;
             case "addFrame":
-                return historyFrameSave(joinPoint, history);
+                result = historyFrameSave(joinPoint, history);
+                break;
 
         }
         history.setUserName(keycloak.getUserName());
         history.setDay(LocalDate.now());
         history.setTime(LocalTime.now());
         historyRepository.save(history);
-        return null;
+        return result;
     }
 }
