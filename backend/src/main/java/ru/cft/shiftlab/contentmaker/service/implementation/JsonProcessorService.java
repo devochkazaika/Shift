@@ -280,7 +280,7 @@ public class JsonProcessorService implements FileSaverService {
         return storyPresentationFrames;
     }
 
-    private StoryPresentation changeStoryByUser(StoryPresentation story, List<StoryPresentation> storyPresentationList,
+    public StoryPresentation changeStoryByUser(StoryPresentation story, List<StoryPresentation> storyPresentationList,
                                                 String json, MultipartFile file) throws IOException {
         // Меняем картинку
         if (file != null) {
@@ -323,6 +323,7 @@ public class JsonProcessorService implements FileSaverService {
      * @param id
      * @throws IOException
      */
+    @History(operationType = "Change")
     @Transactional
     public StoryPresentation changeStory(String storiesRequestDto, MultipartFile file, String bankId, String platform, Long id) throws IOException {
         StoryPatchDto storyDto = mapper.readValue(
@@ -339,10 +340,10 @@ public class JsonProcessorService implements FileSaverService {
         String json = mapper.writeValueAsString(storyDto);
         Set<KeyCloak.Roles> roles = keyCloak.getRoles();
         if (roles.contains(KeyCloak.Roles.ADMIN)) {
-            changeStoryByUser(storyEntity, storyPresentationList, json, file);
+            return changeStoryByUser(storyEntity, storyPresentationList, json, file);
         }
         else if (roles.contains(KeyCloak.Roles.USER)) {
-            changeStoryByAdmin(storyEntity, storyPresentationList, json, file);
+            return changeStoryByAdmin(storyEntity, storyPresentationList, json, file);
         }
 
         return storyEntity;

@@ -38,7 +38,6 @@ spring:
 #  web:
 #    resources:
 #      static-locations: /content/**
-
   flyway:
     enabled: true
     locations:

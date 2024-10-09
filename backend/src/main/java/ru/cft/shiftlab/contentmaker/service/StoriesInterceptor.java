@@ -1,11 +1,15 @@
 package ru.cft.shiftlab.contentmaker.service;
 
+import lombok.RequiredArgsConstructor;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import ru.cft.shiftlab.contentmaker.entity.HistoryEntity;
+import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.repository.HistoryRepository;
 import ru.cft.shiftlab.contentmaker.repository.StoryPresentationRepository;
+import ru.cft.shiftlab.contentmaker.util.keycloak.KeyCloak;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,12 +22,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class StoriesInterceptor implements HandlerInterceptor {
     Map<Integer, HistoryEntity.Status> statusToBd = new HashMap<>(){{
         put(200, HistoryEntity.Status.SUCCESSFUL);
         put(400, HistoryEntity.Status.BAD);
         put(500, HistoryEntity.Status.SERVER_ERROR);
     }};
+    private final KeyCloak keycloak;
     @Autowired
     HistoryRepository historyRepository;
     @Autowired
@@ -54,6 +60,15 @@ public class StoriesInterceptor implements HandlerInterceptor {
 //                    }
 //                }
 //                else if (path.contains("change")){
+//                    var story = response.
+//                    history.setBankId(story.getBankId());
+//                    history.setPlatform(story.getPlatform());
+//                    history.setOperationType(HistoryEntity.OperationType.Change);
+//                    history.setDay(LocalDate.now());
+//                    history.setTime(LocalTime.now());
+//                    history.setComponentId(story.getId());
+//                    history.setUserName(keycloak.getUserName());
+//                    historyRepository.save(history);
 //                    history.setOperationType(HistoryEntity.OperationType.Update);
 //                    history.setComponentId(Long.parseLong(request.getParameter("id")));
 //                }
