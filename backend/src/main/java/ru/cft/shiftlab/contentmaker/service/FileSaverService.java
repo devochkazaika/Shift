@@ -95,11 +95,11 @@ public interface FileSaverService {
      * @throws IOException
      */
     void changeFrameStory(String storyFramesRequestDto,
+                          MultipartFile file,
                           String bankId,
                           String platform,
                           Long id,
-                          String frameId,
-                          MultipartFile file) throws IOException;
+                          String frameId) throws IOException;
     /**
      * Метод, предназначенный для удаления одной карточки из историй.
      *

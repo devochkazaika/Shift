@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -47,6 +48,9 @@ public class HistoryEntity {
 
     @Column(name="component_id")
     Long componentId;
+
+    @Column(name="additional_uuid")
+    UUID additional_uuid;
 
     @Column(name="day")
     LocalDate day;

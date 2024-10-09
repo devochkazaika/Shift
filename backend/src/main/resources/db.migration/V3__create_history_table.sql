@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS history
     platform varchar(30),
     status varchar(30),
     component_id BIGINT,
+    additional_uuid UUID,
     "day" date,
     time time,
     user_name varchar(255)

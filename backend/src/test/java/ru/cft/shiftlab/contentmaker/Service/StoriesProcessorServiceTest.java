@@ -99,7 +99,6 @@ public class StoriesProcessorServiceTest {
                 dirProcess,
                 storyPresentationRepository,
                 storyPresentationFramesRepository,
-                historyService,
                 keyCloak
         );
         when(storyPresentationRepository.save(any())).thenReturn(storyPresentation);
@@ -309,9 +308,9 @@ public class StoriesProcessorServiceTest {
         ObjectMapper realMapper = new ObjectMapper();
         ObjectMapper spyMapper = Mockito.spy(realMapper);
 
-        service.changeFrameStory(spyMapper.writeValueAsString(storyFramesDto),
+        service.changeFrameStory(spyMapper.writeValueAsString(storyFramesDto), result,
                 storiesRequestDto.getBankId(), storiesRequestDto.getPlatform(),
-                15L, firstFrame.getId().toString(), result);
+                15L, firstFrame.getId().toString());
 
         verify(multipartFileToImageConverter, times(1)).parsePicture(any(), any(), any(), any());
         verify(storyMapper, times(1)).readerForUpdating(any());

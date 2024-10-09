@@ -12,11 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.cft.shiftlab.contentmaker.entity.HistoryEntity;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
+import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.repository.HistoryRepository;
 import ru.cft.shiftlab.contentmaker.util.keycloak.KeyCloak;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
 
 @Component
 @Aspect
@@ -26,7 +28,7 @@ public class HistoryWriter {
     private final HistoryRepository historyRepository;
     private final KeyCloak keycloak;
 
-    private void resultCreateStories(ProceedingJoinPoint joinPoint, HistoryEntity history) {
+    private void resultStories(ProceedingJoinPoint joinPoint, HistoryEntity history) {
         StoryPresentation result;
         history.setComponentType(HistoryEntity.ComponentType.STORIES);
         try {
@@ -58,20 +60,42 @@ public class HistoryWriter {
 
     private void historyStoryChanging(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
         history.setOperationType(HistoryEntity.OperationType.Change);
-        resultCreateStories(joinPoint, history);
+        resultStories(joinPoint, history);
     }
     private void historyStorySaving(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
         history.setOperationType(HistoryEntity.OperationType.Create);
-        resultCreateStories(joinPoint, history);
+        resultStories(joinPoint, history);
     }
     private void historyStoryApproving(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
         history.setOperationType(HistoryEntity.OperationType.Update);
-        resultCreateStories(joinPoint, history);
+        resultStories(joinPoint, history);
     }
     private void historyStoryDeleting(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
         history.setOperationType(HistoryEntity.OperationType.Delete);
         Object[] arguments = joinPoint.getArgs();
         resultDeleteStories(joinPoint, history, arguments);
+    }
+
+    public void resultFrames(ProceedingJoinPoint joinPoint, HistoryEntity history, Object[] arguments) {
+        StoryPresentationFrames result;
+        history.setComponentType(HistoryEntity.ComponentType.STORIES);
+        try {
+            result = (StoryPresentationFrames) joinPoint.proceed();
+
+            history.setBankId((String) arguments[3]);
+            history.setPlatform((String) arguments[4]);
+
+            history.setStatus(HistoryEntity.Status.SUCCESSFUL);
+            history.setAdditional_uuid(UUID.fromString((String) arguments[5]));
+        } catch (Throwable e) {
+            log.error(e.getMessage(), e);
+            history.setStatus(HistoryEntity.Status.BAD);
+        }
+    }
+
+    private void historyFrameSave(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
+        history.setOperationType(HistoryEntity.OperationType.Create);
+
     }
 
     @Around("@annotation(ru.cft.shiftlab.contentmaker.aop.History)")
@@ -91,6 +115,10 @@ public class HistoryWriter {
                 break;
             case "deleteService":
                 historyStoryDeleting(joinPoint, history);
+                break;
+            case "addFrame":
+
+                break;
         }
         history.setUserName(keycloak.getUserName());
         history.setDay(LocalDate.now());

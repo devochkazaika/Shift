@@ -305,11 +305,11 @@ public class StoriesController {
             MultipartFile file
             ) throws IOException {
         storiesService.changeFrameStory(storiesRequestDto,
+                file,
                 bankId,
                 platform,
                 id,
-                frameId,
-                file);
+                frameId);
     }
 
     /**

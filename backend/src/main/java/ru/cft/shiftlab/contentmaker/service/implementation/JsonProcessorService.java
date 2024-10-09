@@ -60,8 +60,6 @@ public class JsonProcessorService implements FileSaverService {
     private final StoryPresentationRepository storyPresentationRepository;
     private final StoryPresentationFramesRepository storyPresentationFramesRepository;
     private final KeyCloak keyCloak;
-    private final StoryMapper storyMapper;
-
     /**
      * Возврат всех историй банка + платформы
      * @param bankId Имя банка
@@ -359,10 +357,11 @@ public class JsonProcessorService implements FileSaverService {
      * @param frameId
      * @throws IOException
      */
-    public void changeFrameStory(String storyFramesRequestDto, String bankId, String platform,
+    @History(operationType = "change")
+    public void changeFrameStory(String storyFramesRequestDto, MultipartFile file,
+                                 String bankId, String platform,
                                  Long id,
-                                 String frameId,
-                                 MultipartFile file) throws IOException {
+                                 String frameId) throws IOException {
         StoryFramesDto story = mapper.readValue(
                 storyFramesRequestDto
                 , StoryFramesDto.class);
@@ -481,6 +480,7 @@ public class JsonProcessorService implements FileSaverService {
      * @param frameId  UUID карточки
      */
     @Modifying
+    @History(operationType = "delete")
     public ResponseEntity<?> deleteStoryFrame(String bankId, String platform, String id, String frameId) throws Throwable {
         UUID uuid = deleteJsonFrame(bankId, platform, id, frameId);
         deleteFileFrame(bankId, platform, id, uuid);
@@ -606,7 +606,7 @@ public class JsonProcessorService implements FileSaverService {
         var file = new File(changingStory.getPreviewUrl());
         new File(mainStory.getPreviewUrl()).delete();
         file.renameTo(new File(mainStory.getPreviewUrl()));
-        mainStory = storyMapper.updateStoryEntity(mainStory, changingStory);
+        mainStory = mapper.updateStoryEntity(mainStory, changingStory);
         mainStory.setApproved(StoryPresentation.Status.APPROVED);
         return storyPresentationRepository.save(mainStory);
     }
