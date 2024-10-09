@@ -44,11 +44,15 @@ public class HistoryService implements HistoryServiceStories {
     private void rollBackStories(HistoryEntity history) throws Throwable {
         switch (history.getOperationType()){
             case Create:
-                storiesService.deleteStoriesFromDb(history.getBankId(), history.getPlatform(), history.getComponentId());
+                try {
+                    storiesService.getStory(history.getComponentId());
+                    storiesService.deleteStoriesFromDb(history.getBankId(), history.getPlatform(), history.getComponentId());
+                    historyRepository.deleteByStoryId(history.getId());
+                }
+                catch (IllegalArgumentException e){
+                    throw e;
+                }
                 break;
-//            case Delete:
-//
-//                break;
             case Update:
 //                storiesService.deleteService(history.getBankId(), history.getPlatform(), history.getComponentId());
                 break;

@@ -1,7 +1,6 @@
 package ru.cft.shiftlab.contentmaker.service.implementation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -34,8 +33,6 @@ import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
@@ -60,6 +57,13 @@ public class JsonProcessorService implements FileSaverService {
     private final StoryPresentationRepository storyPresentationRepository;
     private final StoryPresentationFramesRepository storyPresentationFramesRepository;
     private final KeyCloak keyCloak;
+
+    public StoryPresentation getStory(Long id){
+        return storyPresentationRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Story not found")
+        );
+    }
+
     /**
      * Возврат всех историй банка + платформы
      * @param bankId Имя банка
