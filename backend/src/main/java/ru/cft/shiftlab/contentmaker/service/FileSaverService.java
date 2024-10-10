@@ -48,6 +48,7 @@ public interface FileSaverService {
      */
     HttpEntity<List<StoryPresentation>> getFilePlatformJson(String bankId, String platform) throws IOException;
 
+    StoryPresentation getStory(Long id);
     /**
      * Метод, возвращающий все непринятые истории
      *

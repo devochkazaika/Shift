@@ -317,8 +317,6 @@ public class StoriesController {
      * @param id Id истории
      * @param bankId Имя банка
      * @param platform Тип платформы (ALL PLATFORMS | ANDROID | IOS | WEB)
-     * @param first UUID первой карточки
-     * @param second UUID второй карточки
      * @throws IOException
      */
     @PatchMapping("/change/frame/swap")
@@ -346,8 +344,14 @@ public class StoriesController {
         );
     }
 
-    @DeleteMapping("/story/rollback")
+    @PatchMapping("/story/rollback")
     public void rollBackChangeRequest(){
 
+    }
+
+    @GetMapping("/get/story")
+    @ResponseStatus(HttpStatus.OK)
+    public StoryPresentation getStoryById(Long id){
+        return storiesService.getStory(id);
     }
 }
