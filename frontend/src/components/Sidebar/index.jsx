@@ -51,6 +51,10 @@ const Sidebar = ({ flags }) => {
             {open && <div className={styles.text}>{item.name}</div>}
           </NavLink>
         ))}
+        <NavLink to="/requestUser" className={styles.link}>
+            {open && <div className={styles.text}>Запросы</div>}
+        </NavLink>
+        
         <AdminRoute>
           <h1 className="textSidebar">
             <span>ADMIN</span>

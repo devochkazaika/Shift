@@ -17,6 +17,7 @@ import StoryDeletedList from "./pages/StoryDeletedList";
 import StoryUnApprovedList from "./pages/StoryUnApprovedList";
 import History from "./pages/HistoryList";
 import BannersAdd from "./pages/BannersAdd";
+import RequestUser from "./components/Stories/ChangeRequest/RequestUser";
 
 function App() {
   const [flags, setFlags] = useState(null);
@@ -69,12 +70,19 @@ function App() {
                       </PrivateRoute>
                     }
                   />
-
                   <Route
                     path="/addStories"
                     element={
                       <PrivateRoute>
                         <Stories />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/requestUser"
+                    element={
+                      <PrivateRoute>
+                        <RequestUser />
                       </PrivateRoute>
                     }
                   />
