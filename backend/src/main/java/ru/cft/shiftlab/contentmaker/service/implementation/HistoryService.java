@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.cft.shiftlab.contentmaker.entity.HistoryEntity;
 import ru.cft.shiftlab.contentmaker.repository.HistoryRepository;
 import ru.cft.shiftlab.contentmaker.service.HistoryServiceStories;
+import ru.cft.shiftlab.contentmaker.util.keycloak.KeyCloak;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
 public class HistoryService implements HistoryServiceStories {
     private final HistoryRepository historyRepository;
     private final JsonProcessorService storiesService;
+    private final KeyCloak keyCloak;
 
     @Override
     public List<HistoryEntity> getStoryHistory(Long id) {
@@ -39,6 +41,10 @@ public class HistoryService implements HistoryServiceStories {
         return historyRepository.getHistoryByBankAndPlatform(bank, platform);
     }
 
+    @Override
+    public List<HistoryEntity> getRequestByUser(){
+        return historyRepository.getRequestByUser(keyCloak.getUserName());
+    }
 
 
     private void rollBackStories(HistoryEntity history) throws Throwable {
@@ -71,6 +77,7 @@ public class HistoryService implements HistoryServiceStories {
 
     }
 
+    @Override
     public void rollBack(Long idHistory){
         HistoryEntity history = historyRepository.findById(idHistory).orElseThrow(
                 () -> new IllegalArgumentException("History not found")

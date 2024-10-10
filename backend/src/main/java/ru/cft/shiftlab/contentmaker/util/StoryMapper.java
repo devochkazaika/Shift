@@ -7,8 +7,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
-import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentationFrames;
-import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,6 +57,11 @@ public class StoryMapper extends ObjectMapper {
                 STORIES);
         return (list == null) ? new ArrayList<StoryPresentation>() : list;
     }
+
+//    public List<StoryPresentation> importStories(){
+//        List<List<String>> list = dirProcess.getBankIdAndPlatform();
+//
+//    }
 
     public StoryPresentation updateStoryEntity(final StoryPresentation main, StoryPresentation change){
         main.setFontSize(change.getFontSize());

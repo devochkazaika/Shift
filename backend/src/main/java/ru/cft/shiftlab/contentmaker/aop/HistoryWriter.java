@@ -3,12 +3,9 @@ package ru.cft.shiftlab.contentmaker.aop;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.cft.shiftlab.contentmaker.entity.HistoryEntity;
@@ -19,7 +16,6 @@ import ru.cft.shiftlab.contentmaker.util.keycloak.KeyCloak;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.UUID;
 
 @Component
 @Aspect
@@ -38,9 +34,11 @@ public class HistoryWriter {
             history.setPlatform(result.getPlatform());
             history.setStatus(HistoryEntity.Status.SUCCESSFUL);
             history.setComponentId(result.getId());
+            history.setRollBackAble(true);
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
             history.setStatus(HistoryEntity.Status.BAD);
+            history.setRollBackAble(false);
         }
     }
 
@@ -53,6 +51,10 @@ public class HistoryWriter {
             history.setPlatform(arguments[1].toString());
             history.setStatus(HistoryEntity.Status.getStatus(result.getStatusCodeValue()));
             history.setComponentId((Long) arguments[2]);
+            history.setStatus(HistoryEntity.Status.SUCCESSFUL);
+            // Пока что false потому что логика восстановления уже есть
+            history.setRollBackAble(false);
+
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
             history.setStatus(HistoryEntity.Status.BAD);
@@ -90,8 +92,10 @@ public class HistoryWriter {
             history.setComponentId((Long) arguments[4]);
             history.setStatus(HistoryEntity.Status.SUCCESSFUL);
             history.setAdditional_uuid(result.getId());
+            history.setRollBackAble(true);
         } catch (Throwable e) {
 //            log.error(e.getMessage(), e);
+            history.setRollBackAble(false);
             history.setStatus(HistoryEntity.Status.BAD);
         }
         return result;

@@ -2,6 +2,7 @@ package ru.cft.shiftlab.contentmaker.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
@@ -10,6 +11,7 @@ import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +19,7 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
 import static ru.cft.shiftlab.contentmaker.util.Constants.STORIES;
 
 @Component
+@Slf4j
 public class DirProcess {
     private List<StoryPresentation> checkStoriesFileInBankDir(String fileName) throws IOException {
         List<StoryPresentation> storyPresentationList = new ArrayList<StoryPresentation>();
@@ -65,5 +68,21 @@ public class DirProcess {
     }
     public void deleteFolders(String picturesSaveDirectory) throws IOException {
         FileUtils.deleteDirectory(new File(picturesSaveDirectory));
+    }
+
+    public List<List<String>> getBankIdAndPlatform(){
+        File directory = new File(FILES_SAVE_DIRECTORY + "/");
+        File[] files = directory.listFiles(File::isFile);
+        List<List<String>> listBankAndPlatfor = new ArrayList<>();
+        for (var i : files){
+            try {
+                String[] word = i.getName().split("_");
+                listBankAndPlatfor.add(Arrays.asList(word[1], word[2]));
+            }
+            catch (Exception e){
+                log.error("could not import file with name = " + i.getName(), e);
+            }
+        }
+        return listBankAndPlatfor;
     }
 }

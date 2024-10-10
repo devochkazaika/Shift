@@ -1,7 +1,6 @@
 package ru.cft.shiftlab.contentmaker.configuration;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -20,5 +19,4 @@ public class StaticResourceConfiguration extends WebMvcConfigurerAdapter {
                 .addResourceLocations("classpath:/static/")
                 .setCachePeriod(0);
     }
-
 }

@@ -1,5 +1,6 @@
 package ru.cft.shiftlab.contentmaker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -79,6 +80,8 @@ public class HistoryEntity {
     @Enumerated(EnumType.STRING)
     ComponentType componentType;
 
-
+    @Column(name="rollback_able")
+    @JsonIgnore
+    Boolean rollBackAble;
 
 }

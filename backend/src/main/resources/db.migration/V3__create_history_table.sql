@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS history
     status varchar(30),
     component_id BIGINT,
     additional_uuid UUID,
+    rollback_able BOOLEAN,
     "day" date,
     time time,
     user_name varchar(255)

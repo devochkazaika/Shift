@@ -27,4 +27,6 @@ public interface HistoryRepository extends CrudRepository<HistoryEntity, Long> {
     @Query("delete from HistoryEntity his where his.componentId = :id and his.componentType = 'STORIES'")
     void deleteByStoryId(Long id);
 
+    @Query("select hist from HistoryEntity hist where hist.userName = :name and hist.status = 'SUCCESSFUL'")
+    List<HistoryEntity> getRequestByUser(@Param("name") String name);
 }

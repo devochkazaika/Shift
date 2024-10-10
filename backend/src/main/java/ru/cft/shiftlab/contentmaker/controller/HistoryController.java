@@ -42,9 +42,15 @@ public class HistoryController {
     }
 
     @PatchMapping("/history/rollback")
-    public boolean rollbackHistory(@RequestParam(name = "id") Long historyId){
+    public boolean rollback(@RequestParam(name = "id") Long historyId){
         historyService.rollBack(historyId);
         return true;
+    }
+
+    @GetMapping("history/getRequests")
+    @ResponseStatus(HttpStatus.OK)
+    public List<HistoryEntity> getRequests(){
+        return historyService.getRequestByUser();
     }
 
 }

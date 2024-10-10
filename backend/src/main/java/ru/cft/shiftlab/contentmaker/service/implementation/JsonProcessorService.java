@@ -58,6 +58,21 @@ public class JsonProcessorService implements FileSaverService {
     private final StoryPresentationFramesRepository storyPresentationFramesRepository;
     private final KeyCloak keyCloak;
 
+//    private void importExistStories(){
+//        List<List<String>> list = dirProcess.getBankIdAndPlatform();
+//        list.forEach(x -> {
+//            try {
+//                var storyList = mapper.getStoryList(x.get(0), x.get(1));
+//                storyList.forEach(y ->
+//                {
+//                    saveStoryToDbIfNotExist(y, y.getId());
+//                });
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
+//    }
+
     public StoryPresentation getStory(Long id){
         return storyPresentationRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("Story not found")
