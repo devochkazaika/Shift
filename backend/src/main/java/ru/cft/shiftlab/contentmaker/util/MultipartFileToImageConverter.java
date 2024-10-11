@@ -43,9 +43,15 @@ public class MultipartFileToImageConverter {
                     "HTTP 500 - INTERNAL_SERVER_ERROR");
         }
         String fileName = name + "." + fileFormat;
-        BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
-        File outputfile = new File(directory, fileName);
-        ImageIO.write(bufferedImage, fileFormat, outputfile);
+        File outputfile = null;
+        try {
+            BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
+            outputfile = new File(directory, fileName);
+            ImageIO.write(bufferedImage, fileFormat, outputfile);
+        }
+        catch (Exception e) {
+            throw new StaticContentException();
+        }
         return outputfile.getAbsolutePath().replaceAll("\\\\", "/");
     }
 

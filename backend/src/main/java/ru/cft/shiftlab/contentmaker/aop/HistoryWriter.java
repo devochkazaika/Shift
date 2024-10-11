@@ -25,8 +25,8 @@ public class HistoryWriter {
     private final HistoryRepository historyRepository;
     private final KeyCloak keycloak;
 
-    private void resultStories(ProceedingJoinPoint joinPoint, HistoryEntity history) {
-        StoryPresentation result;
+    private StoryPresentation resultStories(ProceedingJoinPoint joinPoint, HistoryEntity history) {
+        StoryPresentation result = null;
         history.setComponentType(HistoryEntity.ComponentType.STORIES);
         try {
             result = (StoryPresentation) joinPoint.proceed();
@@ -40,6 +40,7 @@ public class HistoryWriter {
             history.setStatus(HistoryEntity.Status.BAD);
             history.setRollBackAble(false);
         }
+        return result;
     }
 
     private void resultDeleteStories(ProceedingJoinPoint joinPoint, HistoryEntity history, Object[] arguments) {
@@ -63,7 +64,9 @@ public class HistoryWriter {
 
     private void historyStoryChanging(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
         history.setOperationType(HistoryEntity.OperationType.Change);
-        resultStories(joinPoint, history);
+        var story = resultStories(joinPoint, history);
+        // Запись с измененной историей
+//        history.setSecondComponentId(story.getId());
     }
     private void historyStorySaving(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
         history.setOperationType(HistoryEntity.OperationType.Create);

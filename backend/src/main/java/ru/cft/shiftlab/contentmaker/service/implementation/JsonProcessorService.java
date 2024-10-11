@@ -297,13 +297,13 @@ public class JsonProcessorService implements FileSaverService {
         return storyPresentationFrames;
     }
 
-    public StoryPresentation changeStoryByUser(StoryPresentation story, List<StoryPresentation> storyPresentationList,
+    public StoryPresentation changeStoryByAdmin(StoryPresentation story, List<StoryPresentation> storyPresentationList,
                                                 String json, MultipartFile file) throws IOException {
         // Меняем картинку
         if (file != null) {
             String pictureUrl = multipartFileToImageConverter.parsePicture(
                     new ImageContainer(file),
-                    FILES_SAVE_DIRECTORY + story.getBankId() + "/" + story.getBankId() + "/",
+                    FILES_SAVE_DIRECTORY + story.getBankId() + "/" + story.getPlatform() + "/",
                     story.getId());
             story.setPreviewUrl(pictureUrl);
         }
@@ -313,7 +313,7 @@ public class JsonProcessorService implements FileSaverService {
         return story;
     }
 
-    private StoryPresentation changeStoryByAdmin(StoryPresentation story, List<StoryPresentation> storyPresentationList,
+    private StoryPresentation changeStoryByUser(StoryPresentation story, List<StoryPresentation> storyPresentationList,
                                                  String json, MultipartFile file) throws IOException {
         var changedStory = story.withId(null);
         mapper.readerForUpdating(changedStory).readValue(json);
@@ -356,10 +356,10 @@ public class JsonProcessorService implements FileSaverService {
         // Обновляем значение и записываем в JSON
         String json = mapper.writeValueAsString(storyDto);
         Set<KeyCloak.Roles> roles = keyCloak.getRoles();
-        if (roles.contains(KeyCloak.Roles.ADMIN)) {
+        if (roles.contains(KeyCloak.Roles.USER)) {
             return changeStoryByUser(storyEntity, storyPresentationList, json, file);
         }
-        else if (roles.contains(KeyCloak.Roles.USER)) {
+        else if (roles.contains(KeyCloak.Roles.ADMIN)) {
             return changeStoryByAdmin(storyEntity, storyPresentationList, json, file);
         }
 
