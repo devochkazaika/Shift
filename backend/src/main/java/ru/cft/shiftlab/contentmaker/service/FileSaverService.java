@@ -13,7 +13,6 @@ import java.util.List;
  * Интерфейс, предназначенный для сохранения файлов в определенную директорию.
  */
 public interface FileSaverService {
-
     /**
      * Метод для сохранения JSON файла и картинки в определенную директорию.
      *
@@ -22,7 +21,7 @@ public interface FileSaverService {
      * @param images Массив картинок для карточек
      * @throws RuntimeException исключение, которые может возникнуть во время работы приложения.
      */
-    default StoryPresentation saveFiles(String strStoriesRequestDto, MultipartFile previewImage, MultipartFile[] images) throws IOException {
+    default StoryPresentation saveStory(String strStoriesRequestDto, MultipartFile previewImage, MultipartFile[] images) throws IOException {
         IOException e = new IOException();
         throw new RuntimeException(e);
     }
@@ -46,7 +45,7 @@ public interface FileSaverService {
      * @return List of stories
      * @throws IOException
      */
-    HttpEntity<List<StoryPresentation>> getFilePlatformJson(String bankId, String platform) throws IOException;
+    HttpEntity<List<StoryPresentation>> getStoriesByBankAndPlatform(String bankId, String platform) throws IOException;
 
     StoryPresentation getStory(Long id);
     /**
@@ -60,10 +59,10 @@ public interface FileSaverService {
 
     /**
      * Метод, возвращающий все удаленные из JSON истории
-     *
-     * @return Get Deleted stories
+     * @param bankId Имя банка
+     * @param platform Тип платформы (ALL PLATFORMS | ANDROID | IOS | WEB)
+     * @return список историй
      */
-    List<StoryPresentation> getDeletedStories();
     List<StoryPresentation> getDeletedStories(String bankId, String platform);
 
     /**
@@ -155,8 +154,6 @@ public interface FileSaverService {
      * @throws Throwable
      */
     ResponseEntity<?> deleteStoriesFromDb(String bankId, String platform, Long id) throws Throwable;
-
-    List<StoryPresentation> getChangedRequest(String bank, String platform);
 
     StoryPresentation updatePreview(Long changing, Long changeable);
 

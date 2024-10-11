@@ -122,16 +122,6 @@ public class AdminController {
         storiesService.restoreStory(id);
     }
 
-    @GetMapping("/bank/info/getChangeRequest")
-    public List<StoryPresentation> getChangeRequest(
-            @RequestParam(name = "bank")
-            String bank,
-            @RequestParam(name = "platform")
-            String platform
-    ){
-        return storiesService.getChangedRequest(bank, platform);
-    }
-
     @GetMapping("/bank/info/updatePreview")
     public StoryPresentation updatePreview(
             @RequestParam(name = "changing")

@@ -47,11 +47,17 @@ public class HistoryEntity {
     @Column(name = "id")
     Long id;
 
-    @Column(name="component_id")
+    @Column(name="main_component_id")
     Long componentId;
 
+    @Column(name="main_additional_uuid")
+    UUID additionalUuid;
+
+    @Column(name="component_id")
+    Long secondComponentId;
+
     @Column(name="additional_uuid")
-    UUID additional_uuid;
+    UUID secondAdditionalUuid;
 
     @Column(name="day")
     LocalDate day;

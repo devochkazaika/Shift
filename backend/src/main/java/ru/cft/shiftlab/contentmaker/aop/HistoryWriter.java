@@ -91,7 +91,7 @@ public class HistoryWriter {
             history.setPlatform((String) arguments[3]);
             history.setComponentId((Long) arguments[4]);
             history.setStatus(HistoryEntity.Status.SUCCESSFUL);
-            history.setAdditional_uuid(result.getId());
+            history.setAdditionalUuid(result.getId());
             history.setRollBackAble(true);
         } catch (Throwable e) {
 //            log.error(e.getMessage(), e);
@@ -111,7 +111,7 @@ public class HistoryWriter {
             case "changeStory":
                 historyStoryChanging(joinPoint, history);
                 break;
-            case "saveFiles":
+            case "saveStory":
                 historyStorySaving(joinPoint, history);
                 break;
             case "approveStory":

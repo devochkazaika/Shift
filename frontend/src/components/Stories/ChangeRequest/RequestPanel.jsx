@@ -13,6 +13,7 @@ const RequestPanel = ({ data }) => {
                             <td>{data["bankId"]}</td>
                             <td>{data["platform"]}</td> 
                             <td>{data["bankId"]}</td> 
+                            <td>{data["operationType"]}</td>
                             <td>
                                 <Button
                                 text="Отозвать"

@@ -70,7 +70,7 @@ public class StoriesController {
                     content = @Content(mediaType = "multipart/form-data"))
             MultipartFile[] images) throws IOException {
 
-        return storiesService.saveFiles(storiesRequestDto, previewImage, images);
+        return storiesService.saveStory(storiesRequestDto, previewImage, images);
     }
 
     @PostMapping(path = "/add/frame", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -136,7 +136,7 @@ public class StoriesController {
             @PlatformValid
             String platform) throws IOException {
 
-        return storiesService.getFilePlatformJson(bankId, platform);
+        return storiesService.getStoriesByBankAndPlatform(bankId, platform);
     }
     /**
      * Метод, который обрабатывает DELETE-запрос на удаление историй.

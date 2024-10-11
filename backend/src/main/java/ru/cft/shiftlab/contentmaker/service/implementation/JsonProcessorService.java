@@ -73,6 +73,11 @@ public class JsonProcessorService implements FileSaverService {
 //        });
 //    }
 
+    /**
+     * Возврат конкретной истории по id
+     * @param id id истории
+     * @return
+     */
     public StoryPresentation getStory(Long id){
         return storyPresentationRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("Story not found")
@@ -86,7 +91,7 @@ public class JsonProcessorService implements FileSaverService {
      * @return
      * @throws IOException
      */
-    public HttpEntity<List<StoryPresentation>> getFilePlatformJson(String bankId, String platform) throws IOException {
+    public HttpEntity<List<StoryPresentation>> getStoriesByBankAndPlatform(String bankId, String platform) throws IOException {
         return new HttpEntity<List<StoryPresentation>>(mapper.getStoryList(bankId, platform));
     }
 
@@ -100,7 +105,7 @@ public class JsonProcessorService implements FileSaverService {
      */
     @Override
     @History(operationType = "create")
-    public StoryPresentation saveFiles(String strStoriesRequestDto,
+    public StoryPresentation saveStory(String strStoriesRequestDto,
                           MultipartFile previewImage,
                           MultipartFile[] imagesFrame){
         try {
@@ -111,7 +116,7 @@ public class JsonProcessorService implements FileSaverService {
                     , StoriesRequestDto.class);
             //Сохранение в БД
             var storyEntity = saveStoryEntity(storiesRequestDto, images);
-            //Сохранение
+            //Сохранение в зависимости от роли
             return saveByRoles(storyEntity);
         }
         catch (JsonProcessingException e){
@@ -243,19 +248,12 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     @Override
-    public List<StoryPresentation> getDeletedStories() {
-        return storyPresentationRepository.getDeletedStories();
-    }
-
-    @Override
     public List<StoryPresentation> getUnApprovedStories(String bankId, String platform) {
         return storyPresentationRepository.getUnApprovedStories(bankId, platform);
     }
 
     @Override
     public List<StoryPresentation> getDeletedStories(String bankId, String platform) {
-        var story = storyPresentationRepository.getDeletedStories(bankId, platform);
-
         return storyPresentationRepository.getDeletedStories(bankId, platform);
     }
 
@@ -605,12 +603,6 @@ public class JsonProcessorService implements FileSaverService {
         storyPresentation.setApproved(StoryPresentation.Status.APPROVED);
         storyPresentationRepository.save(storyPresentation);
         mapper.putStoryToJson(storyPresentation, storyPresentation.getBankId(), storyPresentation.getPlatform());
-    }
-
-    @Override
-    public List<StoryPresentation> getChangedRequest(String bank, String platform) {
-        var li = storyPresentationRepository.getChangeRequest(bank, platform);
-        return li;
     }
 
     @Modifying
