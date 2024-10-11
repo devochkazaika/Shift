@@ -66,7 +66,7 @@ public class HistoryWriter {
         history.setOperationType(HistoryEntity.OperationType.Change);
         var story = resultStories(joinPoint, history);
         // Запись с измененной историей
-//        history.setSecondComponentId(story.getId());
+        history.setSecondComponentId(story.getId());
     }
     private void historyStorySaving(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
         history.setOperationType(HistoryEntity.OperationType.Create);
