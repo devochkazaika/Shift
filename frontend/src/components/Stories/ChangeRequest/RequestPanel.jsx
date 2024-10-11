@@ -3,6 +3,15 @@ import style from './Request.module.scss'
 import Button from '../../ui/Button';
 
 const RequestPanel = ({ data }) => {
+    const handleOnSubmit = async (id) => {
+        console.log(id);
+        // const success = await deleteFrame(story, frame, platform);
+        // if (success) {
+        //   setFrames((prevFrames) =>
+        //     prevFrames.filter((item) => item.id !== frame.id)
+        //   );
+        // }
+      };
     return (
         <li className="listFrame">
             <details>
@@ -14,14 +23,14 @@ const RequestPanel = ({ data }) => {
                             <td>{data["platform"]}</td> 
                             <td>{data["bankId"]}</td> 
                             <td>{data["operationType"]}</td>
-                            <td>
+                            {data["rollBackAble"] ? <td>
                                 <Button
                                 text="Отозвать"
                                 type="button"
                                 color="red"
-                                // handleOnClick={() => handleOnSubmit(story, platform)}
+                                handleOnClick={() => handleOnSubmit(data["id"])}
                                 />
-                            </td>  
+                            </td> : <></>}
                         </tr>
                 
                     </table>

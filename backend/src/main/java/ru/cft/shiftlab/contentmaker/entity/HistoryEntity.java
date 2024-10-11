@@ -1,7 +1,9 @@
 package ru.cft.shiftlab.contentmaker.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
@@ -87,7 +89,7 @@ public class HistoryEntity {
     ComponentType componentType;
 
     @Column(name="rollback_able")
-    @JsonIgnore
+//    @JsonIgnore
     Boolean rollBackAble;
 
 }
