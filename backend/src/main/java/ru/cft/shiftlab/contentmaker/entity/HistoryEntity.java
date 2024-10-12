@@ -89,7 +89,6 @@ public class HistoryEntity {
     ComponentType componentType;
 
     @Column(name="rollback_able")
-//    @JsonIgnore
     Boolean rollBackAble;
 
 }

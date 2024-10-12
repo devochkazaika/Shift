@@ -1,16 +1,18 @@
 import React from 'react';
 import style from './Request.module.scss'
 import Button from '../../ui/Button';
+import { rollBackOperation } from '../../../api/history';
 
 const RequestPanel = ({ data }) => {
     const handleOnSubmit = async (id) => {
-        console.log(id);
-        // const success = await deleteFrame(story, frame, platform);
-        // if (success) {
-        //   setFrames((prevFrames) =>
-        //     prevFrames.filter((item) => item.id !== frame.id)
-        //   );
-        // }
+        try{
+            const response = rollBackOperation(id);
+            console.log(response);
+
+        }
+        catch (exc){
+            console.log("Could not get response")
+        }
       };
     return (
         <li className="listFrame">

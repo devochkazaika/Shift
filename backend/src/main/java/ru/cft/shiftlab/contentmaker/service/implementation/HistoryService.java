@@ -1,12 +1,14 @@
 package ru.cft.shiftlab.contentmaker.service.implementation;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import ru.cft.shiftlab.contentmaker.entity.HistoryEntity;
 import ru.cft.shiftlab.contentmaker.repository.HistoryRepository;
 import ru.cft.shiftlab.contentmaker.service.HistoryServiceStories;
 import ru.cft.shiftlab.contentmaker.util.keycloak.KeyCloak;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -46,7 +48,7 @@ public class HistoryService implements HistoryServiceStories {
         return historyRepository.getRequestByUser(keyCloak.getUserName());
     }
 
-
+    @Modifying
     private void rollBackStories(HistoryEntity history) throws Throwable {
         switch (history.getOperationType()){
             case Create:
@@ -64,7 +66,7 @@ public class HistoryService implements HistoryServiceStories {
                 break;
             case Change:
                 storiesService.deleteStoriesFromDb(history.getBankId(), history.getPlatform(), history.getComponentId());
-
+                historyRepository.deleteByStoryId(history.getComponentId());
                 break;
         }
     }
@@ -78,6 +80,7 @@ public class HistoryService implements HistoryServiceStories {
     }
 
     @Override
+    @Transactional
     public void rollBack(Long idHistory){
         HistoryEntity history = historyRepository.findById(idHistory).orElseThrow(
                 () -> new IllegalArgumentException("History not found")

@@ -7,7 +7,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -91,7 +90,7 @@ public class StoryPresentation  {
      * Список карточек истории.
      */
     @JsonProperty("storyFrames")
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy="story")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE, mappedBy="story")
     @Builder.Default
     private List<StoryPresentationFrames> storyPresentationFrames = new ArrayList<>();
 
