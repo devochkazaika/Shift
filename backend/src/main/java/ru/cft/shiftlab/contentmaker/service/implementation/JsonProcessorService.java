@@ -436,11 +436,12 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     @Modifying
+    @Transactional
     public ResponseEntity<?> deleteStoriesFromDb(String bankId, String platform, Long id) throws Throwable{
 //        storyPresentationFramesRepository.deleteByStoryId(id);
         storyPresentationRepository.deleteById(id);
         deleteFilesStories(bankId, platform, id);
-        return null;
+        return new ResponseEntity<>(HttpStatus.valueOf(202));
     }
     /**
      * Метод, предназначенный для удаления историй из JSON.
