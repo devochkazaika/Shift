@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
+import ru.cft.shiftlab.contentmaker.service.implementation.HistoryService;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.PlatformValid;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
 
@@ -24,7 +25,7 @@ import java.util.List;
 @Validated
 public class AdminController {
     private final FileSaverService storiesService;
-
+    private final HistoryService historyService;
     /**
      * Одобрение истории админом и последующее сохранение в JSON, а также изменение статуса на APPROVED
      * @param bankId
@@ -132,5 +133,13 @@ public class AdminController {
         return storiesService.updatePreview(first, second);
     }
 
+    @PatchMapping("/approve/story/change")
+    public void approveChanging(
+            @RequestParam(name = "idOperation")
+            Long id
+            )
+    {
+        historyService.approveChangeStory(id);
+    }
 
 }

@@ -78,7 +78,8 @@ function App() {
                       </PrivateRoute>
                     }
                   />
-                  <Route
+                  {flags.user_requests ? 
+                    <Route
                     path="/requestUser"
                     element={
                       <PrivateRoute>
@@ -86,6 +87,7 @@ function App() {
                       </PrivateRoute>
                     }
                   />
+                  : <></>}
                 </>
               )}
               <Route

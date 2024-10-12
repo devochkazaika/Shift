@@ -108,6 +108,8 @@ public class HistoryService implements HistoryServiceStories {
      * Надо дописать в историю добавление
      * @param historyId
      */
+    @Transactional
+    @Modifying
     public void approveChangeStory(Long historyId){
         var history = historyRepository.findById(historyId).orElseThrow(
                 () -> new IllegalArgumentException("History not found")

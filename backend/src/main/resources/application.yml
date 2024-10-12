@@ -81,6 +81,7 @@ feature-flags:
     show_story: true
     banners: true
     admin_panel: true
+    user_requests: true
 
 file_path_to_save:
   stories: "src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/"
