@@ -1,20 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import style from './Request.module.scss'
 import Button from '../../ui/Button';
 import { rollBackOperation } from '../../../api/history';
 
 const RequestPanel = ({ data }) => {
+    const [isDelete, setDelete] = useState(false);
     const handleOnSubmit = async (id) => {
         try{
-            const response = rollBackOperation(id);
-            console.log(response);
-
+            rollBackOperation(id);
+            setDelete(true);
         }
         catch (exc){
             console.log("Could not get response")
         }
       };
     return (
+        <>
+        {!isDelete ?
         <li className="listFrame">
             <details>
               <summary draggable="true">
@@ -39,7 +41,7 @@ const RequestPanel = ({ data }) => {
                 </div>
               </summary>
             </details>
-        </li>
+        </li> : <></>} </>
     )
 }
 
