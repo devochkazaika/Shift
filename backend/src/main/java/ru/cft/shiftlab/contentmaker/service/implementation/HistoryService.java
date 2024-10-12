@@ -104,4 +104,16 @@ public class HistoryService implements HistoryServiceStories {
 
     }
 
+    /**
+     * Надо дописать в историю добавление
+     * @param historyId
+     */
+    public void approveChangeStory(Long historyId){
+        var history = historyRepository.findById(historyId).orElseThrow(
+                () -> new IllegalArgumentException("History not found")
+        );
+        storiesService.approveChangeStory(history.getComponentId(), history.getSecondComponentId());
+        historyRepository.deleteByStoryId(history.getSecondComponentId());
+    }
+
 }

@@ -622,8 +622,15 @@ public class JsonProcessorService implements FileSaverService {
         return storyPresentationRepository.save(mainStory);
     }
 
+    @Transactional
     @Modifying
-    public void rollBackChangeRequest(Long idOperation){
-
+    public void approveChangeStory(Long firstStory, Long secondStory){
+        var first = storyPresentationRepository.findById(firstStory).orElseThrow(
+                () -> new IllegalArgumentException("Could not find story with id = " + firstStory));
+        var second  = storyPresentationRepository.findById(secondStory).orElseThrow(
+                () -> new IllegalArgumentException("Could not find story with id = " + firstStory));
+        mapper.updateStoryEntity(first, second);
+        storyPresentationRepository.save(first);
+        storyPresentationRepository.delete(second);
     }
 }
