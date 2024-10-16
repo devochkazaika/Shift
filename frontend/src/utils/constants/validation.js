@@ -1,16 +1,19 @@
 // TODO : переработать framesRules
 export const framesRules = [
   {
+    // TODO: поменять значение
     maxTitleLength: 36,
     maxTitleStrings: 1,
     maxTextLength: 245,
     maxTextStrings: 7,
-    maxTitleStringLength: 36, //нужно поменять
+    // TODO: поменять значение
+    maxTitleStringLength: 36,
     maxTextStringLength: 35,
     minLength: 1,
   },
   {
-    maxTitleLength: 51, //нужно поменять
+    // TODO: поменять значение
+    maxTitleLength: 51,
     maxTitleStrings: 2,
     maxTextLength: 210,
     maxTextStrings: 6,
