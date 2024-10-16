@@ -1,6 +1,6 @@
 import React, {useEffect, useState } from "react";
 import { baseURL } from "../../api/api";
-import styles from "./showstory.css"
+import styles from "./ShowStory.module.scss"
 import Button from "../ui/Button";
 
 const ShowStory = (stories) => {
@@ -66,7 +66,7 @@ const ShowStory = (stories) => {
                 <div>
                     { /* Кнопки для перелистывания карточек историй */}
                     <div className="left">
-                        {(index > 0) ? <div className="buttonFrameBrowsing">
+                        {(index > 0) ? <div className="button-frame-browsing">
                             <Button
                             text="<"
                             type="button"
@@ -76,7 +76,7 @@ const ShowStory = (stories) => {
                         : <></>}
                     </div>
                     <div className="right">
-                        {(frameArray.length-1 > index) ? <div className="buttonFrameBrowsing">
+                        {(frameArray.length-1 > index) ? <div className="button-frame-browsing">
                             <Button
                             text=">"
                             type="button"
