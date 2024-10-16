@@ -1,5 +1,5 @@
 import StoryCard from "./StoryCard";
-import "./StoryPanelStyle.css";
+import styles from "./StoryPanelStyle.css";
 import Button from "./../../ui/Button/index";
 import { deleteStory } from "./../../../api/stories";
 import { useState, useEffect, React } from "react";
@@ -29,10 +29,8 @@ const StoryPanel = ({showStory, storyArray, platform }) => {
   };
 
   const handleUpdateStory = (value, storyIndex, frameId, field) => {
-    // Создаем копию массива stories
     let newStories = [...stories];
   
-    // Находим нужный storyFrames по индексу storyIndex
     newStories[storyIndex].storyFrames = newStories[storyIndex].storyFrames.map(frame => {
       if (frame.id === frameId) {
         return {
@@ -43,15 +41,15 @@ const StoryPanel = ({showStory, storyArray, platform }) => {
       return frame;
     });
   
-    // Обновляем состояние
     setStories(newStories);
   };
+
   return (
     <div>
       <ul className="stories">
           <h2>{platform}</h2>
         {stories.map((story, index) => (
-          <li className="listFrame" key={index}>
+          <li className={styles.listFrame} key={index}>
             <details>
               <summary draggable="true">
                 <p>{story.previewTitle}</p>
@@ -67,23 +65,25 @@ const StoryPanel = ({showStory, storyArray, platform }) => {
                 </div>
               </summary>
               <div style={{display: "flex"}}>
-                {(showStory) ? 
-                  <>
-                  <div style={{width: "70%", paddingRight: "30px"}}>
-                    <StoryCard
-                      key={index}
-                      story={story}
-                      storyIndex={index}
-                      platform={platform}
-                      changeStory={handleUpdateStory}
-                    />
-                  </div>
-                  <div style={{width: "30%", paddingRight: "4px"}}>
-                    <ShowStory stories={storyArray[index]}/>
-                  </div>
+                {(showStory) ?
+                 // История с показом её превью
+                 <>
+                    <div className="story-with-preview">
+                      <StoryCard
+                        key={index}
+                        story={story}
+                        storyIndex={index}
+                        platform={platform}
+                        changeStory={handleUpdateStory}
+                      />
+                    </div>
+                    <div className="preview">
+                      <ShowStory stories={storyArray[index]}/>
+                    </div>
                   </>
-                : <>
-                  <div style={{width: "100%", paddingRight: "30px"}}>
+                : 
+                  // История без показа превью
+                  <div className="story-without-preview">
                     <StoryCard
                       key={index}
                       story={story}
@@ -91,7 +91,7 @@ const StoryPanel = ({showStory, storyArray, platform }) => {
                       platform={platform}
                     />
                   </div>
-                  </>}
+                }
               </div>
             </details>
           </li>
