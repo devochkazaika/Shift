@@ -8,24 +8,28 @@ const ShowStory = (stories) => {
     const [story, setStory] = useState(storiesArray);
     const [frameArray, setFrameArray] = useState(story["storyFrames"]);
 
-    const [ind, setIndex] = useState(0);
+    const [index, setIndex] = useState(0);
 
-    useEffect( () => {
-        if (stories) setStoriesArray(stories["stories"]);
-        if (storiesArray) setStory(storiesArray);
+    useEffect(() => {
+        if (stories) {
+            setStoriesArray(stories["stories"]);
+        }
+        if (storiesArray) {
+            setStory(storiesArray);
+        }
         setFrameArray(story["storyFrames"]);
     }, [stories]);
 
     // Перелистывание карточек внутри истории
     const rightFrame = () => {
-        if (frameArray.length-1 > ind){
-            setIndex(ind+1);
+        if (frameArray.length - 1 > ind){
+            setIndex(ind + 1);
         }
     };
 
     const leftFrame = () => {
         if (ind > 0){
-            setIndex(ind-1);
+            setIndex(ind - 1);
         }
     };
 
