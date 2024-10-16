@@ -51,7 +51,12 @@
   font-weight: 550;
 }
 
-.buttonShow {
+.buttonShowStory {
+  text-align: center;
+  padding-top: 10%;
+}
+
+.buttonShowStory button {
   font-size: 1px;
   text-overflow: "ellipsis";
   height: 35px;
@@ -61,7 +66,7 @@
   box-sizing: border-box;
 }
 
-.buttonShow div{
+.buttonShowStory div{
   font-size: 12px;
   padding-left: 10px;
   font-family: Verdana;
@@ -122,3 +127,12 @@
   border: none;
   opacity: 80%;
 }
+
+.showStory {
+  display: "flex"
+}
+
+.buttonFrameBrowsing {
+  opacity: 60%
+}
+

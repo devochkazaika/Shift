@@ -57,39 +57,39 @@ const ShowStory = (stories) => {
                 <img
                     src={`${baseURL}/image?path=${frameArray[ind].pictureUrl}`}
                     className="background-image"
+                    alt=""
                 />
                 <div>
+                    { /* Кнопки для перелистывания карточек историй */}
                     <div className="left">
-                        {(ind > 0) ? <div style={{opacity: "60%"}}>
+                        {(ind > 0) ? <div className="buttonFrameBrowsing">
                             <Button
                             text="<"
                             type="button"
                             color="grey"
                             handleOnClick={leftFrame}/>
                         </div>
-                             : <></>}
+                        : <></>}
                     </div>
                     <div className="right">
-                        {(frameArray.length-1 > ind) ? <div style={{opacity: "60%"}}>
+                        {(frameArray.length-1 > ind) ? <div className="buttonFrameBrowsing">
                             <Button
                             text=">"
                             type="button"
                             color="grey"
                             handleOnClick={rightFrame}/>
-                        </div>    
-                         : <></>}
+                        </div> 
+                        : <></>}
                     </div>
                 </div>
                 <div className="text-overlay">
                     {frameArray[ind].visibleButtonOrNone !== "NONE" && (
-                        <div style={{ textAlign: "center", paddingTop: "10%" }}>
+                        <div className="buttonShowStory">
                             <button
-                                className="buttonShow"
                                 style={{
                                     color: frameArray[ind].buttonTextColor,
                                     backgroundColor: frameArray[ind].buttonBackgroundColor,
-                                }}
-                            >
+                                }}>
                                 <div>
                                     {frameArray[ind].buttonText}
                                 </div>
