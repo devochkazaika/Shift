@@ -29,6 +29,11 @@ const StoryFrame = ({
     }
   }, [frame.pictureUrl]);
 
+  const onChangeStory = (eventTarget, controlName, setFieldValue) => {
+    setFieldValue(controlName, eventTarget.value);
+    changeStory(eventTarget.value, storyIndex, frame.id, controlName);
+  }
+
   return (
     <div>
       <Formik
@@ -49,6 +54,7 @@ const StoryFrame = ({
         onSubmit={(values) => handleOnSubmit(story, platform, values, frame.id)}
       >
         {({ values, setFieldValue }) => (
+          
           <Form>
             <FieldArray name={`frames[${storyIndex}]`}>
               {() => (
@@ -58,10 +64,7 @@ const StoryFrame = ({
                     name="title"
                     value={values.title}
                     type="text"
-                    onChange={(e) => {
-                      setFieldValue('title', e.target.value);
-                      changeStory(e.target.value, storyIndex, frame.id, "title");
-                    }}
+                    onChange={(e) => onChangeStory(e.target.value, "title", setFieldValue)}
                     {...props}
                   />
                   <div className="row">
@@ -71,11 +74,7 @@ const StoryFrame = ({
                       labelTitle="Текст"
                       as={"textarea"}
                       type="text"
-                      onChange={(e) => {
-                        console.log(e.target.value)
-                        setFieldValue('text', e.target.value);
-                        changeStory(e.target.value, storyIndex, frame.id, "text");
-                      }}
+                      onChange={(e) => onChangeStory(e.target.value, "text", setFieldValue)}
                       {...props}
                     />
                     <FormField
@@ -83,10 +82,7 @@ const StoryFrame = ({
                       labelTitle="Цвет текста"
                       value={values.textColor}
                       component={ColorPicker}
-                      onChange={(e) => {
-                        setFieldValue('textColor', e.target.value);
-                        changeStory(e.target.value, storyIndex, frame.id, "textColor");
-                      }}
+                      onChange={(e) => onChangeStory(e.target.value, "textColor", setFieldValue)}
                       {...props}
                     />
                   </div>
@@ -96,10 +92,7 @@ const StoryFrame = ({
                     value={values.gradient}
                     as="select"
                     options={gradientOptions}
-                    onChange={(e) => {
-                      setFieldValue('gradient', e.target.value);
-                      changeStory(e.target.value, storyIndex, frame.id, "gradient");
-                    }}
+                    onChange={(e) => onChangeStory(e.target.value, "gradient", setFieldValue)}
                     {...props}
                   />
                   <div role="group" aria-labelledby="my-radio-group">
@@ -112,10 +105,7 @@ const StoryFrame = ({
                           id={`ButtonIntarectiveType-${frameIndex}`}
                           type="radio"
                           checked={values.visibleButtonOrNone === "BUTTON"}
-                          onChange={(e) => {
-                            setFieldValue('visibleButtonOrNone', e.target.value);
-                            changeStory(e.target.value, storyIndex, frame.id, "visibleButtonOrNone");
-                          }}
+                          onChange={(e) => onChangeStory(e.target.value, "visibleButtonOrNone", setFieldValue)}
                           {...props}
                         />
                       </label>
@@ -127,10 +117,7 @@ const StoryFrame = ({
                           id={`NonIntarectiveType-${frameIndex}`}
                           type="radio"
                           checked={values.visibleButtonOrNone === "NONE"}
-                          onChange={(e) => {
-                            setFieldValue('visibleButtonOrNone', e.target.value);
-                            changeStory(e.target.value, storyIndex, frame.id, "visibleButtonOrNone");
-                          }}
+                          onChange={(e) => onChangeStory(e.target.value, "visibleButtonOrNone", setFieldValue)}
                           {...props}
                         />
                       </label>
@@ -146,9 +133,8 @@ const StoryFrame = ({
                             as="textarea"
                             value={values.buttonText}
                             onChange={(e) => {
-                              setFieldValue(e);
+                              onChangeStory(e.target.value, "buttonText", setFieldValue);
                               values.buttonText = e.target.value;
-                              changeStory(e.target.value, storyIndex, frame.id, "buttonText");
                             }}
                             {...props}
                           />
@@ -159,10 +145,7 @@ const StoryFrame = ({
                             labelTitle="Цвет текста"
                             component={ColorPicker}
                             value={values.buttonTextColor}
-                            onChange={(e) => {
-                              setFieldValue('buttonTextColor', e.target.value);
-                              changeStory(e.target.value, storyIndex, frame.id, "buttonTextColor");
-                            }}
+                            onChange={(e) => onChangeStory(e.target.value, "buttonTextColor", setFieldValue)}
                             {...props}
                           />
                           <FormField
@@ -170,10 +153,7 @@ const StoryFrame = ({
                             labelTitle="Цвет кнопки"
                             component={ColorPicker}
                             value={values.buttonBackgroundColor}
-                            onChange={(e) => {
-                              setFieldValue('buttonBackgroundColor', e.target.value);
-                              changeStory(e.target.value, storyIndex, frame.id, "buttonBackgroundColor");
-                            }}
+                            onChange={(e) => onChangeStory(e.target.value, "buttonBackgroundColor", setFieldValue)}
                             {...props}
                           />
                         </div>
@@ -185,9 +165,8 @@ const StoryFrame = ({
                           type="text"
                           value={values.buttonUrl}
                           onChange={(e) => {
-                            setFieldValue(e);
+                            onChangeStory(e.target.value, "buttonUrl", setFieldValue)
                             values.buttonUrl = e.target.value;
-                            changeStory(e.target.value, storyIndex, frame.id, "buttonUrl");
                           }}
                           {...props}
                         />

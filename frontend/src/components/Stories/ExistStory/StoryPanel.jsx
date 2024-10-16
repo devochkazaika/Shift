@@ -21,10 +21,7 @@ const StoryPanel = ({ showStory, storyArray, platform }) => {
     try {
       const success = await deleteStory(story, platform);
       if (success) {
-        setStories((prevStories) => {
-          const updatedStories = prevStories.filter((item) => item.id !== story.id);
-          return updatedStories;
-        });
+        setStories((prevStories) => prevStories.filter((item) => item.id !== story.id));
       }
     } catch (error) {
       console.error("Ошибка при удалении истории", error);
