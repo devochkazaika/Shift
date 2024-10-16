@@ -56,7 +56,6 @@ const ShowStory = (stories) => {
             <div className="image-container">
                 <img
                     src={`${baseURL}/image?path=${frameArray[ind].pictureUrl}`}
-                    alt="Story frame"
                     className="background-image"
                 />
                 <div>
@@ -66,7 +65,7 @@ const ShowStory = (stories) => {
                             text="<"
                             type="button"
                             color="grey"
-                            handleOnClick={() => leftFrame()}/>
+                            handleOnClick={leftFrame}/>
                         </div>
                              : <></>}
                     </div>
@@ -76,7 +75,7 @@ const ShowStory = (stories) => {
                             text=">"
                             type="button"
                             color="grey"
-                            handleOnClick={() => rightFrame()}/>
+                            handleOnClick={rightFrame}/>
                         </div>    
                          : <></>}
                     </div>
