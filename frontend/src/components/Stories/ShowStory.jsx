@@ -22,14 +22,14 @@ const ShowStory = (stories) => {
 
     // Перелистывание карточек внутри истории
     const rightFrame = () => {
-        if (frameArray.length - 1 > ind){
-            setIndex(ind + 1);
+        if (frameArray.length - 1 > index){
+            setIndex(index + 1);
         }
     };
 
     const leftFrame = () => {
-        if (ind > 0){
-            setIndex(ind - 1);
+        if (index > 0){
+            setIndex(index - 1);
         }
     };
 
@@ -39,34 +39,34 @@ const ShowStory = (stories) => {
         <div className={styles.container}>
             {/* Полоска для отображения номера истории */}
             <div className="lines">
-            {frameArray.slice(0, frameArray.length).map((frame, index) => (
-                (index <= ind) ?
+            {frameArray.slice(0, frameArray.length).map((frame, ind) => (
+                (ind <= index) ?
                 <hr 
                     style={{
                         backgroundColor: "white",
                         width: `${100 / frameArray.length}%`
                     }} 
-                    key={index} 
+                    key={ind} 
                 />
                 : <hr 
                     style={{
                         backgroundColor: "grey", 
                         width: `${100 / frameArray.length}%`
                     }} 
-                    key={index} 
+                    key={ind} 
                 />
             ))}
             </div>
             <div className="image-container">
                 <img
-                    src={`${baseURL}/image?path=${frameArray[ind].pictureUrl}`}
+                    src={`${baseURL}/image?path=${frameArray[index].pictureUrl}`}
                     className="background-image"
                     alt=""
                 />
                 <div>
                     { /* Кнопки для перелистывания карточек историй */}
                     <div className="left">
-                        {(ind > 0) ? <div className="buttonFrameBrowsing">
+                        {(index > 0) ? <div className="buttonFrameBrowsing">
                             <Button
                             text="<"
                             type="button"
@@ -76,7 +76,7 @@ const ShowStory = (stories) => {
                         : <></>}
                     </div>
                     <div className="right">
-                        {(frameArray.length-1 > ind) ? <div className="buttonFrameBrowsing">
+                        {(frameArray.length-1 > index) ? <div className="buttonFrameBrowsing">
                             <Button
                             text=">"
                             type="button"
@@ -87,28 +87,28 @@ const ShowStory = (stories) => {
                     </div>
                 </div>
                 <div className="text-overlay">
-                    {frameArray[ind].visibleButtonOrNone !== "NONE" && (
-                        <div className="buttonShowStory">
+                    {frameArray[index].visibleButtonOrNone !== "NONE" && (
+                        <div className="button-show-story">
                             <button
                                 style={{
-                                    color: frameArray[ind].buttonTextColor,
-                                    backgroundColor: frameArray[ind].buttonBackgroundColor,
+                                    color: frameArray[index].buttonTextColor,
+                                    backgroundColor: frameArray[index].buttonBackgroundColor,
                                 }}>
                                 <div>
-                                    {frameArray[ind].buttonText}
+                                    {frameArray[index].buttonText}
                                 </div>
                             </button>
                         </div>
                     )}
                     <p style={{
-                        color: frameArray[ind].textColor,
+                        color: frameArray[index].textColor,
                     }}>
-                        {frameArray[ind].text}
+                        {frameArray[index].text}
                     </p>
                     <h1 style={{
-                        color: frameArray[ind].textColor,
+                        color: frameArray[index].textColor,
                     }}>
-                        {frameArray[ind].title}
+                        {frameArray[index].title}
                     </h1>
                 </div>
             </div>
