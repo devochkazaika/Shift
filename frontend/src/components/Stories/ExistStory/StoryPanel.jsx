@@ -1,19 +1,22 @@
 import StoryCard from "./StoryCard";
-import styles from "./StoryPanelStyle.css";
+import styles from "./StoryPanelStyle.module.scss";
 import Button from "./../../ui/Button/index";
 import { deleteStory } from "./../../../api/stories";
-import { useState, useEffect, React } from "react";
+import React, { useState, useEffect } from "react";
 import ShowStory from "../ShowStory";
 
-const StoryPanel = ({showStory, storyArray, platform }) => {
+
+const StoryPanel = ({ showStory, storyArray, platform }) => {
   const [stories, setStories] = useState(storyArray);
-  //Для обновления после удаления
+
+  // Для обновления после удаления
   useEffect(() => {
     if (storyArray) {
       setStories(storyArray);
     }
   }, [storyArray]);
-  //Для удаления истории
+
+  // Для удаления истории
   const handleOnSubmit = async (story, platform) => {
     try {
       const success = await deleteStory(story, platform);
@@ -30,26 +33,26 @@ const StoryPanel = ({showStory, storyArray, platform }) => {
 
   const handleUpdateStory = (value, storyIndex, frameId, field) => {
     let newStories = [...stories];
-  
-    newStories[storyIndex].storyFrames = newStories[storyIndex].storyFrames.map(frame => {
+
+    newStories[storyIndex].storyFrames = newStories[storyIndex].storyFrames.map((frame) => {
       if (frame.id === frameId) {
         return {
           ...frame,
-          [field]: value
+          [field]: value,
         };
       }
       return frame;
     });
-  
+
     setStories(newStories);
   };
 
   return (
     <div>
-      <ul className="stories">
-          <h2>{platform}</h2>
+      <ul className={styles.stories}> {/* Использование CSS-модуля */}
+        <h2>{platform}</h2>
         {stories.map((story, index) => (
-          <li className={styles.listFrame} key={index}>
+          <li className={styles.listFrame} key={index}> {/* Использование стиля через styles */}
             <details>
               <summary draggable="true">
                 <p>{story.previewTitle}</p>
@@ -64,11 +67,11 @@ const StoryPanel = ({showStory, storyArray, platform }) => {
                   </div>
                 </div>
               </summary>
-              <div style={{display: "flex"}}>
-                {(showStory) ?
-                 // История с показом её превью
-                 <>
-                    <div className="story-with-preview">
+              <div style={{ display: "flex" }}>
+                {showStory ? (
+                  // История с показом её превью
+                  <>
+                    <div className={styles["story-with-preview"]}> {/* Применение стиля через объект styles */}
                       <StoryCard
                         key={index}
                         story={story}
@@ -77,13 +80,13 @@ const StoryPanel = ({showStory, storyArray, platform }) => {
                         changeStory={handleUpdateStory}
                       />
                     </div>
-                    <div className="preview">
-                      <ShowStory stories={storyArray[index]}/>
+                    <div className={styles.preview}> {/* Использование стиля preview через объект styles */}
+                      <ShowStory stories={storyArray[index]} />
                     </div>
                   </>
-                : 
+                ) : (
                   // История без показа превью
-                  <div className="story-without-preview">
+                  <div className={styles["story-without-preview"]}>
                     <StoryCard
                       key={index}
                       story={story}
@@ -91,7 +94,7 @@ const StoryPanel = ({showStory, storyArray, platform }) => {
                       platform={platform}
                     />
                   </div>
-                }
+                )}
               </div>
             </details>
           </li>
