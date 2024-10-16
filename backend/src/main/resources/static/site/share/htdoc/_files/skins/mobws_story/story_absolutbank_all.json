@@ -9,18 +9,6 @@
     "previewGradient" : "HALF",
     "storyPresentationChanged" : [ ],
     "storyFrames" : [ {
-      "id" : "2e6ae04a-9336-4cc5-802f-ce086e823a27",
-      "title" : "Воплощайте самые смелые желания!",
-      "text" : "Определяйте цели  и воплощайте желания в реальность.\nПозвольте себе осуществить желания в новом году!",
-      "textColor" : "#ffff",
-      "pictureUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/1_2c98a59a-8721-4031-9b7d-f27273433076.jpg",
-      "visibleButtonOrNone" : "NONE",
-      "buttonText" : "Click Here",
-      "buttonTextColor" : "#FFFFFF",
-      "buttonBackgroundColor" : "#0000FF",
-      "buttonUrl" : "https://example.com",
-      "gradient" : "EMPTY"
-    }, {
       "id" : "469c3911-6954-4129-8391-829a8553264c",
       "title" : "4 место - всеми любимый Вклад «Любимый» до 18% на 1 год",
       "text" : "Этот вклад выбирает клиенты, которые\n-хотят зафиксировать высокую ставку на целый год\n- ежемесячно снимают проценты по вкладу и живут на них.\nСовет: Если вам нужна ежемесячная прибавка в ваш бюджет, то этот вклад для Вас.",
@@ -30,6 +18,18 @@
       "buttonText" : "ОФОРМИТЬ ВКЛАД",
       "buttonTextColor" : "#FFFFFF",
       "buttonBackgroundColor" : "#e9610dff",
+      "buttonUrl" : "https://example.com",
+      "gradient" : "EMPTY"
+    }, {
+      "id" : "2e6ae04a-9336-4cc5-802f-ce086e823a27",
+      "title" : "Воплощайте самые смелые желания!",
+      "text" : "Определяйте цели  и воплощайте желания в реальность.\nПозвольте себе осуществить желания в новом году!",
+      "textColor" : "#ffff",
+      "pictureUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/1_2c98a59a-8721-4031-9b7d-f27273433076.jpg",
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "Click Here",
+      "buttonTextColor" : "#FFFFFF",
+      "buttonBackgroundColor" : "#0000FF",
       "buttonUrl" : "https://example.com",
       "gradient" : "EMPTY"
     } ]

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {FieldArray, Form, Formik } from "formik";
+import { FieldArray, Form, Formik } from "formik";
 import FormField from "../../FormField";
 import Button from "../.././ui/Button";
 import ColorPicker from "./../../ColorPicker/index";
@@ -64,7 +64,7 @@ const StoryFrame = ({
                     name="title"
                     value={values.title}
                     type="text"
-                    onChange={(e) => onChangeStory(e.target.value, "title", setFieldValue)}
+                    onChange={(event) => onChangeStory(event.target.value, "title", setFieldValue)}
                     {...props}
                   />
                   <div className="row">
@@ -74,7 +74,7 @@ const StoryFrame = ({
                       labelTitle="Текст"
                       as={"textarea"}
                       type="text"
-                      onChange={(e) => onChangeStory(e.target.value, "text", setFieldValue)}
+                      onChange={(event) => onChangeStory(event.target.value, "text", setFieldValue)}
                       {...props}
                     />
                     <FormField
@@ -82,7 +82,7 @@ const StoryFrame = ({
                       labelTitle="Цвет текста"
                       value={values.textColor}
                       component={ColorPicker}
-                      onChange={(e) => onChangeStory(e.target.value, "textColor", setFieldValue)}
+                      onChange={(event) => onChangeStory(event.target.value, "textColor", setFieldValue)}
                       {...props}
                     />
                   </div>
@@ -92,7 +92,7 @@ const StoryFrame = ({
                     value={values.gradient}
                     as="select"
                     options={gradientOptions}
-                    onChange={(e) => onChangeStory(e.target.value, "gradient", setFieldValue)}
+                    onChange={(event) => onChangeStory(event.target.value, "gradient", setFieldValue)}
                     {...props}
                   />
                   <div role="group" aria-labelledby="my-radio-group">
@@ -105,7 +105,7 @@ const StoryFrame = ({
                           id={`ButtonIntarectiveType-${frameIndex}`}
                           type="radio"
                           checked={values.visibleButtonOrNone === "BUTTON"}
-                          onChange={(e) => onChangeStory(e.target.value, "visibleButtonOrNone", setFieldValue)}
+                          onChange={(event) => onChangeStory(event.target.value, "visibleButtonOrNone", setFieldValue)}
                           {...props}
                         />
                       </label>
@@ -117,7 +117,7 @@ const StoryFrame = ({
                           id={`NonIntarectiveType-${frameIndex}`}
                           type="radio"
                           checked={values.visibleButtonOrNone === "NONE"}
-                          onChange={(e) => onChangeStory(e.target.value, "visibleButtonOrNone", setFieldValue)}
+                          onChange={(event) => onChangeStory(event.target.value, "visibleButtonOrNone", setFieldValue)}
                           {...props}
                         />
                       </label>
@@ -132,9 +132,9 @@ const StoryFrame = ({
                             labelTitle="Текст"
                             as="textarea"
                             value={values.buttonText}
-                            onChange={(e) => {
-                              onChangeStory(e.target.value, "buttonText", setFieldValue);
-                              values.buttonText = e.target.value;
+                            onChange={(event) => {
+                              onChangeStory(event.target.value, "buttonText", setFieldValue);
+                              values.buttonText = event.target.value;
                             }}
                             {...props}
                           />
@@ -145,7 +145,7 @@ const StoryFrame = ({
                             labelTitle="Цвет текста"
                             component={ColorPicker}
                             value={values.buttonTextColor}
-                            onChange={(e) => onChangeStory(e.target.value, "buttonTextColor", setFieldValue)}
+                            onChange={(event) => onChangeStory(event.target.value, "buttonTextColor", setFieldValue)}
                             {...props}
                           />
                           <FormField
@@ -153,7 +153,7 @@ const StoryFrame = ({
                             labelTitle="Цвет кнопки"
                             component={ColorPicker}
                             value={values.buttonBackgroundColor}
-                            onChange={(e) => onChangeStory(e.target.value, "buttonBackgroundColor", setFieldValue)}
+                            onChange={(event) => onChangeStory(event.target.value, "buttonBackgroundColor", setFieldValue)}
                             {...props}
                           />
                         </div>
@@ -164,9 +164,9 @@ const StoryFrame = ({
                           labelTitle="Ссылка"
                           type="text"
                           value={values.buttonUrl}
-                          onChange={(e) => {
-                            onChangeStory(e.target.value, "buttonUrl", setFieldValue)
-                            values.buttonUrl = e.target.value;
+                          onChange={(event) => {
+                            onChangeStory(event.target.value, "buttonUrl", setFieldValue)
+                            values.buttonUrl = event.target.value;
                           }}
                           {...props}
                         />
