@@ -6,7 +6,7 @@ import { jwtDecode } from 'jwt-decode';
 export const AdminRoute = ({ children }) => {
   const { keycloak } = useKeycloak();
 
-  let jwt;
+  let jwt;2
   try {
     jwt = jwtDecode(keycloak.token + "");
   } catch (error) {
@@ -19,6 +19,6 @@ export const AdminRoute = ({ children }) => {
   }
 
   return null;
-  };
+};
   
 
