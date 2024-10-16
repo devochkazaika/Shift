@@ -34,7 +34,6 @@ const Stories = () => {
       });
       
       const payload = await convertToPayload(values);
-      console.log(payload);
       const jsonPayload = JSON.stringify(payload, null, 2);
       const uploadResult = await uploadStories(
         jsonPayload,
