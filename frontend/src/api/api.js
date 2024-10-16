@@ -1,11 +1,11 @@
 import axios from 'axios';
 import keycloak from '../components/Security/Keycloak';
 
-const api = axios.create({
-    baseURL: 'http://localhost:8081',
- });
+export const baseURL = process.env.REACT_APP_API_URL;
 
-export const baseURL = 'http://localhost:8081';
+const api = axios.create({
+  baseURL
+});
 
 api.interceptors.request.use(function (config) {
     const token = keycloak.token;
@@ -24,9 +24,6 @@ api.interceptors.response.use(
         const originalRequest = error.config;
         if (error.response.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
-
-              // keycloak.login();
-
         }
     }
 );

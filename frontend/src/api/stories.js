@@ -104,7 +104,6 @@ export const uploadStories = async (jsonPayload, previewImage, cardImages) => {
   cardImages.map((image) => {
     form.append("cardImages", image);
   });
-  console.log(jsonPayload);
   try {
     const response = await api.post("/stories/add/story", form, {
       headers: { "Content-Type": "multipart/form-data" },
@@ -242,7 +241,6 @@ export const addFrame = async (story, storyIndex, frame, platform) => {
     const response = await api.post(`/stories/add/frame`, form, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    console.log(response.data);
     updateToast(toastView, response);
     return response;
   } catch (exception) {
