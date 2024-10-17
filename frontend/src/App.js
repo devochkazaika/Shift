@@ -18,6 +18,7 @@ import StoryUnApprovedList from "./pages/StoryUnApprovedList";
 import History from "./pages/HistoryList";
 import BannersAdd from "./pages/BannersAdd";
 import RequestUser from "./components/Stories/ChangeRequest/RequestUser";
+import { UserRoute } from "./components/Security/UserRoute";
 
 function App() {
   const [flags, setFlags] = useState(null);
@@ -83,7 +84,9 @@ function App() {
                     path="/requestUser"
                     element={
                       <PrivateRoute>
-                        <RequestUser />
+                        <UserRoute>
+                          <RequestUser />
+                        </UserRoute>
                       </PrivateRoute>
                     }
                   />
