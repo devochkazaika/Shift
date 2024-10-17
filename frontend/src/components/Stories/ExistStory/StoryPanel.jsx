@@ -1,5 +1,5 @@
 import StoryCard from "./StoryCard";
-import styles from "./StoryPanelStyle.module.scss";
+import styles from "../../../styles/StoryPanelStyle.module.scss";
 import Button from "./../../ui/Button/index";
 import { deleteStory } from "./../../../api/stories";
 import React, { useState, useEffect } from "react";

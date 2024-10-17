@@ -1,12 +1,17 @@
 table {
   border: 111px;
+  width: 100%;
 }
 /* границы ячеек первого ряда таблицы */
 th {
   border: 112px;
 }
 
+tr {
+  width: 100%;
+}
+
 td {
-  width: 10%;
+  width: 20%;
   padding-inline: 20px;
 }

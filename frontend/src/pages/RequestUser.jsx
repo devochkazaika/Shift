@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getRequestsUser } from '../../../api/history';
-import RequestPanel from './RequestPanel';
+import { getRequestsUser } from '../api/history';
+import RequestPanel from '../components/Stories/ChangeRequest/RequestPanel';
 
 const RequestUser = () => {
     const [historyArray, setHistoryArray] = useState([]);

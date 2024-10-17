@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import style from './Request.module.scss'
+import './Request.module.scss'
 import Button from '../../ui/Button';
 import { rollBackOperation } from '../../../api/history';
+import styles from "../../../styles/StoryPanelStyle.module.scss"
 
 const RequestPanel = ({ data }) => {
     const [isDelete, setDelete] = useState(false);
@@ -17,12 +18,12 @@ const RequestPanel = ({ data }) => {
     return (
         <>
         {!isDelete ?
-        <li className="listFrame">
+        <li className={styles["listFrame"]}>
             <details>
               <summary draggable="true">
                 <div>
                     <table>
-                        <tr className={style.tr}>
+                        <tr>
                             <td>{data["bankId"]}</td>
                             <td>{data["platform"]}</td> 
                             <td>{data["bankId"]}</td> 

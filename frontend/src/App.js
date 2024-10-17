@@ -17,7 +17,7 @@ import StoryDeletedList from "./pages/StoryDeletedList";
 import StoryUnApprovedList from "./pages/StoryUnApprovedList";
 import History from "./pages/HistoryList";
 import BannersAdd from "./pages/BannersAdd";
-import RequestUser from "./components/Stories/ChangeRequest/RequestUser";
+import RequestUser from "./pages/RequestUser";
 import { UserRoute } from "./components/Security/UserRoute";
 
 function App() {
