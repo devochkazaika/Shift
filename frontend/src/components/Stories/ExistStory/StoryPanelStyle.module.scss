@@ -81,7 +81,7 @@
 
 .listFrame {
   margin-bottom: 10px;
-  list-style-type: none;
+  list-style: none;
 }
 
 #addFrame {
@@ -94,5 +94,20 @@
 
 #addFrame summary {
   padding-bottom: 10px;
+}
+
+.story-with-preview {
+  width: 70%;
+  padding-right: 30px;
+}
+
+.preview {
+  width: 30%;
+  padding-right: 4px;
+}
+
+.story-without-preview {
+  width: 100%;
+  padding-right: 30px;
 }
 

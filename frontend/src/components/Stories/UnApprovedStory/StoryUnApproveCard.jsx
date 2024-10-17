@@ -1,4 +1,4 @@
-import "../ExistStory/StoryPanelStyle.css";
+import "../ExistStory/StoryPanelStyle.module.scss";
 import Button from "../../ui/Button/index";
 import { deleteStoryFromDb } from "../../../api/stories";
 import { useState, useEffect, React } from "react";

@@ -9,7 +9,7 @@
 docker compose up
 ```
 Должно появится 3 контейнера
-![img.png](img.png)
+![./additional_files/img.png](img.png)
 
 ### Для запуска бекенда
 

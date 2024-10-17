@@ -1,4 +1,4 @@
-import "../ExistStory/StoryPanelStyle.css";
+import "../ExistStory/StoryPanelStyle.module.scss";
 import Button from "./../../ui/Button/index";
 import { useState, useEffect, React } from "react";
 import api from "../../../api/api";

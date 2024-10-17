@@ -17,13 +17,13 @@ import UploadImage from "../../UploadImage";
 import AddFrame from "./AddFrame";
 import styles from "./StoryCard.module.scss";
 
-/*
-  storyIndex - порядко истории внутри story
-  story - список истори
-  platform - платформа (IOS | WEB | ANDROID | ALL PLATFORMS)
-  changeStory - флаг, отвественный за показ компонент для изменения
-  changeable - можно ли изменять или нет
-  showStory - показывать ли превью истории или нет
+/**
+ * @param {number} storyIndex - Порядковый номер истории внутри story.
+ * @param {Array} story - Список историй.
+ * @param {('IOS' | 'WEB' | 'ANDROID' | 'ALL_PLATFORMS')} platform - Платформа (IOS | WEB | ANDROID | ALL_PLATFORMS).
+ * @param {boolean} changeStory - Флаг, отвечающий за показ компонентов для изменения.
+ * @param {boolean} changeable - Можно ли изменять историю или нет.
+ * @param {boolean} showStory - Показывать ли превью истории или нет.
 */
 const StoryCard = ({ storyIndex, story, platform, changeStory, changeable, showStory, ...props }) => {
   const [frames, setFrames] = useState(story.storyFrames || []);
@@ -270,7 +270,7 @@ const StoryCard = ({ storyIndex, story, platform, changeStory, changeable, showS
         {!changeable && (
           <div>
             <details id="addFrame">
-              <summary>Добавить карточку</summary>
+              <summary className="add-frame">Добавить карточку</summary>
               <div>
                 <AddFrame
                   setFrames={setFrames}
