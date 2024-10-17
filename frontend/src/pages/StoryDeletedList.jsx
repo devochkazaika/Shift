@@ -7,8 +7,8 @@ import CommonForm from "../components/Stories/CommonForm";
 import Loader from "../components/ui/Loader/index";
 import { Pagination } from "../components/Pagination/Pagination";
 import { getDeletedStoriesByBank } from "../api/stories";
-import Button from "../components/ui/Button";
 import StoryDeletedPanel from "../components/Stories/UnApprovedStory/StoryDeletedPanel";
+import styles from "../styles/globals.scss"
 
 const StoryDeletedList = ({children}) => {
   const [loading, setLoading] = useState(false);
@@ -56,7 +56,7 @@ const StoryDeletedList = ({children}) => {
   return (
     <>
       <h1>Удаленные истории</h1>
-      <div className="stories">
+      <div className={styles["stories"]}>
         <Formik enableReinitialize initialValues={initialStoryValues}>
           {(props) => (
             <Form>
@@ -74,7 +74,7 @@ const StoryDeletedList = ({children}) => {
       ) : (
         <h2>Пока нет историй</h2>
       )}
-      <div className="stories">
+      <div className={styles["stories"]}>
         <Pagination
           currentPage={currentPage}
           totalItems={totalItems}

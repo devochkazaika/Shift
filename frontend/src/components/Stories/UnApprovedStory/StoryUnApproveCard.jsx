@@ -1,4 +1,4 @@
-import "../ExistStory/StoryPanelStyle.module.scss";
+import styles from "../ExistStory/StoryPanelStyle.module.scss";
 import Button from "../../ui/Button/index";
 import { deleteStoryFromDb } from "../../../api/stories";
 import { useState, useEffect, React } from "react";
@@ -44,7 +44,7 @@ const StoryUnApprovedCard = ({ storyArray, platform }) => {
       <ul className="stories">
           <h2>{platform}</h2>
         {stories.map((story, index) => (
-          <li className="listFrame" key={index}>
+          <li className={styles["listFrame"]} key={index}>
             <details>
               <summary>
                 <p>{story.previewTitle}</p>
