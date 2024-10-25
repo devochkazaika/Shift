@@ -71,6 +71,9 @@ const StoryUnApprovedCard = ({ storyArray, platform }) => {
                   story={story}
                   storyIndex={index}
                   platform={platform}
+                  changeStory={true}
+                  changeable={true}
+                  showStory={true}
                 />
               </div>
             </details>
