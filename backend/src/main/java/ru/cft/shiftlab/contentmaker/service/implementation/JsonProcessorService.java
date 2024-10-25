@@ -286,7 +286,7 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     @Transactional
-//    @History(operationType = "create")
+    @History(operationType = "create")
     public StoryPresentationFrames addFrame(String frameDto, MultipartFile file,
                                             String bankId, String platform, Long id) throws IOException {
         StoryPresentationFrames frame = mapper.readValue(
@@ -329,7 +329,7 @@ public class JsonProcessorService implements FileSaverService {
         mapper.readerForUpdating(changedStory).readValue(json);
         changedStory.setApproved(StoryPresentation.Status.CHANGED);
         changedStory.setStoryPresentationFrames(null);
-        storyPresentationRepository.save(changedStory);
+        changedStory = storyPresentationRepository.save(changedStory);
         // Создаем картинку картинку
         if (file != null) {
             String pictureUrl = multipartFileToImageConverter.parsePicture(
