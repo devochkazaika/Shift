@@ -20,15 +20,13 @@ const RequestUser = () => {
 
     return (
         <>
-            {historyArray.length > 0 ? (
+            {historyArray.length >= 0 ? (
                 historyArray.map((value, index) => (
                     <div key={index}>
                         <RequestPanel data={value} />
                     </div>
                 ))
-            ) : (
-                'Loading...'
-            )}
+            ) : <></>}
         </>
     )
 }

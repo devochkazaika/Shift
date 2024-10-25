@@ -22,27 +22,32 @@ const RequestPanel = ({ data }) => {
             <details>
               <summary draggable="true">
                 <div>
-                    <table>
-                        <tr>
+                    <table >
+                        <tr style={{position: "relative"}}>
                             <td>{data["bankId"]}</td>
                             <td>{data["platform"]}</td> 
                             <td>{data["bankId"]}</td> 
                             <td>{data["operationType"]}</td>
                             <td>{data["componentType"]}</td>
                             <td>{data["componentId"]}</td>
-                            {data["rollBackAble"] ? <td>
+                            <td>
+                            {data["rollBackAble"] ?
                                 <Button
                                 text="Отозвать"
                                 type="button"
                                 color="red"
                                 handleOnClick={() => handleOnSubmit(data["id"])}
                                 />
-                            </td> : <></>}
+                             : <></>}
+                             </td>
+                             <td>asdasd</td>
                         </tr>
-                
                     </table>
                 </div>
               </summary>
+              <div>
+
+              </div>
             </details>
         </li> : <></>} </>
     )

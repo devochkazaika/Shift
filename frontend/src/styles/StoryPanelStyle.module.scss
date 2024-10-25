@@ -10,6 +10,7 @@
   align-items: center;
   height: 100%;
 }
+
 .frame p{
   margin-bottom: 15px;
   padding-right: 20px;
@@ -36,13 +37,19 @@
  border: #858585;
 }
 
+.listFrame {
+  margin-bottom: 10px;
+  list-style: none;
+  width: 100%;
+}
+
 .listFrame details {
   border: 1px solid #e0e0e0;
-  border-radius: 5px;
+  border-radius: 3px;
   background-color: #fff;
-  padding: 10px;
+  padding: 8px;
   margin-bottom: 10px;
-  position: static;
+  position: relative;
 }
 
 .listFrame details summary {
@@ -59,7 +66,6 @@
 }
 
 .listFrame details summary button {
-  display: flex;
   gap: 10px;
   transform: scale(0.8);
 }
@@ -77,11 +83,6 @@
 #draggable-list {
   list-style-type: none;
   padding: 0;
-}
-
-.listFrame {
-  margin-bottom: 10px;
-  list-style: none;
 }
 
 #addFrame {
