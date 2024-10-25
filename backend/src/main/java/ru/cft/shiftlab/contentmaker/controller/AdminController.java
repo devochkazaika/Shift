@@ -28,8 +28,6 @@ public class AdminController {
     private final HistoryService historyService;
     /**
      * Одобрение истории админом и последующее сохранение в JSON, а также изменение статуса на APPROVED
-     * @param bankId
-     * @param platform
      * @param id
      * @throws IOException
      */
@@ -40,15 +38,9 @@ public class AdminController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     public void approveStory(
-            @RequestParam(value = "bankId")
-            String bankId,
-
-            @RequestParam(value = "platform")
-            String platform,
-
             @RequestParam(value = "id")
             Long id) throws IOException {
-        storiesService.approveStory(bankId, platform, id);
+        historyService.approveCreateStory(id);
     }
 
     @GetMapping("/getDeletedStories")

@@ -145,6 +145,8 @@ public interface FileSaverService {
      */
     StoryPresentation approveStory(String bankId, String platform, Long id) throws IOException;
 
+    StoryPresentation approveStory(Long id) throws IOException;
+
     /**
      * Метод для удаления навсегда истории. Удаления из БД
      * @param bankId Имя банка

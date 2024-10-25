@@ -9,6 +9,7 @@ import ru.cft.shiftlab.contentmaker.service.HistoryServiceStories;
 import ru.cft.shiftlab.contentmaker.util.keycloak.KeyCloak;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -46,6 +47,11 @@ public class HistoryService implements HistoryServiceStories {
     @Override
     public List<HistoryEntity> getRequestByUser(){
         return historyRepository.getRequestByUser(keyCloak.getUserName());
+    }
+
+    @Override
+    public List<HistoryEntity> getCreateRequestByUser(){
+        return historyRepository.getCreateRequest();
     }
 
     @Modifying
@@ -102,6 +108,16 @@ public class HistoryService implements HistoryServiceStories {
                 break;
         }
 
+    }
+
+    @Transactional
+    @Modifying
+    public void approveCreateStory(Long historyId) throws IOException {
+        var history = historyRepository.findById(historyId).orElseThrow(
+                () -> new IllegalArgumentException("History not found")
+        );
+        storiesService.approveStory(history.getComponentId());
+        historyRepository.deleteByStoryId(history.getSecondComponentId());
     }
 
     /**

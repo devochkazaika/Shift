@@ -2,6 +2,7 @@ package ru.cft.shiftlab.contentmaker.service;
 
 import ru.cft.shiftlab.contentmaker.entity.HistoryEntity;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface HistoryServiceStories{
@@ -18,4 +19,8 @@ public interface HistoryServiceStories{
     List<HistoryEntity> getRequestByUser();
 
     void rollBack(Long idHistory);
+
+    void approveCreateStory(Long historyId) throws IOException;
+
+    List<HistoryEntity> getCreateRequestByUser();
 }

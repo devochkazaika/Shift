@@ -17,16 +17,21 @@ api.interceptors.request.use(function (config) {
     return Promise.reject(error);
   });
 
-
 api.interceptors.response.use(
-    response => response,
-    async error => {
-        const originalRequest = error.config;
-        if (error.response.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true;
-        }
+  response => response,
+  async error => {
+    const originalRequest = error.config;
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      // Обновление токена
+      await keycloak.updateToken(30);
+      originalRequest.headers.Authorization = `Bearer ${keycloak.token}`;
+      return api(originalRequest);
     }
+    return Promise.reject(error);
+  }
 );
+
 export const getFlags = async () =>{
   try {
     const response = await api.get("/access/get", { responseType: 'json' });

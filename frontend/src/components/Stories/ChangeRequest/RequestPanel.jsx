@@ -28,6 +28,8 @@ const RequestPanel = ({ data }) => {
                             <td>{data["platform"]}</td> 
                             <td>{data["bankId"]}</td> 
                             <td>{data["operationType"]}</td>
+                            <td>{data["componentType"]}</td>
+                            <td>{data["componentId"]}</td>
                             {data["rollBackAble"] ? <td>
                                 <Button
                                 text="Отозвать"

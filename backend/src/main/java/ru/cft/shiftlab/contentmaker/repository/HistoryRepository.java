@@ -29,4 +29,8 @@ public interface HistoryRepository extends CrudRepository<HistoryEntity, Long> {
 
     @Query("select hist from HistoryEntity hist where hist.userName = :name and hist.status = 'SUCCESSFUL'")
     List<HistoryEntity> getRequestByUser(@Param("name") String name);
+
+    @Query("select hist from HistoryEntity hist where hist.operationType= 'CREATE'")
+    List<HistoryEntity> getCreateRequest();
+
 }

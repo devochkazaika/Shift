@@ -275,8 +275,18 @@ public class JsonProcessorService implements FileSaverService {
         return story;
     }
 
+    @History(operationType = "update")
+    public StoryPresentation approveStory(Long id) throws IOException {
+        final var story = storyPresentationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find the story with id = %d", id)));
+        story.setApproved(StoryPresentation.Status.APPROVED);
+        storyPresentationRepository.save(story);
+        mapper.putStoryToJson(story, story.getBankId(), story.getPlatform());
+        return story;
+    }
+
     @Transactional
-    @History(operationType = "create")
+//    @History(operationType = "create")
     public StoryPresentationFrames addFrame(String frameDto, MultipartFile file,
                                             String bankId, String platform, Long id) throws IOException {
         StoryPresentationFrames frame = mapper.readValue(
