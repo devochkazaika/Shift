@@ -30,6 +30,8 @@ const RequestPanel = ({ data }) => {
                             <td>{data["operationType"]}</td>
                             <td>{data["componentType"]}</td>
                             <td>{data["componentId"]}</td>
+                            <td>{data["day"]}</td>
+                            <td>{data["time"]}</td>
                             <td>
                             {data["rollBackAble"] ?
                                 <Button

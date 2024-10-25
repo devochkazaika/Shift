@@ -46,10 +46,10 @@ const StoryPanel = ({ showStory, storyArray, platform }) => {
 
   return (
     <div>
-      <ul className={styles.stories}>
+      <ul className="stories">
         <h2>{platform}</h2>
         {stories.map((story, index) => (
-          <li className={styles.listFrame} key={index}>
+          <li className={styles["listFrame"]} key={index}>
             <details>
               <summary draggable="true">
                 <p>{story.previewTitle}</p>

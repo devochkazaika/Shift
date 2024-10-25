@@ -67,18 +67,6 @@
       "buttonBackgroundColor" : "#0000FF",
       "buttonUrl" : "https://example.com",
       "gradient" : "EMPTY"
-    }, {
-      "id" : "84b7ee7e-1a9f-421e-8180-7f2c0e317a54",
-      "title" : "aaaa",
-      "text" : "Sample text for the story.",
-      "textColor" : "#ffff",
-      "pictureUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/4_84b7ee7e-1a9f-421e-8180-7f2c0e317a54.jpg",
-      "visibleButtonOrNone" : "BUTTON",
-      "buttonText" : "Click Here",
-      "buttonTextColor" : "#FFFFFF",
-      "buttonBackgroundColor" : "#0000FF",
-      "buttonUrl" : "https://example.com",
-      "gradient" : "EMPTY"
     } ]
   }, {
     "id" : 3,
