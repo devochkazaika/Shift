@@ -14,7 +14,7 @@ import styles from "./StoryCard.module.scss";
  * @param {string} platform - Platform type
  * @param {function} setFrames - Function to update frames
  */
-const StoryFrames = ({ frames, setFrames, storyIndex, story, platform, changeable }) => {
+const StoryFramesList = ({ frames, setFrames, storyIndex, story, platform, changeable }) => {
   const draggableListRef = useRef(null);
 
   useEffect(() => {
@@ -116,4 +116,4 @@ const StoryFrames = ({ frames, setFrames, storyIndex, story, platform, changeabl
   );
 };
 
-export default StoryFrames;
+export default StoryFramesList;

@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
-  fetchImage,
 } from "../../../api/stories";
 import styles from "./StoryCard.module.scss";
 import PreviewStory from "./PreviewStory";
-import StoryFrames from "./StoryFrames";
+import StoryFramesList from "./StoryFramesList";
 
 /**
  * @param {number} storyIndex - Порядковый номер истории внутри story.
@@ -16,16 +15,7 @@ import StoryFrames from "./StoryFrames";
  */
 const StoryCard = ({ storyIndex, story, platform, changeable, ...props }) => {
   const [frames, setFrames] = useState(story.storyFrames || []);
-  const [initialImage, setInitialImage] = useState(null);
 
-  useEffect(() => {
-    if (!initialImage && story.previewUrl) {
-      fetchImage(story.previewUrl, setInitialImage);
-    }
-    if (story && story.storyFrames) {
-      setFrames(story.storyFrames);
-    }
-  }, [story, initialImage]);
 
   return (
     <div className={styles.storyCard}>
@@ -33,13 +23,12 @@ const StoryCard = ({ storyIndex, story, platform, changeable, ...props }) => {
       <PreviewStory
         story={story}
         storyIndex={storyIndex}
-        initialImage={initialImage}
         changeable={changeable}
         platform={platform}
         {...props}
       />
       {/* Карточки истории */}
-      <StoryFrames
+      <StoryFramesList
         frames={frames}
         setFrames={setFrames}
         storyIndex={storyIndex}

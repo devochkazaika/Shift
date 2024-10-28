@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, FieldArray } from "formik";
 import FormField from "../../FormField";
 import { storyPanelValidationSchema } from "../../../utils/helpers/validation";
@@ -7,17 +7,24 @@ import ColorPicker from "../../ColorPicker";
 import UploadImage from "../../UploadImage";
 import { gradientOptions } from "../../../utils/constants/gradient";
 import styles from "./StoryCard.module.scss";
-import { updateStory } from "../../../api/stories";
+import { fetchImage, updateStory } from "../../../api/stories";
 
 /**
  * @param {Object} props - Component props
  * @param {Object} story - Story data
  * @param {number} storyIndex - Index of the story
- * @param {string} initialImage - Initial preview image URL
  * @param {boolean} changeable - Flag to allow changes
  * @param {string} platform - Platform type
  */
-const PreviewStory = ({ story, storyIndex, initialImage, changeable, platform }) => {
+const PreviewStory = ({ story, storyIndex, changeable, platform }) => {
+  const [initialImage, setInitialImage] = useState(null);
+
+  useEffect(() => {
+    if (!initialImage && story.previewUrl) {
+      fetchImage(story.previewUrl, setInitialImage);
+    }
+  }, [story, initialImage]);
+
   return (
     <Formik
       enableReinitialize

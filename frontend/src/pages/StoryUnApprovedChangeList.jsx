@@ -7,11 +7,12 @@ import StoryPanel from "../components/Stories/ExistStory/StoryPanel";
 import Loader from "../components/ui/Loader";
 import CommonForm from "../components/Stories/CommonForm";
 import { initialStoryValues } from "../utils/constants/initialValues";
-import { getUnApprovedChangedStoriesByBank, getUnApprovedStoriesByBank } from "../api/stories";
+import { fetchImage, getUnApprovedChangedStoriesByBank, getUnApprovedStoriesByBank } from "../api/stories";
 import StoryUnApprovedCard from "../components/Stories/UnApprovedStory/StoryUnApproveCard";
 import StoryCard from "../components/Stories/ExistStory/StoryCard";
 import styles from "../styles/StoryPanelStyle.module.scss";
 import Button from "../components/ui/Button";
+import PreviewStory from "../components/Stories/ExistStory/PreviewStory";
 
 const StoryUnApprovedChangeList = ({children}) => {
   const [loading, setLoading] = useState(false);
@@ -100,14 +101,11 @@ const StoryUnApprovedChangeList = ({children}) => {
                   </div>
                 </summary>
                 <div>
-                  <StoryCard
-                    key={index}
-                    story={story}
-                    storyIndex={index}
-                    platform={platform}
-                    changeStory={true}
-                    changeable={true}
-                    showStory={true}
+                  <PreviewStory
+                      story={story}
+                      storyIndex={index}
+                      platform={platform}
+
                   />
                 </div>
               </details>
