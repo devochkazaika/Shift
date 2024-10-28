@@ -13,7 +13,7 @@ import StoryFrames from "./StoryFrames";
  * @param {boolean} changeStory - Флаг, отвечающий за показ компонентов для изменения.
  * @param {boolean} changeable - Можно ли изменять историю или нет.
  * @param {boolean} showStory - Показывать ли превью истории или нет.
-*/
+ */
 const StoryCard = ({ storyIndex, story, platform, changeable, ...props }) => {
   const [frames, setFrames] = useState(story.storyFrames || []);
   const [initialImage, setInitialImage] = useState(null);

@@ -73,7 +73,7 @@ const StoryFrames = ({ frames, setFrames, storyIndex, story, platform, changeabl
         draggable.removeEventListener("dragend", handleDragEnd);
       });
     };
-  }, [frames, story, platform]);
+  }, [frames, story, platform, setFrames]);
 
   const handleOnDelete = async (frame) => {
     const success = await deleteFrame(story, frame, platform);

@@ -15,11 +15,10 @@ const StoryFrame = ({
   frameIndex,
   storyIndex,
   platform,
-  changeStory,
   ...props
 }) => {
   const handleOnSubmit = async (values, platform, frame, frameId) => {
-    updateFrame(values, platform, frame, storyIndex, frameId, frameIndex);
+    await updateFrame(values, platform, frame, storyIndex, frameId, frameIndex);
   };
   const [initialImage, setInitialImage] = useState(null);
   useEffect(() => {
@@ -27,11 +26,10 @@ const StoryFrame = ({
     if (!initialImage) {
       fetchImage(frame.pictureUrl, setInitialImage);
     }
-  }, [frame.pictureUrl]);
+  }, [frame.pictureUrl, initialImage]);
 
   const onChangeStory = (eventTarget, controlName, setFieldValue) => {
     setFieldValue(controlName, eventTarget.value);
-    changeStory(eventTarget.value, storyIndex, frame.id, controlName);
   }
 
   return (
