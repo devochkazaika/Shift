@@ -3,6 +3,7 @@ package ru.cft.shiftlab.contentmaker.service;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
+import ru.cft.shiftlab.contentmaker.dto.ChangedStoryListDto;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentationFrames;
 
@@ -159,4 +160,6 @@ public interface FileSaverService {
 
     StoryPresentation updatePreview(Long changing, Long changeable);
 
+//    List<StoryPresentation> getUnApprovedChangedStories(String bankId, String platform);
+    List<ChangedStoryListDto> getUnApprovedChangedStories(List<List<Long>> listChangedStories);
 }

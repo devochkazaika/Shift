@@ -3,6 +3,7 @@ package ru.cft.shiftlab.contentmaker.service.implementation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
+import ru.cft.shiftlab.contentmaker.dto.ChangedStoryListDto;
 import ru.cft.shiftlab.contentmaker.entity.HistoryEntity;
 import ru.cft.shiftlab.contentmaker.repository.HistoryRepository;
 import ru.cft.shiftlab.contentmaker.service.HistoryServiceStories;
@@ -134,4 +135,9 @@ public class HistoryService implements HistoryServiceStories {
         historyRepository.deleteByStoryId(history.getSecondComponentId());
     }
 
+    @Override
+    public List<ChangedStoryListDto> getUnApprovedChangedStories(String bankId, String platform) {
+        var list = historyRepository.getChangedStories(bankId, platform);
+        return storiesService.getUnApprovedChangedStories(list);
+    }
 }

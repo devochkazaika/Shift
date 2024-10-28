@@ -33,4 +33,6 @@ public interface HistoryRepository extends CrudRepository<HistoryEntity, Long> {
     @Query("select hist from HistoryEntity hist where hist.operationType= 'CREATE'")
     List<HistoryEntity> getCreateRequest();
 
+    @Query("select hist.componentId, hist.secondComponentId from HistoryEntity hist where hist.bankId = :bank and hist.platform = :platform")
+    List<List<Long>> getChangedStories(@Param("bank") String bank, @Param("platform") String platform);
 }

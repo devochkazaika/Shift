@@ -19,6 +19,7 @@ import History from "./pages/HistoryList";
 import BannersAdd from "./pages/BannersAdd";
 import RequestUser from "./pages/RequestUser";
 import { UserRoute } from "./components/Security/UserRoute";
+import StoryUnApprovedChangeList from "./pages/StoryUnApprovedChangeList";
 
 function App() {
   const [flags, setFlags] = useState(null);
@@ -99,6 +100,16 @@ function App() {
                   <PrivateRoute>
                     <AdminRoute>
                       <StoryUnApprovedList />
+                    </AdminRoute>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/unApprovedChange"
+                element={
+                  <PrivateRoute>
+                    <AdminRoute>
+                      <StoryUnApprovedChangeList />
                     </AdminRoute>
                   </PrivateRoute>
                 }

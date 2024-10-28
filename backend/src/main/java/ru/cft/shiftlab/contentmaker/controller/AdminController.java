@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.cft.shiftlab.contentmaker.dto.ChangedStoryListDto;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
 import ru.cft.shiftlab.contentmaker.service.implementation.HistoryService;
@@ -65,6 +66,20 @@ public class AdminController {
     public List<StoryPresentation> getUnApprovedStories(@RequestParam("bankId") String bankId,
                                                         @RequestParam("platform") String platform) throws IOException {
         return storiesService.getUnApprovedStories(bankId, platform);
+    }
+
+    @GetMapping("getUnChangedApprovedStories")
+    @Operation(summary = "Чтение непринятых историй банка и платформы с сервера.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "История прочтена с сервера."),
+            @ApiResponse(responseCode = "400", description = "Неправильные параметры")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    public List<ChangedStoryListDto> getUnApprovedChangedStories(
+            @RequestParam("bankId") String bankId,
+            @RequestParam("platform") String platform)
+            throws IOException {
+        return historyService.getUnApprovedChangedStories(bankId, platform);
     }
 
 
@@ -128,8 +143,7 @@ public class AdminController {
     @PatchMapping("/approve/story/change")
     public void approveChanging(
             @RequestParam(name = "idOperation")
-            Long id
-            )
+            Long id)
     {
         historyService.approveChangeStory(id);
     }

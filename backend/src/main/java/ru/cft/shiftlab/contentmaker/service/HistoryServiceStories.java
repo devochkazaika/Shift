@@ -1,5 +1,6 @@
 package ru.cft.shiftlab.contentmaker.service;
 
+import ru.cft.shiftlab.contentmaker.dto.ChangedStoryListDto;
 import ru.cft.shiftlab.contentmaker.entity.HistoryEntity;
 
 import java.io.IOException;
@@ -23,4 +24,6 @@ public interface HistoryServiceStories{
     void approveCreateStory(Long historyId) throws IOException;
 
     List<HistoryEntity> getCreateRequestByUser();
+
+    List<ChangedStoryListDto> getUnApprovedChangedStories(String bankId, String platform);
 }

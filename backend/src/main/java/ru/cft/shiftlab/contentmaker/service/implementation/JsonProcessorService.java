@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.aop.History;
+import ru.cft.shiftlab.contentmaker.dto.ChangedStoryListDto;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryPatchDto;
@@ -33,6 +34,7 @@ import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
@@ -324,7 +326,7 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     private StoryPresentation changeStoryByUser(StoryPresentation story, List<StoryPresentation> storyPresentationList,
-                                                 String json, MultipartFile file) throws IOException {
+                                                String json, MultipartFile file) throws IOException {
         var changedStory = story.withId(null);
         mapper.readerForUpdating(changedStory).readValue(json);
         changedStory.setApproved(StoryPresentation.Status.CHANGED);
@@ -642,5 +644,34 @@ public class JsonProcessorService implements FileSaverService {
         mapper.updateStoryEntity(first, second);
         storyPresentationRepository.save(first);
         storyPresentationRepository.delete(second);
+    }
+
+    public List<ChangedStoryListDto> getUnApprovedChangedStories(List<List<Long>> listChangedStories) {
+        HashSet<StoryPresentation> set = new HashSet<>();
+        Map<StoryPresentation, List<StoryPresentation>> mapChanged = new HashMap<>();
+        listChangedStories.forEach(
+                x -> {
+                    var first = storyPresentationRepository.findById(x.get(0)).orElse(null);
+                    var second = storyPresentationRepository.findById(x.get(1)).orElse(null);
+                    if (first!=null && second!=null) {
+                        if (mapChanged.containsKey(first)) {
+                            mapChanged.get(first).add(second);
+                        }
+                        else {
+                            set.add(first);
+                            mapChanged.put(first, new ArrayList<>(List.of(second)));
+                        }
+                    }
+                }
+        );
+        List<ChangedStoryListDto> storyList = set.stream()
+                .map(x-> ChangedStoryListDto
+                        .builder()
+                                .story(x)
+                                .changes(mapChanged.get(x))
+                        .build())
+                .collect(Collectors.toList());
+
+        return storyList;
     }
 }
