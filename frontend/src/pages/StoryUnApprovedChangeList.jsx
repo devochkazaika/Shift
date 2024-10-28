@@ -3,16 +3,14 @@ import { Form, Formik } from "formik";
 import React, {useEffect, useState } from "react";
 
 import { Pagination } from "../components/Pagination/Pagination";
-import StoryPanel from "../components/Stories/ExistStory/StoryPanel";
 import Loader from "../components/ui/Loader";
 import CommonForm from "../components/Stories/CommonForm";
 import { initialStoryValues } from "../utils/constants/initialValues";
-import { fetchImage, getUnApprovedChangedStoriesByBank, getUnApprovedStoriesByBank } from "../api/stories";
-import StoryUnApprovedCard from "../components/Stories/UnApprovedStory/StoryUnApproveCard";
-import StoryCard from "../components/Stories/ExistStory/StoryCard";
+import { getUnApprovedChangedStoriesByBank } from "../api/stories";
 import styles from "../styles/StoryPanelStyle.module.scss";
 import Button from "../components/ui/Button";
 import PreviewStory from "../components/Stories/ExistStory/PreviewStory";
+import PreviewChangeRequest from "../components/Stories/ChangeRequest/PreviewChangeRequest";
 
 const StoryUnApprovedChangeList = ({children}) => {
   const [loading, setLoading] = useState(false);
@@ -59,7 +57,7 @@ const StoryUnApprovedChangeList = ({children}) => {
   };
   return (
     <>
-      <h1>Запросы на изменение историй</h1>
+      <h1>Запросы на изменение Превью историй</h1>
 
       <div className="stories">
         {children}
@@ -75,46 +73,9 @@ const StoryUnApprovedChangeList = ({children}) => {
           )}
         </Formik>
       </div>
-      {storiesArray.length > 0 ? (
-        <ul className="stories">
-          <h2>{platform}</h2>
-          {storiesArray.map((story, index) => (
-            <li className={styles["listFrame"]} key={index}>
-              <details>
-                <summary>
-                  <p>{story.previewTitle}</p>
-                  <div>
-                    <div className="row">
-                      <Button
-                        text="Удалить из бд"
-                        type="button"
-                        color="red"
-                        handleOnClick={() => handleOnSubmit(story, platform)}
-                      />
-                      <Button
-                        text="Принять"
-                        type="button"
-                        color="green"
-                        handleOnClick={() => approve(story, platform)}
-                      />
-                    </div>
-                  </div>
-                </summary>
-                <div>
-                  <PreviewStory
-                      story={story}
-                      storyIndex={index}
-                      platform={platform}
 
-                  />
-                </div>
-              </details>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <h2>Пока нет историй</h2>
-      )}
+      <PreviewChangeRequest bankId={bankId} platform={platform}/>
+
       <div className="stories">
         <Pagination
           currentPage={currentPage}

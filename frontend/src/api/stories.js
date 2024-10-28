@@ -298,3 +298,15 @@ export const getAllHistory= async () => {
     return null;
   }
 };
+
+// export const getAllHistory= async (firstId, secondId) => {
+//   try {
+//     const response = await api.get('/history/stories/getAllHistory', {
+//       responseType: 'json',
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.error('Error fetching data:', error);
+//     return null;
+//   }
+// };

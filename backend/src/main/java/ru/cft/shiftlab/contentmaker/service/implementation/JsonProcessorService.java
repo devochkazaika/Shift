@@ -13,10 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.aop.History;
-import ru.cft.shiftlab.contentmaker.dto.ChangedStoryListDto;
-import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
-import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
-import ru.cft.shiftlab.contentmaker.dto.StoryPatchDto;
+import ru.cft.shiftlab.contentmaker.dto.*;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
@@ -648,18 +645,19 @@ public class JsonProcessorService implements FileSaverService {
 
     public List<ChangedStoryListDto> getUnApprovedChangedStories(List<List<Long>> listChangedStories) {
         HashSet<StoryPresentation> set = new HashSet<>();
-        Map<StoryPresentation, List<StoryPresentation>> mapChanged = new HashMap<>();
+        Map<StoryPresentation, List<StoryWithHistoryId>> mapChanged = new HashMap<>();
         listChangedStories.forEach(
                 x -> {
-                    var first = storyPresentationRepository.findById(x.get(0)).orElse(null);
-                    var second = storyPresentationRepository.findById(x.get(1)).orElse(null);
+                    var first = storyPresentationRepository.findById(x.get(1)).orElse(null);
+                    var second = storyPresentationRepository.findById(x.get(2)).orElse(null);
                     if (first!=null && second!=null) {
+                        var changeStory = new StoryWithHistoryId(second, x.get(0));
                         if (mapChanged.containsKey(first)) {
-                            mapChanged.get(first).add(second);
+                            mapChanged.get(first).add(changeStory);
                         }
                         else {
                             set.add(first);
-                            mapChanged.put(first, new ArrayList<>(List.of(second)));
+                            mapChanged.put(first, new ArrayList<>(List.of(changeStory)));
                         }
                     }
                 }
@@ -667,9 +665,10 @@ public class JsonProcessorService implements FileSaverService {
         List<ChangedStoryListDto> storyList = set.stream()
                 .map(x-> ChangedStoryListDto
                         .builder()
-                                .story(x)
-                                .changes(mapChanged.get(x))
-                        .build())
+                        .changes(mapChanged.get(x))
+                        .story(x)
+                        .build()
+                )
                 .collect(Collectors.toList());
 
         return storyList;
