@@ -73,7 +73,7 @@ export const getUnApprovedStoriesByBank = async (bankId, platform) => {
 
 export const getUnApprovedChangedStoriesByBank = async (bankId, platform) => {
   try {
-    const response = await api.get(`/stories/admin/getUnChangedApprovedStories?bankId=${bankId}&platform=${platform}`, {
+    const response = await api.get(`/stories/admin/getUnApprovedChangedStories?bankId=${bankId}&platform=${platform}`, {
       responseType: 'json'
     });
     return response.data;

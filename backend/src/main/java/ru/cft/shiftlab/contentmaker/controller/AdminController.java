@@ -68,7 +68,7 @@ public class AdminController {
         return storiesService.getUnApprovedStories(bankId, platform);
     }
 
-    @GetMapping("getUnChangedApprovedStories")
+    @GetMapping("getUnApprovedChangedStories")
     @Operation(summary = "Чтение непринятых историй банка и платформы с сервера.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "История прочтена с сервера."),

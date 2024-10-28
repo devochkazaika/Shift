@@ -9,6 +9,9 @@ import CommonForm from "../components/Stories/CommonForm";
 import { initialStoryValues } from "../utils/constants/initialValues";
 import { getUnApprovedChangedStoriesByBank, getUnApprovedStoriesByBank } from "../api/stories";
 import StoryUnApprovedCard from "../components/Stories/UnApprovedStory/StoryUnApproveCard";
+import StoryCard from "../components/Stories/ExistStory/StoryCard";
+import styles from "../styles/StoryPanelStyle.module.scss";
+import Button from "../components/ui/Button";
 
 const StoryUnApprovedChangeList = ({children}) => {
   const [loading, setLoading] = useState(false);
@@ -72,7 +75,45 @@ const StoryUnApprovedChangeList = ({children}) => {
         </Formik>
       </div>
       {storiesArray.length > 0 ? (
-        <StoryUnApprovedCard storyArray={currentItems} platform={platform} />
+        <ul className="stories">
+          <h2>{platform}</h2>
+          {storiesArray.map((story, index) => (
+            <li className={styles["listFrame"]} key={index}>
+              <details>
+                <summary>
+                  <p>{story.previewTitle}</p>
+                  <div>
+                    <div className="row">
+                      <Button
+                        text="Удалить из бд"
+                        type="button"
+                        color="red"
+                        handleOnClick={() => handleOnSubmit(story, platform)}
+                      />
+                      <Button
+                        text="Принять"
+                        type="button"
+                        color="green"
+                        handleOnClick={() => approve(story, platform)}
+                      />
+                    </div>
+                  </div>
+                </summary>
+                <div>
+                  <StoryCard
+                    key={index}
+                    story={story}
+                    storyIndex={index}
+                    platform={platform}
+                    changeStory={true}
+                    changeable={true}
+                    showStory={true}
+                  />
+                </div>
+              </details>
+            </li>
+          ))}
+        </ul>
       ) : (
         <h2>Пока нет историй</h2>
       )}
