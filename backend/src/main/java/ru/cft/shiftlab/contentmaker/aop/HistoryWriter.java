@@ -70,6 +70,7 @@ public class HistoryWriter {
         history.setComponentId((Long) arguments[4]);
         history.setSecondComponentId(story.getId());
     }
+    
     private void historyStorySaving(ProceedingJoinPoint joinPoint, HistoryEntity history) throws Throwable {
         history.setOperationType(HistoryEntity.OperationType.Create);
         resultStories(joinPoint, history);

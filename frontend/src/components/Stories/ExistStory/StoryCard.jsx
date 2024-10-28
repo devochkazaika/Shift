@@ -270,7 +270,7 @@ const StoryCard = ({ storyIndex, story, platform, changeStory, changeable, showS
         {!changeable && (
           <div>
             <details id="addFrame">
-              <summary className="add-frame">Добавить карточку</summary>
+              <summary className={styles["add-frame"]}>Добавить карточку</summary>
               <div>
                 <AddFrame
                   setFrames={setFrames}
