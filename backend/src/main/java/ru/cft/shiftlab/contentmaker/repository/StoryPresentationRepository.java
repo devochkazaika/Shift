@@ -1,16 +1,18 @@
 package ru.cft.shiftlab.contentmaker.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface StoryPresentationRepository extends CrudRepository<StoryPresentation, Long> {
+public interface StoryPresentationRepository extends JpaRepository<StoryPresentation, Long> {
     @Query(value = "SELECT * FROM stories WHERE approved = 'NOTAPPROVED'", nativeQuery = true)
     List<StoryPresentation> getUnApprovedStories();
 
@@ -31,4 +33,8 @@ public interface StoryPresentationRepository extends CrudRepository<StoryPresent
     @Query("Select st from StoryPresentation st where st.bankId = :bank and st.platform = :platform and st.approved = 'CHANGED'")
     List<StoryPresentation> getChangeRequest(@Param("bank") String bank, @Param("platform") String platform);
 
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO stories (id) VALUES (:id)", nativeQuery = true)
+    void insert(@Param("id") Long id);
 }

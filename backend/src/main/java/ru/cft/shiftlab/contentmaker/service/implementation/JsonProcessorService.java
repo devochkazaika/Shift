@@ -67,10 +67,15 @@ public class JsonProcessorService implements FileSaverService {
     private void saveStoryToDbIfNotExist(final StoryPresentation st,
                                          Long id){
         //Если не сохранена сама история
+        st.setId(id);
         var story = storyPresentationRepository.findById(id).orElse(
-                storyPresentationRepository.save(st)
+                null
         );
-        st.setId(story.getId());
+        if (story == null){
+            storyPresentationRepository.insert(st.getId());
+            story = st;
+            storyPresentationRepository.save(story);
+        }
         //Если карточки не сохранены
         storyPresentationFramesRepository.saveAll(st.getStoryPresentationFrames());
     }
