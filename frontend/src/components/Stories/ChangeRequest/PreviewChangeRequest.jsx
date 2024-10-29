@@ -1,5 +1,5 @@
 import { React, useEffect, useState } from "react";
-import { getUnApprovedChangedStoriesByBank } from "../../../api/stories";
+import { approveChanging, deleteChangingRequest, getUnApprovedChangedStoriesByBank } from "../../../api/stories";
 import styles from "../../../styles/StoryPanelStyle.module.scss";
 // import Button from "../../ui/Button";
 import PreviewStory from "../ExistStory/PreviewStory";
@@ -9,9 +9,37 @@ const PreviewChangeRequest = ({bankId, platform}) => {
   // const [currentPage, setCurrentPage] = React.useState(1);
   const [storiesArray, setStoriesArray] = useState([]);
 
-  // const approve = (existStory, changeStory) => {
-  //
-  // }
+  const approve = async (storyElem) => {
+    try {
+      const success = await approveChanging(storyElem["historyId"]);
+      if (success) {
+        console.log(success)
+        setStoriesArray((prevArray) =>
+          prevArray
+            .map((item) => ({
+              ...item,
+              changes: item.changes.filter((change) => change !== storyElem),
+            }))
+            .filter((item) => item.changes.length > 0)
+        );
+      }
+    } catch (error) {
+      console.error("Error approving story:", error);
+    }
+  };
+  const deleteRequest = async (story) => {
+    try{
+      const success = await deleteChangingRequest(story["historyId"]);
+      if (success) {
+        // storiesArray.forEach(item => {
+        //   if (item )
+        // })
+      }
+    }
+    catch (error){
+      console.error("Error approve story:", error);
+    }
+  }
 
   useEffect(() => {
     const fetchDataAsync = async () => {
@@ -44,40 +72,41 @@ const PreviewChangeRequest = ({bankId, platform}) => {
                 <li className={styles["listFrame"]} key={indexChange}>
                   <details>
                     <summary>
-                      <p>{story["story"].previewTitle}</p>
-                      <div>
-                        <div className="row">
-                          <Button
-                            text="Принять"
-                            type="button"
-                            color="green"
-                            // handleOnClick={() => approve(storyElem, platform)}
-                          />
-                        </div>
+                      <p>{story.story.previewTitle}</p>
+                      <div className="row">
+                        <Button
+                          text="Удалить"
+                          type="button"
+                          color="red"
+                          handleOnClick={() => deleteRequest(storyElem)}
+                        />
+                        <Button
+                          text="Принять"
+                          type="button"
+                          color="green"
+                          handleOnClick={() => approve(storyElem)}
+                        />
                       </div>
                     </summary>
                     <div>
-                      <>
-                        <PreviewStory
-                          story={storyElem["storyPresentation"]}
-                          storyIndex={index}
-                          platform={platform}
-                          changeable={true}
-                        />
-                        <PreviewStory
-                          story={story["story"]}
-                          storyIndex={index}
-                          platform={platform}
-                          changeable={true}
-                        />
-                      </>
+                      <PreviewStory
+                        story={story.story}
+                        storyIndex={index}
+                        platform={platform}
+                        changeable={true}
+                      />
+                      <PreviewStory
+                        story={storyElem.storyPresentation}
+                        storyIndex={index}
+                        platform={platform}
+                        changeable={true}
+                      />
                     </div>
                   </details>
                 </li>
               ))}
             </>
           ))}
-
         </ul>
       ) : (
         <h2>Пока нет историй</h2>

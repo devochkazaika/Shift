@@ -299,14 +299,26 @@ export const getAllHistory= async () => {
   }
 };
 
-// export const getAllHistory= async (firstId, secondId) => {
-//   try {
-//     const response = await api.get('/history/stories/getAllHistory', {
-//       responseType: 'json',
-//     });
-//     return response.data;
-//   } catch (error) {
-//     console.error('Error fetching data:', error);
-//     return null;
-//   }
-// };
+export const approveChanging = async (historyId) => {
+  try {
+    const response = await api.patch('/stories/admin/approve/story/change?idOperation='+historyId, {
+      responseType: 'json',
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return null;
+  }
+};
+
+export const deleteChangingRequest = async (historyId) => {
+  try {
+    const response = await api.delete('/stories/admin/delete/request/changing?idOperation='+historyId, {
+      responseType: 'json',
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return null;
+  }
+};

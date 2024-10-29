@@ -1,12 +1,13 @@
 package ru.cft.shiftlab.contentmaker.util;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.nio.file.Paths;
 
 @Component
+@Order(1)
 public class Constants {
     public static final String STORIES = "stories";
     @Value("${file_path_to_save.stories}")

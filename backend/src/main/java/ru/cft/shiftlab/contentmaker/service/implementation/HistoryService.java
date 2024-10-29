@@ -140,4 +140,18 @@ public class HistoryService implements HistoryServiceStories {
         var list = historyRepository.getChangedStories(bankId, platform);
         return storiesService.getUnApprovedChangedStories(list);
     }
+
+    @Override
+    public void deleteChangingRequest(Long idOperation) {
+        HistoryEntity hist = historyRepository.findById(idOperation).orElseThrow(
+                () -> new IllegalArgumentException("History not found")
+        );
+        try{
+            storiesService.deleteStoriesFromDb(hist.getBankId(), hist.getPlatform(), hist.getSecondComponentId());
+        }
+        catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+        historyRepository.deleteById(idOperation);
+    }
 }

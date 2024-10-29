@@ -148,4 +148,12 @@ public class AdminController {
         historyService.approveChangeStory(id);
     }
 
+    @DeleteMapping("/delete/request/changing")
+    public void deleteChangingRequest(
+            @RequestParam(name = "idOperation")
+            Long id
+    ){
+        historyService.deleteChangingRequest(id);
+    }
+
 }

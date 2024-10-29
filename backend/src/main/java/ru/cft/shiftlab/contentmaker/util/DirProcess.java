@@ -2,8 +2,10 @@ package ru.cft.shiftlab.contentmaker.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
@@ -20,11 +22,14 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.STORIES;
 
 @Component
 @Slf4j
+@AllArgsConstructor
 public class DirProcess {
+    @Autowired
+    private final Constants constants;
     private List<StoryPresentation> checkStoriesFileInBankDir(String fileName) throws IOException {
         List<StoryPresentation> storyPresentationList = new ArrayList<StoryPresentation>();
-        File bankJsonFile = new File(FILES_SAVE_DIRECTORY + fileName);
-
+        File bankJsonFile = new File(constants.FILES_SAVE_DIRECTORY + fileName);
+        System.out.println(bankJsonFile.getAbsolutePath());
         if (bankJsonFile.exists()) {
             ObjectMapper mapper = new ObjectMapper();
             TypeReference<Map<String, List<StoryPresentation>>> typeReference = new TypeReference<>() {

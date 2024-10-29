@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -25,8 +26,10 @@ import ru.cft.shiftlab.contentmaker.util.Image.ImageContainer;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
 import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
 import ru.cft.shiftlab.contentmaker.util.StoryMapper;
+import ru.cft.shiftlab.contentmaker.util.WhiteList;
 import ru.cft.shiftlab.contentmaker.util.keycloak.KeyCloak;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +50,7 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.MAX_COUNT_FRAME;
 @Setter
 @ConfigurationProperties(prefix = "files.save.directory")
 @Log4j2
+@Order(2)
 //@AllArgsConstructor
 public class JsonProcessorService implements FileSaverService {
     private final StoryMapper mapper;
@@ -57,6 +61,37 @@ public class JsonProcessorService implements FileSaverService {
     private final StoryPresentationFramesRepository storyPresentationFramesRepository;
     private final KeyCloak keyCloak;
 
+    /**
+     * Если истории не существует в БД, но существует в JSON
+     */
+    private void saveStoryToDbIfNotExist(final StoryPresentation st,
+                                         Long id){
+        //Если не сохранена сама история
+        var story = storyPresentationRepository.findById(id).orElse(
+                storyPresentationRepository.save(st)
+        );
+        st.setId(story.getId());
+        //Если карточки не сохранены
+        storyPresentationFramesRepository.saveAll(st.getStoryPresentationFrames());
+    }
+
+    private void saveStoryToDbIfNotExist(final List<StoryPresentation> st){
+        //Если не сохранена сама история
+        for (var story : st){
+            saveStoryToDbIfNotExist(story, story.getId());
+        }
+    }
+
+    @PostConstruct
+    public void initDatabase() throws IOException {
+        for (String bank : WhiteList.whitelistBank.keySet()){
+            List<StoryPresentation> storyPresentationList = mapper.getStoryList(bank, "ALL PLATFORMS");
+            if (!storyPresentationList.isEmpty()){
+                System.out.println(bank);
+                saveStoryToDbIfNotExist(storyPresentationList);
+            }
+        }
+    }
 //    private void importExistStories(){
 //        List<List<String>> list = dirProcess.getBankIdAndPlatform();
 //        list.forEach(x -> {
@@ -181,20 +216,6 @@ public class JsonProcessorService implements FileSaverService {
             storyPresentationFramesRepository.save(x);
         });
         return storyPresentationRepository.save(storyPresentation);
-    }
-
-    /**
-     * Если истории не существует в БД, но существует в JSON
-     */
-    private void saveStoryToDbIfNotExist(final StoryPresentation st,
-                                     Long id){
-        //Если не сохранена сама история
-        var story = storyPresentationRepository.findById(id).orElse(
-                storyPresentationRepository.save(st)
-        );
-        st.setId(story.getId());
-        //Если карточки не сохранены
-        storyPresentationFramesRepository.saveAll(st.getStoryPresentationFrames());
     }
 
     /**
@@ -650,6 +671,7 @@ public class JsonProcessorService implements FileSaverService {
                 x -> {
                     var first = storyPresentationRepository.findById(x.get(1)).orElse(null);
                     var second = storyPresentationRepository.findById(x.get(2)).orElse(null);
+                    System.out.println(x);
                     if (first!=null && second!=null) {
                         var changeStory = new StoryWithHistoryId(second, x.get(0));
                         if (mapChanged.containsKey(first)) {

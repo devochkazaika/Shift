@@ -26,4 +26,6 @@ public interface HistoryServiceStories{
     List<HistoryEntity> getCreateRequestByUser();
 
     List<ChangedStoryListDto> getUnApprovedChangedStories(String bankId, String platform);
+
+    void deleteChangingRequest(Long idOperation);
 }
