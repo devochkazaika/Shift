@@ -33,6 +33,9 @@ import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -659,12 +662,13 @@ public class JsonProcessorService implements FileSaverService {
 
     @Transactional
     @Modifying
-    public void approveChangeStory(Long firstStory, Long secondStory){
+    public void approveChangeStory(Long firstStory, Long secondStory) throws IOException {
         var first = storyPresentationRepository.findById(firstStory).orElseThrow(
                 () -> new IllegalArgumentException("Could not find story with id = " + firstStory));
         var second  = storyPresentationRepository.findById(secondStory).orElseThrow(
-                () -> new IllegalArgumentException("Could not find story with id = " + firstStory));
+                () -> new IllegalArgumentException("Could not find story with id = " + secondStory));
         mapper.updateStoryEntity(first, second);
+        Files.move(Path.of(second.getPreviewUrl()), Path.of(first.getPreviewUrl()), StandardCopyOption.REPLACE_EXISTING);
         storyPresentationRepository.save(first);
         storyPresentationRepository.delete(second);
     }

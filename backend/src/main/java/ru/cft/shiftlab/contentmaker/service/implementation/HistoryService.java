@@ -127,7 +127,7 @@ public class HistoryService implements HistoryServiceStories {
      */
     @Transactional
     @Modifying
-    public void approveChangeStory(Long historyId){
+    public void approveChangeStory(Long historyId) throws IOException {
         var history = historyRepository.findById(historyId).orElseThrow(
                 () -> new IllegalArgumentException("History not found")
         );

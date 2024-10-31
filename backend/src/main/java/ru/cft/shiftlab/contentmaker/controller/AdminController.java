@@ -143,8 +143,7 @@ public class AdminController {
     @PatchMapping("/approve/story/change")
     public void approveChanging(
             @RequestParam(name = "idOperation")
-            Long id)
-    {
+            Long id) throws IOException {
         historyService.approveChangeStory(id);
     }
 
