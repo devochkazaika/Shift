@@ -15,6 +15,7 @@ const StoryFrame = ({
   frameIndex,
   storyIndex,
   platform,
+  changeStory,
   ...props
 }) => {
   const handleOnSubmit = async (values, platform, frame, frameId) => {
@@ -29,7 +30,9 @@ const StoryFrame = ({
   }, [frame.pictureUrl, initialImage]);
 
   const onChangeStory = (eventTarget, controlName, setFieldValue) => {
-    setFieldValue(controlName, eventTarget.value);
+    setFieldValue(controlName, eventTarget);
+    changeStory(eventTarget, storyIndex, frame.id, controlName);
+    return eventTarget;
   }
 
   return (
@@ -80,7 +83,9 @@ const StoryFrame = ({
                       labelTitle="Цвет текста"
                       value={values.textColor}
                       component={ColorPicker}
-                      onChange={(event) => onChangeStory(event.target.value, "textColor", setFieldValue)}
+                      onChange={(event) => {
+                        onChangeStory(event.target.value, "textColor", setFieldValue);
+                      }}
                       {...props}
                     />
                   </div>

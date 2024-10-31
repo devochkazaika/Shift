@@ -13,7 +13,7 @@ import StoryFramesList from "./StoryFramesList";
  * @param {boolean} changeable - Можно ли изменять историю или нет.
  * @param {boolean} showStory - Показывать ли превью истории или нет.
  */
-const StoryCard = ({ storyIndex, story, platform, changeable, ...props }) => {
+const StoryCard = ({ storyIndex, story, platform, changeable, changeStory, ...props }) => {
   const [frames, setFrames] = useState(story.storyFrames || []);
 
 
@@ -29,6 +29,7 @@ const StoryCard = ({ storyIndex, story, platform, changeable, ...props }) => {
       />
       {/* Карточки истории */}
       <StoryFramesList
+        changeStory={changeStory}
         frames={frames}
         setFrames={setFrames}
         storyIndex={storyIndex}

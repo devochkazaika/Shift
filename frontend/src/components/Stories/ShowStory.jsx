@@ -18,7 +18,7 @@ const ShowStory = ({ stories }) => {
             setStory(storiesArray);
         }
         setFrameArray(story?.storyFrames || []); // Защита от возможных ошибок
-    }, [stories]);
+    }, [stories, storiesArray, story?.storyFrames]);
 
     // Перелистывание карточек внутри истории
     const rightFrame = () => {
