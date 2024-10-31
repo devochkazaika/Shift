@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS stories (
-     id BIGINT PRIMARY KEY NOT NULL,
+     id Serial PRIMARY KEY NOT NULL,
      bank_id VARCHAR(255),
      platform VARCHAR(255),
      font_size VARCHAR(255),

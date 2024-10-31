@@ -7,18 +7,6 @@
     "previewTitleColor" : "#000",
     "previewUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/9_0.jpg",
     "previewGradient" : "EMPTY",
-    "storyFrames" : [ {
-      "id" : "652a7251-435d-4327-94d6-eb458f16a952",
-      "title" : "qqq",
-      "text" : "qqq",
-      "textColor" : "#000",
-      "pictureUrl" : "D:/projectsJava/backend/src/main/resources/static/site/share/htdoc/_files/skins/mobws_story/absolutbank/ALL PLATFORMS/9_652a7251-435d-4327-94d6-eb458f16a952.jpg",
-      "visibleButtonOrNone" : "NONE",
-      "buttonText" : "",
-      "buttonTextColor" : "#000",
-      "buttonBackgroundColor" : "#fff",
-      "buttonUrl" : "",
-      "gradient" : "EMPTY"
-    } ]
+    "storyFrames" : [ ]
   } ]
 }

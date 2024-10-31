@@ -13,7 +13,6 @@ const PreviewChangeRequest = ({bankId, platform}) => {
     try {
       const success = await approveChanging(storyElem["historyId"]);
       if (success) {
-        console.log(success)
         setStoriesArray((prevArray) =>
           prevArray
             .map((item) => ({
