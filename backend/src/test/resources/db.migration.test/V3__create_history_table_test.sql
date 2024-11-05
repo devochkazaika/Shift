@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS history
 (
-    id SERIAL PRIMARY KEY NOT NULL,
+    id integer auto_increment PRIMARY KEY NOT NULL,
     component_type varchar(30),
     operation_type varchar(30),
     bank varchar(30),

@@ -1,5 +1,5 @@
 CREATE TABLE test_banner (
-    id Serial PRIMARY KEY NOT NULL,
+    id integer auto_increment PRIMARY KEY NOT NULL,
     code VARCHAR(255) UNIQUE,
     name VARCHAR(255),
     picture VARCHAR(255),
