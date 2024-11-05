@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.repository.Modifying;
@@ -54,7 +55,6 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.MAX_COUNT_FRAME;
 @ConfigurationProperties(prefix = "files.save.directory")
 @Log4j2
 @Order(2)
-//@AllArgsConstructor
 public class JsonProcessorService implements FileSaverService {
     private final StoryMapper mapper;
     private final MultipartFileToImageConverter multipartFileToImageConverter;
@@ -95,25 +95,11 @@ public class JsonProcessorService implements FileSaverService {
         for (String bank : WhiteList.whitelistBank.keySet()){
             List<StoryPresentation> storyPresentationList = mapper.getStoryList(bank, "ALL PLATFORMS");
             if (!storyPresentationList.isEmpty()){
-                System.out.println(bank);
                 saveStoryToDbIfNotExist(storyPresentationList);
             }
         }
+        log.log(Level.INFO, "Import Stories from JSON");
     }
-//    private void importExistStories(){
-//        List<List<String>> list = dirProcess.getBankIdAndPlatform();
-//        list.forEach(x -> {
-//            try {
-//                var storyList = mapper.getStoryList(x.get(0), x.get(1));
-//                storyList.forEach(y ->
-//                {
-//                    saveStoryToDbIfNotExist(y, y.getId());
-//                });
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
-//    }
 
     /**
      * Возврат конкретной истории по id
@@ -133,7 +119,7 @@ public class JsonProcessorService implements FileSaverService {
      * @return
      * @throws IOException
      */
-    public HttpEntity<List<StoryPresentation>> getStoriesByBankAndPlatform(String bankId, String platform) throws IOException {
+    public HttpEntity<List<StoryPresentation>> getStoriesByBankAndPlatform(String bankId, String platform) {
         return new HttpEntity<List<StoryPresentation>>(mapper.getStoryList(bankId, platform));
     }
 
@@ -164,13 +150,10 @@ public class JsonProcessorService implements FileSaverService {
         catch (JsonProcessingException e){
             throw new StaticContentException("Could not read json file", "HTTP 500 - INTERNAL_SERVER_ERROR");
         }
-        catch (IOException e) {
-            throw new StaticContentException("Could not save files", "HTTP 500 - INTERNAL_SERVER_ERROR");
-        }
     }
 
     private StoryPresentation saveStoryEntity(StoriesRequestDto storiesRequestDto,
-                                                  LinkedList<MultipartFile> images) throws IOException {
+                                                  LinkedList<MultipartFile> images) {
         //Создание пути для картинок, если его еще нет
         String picturesSaveDirectory = FILES_SAVE_DIRECTORY+storiesRequestDto.getBankId()+"/"+storiesRequestDto.getPlatform()+"/";
         dirProcess.createFolders(picturesSaveDirectory);
@@ -181,11 +164,13 @@ public class JsonProcessorService implements FileSaverService {
                 new ImageContainer(images.removeFirst()),
                 picturesSaveDirectory,
                 story.getId());
+
         storyPresentation.setPreviewUrl(previewUrl);
         for (int i=0; i<storyPresentationFrames.size(); i++){
             final StoryPresentationFrames frame = storyPresentationFrames.get(i);
             frame.setStory(story);
             frame.setId(storyPresentationFramesRepository.save(frame).getId());
+
             frame.setPictureUrl(multipartFileToImageConverter.parsePicture(
                     new ImageContainer(images.removeFirst()),
                     picturesSaveDirectory,
@@ -202,7 +187,7 @@ public class JsonProcessorService implements FileSaverService {
      * @param storyPresentation
      * @throws IOException
      */
-    private StoryPresentation saveByRoles(StoryPresentation storyPresentation) throws IOException {
+    private StoryPresentation saveByRoles(StoryPresentation storyPresentation) {
         Set<KeyCloak.Roles> roles = keyCloak.getRoles();
         String bankId = storyPresentation.getBankId();
         String platformType = storyPresentation.getPlatform();
@@ -294,7 +279,7 @@ public class JsonProcessorService implements FileSaverService {
      */
     @Override
     @History(operationType = "update")
-    public StoryPresentation approveStory(String bankId, String platform, Long id) throws IOException {
+    public StoryPresentation approveStory(String bankId, String platform, Long id) {
         final var story = storyPresentationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find the story with id = %d", id)));
         story.setApproved(StoryPresentation.Status.APPROVED);
@@ -304,7 +289,7 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     @History(operationType = "update")
-    public StoryPresentation approveStory(Long id) throws IOException {
+    public StoryPresentation approveStory(Long id) {
         final var story = storyPresentationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find the story with id = %d", id)));
         story.setApproved(StoryPresentation.Status.APPROVED);
@@ -326,13 +311,12 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     private StoryPresentationFrames getFrameFromStory(StoryPresentation storyPresentation, String id){
-        final StoryPresentationFrames storyPresentationFrames = storyPresentation
+        return storyPresentation
                 .getStoryPresentationFrames()
                 .stream().filter(x -> x.getId().equals(UUID.fromString(id)))
                 .findFirst()
                 .orElseThrow(() ->
                     new IllegalArgumentException(String.format("Could not find frame with id = %s", id)));
-        return storyPresentationFrames;
     }
 
     public StoryPresentation changeStoryByAdmin(StoryPresentation story, List<StoryPresentation> storyPresentationList,
@@ -454,16 +438,11 @@ public class JsonProcessorService implements FileSaverService {
      * @throws Throwable
      */
     @History(operationType = "delete")
-    public ResponseEntity<?> deleteService(String bankId, String platform, Long id) throws Throwable {
+    public ResponseEntity<?> deleteService(String bankId, String platform, Long id) {
         // Если истории нет в БД, но есть в JSON, тогда сохраняется в БД и удаляется из JSON
         final var storyPresentation = storyPresentationRepository.findById(id).orElseGet(() -> {
             StoryPresentation story = null;
-            try {
-                story = mapper.getStoryModel(mapper.getStoryList(bankId, platform), id);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
+            story = mapper.getStoryModel(mapper.getStoryList(bankId, platform), id);
             return storyPresentationRepository.save(story);
         });
         deleteJsonStories(bankId, platform, id);
@@ -475,7 +454,7 @@ public class JsonProcessorService implements FileSaverService {
 
     @Modifying
     @Transactional
-    public ResponseEntity<?> deleteStoriesFromDb(String bankId, String platform, Long id) throws Throwable{
+    public ResponseEntity<?> deleteStoriesFromDb(String bankId, String platform, Long id) {
 //        storyPresentationFramesRepository.deleteByStoryId(id);
         storyPresentationRepository.deleteById(id);
         deleteFilesStories(bankId, platform, id);
@@ -484,7 +463,7 @@ public class JsonProcessorService implements FileSaverService {
     /**
      * Метод, предназначенный для удаления историй из JSON.
      */
-    private StoryPresentation deleteJsonStories(String bankId, String platform, Long id) throws IOException {
+    private StoryPresentation deleteJsonStories(String bankId, String platform, Long id) {
         //Берем список историй
         List<StoryPresentation> list = mapper.getStoryList(bankId, platform);
 
@@ -510,7 +489,7 @@ public class JsonProcessorService implements FileSaverService {
     /**
      * Метод, предназначенный для удаления файлов историй из директории.
      */
-    private void deleteFilesStories(String bankId, String platform, Long id) throws InterruptedException {
+    private void deleteFilesStories(String bankId, String platform, Long id) {
         File directory = dirProcess.checkDirectoryBankAndPlatformIsExist(bankId, platform);
         File[] files = directory.listFiles();
         Stream.of(files)
@@ -519,7 +498,7 @@ public class JsonProcessorService implements FileSaverService {
                     if (x.exists()) {
                         x.delete();
                     }
-                    else log.error("File " + x.getName() + " is already deleted");
+                    else log.error("File {} is already deleted", x.getName());
                 });
 
     }
@@ -536,7 +515,7 @@ public class JsonProcessorService implements FileSaverService {
      */
     @Modifying
     @Transactional
-    public ResponseEntity<?> deleteStoryFrame(String bankId, String platform, String id, String frameId) throws Throwable {
+    public ResponseEntity<?> deleteStoryFrame(String bankId, String platform, String id, String frameId) {
         UUID uuid = deleteJsonFrame(bankId, platform, id, frameId);
         deleteFileFrame(bankId, platform, id, uuid);
         deleteFrameFromDb(uuid);
@@ -552,7 +531,7 @@ public class JsonProcessorService implements FileSaverService {
      * @return
      * @throws IOException
      */
-    private UUID deleteJsonFrame(String bankId, String platform, String id, String frameId) throws IOException {
+    private UUID deleteJsonFrame(String bankId, String platform, String id, String frameId) {
         UUID uuid = null;
         //Берем историю из списка историй
         List<StoryPresentation> list = mapper.getStoryList(bankId, platform);
@@ -589,7 +568,7 @@ public class JsonProcessorService implements FileSaverService {
      * @param id
      * @param frameId
      */
-    private void deleteFileFrame(String bankId, String platform, String id, UUID frameId) throws InterruptedException {
+    private void deleteFileFrame(String bankId, String platform, String id, UUID frameId) {
         File directory = dirProcess.checkDirectoryBankAndPlatformIsExist(bankId, platform);
         File[] files = directory.listFiles();
         Stream.of(files)
@@ -605,11 +584,11 @@ public class JsonProcessorService implements FileSaverService {
      * @param platform
      * @throws IOException
      */
-    public void swapFrames(Long id, String bankId, String platform, List<String> newOrder) throws IOException {
+    public void swapFrames(Long id, String bankId, String platform, List<String> newOrder) {
         final List<StoryPresentation> storyPresentationList = mapper.getStoryList(bankId, platform);
         final StoryPresentation storyPresentation = mapper.getStoryModel(storyPresentationList, id);
         final List<StoryPresentationFrames> frames = storyPresentation.getStoryPresentationFrames();
-        frames.stream().forEach(x -> x.setStory(storyPresentation));
+        frames.forEach(x -> x.setStory(storyPresentation));
 
         for (int i=0; i<newOrder.size()-1; i++){
             for (int j=0; j<newOrder.size(); j++){
@@ -633,7 +612,7 @@ public class JsonProcessorService implements FileSaverService {
      * @throws IOException
      */
     @Override
-    public void restoreStory(Long id) throws IOException {
+    public void restoreStory(Long id) {
         final var storyPresentation = storyPresentationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Could not find story with id = %d", id)));
         if (storyPresentation.getApproved().equals(StoryPresentation.Status.APPROVED)) throw new IllegalArgumentException("Story is already restored");

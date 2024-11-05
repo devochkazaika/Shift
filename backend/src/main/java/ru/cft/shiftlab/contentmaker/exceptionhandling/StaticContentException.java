@@ -20,4 +20,7 @@ public class StaticContentException extends RuntimeException{
     @Schema(description = "Код ошибки.",
             example = "404")
     String code;
+    public StaticContentException(String message) {
+        super(message);
+    }
 }

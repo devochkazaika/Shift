@@ -3,6 +3,7 @@ package ru.cft.shiftlab.contentmaker.util;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,13 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.STORIES;
 @Component
 @Slf4j
 @AllArgsConstructor
+@Log4j2
 public class DirProcess {
     @Autowired
     private final Constants constants;
     private List<StoryPresentation> checkStoriesFileInBankDir(String fileName) throws IOException {
         List<StoryPresentation> storyPresentationList = new ArrayList<StoryPresentation>();
         File bankJsonFile = new File(constants.FILES_SAVE_DIRECTORY + fileName);
-        System.out.println(bankJsonFile.getAbsolutePath());
         if (bankJsonFile.exists()) {
             ObjectMapper mapper = new ObjectMapper();
             TypeReference<Map<String, List<StoryPresentation>>> typeReference = new TypeReference<>() {
@@ -63,11 +64,12 @@ public class DirProcess {
         return directory;
     }
 
-    public void createFolders(String picturesSaveDirectory) throws IOException {
+    public void createFolders(String picturesSaveDirectory) {
         File newDirectory = new File(picturesSaveDirectory);
         if (!newDirectory.exists()) {
             if(!newDirectory.mkdirs()){
-                throw new IOException("Can't create dir: " + picturesSaveDirectory);
+                log.error("Exception in DirProcess, Can't create dir: " + picturesSaveDirectory);
+                throw new StaticContentException("Can't create dir: " + picturesSaveDirectory);
             }
         }
     }

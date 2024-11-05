@@ -68,8 +68,8 @@ public class HistoryService implements HistoryServiceStories {
                     throw e;
                 }
                 break;
+            // TODO: Дописать ролбек
             case Update:
-//                storiesService.deleteService(history.getBankId(), history.getPlatform(), history.getComponentId());
                 break;
             case Change:
                 storiesService.deleteStoriesFromDb(history.getBankId(), history.getPlatform(), history.getComponentId());

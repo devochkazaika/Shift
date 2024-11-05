@@ -1,6 +1,7 @@
 package ru.cft.shiftlab.contentmaker.util;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ import java.util.UUID;
  */
 @Component
 @RequiredArgsConstructor
+@Log4j2
 public class MultipartFileToImageConverter {
     private final ImageNameGenerator imageNameGenerator;
 
@@ -55,29 +57,39 @@ public class MultipartFileToImageConverter {
         return outputfile.getAbsolutePath().replaceAll("\\\\", "/");
     }
 
-    public String parsePicture(ImageContainer imageContainer, String picturesSaveDirectory, Long id, UUID uuid) throws IOException {
-        String previewPictureName = convertMultipartFileToImageAndSave(
-                imageContainer.getNextImage(),
-                picturesSaveDirectory,
-                imageNameGenerator.generateImageName(picturesSaveDirectory, id, uuid)
-        );
-        return previewPictureName;
+    public String parsePicture(ImageContainer imageContainer, String picturesSaveDirectory, Long id, UUID uuid) {
+        try {
+            return convertMultipartFileToImageAndSave(
+                    imageContainer.getNextImage(),
+                    picturesSaveDirectory,
+                    imageNameGenerator.generateImageName(picturesSaveDirectory, id, uuid)
+            );
+        }
+        catch (Exception e) {
+            log.error("Could not parse picture");
+            throw new StaticContentException(e.getMessage());
+        }
+
     }
-    public String parsePicture(ImageContainer imageContainer, String picturesSaveDirectory, Long id) throws IOException {
-        String previewPictureName = convertMultipartFileToImageAndSave(
-                imageContainer.getNextImage(),
-                picturesSaveDirectory,
-                imageNameGenerator.generateImageName(picturesSaveDirectory, id)
-        );
-        return previewPictureName;
+    public String parsePicture(ImageContainer imageContainer, String picturesSaveDirectory, Long id) {
+        try{
+            return convertMultipartFileToImageAndSave(
+                    imageContainer.getNextImage(),
+                    picturesSaveDirectory,
+                    imageNameGenerator.generateImageName(picturesSaveDirectory, id)
+            );
+        }
+        catch (IOException e){
+            log.error("Could not parse picture");
+            throw new StaticContentException(e.getMessage());
+        }
     }
     public String parsePicture(ImageContainer imageContainer, String picturesSaveDirectory, Long id, Long secondId) throws IOException {
-        String previewPictureName = convertMultipartFileToImageAndSave(
+        return convertMultipartFileToImageAndSave(
                 imageContainer.getNextImage(),
                 picturesSaveDirectory,
                 imageNameGenerator.generateImageName(picturesSaveDirectory, id, secondId)
         );
-        return previewPictureName;
     }
 
 }
