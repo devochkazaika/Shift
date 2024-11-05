@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS stories (
-     id integer auto_increment PRIMARY KEY NOT NULL,
+     id long auto_increment PRIMARY KEY NOT NULL,
      bank_id VARCHAR(255),
      platform VARCHAR(255),
      font_size VARCHAR(255),
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS frames (
 );
 
 CREATE TABLE IF NOT EXISTS test_banner (
-     id integer auto_increment PRIMARY KEY NOT NULL,
+     id long auto_increment PRIMARY KEY NOT NULL,
      code VARCHAR(255) UNIQUE,
      name VARCHAR(255),
      picture VARCHAR(255),

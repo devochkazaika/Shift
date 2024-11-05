@@ -1,6 +1,8 @@
 package ru.cft.shiftlab.contentmaker.repository;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -15,7 +17,6 @@ import java.util.List;
 public class StoryPresentationRepositoryTest {
 
     private StoryPresentation storyPresentation1 = StoryPresentation.builder()
-            .id(1L)
             .bankId("absolutbank")
             .platform("ALL PLATFORMS")
             .previewTitleColor("#FFFF")
@@ -24,7 +25,6 @@ public class StoryPresentationRepositoryTest {
             .build();
 
     private StoryPresentation storyPresentation2 = StoryPresentation.builder()
-            .id(2L)
             .bankId("absolutbank")
             .platform("ALL PLATFORMS")
             .previewTitleColor("#FFFF")
@@ -33,16 +33,14 @@ public class StoryPresentationRepositoryTest {
             .build();
 
     private StoryPresentation storyPresentation3 = StoryPresentation.builder()
-            .id(3L)
             .bankId("absolutbank")
             .platform("ALL PLATFORMS")
             .previewTitleColor("#FFFF")
             .previewUrl("https://url")
-            .approved(StoryPresentation.Status.APPROVED)
+            .approved(StoryPresentation.Status.DELETED)
             .build();
 
     private StoryPresentation storyPresentation4 = StoryPresentation.builder()
-            .id(4L)
             .bankId("absolutbank")
             .platform("ANDROID")
             .previewTitleColor("#FFFF")
@@ -50,37 +48,54 @@ public class StoryPresentationRepositoryTest {
             .approved(StoryPresentation.Status.NOTAPPROVED)
             .build();
 
+    private StoryPresentation storyPresentation5 = StoryPresentation.builder()
+            .bankId("test_bank")
+            .platform("ALL PLATFORMS")
+            .previewTitleColor("#FFFF")
+            .previewUrl("https://url")
+            .approved(StoryPresentation.Status.DELETED)
+            .build();
+
+    @BeforeEach
+    public void init(){
+        storyPresentationRepository.deleteAll();
+        storyPresentation1 = storyPresentationRepository.save(storyPresentation1);
+        storyPresentation2 = storyPresentationRepository.save(storyPresentation2);
+        storyPresentation3 = storyPresentationRepository.save(storyPresentation3);
+        storyPresentation4 = storyPresentationRepository.save(storyPresentation4);
+        storyPresentation5 = storyPresentationRepository.save(storyPresentation5);
+    }
+    @AfterEach
+    public void destruct(){
+        storyPresentationRepository.deleteAll();
+    }
+
     @Autowired
     private StoryPresentationRepository storyPresentationRepository;
 
     @Test
     public void StoryPresentationRepository_Insert_InsertValueWithIdOnly(){
-        storyPresentationRepository.insert(3L);
-        StoryPresentation st = storyPresentationRepository.findById(3L)
+        Long id = 1000L;
+        storyPresentationRepository.insert(id);
+        StoryPresentation st = storyPresentationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("StoryPresentationRepository_Insert_InsertValueWithIdOnly"));
         Assertions.assertThat(st).isNotNull();
-        Assertions.assertThat(st.getId()).isEqualTo(3L);
+        Assertions.assertThat(st.getId()).isEqualTo(id);
     }
 
     @Test
     public void StoryPresentationRepository_GetUnApproved_ListStoryPresentation(){
-        storyPresentationRepository.save(storyPresentation1);
-        storyPresentationRepository.save(storyPresentation2);
-        storyPresentationRepository.save(storyPresentation3);
 
         List<StoryPresentation> li = storyPresentationRepository.getUnApprovedStories();
 
         Assertions.assertThat(li).isNotNull();
-        Assertions.assertThat(li.size()).isEqualTo(1);
-        Assertions.assertThat(li.contains(storyPresentation2)).isTrue();
+        Assertions.assertThat(li.size()).isEqualTo(2);
+        Assertions.assertThat(li.get(0).getId()).isEqualTo(storyPresentation2.getId());
+        Assertions.assertThat(li.get(1).getId()).isEqualTo(storyPresentation4.getId());
     }
 
     @Test
-    public void StoryPresentationRepository_GetApprovedByBankAndPlatform_ListStoryPresentation(){
-        storyPresentationRepository.save(storyPresentation1);
-        storyPresentationRepository.save(storyPresentation2);
-        storyPresentationRepository.save(storyPresentation3);
-        storyPresentationRepository.save(storyPresentation4);
+    public void StoryPresentationRepository_GetUnApprovedByBankAndPlatform_ListStoryPresentation(){
 
         List<StoryPresentation> li = storyPresentationRepository.getUnApprovedStories(
                         storyPresentation2.getBankId(),
@@ -89,6 +104,17 @@ public class StoryPresentationRepositoryTest {
 
         Assertions.assertThat(li).isNotNull();
         Assertions.assertThat(li.size()).isEqualTo(1);
-        Assertions.assertThat(li.contains(storyPresentation2)).isTrue();
+        Assertions.assertThat(li.get(0).getId()).isEqualTo(storyPresentation2.getId());
+    }
+
+    @Test
+    public void StoryPresentationRepository_GetDeletedStories_ListStoryPresentation(){
+
+        List<StoryPresentation> li = storyPresentationRepository.getDeletedStories();
+
+        Assertions.assertThat(li).isNotNull();
+        Assertions.assertThat(li.size()).isEqualTo(2);
+        Assertions.assertThat(li.get(0).getId()).isEqualTo(storyPresentation3.getId());
+        Assertions.assertThat(li.get(1).getId()).isEqualTo(storyPresentation5.getId());
     }
 }
