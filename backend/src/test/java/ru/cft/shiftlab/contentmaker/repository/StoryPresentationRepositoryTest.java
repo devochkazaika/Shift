@@ -8,16 +8,37 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
 
+import java.util.List;
+
 @SpringBootTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class StoryPresentationRepositoryTest {
 
-    private StoryPresentation storyPresentation = StoryPresentation.builder()
+    private StoryPresentation storyPresentation1 = StoryPresentation.builder()
+            .id(1L)
+            .bankId("absolutbank")
+            .platform("ALL PLATFORMS")
+            .previewTitleColor("#FFFF")
+            .previewUrl("https://url")
+            .approved(StoryPresentation.Status.APPROVED)
+            .build();
+
+    private StoryPresentation storyPresentation2 = StoryPresentation.builder()
             .id(2L)
             .bankId("absolutbank")
             .platform("ALL PLATFORMS")
             .previewTitleColor("#FFFF")
             .previewUrl("https://url")
+            .approved(StoryPresentation.Status.NOTAPPROVED)
+            .build();
+
+    private StoryPresentation storyPresentation3 = StoryPresentation.builder()
+            .id(3L)
+            .bankId("absolutbank")
+            .platform("ALL PLATFORMS")
+            .previewTitleColor("#FFFF")
+            .previewUrl("https://url")
+            .approved(StoryPresentation.Status.APPROVED)
             .build();
 
     @Autowired
@@ -30,5 +51,16 @@ public class StoryPresentationRepositoryTest {
                 .orElseThrow(() -> new RuntimeException("StoryPresentationRepository_Insert_InsertValueWithIdOnly"));
         Assertions.assertThat(st).isNotNull();
         Assertions.assertThat(st.getId()).isEqualTo(3L);
+    }
+
+    @Test
+    public void StoryPresentationRepository_GetUnApproved_ListStoryPresentation(){
+        storyPresentationRepository.save(storyPresentation1);
+        storyPresentationRepository.save(storyPresentation2);
+        storyPresentationRepository.save(storyPresentation3);
+        List<StoryPresentation> li = storyPresentationRepository.getUnApprovedStories();
+        Assertions.assertThat(li).isNotNull();
+        Assertions.assertThat(li.size()).isEqualTo(1);
+        Assertions.assertThat(li.contains(storyPresentation2)).isTrue();
     }
 }
