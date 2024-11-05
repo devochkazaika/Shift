@@ -62,7 +62,6 @@ public class JsonProcessorService implements FileSaverService {
     private final StoryPresentationRepository storyPresentationRepository;
     private final StoryPresentationFramesRepository storyPresentationFramesRepository;
     private final KeyCloak keyCloak;
-    private final Constants constants;
 
     /**
      * Если истории не существует в БД, но существует в JSON

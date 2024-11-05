@@ -4,7 +4,21 @@
     "bankId" : "testBank",
     "platform" : "ALL PLATFORMS",
     "previewTitleColor" : "#FFFF",
+    "previewGradient" : "#FFFF",
     "storyFrames" : [ ]
-  }
-  ]
+  }, {
+    "id" : 16,
+    "bankId" : "testBank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitleColor" : "#DDDD",
+    "previewGradient" : "#DDDD",
+    "storyFrames" : [ ]
+  }, {
+    "id" : 17,
+    "bankId" : "testBank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitleColor" : "#CCCC",
+    "previewGradient" : "#AAAA",
+    "storyFrames" : [ ]
+  } ]
 }
