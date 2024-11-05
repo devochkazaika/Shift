@@ -27,35 +27,37 @@ public class StoryMapperTest {
     @Autowired
     private DirProcess dirProcess;
 
+    StoryPresentation st, st2, st3;
+
     @BeforeEach
     public void init() throws IOException {
+        st = StoryPresentation
+                .builder()
+                .id(15L)
+                .previewGradient("#FFFF")
+                .previewTitleColor("#FFFF")
+                .platform("ALL PLATFORMS")
+                .bankId("testBank")
+                .build();
+        st2 = StoryPresentation
+                .builder()
+                .id(16L)
+                .previewGradient("#DDDD")
+                .previewTitleColor("#DDDD")
+                .platform("ALL PLATFORMS")
+                .bankId("testBank")
+                .build();
+        st3 = StoryPresentation
+                .builder()
+                .id(17L)
+                .previewGradient("#AAAA")
+                .previewTitleColor("#CCCC")
+                .previewTitle("new Title")
+                .platform("ALL PLATFORMS")
+                .bankId("testBank")
+                .build();
         dirProcess.deleteFolders(FILES_SAVE_DIRECTORY);
     }
-
-    StoryPresentation st = StoryPresentation
-            .builder()
-            .id(15L)
-            .previewGradient("#FFFF")
-            .previewTitleColor("#FFFF")
-            .platform("ALL PLATFORMS")
-            .bankId("testBank")
-            .build();
-    StoryPresentation st2 = StoryPresentation
-            .builder()
-            .id(16L)
-            .previewGradient("#DDDD")
-            .previewTitleColor("#DDDD")
-            .platform("ALL PLATFORMS")
-            .bankId("testBank")
-            .build();
-    StoryPresentation st3 = StoryPresentation
-            .builder()
-            .id(17L)
-            .previewGradient("#AAAA")
-            .previewTitleColor("#CCCC")
-            .platform("ALL PLATFORMS")
-            .bankId("testBank")
-            .build();
 
     @Test
     public void StoryMapperTest_PutStoryToJson_StoryPresentation() {
@@ -114,6 +116,16 @@ public class StoryMapperTest {
                 () -> Assertions.assertEquals(story3.getBankId(), st3.getBankId()),
                 () -> Assertions.assertEquals(story3.getPlatform(), st3.getPlatform())
         );
+    }
 
+    @Test
+    public void StoryMapperTest_updateStoryEntity_StoryPresentation() {
+       var story = storyMapper.updateStoryEntity(st, st3);
+       Assertions.assertAll(
+               () -> Assertions.assertEquals(story.getId(), st.getId()),
+               () -> Assertions.assertEquals(story.getPreviewGradient(), st3.getPreviewGradient()),
+               () -> Assertions.assertEquals(story.getPreviewTitle(), st3.getPreviewTitle()),
+               () -> Assertions.assertEquals(story.getPreviewTitleColor(), st3.getPreviewTitleColor())
+       );
     }
 }
