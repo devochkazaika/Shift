@@ -1,0 +1,9 @@
+{
+  "stories" : [ {
+    "id" : 15,
+    "bankId" : "testBank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitleColor" : "#FFFF",
+    "storyFrames" : [ ]
+  } ]
+}

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.repository.Modifying;
@@ -22,12 +23,9 @@ import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 import ru.cft.shiftlab.contentmaker.repository.StoryPresentationFramesRepository;
 import ru.cft.shiftlab.contentmaker.repository.StoryPresentationRepository;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
-import ru.cft.shiftlab.contentmaker.util.DirProcess;
+import ru.cft.shiftlab.contentmaker.util.*;
 import ru.cft.shiftlab.contentmaker.util.Image.ImageContainer;
-import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
 import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
-import ru.cft.shiftlab.contentmaker.util.StoryMapper;
-import ru.cft.shiftlab.contentmaker.util.WhiteList;
 import ru.cft.shiftlab.contentmaker.util.keycloak.KeyCloak;
 
 import javax.annotation.PostConstruct;
@@ -56,13 +54,15 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.MAX_COUNT_FRAME;
 @Log4j2
 @Order(2)
 public class JsonProcessorService implements FileSaverService {
-    private final StoryMapper mapper;
+    @Autowired
+    private StoryMapper mapper;
     private final MultipartFileToImageConverter multipartFileToImageConverter;
     private final DtoToEntityConverter dtoToEntityConverter;
     private final DirProcess dirProcess;
     private final StoryPresentationRepository storyPresentationRepository;
     private final StoryPresentationFramesRepository storyPresentationFramesRepository;
     private final KeyCloak keyCloak;
+    private final Constants constants;
 
     /**
      * Если истории не существует в БД, но существует в JSON
@@ -156,7 +156,6 @@ public class JsonProcessorService implements FileSaverService {
                                                   LinkedList<MultipartFile> images) {
         //Создание пути для картинок, если его еще нет
         String picturesSaveDirectory = FILES_SAVE_DIRECTORY+storiesRequestDto.getBankId()+"/"+storiesRequestDto.getPlatform()+"/";
-        dirProcess.createFolders(picturesSaveDirectory);
         StoryPresentation storyPresentation = dtoToEntityConverter.fromStoryRequestDtoToStoryPresentation(storiesRequestDto);
         final StoryPresentation story = storyPresentationRepository.save(storyPresentation);
         final List<StoryPresentationFrames> storyPresentationFrames = storyPresentation.getStoryPresentationFrames();

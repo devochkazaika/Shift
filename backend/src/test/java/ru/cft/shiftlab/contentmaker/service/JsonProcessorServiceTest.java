@@ -1,205 +1,124 @@
-//package ru.cft.shiftlab.contentmaker.service;
-//
-//import com.fasterxml.jackson.core.type.TypeReference;
-//import com.fasterxml.jackson.databind.DeserializationFeature;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.fasterxml.jackson.databind.SerializationFeature;
-//import com.fasterxml.jackson.databind.node.ArrayNode;
-//import com.fasterxml.jackson.databind.node.ObjectNode;
-//import org.apache.commons.io.FileUtils;
-//import org.apache.commons.io.IOUtils;
-//import org.apache.commons.lang3.StringEscapeUtils;
-//import org.junit.jupiter.api.AfterEach;
-//import org.junit.jupiter.api.Assertions;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//
-//import org.junit.runner.RunWith;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.Mockito;
-//import org.mockito.MockitoAnnotations;
-//import org.mockito.junit.MockitoJUnitRunner;
-//import org.mockito.junit.jupiter.MockitoExtension;
-//import org.springframework.mock.web.MockMultipartFile;
-//import org.springframework.web.multipart.MultipartFile;
-//import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
-//import ru.cft.shiftlab.contentmaker.dto.StoryDto;
-//import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
-//import ru.cft.shiftlab.contentmaker.dto.StoryPatchDto;
-//import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
-//import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentationFrames;
-//import ru.cft.shiftlab.contentmaker.repository.BannerRepository;
-//import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
-//import ru.cft.shiftlab.contentmaker.util.DirProcess;
-//import ru.cft.shiftlab.contentmaker.util.Image.ImageContainer;
-//import ru.cft.shiftlab.contentmaker.util.Image.ImageNameGenerator;
-//import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
-//import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
-//import ru.cft.shiftlab.contentmaker.util.StoryMapper;
-//import ru.cft.shiftlab.contentmaker.util.keycloak.KeyCloak;
-//
-//import java.io.File;
-//import java.io.FileInputStream;
-//import java.io.IOException;
-//import java.lang.reflect.InvocationTargetException;
-//import java.lang.reflect.Method;
-//import java.nio.file.Files;
-//import java.nio.file.Path;
-//import java.nio.file.Paths;
-//import java.nio.file.StandardCopyOption;
-//import java.util.*;
-//import java.util.stream.Stream;
-//
-//import static org.mockito.ArgumentMatchers.*;
-//import static ru.cft.shiftlab.contentmaker.util.Constants.*;
-//
-//@ExtendWith(MockitoExtension.class)
-//@RunWith(MockitoJUnitRunner.class)
-//public class JsonProcessorServiceTest {
-//
-//    @InjectMocks
-//    private JsonProcessorService service;
-//
-//    @Mock
-//    private MultipartFileToImageConverter multipartFileToImageConverter;
-//
-//    @Mock
-//    private DtoToEntityConverter dtoToEntityConverter;
-//
-//    @Mock
-//    private DirProcess dirProcess;
-//
-//    @Mock
-//    private StoryMapper storyMapper;
-//
-//    @Mock
-//    private KeyCloak keyCloak;
-//    @Mock
-//    private BannerRepository bannerRepository;
-//
-//    private final ObjectMapper objectMapper = new ObjectMapper();
-//
-//    private final ImageNameGenerator imageNameGenerator = new ImageNameGenerator();
-//
-//    @BeforeEach
-//    public void setUp() throws IOException {
-//        MockitoAnnotations.openMocks(this);
-//        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-//        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-//        dirProcess.createFolders(FILES_SAVE_DIRECTORY);  // Initialize folders
-//    }
-//
-//    @AfterEach
-//    public void deleteFolderBackend() throws IOException {
-//        dirProcess.deleteFolders(String.valueOf(Paths.get("backend")));  // Clean up folders
-//    }
-//
-//
-//
-//    @Test
-//    void should_save_files() throws IOException {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-//
-//        StoryFramesDto storyFramesDto = new StoryFramesDto(
-//                "mainText",
-//                "Text card",
-//                "FF0000",
-//                "NONE",
-//                "",
-//                "",
-//                "",
-//                "",
-//                "EMPTY");
-//        StoryDto storyDto = new StoryDto(
-//                "MainTextPreview",
-//                "FF0000",
-//                "EMPTY",
-//                new ArrayList<>(Collections.singletonList(storyFramesDto)));
-//        StoriesRequestDto storiesRequestDto = new StoriesRequestDto(
-//                "tkbbank",
-//                "IOS",
-//                new ArrayList<>(Collections.singletonList(storyDto)));
-//
-//        File img =  new File(
-//                FILES_TEST_DIRECTORY,
-//                "sample.png");
-//
-//        FileInputStream input = new FileInputStream(img);
-//        Assertions.assertNotNull(input);
-//        MultipartFile multipartFile = new MockMultipartFile("fileItem",
-//                img.getName(), "image/png", IOUtils.toByteArray(input));
-//        var arrImg = new MultipartFile[1];
-//        arrImg[0] = multipartFile;
-//
-//
-//        String picturesDirectory = FILES_SAVE_DIRECTORY
-//                + storiesRequestDto.getBankId() + "/" + storiesRequestDto.getPlatform();
-//        String fileName = "story_tkbbank_iOS.json";
-//        String jsonDirectory = FILES_SAVE_DIRECTORY;
-//        String previewUrl = picturesDirectory + "/preview1.png";
-//
-//        List<StoryPresentation> storyPresentationList = new ArrayList<>();
-//
-//        storyPresentationList.add(dtoToEntityConverter.fromStoryDtoToStoryPresentation(
-//                "tkbbank",
-//                storyDto,
-//                previewUrl));
-//
-//        Map<String, List<StoryPresentation>> presentationList = new HashMap<>();
-//        presentationList.put("stories", storyPresentationList);
-//
-//        File jsonFile = Paths.get(jsonDirectory + fileName).toFile();
-//
+package ru.cft.shiftlab.contentmaker.service;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
+import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
+import ru.cft.shiftlab.contentmaker.dto.StoryDto;
+import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
+import ru.cft.shiftlab.contentmaker.service.implementation.JsonProcessorService;
+import ru.cft.shiftlab.contentmaker.util.Constants;
+import ru.cft.shiftlab.contentmaker.util.DirProcess;
+import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
+import ru.cft.shiftlab.contentmaker.util.StoryMapper;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+
+import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
+import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_TEST_DIRECTORY;
+
+@SpringBootTest
+public class JsonProcessorServiceTest {
+
+    @InjectMocks
+    private JsonProcessorService service;
+
+    @Mock
+    private DtoToEntityConverter dtoToEntityConverter;
+
+    @Autowired
+    @Mock
+    private DirProcess dirProcess;
+
+    @Autowired
+    private StoryMapper storyMapper;
+    @Autowired
+    private StoryMapper objectMapper;
+
+    @Autowired
+    @Mock
+    private Constants constants;
+
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        dirProcess.createFolders(FILES_SAVE_DIRECTORY);  // Initialize folders
+    }
+
+    @AfterEach
+    public void deleteFolderBackend() throws IOException {
+        dirProcess.deleteFolders(String.valueOf(Paths.get("backend")));  // Clean up folders
+    }
+
+    @Test
+    void should_save_files() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+        StoryFramesDto storyFramesDto = new StoryFramesDto(
+                "mainText",
+                "Text card",
+                "FF0000",
+                "NONE",
+                "",
+                "",
+                "",
+                "",
+                "EMPTY");
+        StoryDto storyDto = new StoryDto(
+                "MainTextPreview",
+                "FF0000",
+                "EMPTY",
+                new ArrayList<>(Collections.singletonList(storyFramesDto)));
+        StoriesRequestDto storiesRequestDto = new StoriesRequestDto(
+                "tkbbank",
+                "IOS",
+                new ArrayList<>(Collections.singletonList(storyDto)));
+
+        File img =  new File(
+                FILES_TEST_DIRECTORY,
+                "sample.png");
+
+        FileInputStream input = new FileInputStream(img);
+        Assertions.assertNotNull(input);
+        MultipartFile multipartFile = new MockMultipartFile("fileItem",
+                img.getName(), "image/png", IOUtils.toByteArray(input));
+        var arrImg = new MultipartFile[1];
+        arrImg[0] = multipartFile;
+
+
+
 //        int countFiles = getCountFilesInDir(storiesRequestDto);
-//
-//        Mockito.when(storyMapper.readValue(anyString(), (Class<Object>) any())).thenReturn(storiesRequestDto);
-//
-//        service.saveFiles(objectMapper.writeValueAsString(storiesRequestDto),
+        var st = storyMapper.writeValueAsString(storiesRequestDto);
+        System.out.println(storyMapper.readValue(st, StoriesRequestDto.class));
+
+//        service.saveStory(st,
 //                multipartFile,
 //                arrImg
 //        );
-//        Assertions.assertEquals(countFiles + 2, getCountFilesInDir(storiesRequestDto));
-//
-//        StringBuilder jsonStr = new StringBuilder();
-//        Files.readAllLines(jsonFile.toPath()).forEach(jsonStr::append);
-//        Map<String, List<StoryPresentation>> map = objectMapper.readValue(
-//                jsonStr.toString(),
-//                new TypeReference<Map<String, List<StoryPresentation>>>() {}
-//        );
-//
-//        var storyFromJson = map.get(STORIES).get(0);
-//        storyFromJson.setPreviewUrl(null);
-//        for(StoryPresentationFrames card : storyFromJson.getStoryPresentationFrames()){
-//            card.setPictureUrl(null);
-//        }
-//
-//        try{
-//            Assertions.assertAll(
-//                    () -> Assertions.assertEquals(countFiles + 2, getCountFilesInDir(storiesRequestDto), "Images should be created"),
-//                    () -> Assertions.assertTrue(Files.exists(jsonFile.toPath()), "File should exist"),
-//                    () -> Assertions.assertEquals(storyFromJson.getPreviewTitle(), storyDto.getPreviewTitle()),
-//                    () -> Assertions.assertEquals(storyFromJson.getPreviewGradient(), storyDto.getPreviewGradient()),
-//                    () -> Assertions.assertEquals(storyFromJson.getPreviewTitleColor(), storyDto.getPreviewTitleColor()),
-//                    () -> Assertions.assertEquals(storyFromJson.getStoryPresentationFrames().get(0).getText(),
-//                            storyDto.getStoryFramesDtos().get(0).getText()),
-//                    () -> Assertions.assertEquals(storyFromJson.getStoryPresentationFrames().get(0).getGradient(),
-//                            storyDto.getStoryFramesDtos().get(0).getGradient()),
-//                    () -> Assertions.assertEquals(storyFromJson.getStoryPresentationFrames().get(0).getButtonUrl(),
-//                            storyDto.getStoryFramesDtos().get(0).getButtonUrl()),
-//                    () -> Assertions.assertEquals(storyFromJson.getStoryPresentationFrames().get(0).getTitle(),
-//                            storyDto.getStoryFramesDtos().get(0).getTitle())
-//            );
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//
-//        FileUtils.deleteQuietly(jsonFile);
-//        FileUtils.deleteDirectory(new File(picturesDirectory));
-//    }
-//
+
+    }
+
 //    @Test
 //    void should_save_filesWEB() throws IOException {
 //        ObjectMapper objectMapper = new ObjectMapper();
@@ -624,32 +543,32 @@
 //        dirProcess.deleteFolders(FILES_SAVE_DIRECTORY+"test/");
 //
 //    }
+
+//    @Test
+//    public void swap_frames_from_stories() throws IOException {
+//        String bankId = "test_bank";
+//        String platform = "WEB";
+//        Long id = 0L;
+//        String first = "dc430619-a772-4f80-81e5-bc66218ddd0c";
+//        String second = "7b0c950b-c43b-4461-8aa8-295c308990c8";
 //
-////    @Test
-////    public void swap_frames_from_stories() throws IOException {
-////        String bankId = "test_bank";
-////        String platform = "WEB";
-////        Long id = 0L;
-////        String first = "dc430619-a772-4f80-81e5-bc66218ddd0c";
-////        String second = "7b0c950b-c43b-4461-8aa8-295c308990c8";
-////
-////        File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_test_bank_web.json");
-////        File storyDir = new File(FILES_SAVE_DIRECTORY + "/story_test_bank_web.json");
-////        //копирую json file
-////        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_test_bank_web.json");
-////
-////        service.swapFrames(id, bankId, platform, first, second);
-////        ObjectNode node = (ObjectNode) objectMapper.readTree(new File(FILES_SAVE_DIRECTORY + "/story_test_bank_web.json"));
-////        ArrayNode arrayNode =
-////                (ArrayNode) node
-////                .get("stories")
-////                .get(0)
-////                .get("storyFrames");
-////        Assertions.assertAll(
-////                () -> Assertions.assertEquals(arrayNode.get(0).get("id").toString(), "\"".concat(second).concat("\"")),
-////                () -> Assertions.assertEquals(arrayNode.get(1).get("id").toString(), "\"".concat(first).concat("\""))
-////        );
-////
-////    }
+//        File jsonFile = new File(FILES_TEST_DIRECTORY + "/story_test_bank_web.json");
+//        File storyDir = new File(FILES_SAVE_DIRECTORY + "/story_test_bank_web.json");
+//        //копирую json file
+//        copyFile(jsonFile.getAbsolutePath(), FILES_SAVE_DIRECTORY + "/story_test_bank_web.json");
 //
-//}
+//        service.swapFrames(id, bankId, platform, first, second);
+//        ObjectNode node = (ObjectNode) objectMapper.readTree(new File(FILES_SAVE_DIRECTORY + "/story_test_bank_web.json"));
+//        ArrayNode arrayNode =
+//                (ArrayNode) node
+//                .get("stories")
+//                .get(0)
+//                .get("storyFrames");
+//        Assertions.assertAll(
+//                () -> Assertions.assertEquals(arrayNode.get(0).get("id").toString(), "\"".concat(second).concat("\"")),
+//                () -> Assertions.assertEquals(arrayNode.get(1).get("id").toString(), "\"".concat(first).concat("\""))
+//        );
+//
+//    }
+
+}

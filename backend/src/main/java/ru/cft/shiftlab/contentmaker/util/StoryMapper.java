@@ -30,6 +30,9 @@ public class StoryMapper extends ObjectMapper {
     }
     private final DirProcess dirProcess;
     public void putStoryToJson(List<StoryPresentation> storyPresentationList, String bankId, String platform) {
+        // Если директория не создана
+        dirProcess.createFolders(FILES_SAVE_DIRECTORY+bankId+"/"+platform+"/");
+
         Map<String, List<StoryPresentation>> resultMap = new HashMap<>();
         resultMap.put(STORIES, storyPresentationList);
         File file = new File(FILES_SAVE_DIRECTORY, FileNameCreator.createJsonName(bankId, platform));

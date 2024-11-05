@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: test
 
   h2:
     console:
@@ -20,7 +18,7 @@ spring:
   flyway:
     enabled: true
     locations:
-      - classpath:db/migration
+      - classpath:db.migration.test
     validate-on-migrate: true
     baseline-on-migrate: true
 
@@ -35,5 +33,5 @@ server:
   port: 8081
 
 file_path_to_save:
-  stories: "src/main/test/resources/mobws_story/"
-  banners: "src/main/test/resources/mobws_banners/"
+  stories: "src/test/resources/mobws_story/"
+  banners: "src/test/resources/mobws_banners/"
