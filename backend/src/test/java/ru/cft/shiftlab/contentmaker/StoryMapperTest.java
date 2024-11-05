@@ -1,5 +1,6 @@
 package ru.cft.shiftlab.contentmaker;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +39,14 @@ public class StoryMapperTest {
     public void putStoryToJson_successful_test() {
         storyMapper.putStoryToJson(st, st.getBankId(), st.getPlatform());
 
+        var list = storyMapper.getStoryList(st.getBankId(), st.getPlatform());
+        Assertions.assertEquals(list.size(), 1);
+        var story = list.get(0);
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(story.getApproved(), st.getApproved()),
+                () -> Assertions.assertEquals(story.getPreviewTitleColor(), st.getPreviewTitleColor()),
+                () -> Assertions.assertEquals(story.getBankId(), st.getBankId()),
+                () -> Assertions.assertEquals(story.getPlatform(), st.getPlatform())
+        );
     }
 }

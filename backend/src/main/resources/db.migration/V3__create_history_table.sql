@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS history
     component_id BIGINT,
     additional_uuid UUID,
     rollback_able BOOLEAN,
-    "day" date,
+    create_day date,
     time time,
     user_name varchar(255)
 );

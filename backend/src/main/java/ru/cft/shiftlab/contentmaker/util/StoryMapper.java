@@ -29,10 +29,10 @@ public class StoryMapper extends ObjectMapper {
         configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
     private final DirProcess dirProcess;
+
     public void putStoryToJson(List<StoryPresentation> storyPresentationList, String bankId, String platform) {
         // Если директория не создана
         dirProcess.createFolders(FILES_SAVE_DIRECTORY+bankId+"/"+platform+"/");
-
         Map<String, List<StoryPresentation>> resultMap = new HashMap<>();
         resultMap.put(STORIES, storyPresentationList);
         File file = new File(FILES_SAVE_DIRECTORY, FileNameCreator.createJsonName(bankId, platform));
@@ -44,11 +44,20 @@ public class StoryMapper extends ObjectMapper {
             throw new StaticContentException("Could not write story to json");
         }
     }
+
     public void putStoryToJson(StoryPresentation storyPresentation, String bankId, String platform) {
         final var storyList = getStoryList(bankId, platform);
         if (storyList.size() + 1 >= MAX_COUNT_FRAME) throw new IllegalArgumentException("Cant save a frame. The maximum size is reached");
-        storyList.add(storyPresentation);
-        putStoryToJson(storyList, bankId, platform);
+        var story = storyList.stream()
+                .filter(x-> x.getId().equals(storyPresentation.getId()))
+                .findFirst().orElse(null);
+        if (story == null){
+            storyList.add(storyPresentation);
+            putStoryToJson(storyList, bankId, platform);
+        }
+        else{
+            throw new StaticContentException("Story with id " + storyPresentation.getId() + " in file is already exist");
+        }
     }
     /**
      * Метод возвращает конкретную историю
@@ -82,6 +91,29 @@ public class StoryMapper extends ObjectMapper {
         main.setPreviewTitleColor(change.getPreviewTitleColor());
         main.setPreviewTitle(change.getPreviewTitle());
         return main;
+    }
+
+    public StoryPresentation deleteStoryFromJson(String bankId, String platform, Long id) {
+        //Берем список историй
+        List<StoryPresentation> list = getStoryList(bankId, platform);
+
+        //удаляем нужную историю
+        StoryPresentation storyDeleted = null;
+        for (int i = 0; i < list.size(); i++) {
+            storyDeleted = list.get(i);
+            if (storyDeleted.getId().equals(id)) {
+                list.remove(i);
+                break;
+            }
+        }
+        if (storyDeleted == null) throw new IllegalArgumentException(String.format(
+                "Could not find the frame with id = %s",
+                id)
+        );
+
+        //кладем в json
+        putStoryToJson(list, bankId, platform);
+        return storyDeleted;
     }
 
 }

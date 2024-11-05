@@ -61,7 +61,7 @@ public class HistoryEntity {
     @Column(name="additional_uuid")
     UUID secondAdditionalUuid;
 
-    @Column(name="day")
+    @Column(name="create_day")
     LocalDate day;
 
     @Column(name="time")

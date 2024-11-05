@@ -463,26 +463,7 @@ public class JsonProcessorService implements FileSaverService {
      * Метод, предназначенный для удаления историй из JSON.
      */
     private StoryPresentation deleteJsonStories(String bankId, String platform, Long id) {
-        //Берем список историй
-        List<StoryPresentation> list = mapper.getStoryList(bankId, platform);
-
-        //удаляем нужную историю
-        StoryPresentation storyDeleted = null;
-        for (int i = 0; i < list.size(); i++) {
-            storyDeleted = list.get(i);
-            if (storyDeleted.getId().equals(id)) {
-                list.remove(i);
-                break;
-            }
-        }
-        if (storyDeleted == null) throw new IllegalArgumentException(String.format(
-                "Could not find the frame with id = %s",
-                id)
-        );
-
-        //кладем в json
-        mapper.putStoryToJson(list, bankId, platform);
-        return storyDeleted;
+        return mapper.deleteStoryFromJson(bankId, platform, id);
     }
 
     /**
