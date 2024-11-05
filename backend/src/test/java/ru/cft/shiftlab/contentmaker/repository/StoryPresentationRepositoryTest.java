@@ -41,6 +41,15 @@ public class StoryPresentationRepositoryTest {
             .approved(StoryPresentation.Status.APPROVED)
             .build();
 
+    private StoryPresentation storyPresentation4 = StoryPresentation.builder()
+            .id(4L)
+            .bankId("absolutbank")
+            .platform("ANDROID")
+            .previewTitleColor("#FFFF")
+            .previewUrl("https://url")
+            .approved(StoryPresentation.Status.NOTAPPROVED)
+            .build();
+
     @Autowired
     private StoryPresentationRepository storyPresentationRepository;
 
@@ -58,7 +67,26 @@ public class StoryPresentationRepositoryTest {
         storyPresentationRepository.save(storyPresentation1);
         storyPresentationRepository.save(storyPresentation2);
         storyPresentationRepository.save(storyPresentation3);
+
         List<StoryPresentation> li = storyPresentationRepository.getUnApprovedStories();
+
+        Assertions.assertThat(li).isNotNull();
+        Assertions.assertThat(li.size()).isEqualTo(1);
+        Assertions.assertThat(li.contains(storyPresentation2)).isTrue();
+    }
+
+    @Test
+    public void StoryPresentationRepository_GetApprovedByBankAndPlatform_ListStoryPresentation(){
+        storyPresentationRepository.save(storyPresentation1);
+        storyPresentationRepository.save(storyPresentation2);
+        storyPresentationRepository.save(storyPresentation3);
+        storyPresentationRepository.save(storyPresentation4);
+
+        List<StoryPresentation> li = storyPresentationRepository.getUnApprovedStories(
+                        storyPresentation2.getBankId(),
+                        storyPresentation2.getPlatform()
+                );
+
         Assertions.assertThat(li).isNotNull();
         Assertions.assertThat(li.size()).isEqualTo(1);
         Assertions.assertThat(li.contains(storyPresentation2)).isTrue();
