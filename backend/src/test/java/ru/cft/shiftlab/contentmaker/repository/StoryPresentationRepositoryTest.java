@@ -1,7 +1,6 @@
 package ru.cft.shiftlab.contentmaker.repository;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,10 +64,6 @@ public class StoryPresentationRepositoryTest {
         storyPresentation4 = storyPresentationRepository.save(storyPresentation4);
         storyPresentation5 = storyPresentationRepository.save(storyPresentation5);
     }
-    @AfterEach
-    public void destruct(){
-        storyPresentationRepository.deleteAll();
-    }
 
     @Autowired
     private StoryPresentationRepository storyPresentationRepository;
@@ -79,8 +74,8 @@ public class StoryPresentationRepositoryTest {
         storyPresentationRepository.insert(id);
         StoryPresentation st = storyPresentationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("StoryPresentationRepository_Insert_InsertValueWithIdOnly"));
-        Assertions.assertThat(st).isNotNull();
-        Assertions.assertThat(st.getId()).isEqualTo(id);
+        Assertions.assertNotNull(st);
+        Assertions.assertEquals(st.getId(), id);
     }
 
     @Test
@@ -88,10 +83,10 @@ public class StoryPresentationRepositoryTest {
 
         List<StoryPresentation> li = storyPresentationRepository.getUnApprovedStories();
 
-        Assertions.assertThat(li).isNotNull();
-        Assertions.assertThat(li.size()).isEqualTo(2);
-        Assertions.assertThat(li.get(0).getId()).isEqualTo(storyPresentation2.getId());
-        Assertions.assertThat(li.get(1).getId()).isEqualTo(storyPresentation4.getId());
+        Assertions.assertNotNull(li);
+        Assertions.assertEquals(li.size(), 2);
+        Assertions.assertEquals(li.get(0).getId(), storyPresentation2.getId());
+        Assertions.assertEquals(li.get(1).getId(), storyPresentation4.getId());
     }
 
     @Test
@@ -102,9 +97,9 @@ public class StoryPresentationRepositoryTest {
                         storyPresentation2.getPlatform()
                 );
 
-        Assertions.assertThat(li).isNotNull();
-        Assertions.assertThat(li.size()).isEqualTo(1);
-        Assertions.assertThat(li.get(0).getId()).isEqualTo(storyPresentation2.getId());
+        Assertions.assertNotNull(li);
+        Assertions.assertEquals(li.size(), 1);
+        Assertions.assertEquals(li.get(0).getId(), storyPresentation2.getId());
     }
 
     @Test
@@ -112,9 +107,47 @@ public class StoryPresentationRepositoryTest {
 
         List<StoryPresentation> li = storyPresentationRepository.getDeletedStories();
 
-        Assertions.assertThat(li).isNotNull();
-        Assertions.assertThat(li.size()).isEqualTo(2);
-        Assertions.assertThat(li.get(0).getId()).isEqualTo(storyPresentation3.getId());
-        Assertions.assertThat(li.get(1).getId()).isEqualTo(storyPresentation5.getId());
+        Assertions.assertNotNull(li);
+        Assertions.assertEquals(li.size(), 2);
+        Assertions.assertEquals(li.get(0).getId(), storyPresentation3.getId());
+        Assertions.assertEquals(li.get(1).getId(), storyPresentation5.getId());
+    }
+
+    @Test
+    public void StoryPresentationRepository_GetDeletedStoriesByBankAndPlatform_ListStoryPresentation(){
+
+        List<StoryPresentation> li = storyPresentationRepository
+                .getDeletedStories(
+                        storyPresentation3.getBankId(),
+                        storyPresentation3.getPlatform()
+                );
+
+        Assertions.assertNotNull(li);
+        Assertions.assertEquals(li.size(), 1);
+        Assertions.assertEquals(li.get(0).getId(), storyPresentation3.getId());
+    }
+
+    @Test
+    public void findById(){
+        Long id = 132L;
+        storyPresentationRepository.insert(132L);
+        StoryPresentation story = StoryPresentation.builder()
+                .id(132L)
+                .bankId("test_bank")
+                .platform("ALL PLATFORMS")
+                .previewTitleColor("#FFFF")
+                .build();
+        storyPresentationRepository.save(story);
+
+        StoryPresentation st = storyPresentationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("StoryPresentationRepository_FindById"));
+
+        Assertions.assertNotNull(st);
+        org.junit.jupiter.api.Assertions.assertAll(
+                () -> Assertions.assertEquals(st.getId(), story.getId()),
+                () -> Assertions.assertEquals(st.getPlatform(), story.getPlatform()),
+                () -> Assertions.assertEquals(st.getBankId(), story.getBankId()),
+                () -> Assertions.assertEquals(st.getPreviewUrl(), story.getPreviewUrl())
+        );
     }
 }
