@@ -13,7 +13,6 @@ import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -75,19 +74,4 @@ public class DirProcess {
         FileUtils.deleteDirectory(new File(picturesSaveDirectory));
     }
 
-    public List<List<String>> getBankIdAndPlatform(){
-        File directory = new File(FILES_SAVE_DIRECTORY + "/");
-        File[] files = directory.listFiles(File::isFile);
-        List<List<String>> listBankAndPlatfor = new ArrayList<>();
-        for (var i : files){
-            try {
-                String[] word = i.getName().split("_");
-                listBankAndPlatfor.add(Arrays.asList(word[1], word[2]));
-            }
-            catch (Exception e){
-                log.error("could not import file with name = " + i.getName(), e);
-            }
-        }
-        return listBankAndPlatfor;
-    }
 }

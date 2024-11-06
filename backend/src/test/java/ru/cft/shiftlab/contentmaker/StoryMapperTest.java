@@ -128,4 +128,13 @@ public class StoryMapperTest {
                () -> Assertions.assertEquals(story.getPreviewTitleColor(), st3.getPreviewTitleColor())
        );
     }
+
+    @Test
+    public void StoryMapperTest_deleteStoryFromJson_StoryPresentation() {
+        storyMapper.putStoryToJson(st, st.getBankId(), st.getPlatform());
+        var li1 = storyMapper.getStoryList(st.getBankId(), st.getPlatform());
+        storyMapper.deleteStoryFromJson(st.getBankId(), st.getPlatform(), li1.get(li1.size()-1).getId());
+        var li2 = storyMapper.getStoryList(st.getBankId(), st.getPlatform());
+        Assertions.assertEquals(li1.size()-1, li2.size());
+    }
 }
