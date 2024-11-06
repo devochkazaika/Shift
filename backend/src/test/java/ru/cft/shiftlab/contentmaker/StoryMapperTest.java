@@ -7,12 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
+import ru.cft.shiftlab.contentmaker.dto.StoryDto;
+import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 import ru.cft.shiftlab.contentmaker.util.DirProcess;
 import ru.cft.shiftlab.contentmaker.util.StoryMapper;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
@@ -136,5 +140,45 @@ public class StoryMapperTest {
         storyMapper.deleteStoryFromJson(st.getBankId(), st.getPlatform(), li1.get(li1.size()-1).getId());
         var li2 = storyMapper.getStoryList(st.getBankId(), st.getPlatform());
         Assertions.assertEquals(li1.size()-1, li2.size());
+    }
+
+    @Test
+    public void StoryMapperTest_Map_StoryPresentation() {
+        StoryFramesDto storyFramesDto = StoryFramesDto.builder()
+                .text("hello")
+                .buttonBackgroundColor("#FFFF")
+                .title("title")
+                .gradient("#FFFF")
+                .buttonTextColor("#FFFF")
+                .build();
+        StoryDto storyDto = new StoryDto();
+        ArrayList<StoryFramesDto> dtos = new ArrayList<>();
+        dtos.add(storyFramesDto);
+        storyDto.setStoryFramesDtos(dtos);
+        storyDto.setPreviewGradient("#FFFF");
+        storyDto.setPreviewTitle("title");
+        storyDto.setPreviewTitleColor("#FFFF");
+        StoriesRequestDto storiesRequestDto = new StoriesRequestDto();
+        storiesRequestDto.setBankId("absolutbank");
+        storiesRequestDto.setPlatform("ALL PLATFORMS");
+        var storyDtoList = new ArrayList<StoryDto>();
+        storyDtoList.add(storyDto);
+        storiesRequestDto.setStoryDtos(storyDtoList);
+
+        var story = storyMapper.map(storiesRequestDto);
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(story.getPreviewTitleColor(), storyDto.getPreviewTitleColor()),
+                () -> Assertions.assertEquals(story.getPreviewTitle(), storyDto.getPreviewTitle()),
+                () -> Assertions.assertEquals(story.getPreviewGradient(), storyDto.getPreviewGradient())
+        );
+        var frame = story.getStoryPresentationFrames().get(0);
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(frame.getText(), storyFramesDto.getText()),
+                () -> Assertions.assertEquals(frame.getButtonBackgroundColor(), storyFramesDto.getButtonBackgroundColor()),
+                () -> Assertions.assertEquals(frame.getGradient(), storyFramesDto.getGradient())
+        );
+
+
     }
 }

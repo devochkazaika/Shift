@@ -132,7 +132,7 @@ public class StoryMapper extends ObjectMapper {
             storyPresentation.setStoryPresentationFrames(frames);
             return storyPresentation;
         }
-        catch (Exception e){
+        catch (JsonProcessingException e){
             throw new StaticContentException("Could not convert from dto to Entity");
         }
     }
