@@ -1,13 +1,17 @@
 package ru.cft.shiftlab.contentmaker.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
+import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
+import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
+import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentationFrames;
 import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 
 import java.io.File;
@@ -16,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static ru.cft.shiftlab.contentmaker.util.Constants.*;
 
@@ -114,6 +119,39 @@ public class StoryMapper extends ObjectMapper {
         //кладем в json
         putStoryToJson(list, bankId, platform);
         return storyDeleted;
+    }
+
+    public StoryPresentation map(StoriesRequestDto storyDto) {
+        try{
+            var strDto = writeValueAsString(storyDto.getStoryDtos().get(0));
+            StoryPresentation storyPresentation = readValue(strDto, StoryPresentation.class);
+            storyPresentation.setBankId(storyDto.getBankId());
+            storyPresentation.setPlatform(storyDto.getPlatform());
+            ArrayList<StoryPresentationFrames> frames = (ArrayList<StoryPresentationFrames>) storyDto.getStoryDtos().get(0).getStoryFramesDtos().stream()
+                    .map(this::map).collect(Collectors.toList());
+            storyPresentation.setStoryPresentationFrames(frames);
+            return storyPresentation;
+        }
+        catch (Exception e){
+            throw new StaticContentException("Could not convert from dto to Entity");
+        }
+    }
+
+    /**
+     * Метод для конвертации StoryFramesDto в StoryPresentationFrames.
+     *
+     * @param storyFramesDto DTO, которую нужно конвертировать в Entity.
+     * @return StoryPresentationFrames, полученный после конвертации из StoryFramesDto.
+     */
+    public StoryPresentationFrames map(StoryFramesDto storyFramesDto) {
+        try{
+            var strDto = writeValueAsString(storyFramesDto);
+            return readValue(strDto, StoryPresentationFrames.class);
+        }
+        catch (JsonProcessingException e){
+            throw new StaticContentException(e.getMessage());
+        }
+
     }
 
 }

@@ -3,27 +3,16 @@ package ru.cft.shiftlab.contentmaker.util.Story;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 import ru.cft.shiftlab.contentmaker.dto.BannerDto;
 import ru.cft.shiftlab.contentmaker.dto.StoriesRequestDto;
-import ru.cft.shiftlab.contentmaker.dto.StoryDto;
 import ru.cft.shiftlab.contentmaker.dto.StoryFramesDto;
 import ru.cft.shiftlab.contentmaker.entity.Banner;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentationFrames;
-import ru.cft.shiftlab.contentmaker.repository.BannerRepository;
-import ru.cft.shiftlab.contentmaker.repository.StoryPresentationFramesRepository;
-import ru.cft.shiftlab.contentmaker.repository.StoryPresentationRepository;
-import ru.cft.shiftlab.contentmaker.util.Image.ImageContainer;
 import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.stream.Collectors;
-
-import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_SAVE_DIRECTORY;
-import static ru.cft.shiftlab.contentmaker.util.Constants.MAX_COUNT_FRAME;
 
 /**
  * Класс, предназначенный для конвертации StoriesRequestDto в StoryPresentation.

@@ -23,9 +23,11 @@ import ru.cft.shiftlab.contentmaker.exceptionhandling.StaticContentException;
 import ru.cft.shiftlab.contentmaker.repository.StoryPresentationFramesRepository;
 import ru.cft.shiftlab.contentmaker.repository.StoryPresentationRepository;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
-import ru.cft.shiftlab.contentmaker.util.*;
+import ru.cft.shiftlab.contentmaker.util.DirProcess;
 import ru.cft.shiftlab.contentmaker.util.Image.ImageContainer;
-import ru.cft.shiftlab.contentmaker.util.Story.DtoToEntityConverter;
+import ru.cft.shiftlab.contentmaker.util.MultipartFileToImageConverter;
+import ru.cft.shiftlab.contentmaker.util.StoryMapper;
+import ru.cft.shiftlab.contentmaker.util.WhiteList;
 import ru.cft.shiftlab.contentmaker.util.keycloak.KeyCloak;
 
 import javax.annotation.PostConstruct;
@@ -57,7 +59,6 @@ public class JsonProcessorService implements FileSaverService {
     @Autowired
     private StoryMapper mapper;
     private final MultipartFileToImageConverter multipartFileToImageConverter;
-    private final DtoToEntityConverter dtoToEntityConverter;
     private final DirProcess dirProcess;
     private final StoryPresentationRepository storyPresentationRepository;
     private final StoryPresentationFramesRepository storyPresentationFramesRepository;
@@ -155,7 +156,7 @@ public class JsonProcessorService implements FileSaverService {
                                                   LinkedList<MultipartFile> images) {
         //Создание пути для картинок, если его еще нет
         String picturesSaveDirectory = FILES_SAVE_DIRECTORY+storiesRequestDto.getBankId()+"/"+storiesRequestDto.getPlatform()+"/";
-        StoryPresentation storyPresentation = dtoToEntityConverter.fromStoryRequestDtoToStoryPresentation(storiesRequestDto);
+        StoryPresentation storyPresentation = mapper.map(storiesRequestDto);
         final StoryPresentation story = storyPresentationRepository.save(storyPresentation);
         final List<StoryPresentationFrames> storyPresentationFrames = storyPresentation.getStoryPresentationFrames();
         String previewUrl = multipartFileToImageConverter.parsePicture(
@@ -453,7 +454,6 @@ public class JsonProcessorService implements FileSaverService {
     @Modifying
     @Transactional
     public ResponseEntity<?> deleteStoriesFromDb(String bankId, String platform, Long id) {
-//        storyPresentationFramesRepository.deleteByStoryId(id);
         storyPresentationRepository.deleteById(id);
         deleteFilesStories(bankId, platform, id);
         return new ResponseEntity<>(HttpStatus.valueOf(202));
