@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.repository.Modifying;
@@ -56,8 +55,7 @@ import static ru.cft.shiftlab.contentmaker.util.Constants.MAX_COUNT_FRAME;
 @Log4j2
 @Order(2)
 public class JsonProcessorService implements FileSaverService {
-    @Autowired
-    private StoryMapper mapper;
+    private final StoryMapper mapper;
     private final MultipartFileToImageConverter multipartFileToImageConverter;
     private final DirProcess dirProcess;
     private final StoryPresentationRepository storyPresentationRepository;
@@ -91,7 +89,7 @@ public class JsonProcessorService implements FileSaverService {
     }
 
     @PostConstruct
-    public void initDatabase() throws IOException {
+    public void initDatabase() {
         for (String bank : WhiteList.whitelistBank.keySet()){
             List<StoryPresentation> storyPresentationList = mapper.getStoryList(bank, "ALL PLATFORMS");
             if (!storyPresentationList.isEmpty()){

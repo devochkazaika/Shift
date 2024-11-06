@@ -1,0 +1,25 @@
+{
+  "stories" : [ {
+    "id" : 15,
+    "bankId" : "testBank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitleColor" : "#FFFF",
+    "previewGradient" : "#FFFF",
+    "storyFrames" : [ ]
+  }, {
+    "id" : 16,
+    "bankId" : "testBank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitleColor" : "#DDDD",
+    "previewGradient" : "#DDDD",
+    "storyFrames" : [ ]
+  }, {
+    "id" : 17,
+    "bankId" : "testBank",
+    "platform" : "ALL PLATFORMS",
+    "previewTitle" : "new Title",
+    "previewTitleColor" : "#CCCC",
+    "previewGradient" : "#AAAA",
+    "storyFrames" : [ ]
+  } ]
+}

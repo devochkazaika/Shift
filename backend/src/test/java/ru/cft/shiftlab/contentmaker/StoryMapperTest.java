@@ -178,7 +178,10 @@ public class StoryMapperTest {
                 () -> Assertions.assertEquals(frame.getButtonBackgroundColor(), storyFramesDto.getButtonBackgroundColor()),
                 () -> Assertions.assertEquals(frame.getGradient(), storyFramesDto.getGradient())
         );
+    }
 
+    @Test
+    public void StoryMapperTest_Map_StoryPresentationFrames() {
 
     }
 }
