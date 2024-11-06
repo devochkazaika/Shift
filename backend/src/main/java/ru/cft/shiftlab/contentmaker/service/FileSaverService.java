@@ -3,6 +3,7 @@ package ru.cft.shiftlab.contentmaker.service;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
+import ru.cft.shiftlab.contentmaker.dto.ChangedStoryListDto;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentationFrames;
 
@@ -13,7 +14,6 @@ import java.util.List;
  * Интерфейс, предназначенный для сохранения файлов в определенную директорию.
  */
 public interface FileSaverService {
-
     /**
      * Метод для сохранения JSON файла и картинки в определенную директорию.
      *
@@ -22,7 +22,7 @@ public interface FileSaverService {
      * @param images Массив картинок для карточек
      * @throws RuntimeException исключение, которые может возникнуть во время работы приложения.
      */
-    default StoryPresentation saveFiles(String strStoriesRequestDto, MultipartFile previewImage, MultipartFile[] images) throws IOException {
+    default StoryPresentation saveStory(String strStoriesRequestDto, MultipartFile previewImage, MultipartFile[] images) throws IOException {
         IOException e = new IOException();
         throw new RuntimeException(e);
     }
@@ -46,8 +46,9 @@ public interface FileSaverService {
      * @return List of stories
      * @throws IOException
      */
-    HttpEntity<List<StoryPresentation>> getFilePlatformJson(String bankId, String platform) throws IOException;
+    HttpEntity<List<StoryPresentation>> getStoriesByBankAndPlatform(String bankId, String platform) throws IOException;
 
+    StoryPresentation getStory(Long id);
     /**
      * Метод, возвращающий все непринятые истории
      *
@@ -59,10 +60,10 @@ public interface FileSaverService {
 
     /**
      * Метод, возвращающий все удаленные из JSON истории
-     *
-     * @return Get Deleted stories
+     * @param bankId Имя банка
+     * @param platform Тип платформы (ALL PLATFORMS | ANDROID | IOS | WEB)
+     * @return список историй
      */
-    List<StoryPresentation> getDeletedStories();
     List<StoryPresentation> getDeletedStories(String bankId, String platform);
 
     /**
@@ -95,11 +96,11 @@ public interface FileSaverService {
      * @throws IOException
      */
     void changeFrameStory(String storyFramesRequestDto,
+                          MultipartFile file,
                           String bankId,
                           String platform,
                           Long id,
-                          String frameId,
-                          MultipartFile file) throws IOException;
+                          String frameId) throws IOException;
     /**
      * Метод, предназначенный для удаления одной карточки из историй.
      *
@@ -143,7 +144,9 @@ public interface FileSaverService {
      * @param id Id истории
      * @throws IOException
      */
-    StoryPresentation approvedStory(String bankId, String platform, Long id) throws IOException;
+    StoryPresentation approveStory(String bankId, String platform, Long id) throws IOException;
+
+    StoryPresentation approveStory(Long id) throws IOException;
 
     /**
      * Метод для удаления навсегда истории. Удаления из БД
@@ -155,4 +158,8 @@ public interface FileSaverService {
      */
     ResponseEntity<?> deleteStoriesFromDb(String bankId, String platform, Long id) throws Throwable;
 
+    StoryPresentation updatePreview(Long changing, Long changeable);
+
+//    List<StoryPresentation> getUnApprovedChangedStories(String bankId, String platform);
+    List<ChangedStoryListDto> getUnApprovedChangedStories(List<List<Long>> listChangedStories);
 }

@@ -37,5 +37,4 @@ const ColorPicker = ({ field, form, onChange }) => {
   );
 };
 
-
 export default ColorPicker;

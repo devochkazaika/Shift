@@ -27,9 +27,10 @@ public class SecurityConfiguration {
                 .csrf().disable()
                 .authorizeHttpRequests((authz) ->
                                 authz
-                                        .antMatchers("/stories/admin/**").hasRole("ADMIN")
-                                        .antMatchers("/stories/change/**").hasAnyRole("ADMIN")
+                                        .antMatchers("/stories/admin/**").permitAll()
+//                                        .antMatchers("/stories/change/**").hasAnyRole("ADMIN")
                                         .antMatchers("/stories/**").hasAnyRole("ADMIN", "USER")
+//                                        .antMatchers()
                                         .anyRequest().permitAll()
                 )
 

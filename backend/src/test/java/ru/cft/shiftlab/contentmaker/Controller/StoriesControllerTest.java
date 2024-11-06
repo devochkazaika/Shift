@@ -37,7 +37,6 @@ import java.util.Map;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.cft.shiftlab.contentmaker.util.Constants.FILES_TEST_DIRECTORY;
 
@@ -56,10 +55,8 @@ public class StoriesControllerTest {
     @MockBean
     JsonProcessorService jsonProcessorService;
 
-
-
     @Test
-    public void addStoriesTest() throws Exception {
+    public void StoriesControllerTest_addStoriesTest_StoryPresentation() throws Exception {
         StoryFramesDto storyFramesDto = new StoryFramesDto(
                 "Конвертируй",
                 "Обменивайте валюту онлайн по выгодному курсу",
@@ -102,7 +99,7 @@ public class StoriesControllerTest {
         Assertions.assertNotNull(cardImages);
 
         ResultActions andReturn = mockMvc.perform(MockMvcRequestBuilders
-                .multipart("/stories/add")
+                .multipart("/stories/add/story")
                 .file(previewImage)
                 .file(cardImages)
                 .param("json", asJsonString(storiesRequestDto))
@@ -121,13 +118,13 @@ public class StoriesControllerTest {
     }
 
     @Test
-    public void ValidationBankIdDeleteTest() throws Throwable {
+    public void StoriesControllerTest_ValidationBankIdDeleteTest_ResponseEntity() throws Throwable {
         String bank = "testBanksad";
         String platform = "WEB";
 
         Mockito.when(jsonProcessorService.deleteService(bank, platform, 1L))
                 .thenReturn(new ResponseEntity<>(HttpStatus.valueOf(202)));
-        mockMvc.perform(delete("/stories/bank/info/delete")
+        mockMvc.perform(delete("/stories/delete/story")
                         .param("bankId", bank)
                         .param("platform", platform)
                         .param("id", "1")
@@ -138,7 +135,7 @@ public class StoriesControllerTest {
         for (Map.Entry<String, String> x : WhiteList.whitelistBank.entrySet()) {
             Mockito.when(jsonProcessorService.deleteService(x.getKey(), platform, 1L))
                     .thenReturn(new ResponseEntity<>(HttpStatus.valueOf(202)));
-            mockMvc.perform(delete("/stories/bank/info/delete")
+            mockMvc.perform(delete("/stories/delete/story")
                             .param("bankId", x.getKey())
                             .param("platform", platform)
                             .param("id", "1")
@@ -148,13 +145,13 @@ public class StoriesControllerTest {
         }
     }
     @Test
-    public void ValidationPlatformDeleteTest() throws Throwable {
+    public void StoriesControllerTest_ValidationPlatformDeleteTest_ResponseEntity() throws Throwable {
         String bank = "tkbbank";
         String platform = "asdasdasd";
 
         Mockito.when(jsonProcessorService.deleteService(bank, platform, 1L))
                 .thenReturn(new ResponseEntity<>(HttpStatus.valueOf(202)));
-        mockMvc.perform(delete("/stories/bank/info/delete")
+        mockMvc.perform(delete("/stories/delete/story")
                         .param("bankId", bank)
                         .param("platform", platform)
                         .param("id", "1")
@@ -165,7 +162,7 @@ public class StoriesControllerTest {
         for (String x : PlatformValidator.platforms) {
             Mockito.when(jsonProcessorService.deleteService(bank, x, 1L))
                     .thenReturn(new ResponseEntity<>(HttpStatus.valueOf(202)));
-            mockMvc.perform(delete("/stories/bank/info/delete")
+            mockMvc.perform(delete("/stories/delete/story")
                             .param("bankId", bank)
                             .param("platform", x)
                             .param("id", "1")
@@ -177,12 +174,12 @@ public class StoriesControllerTest {
 
 
     @Test
-    public void delete_story_successfull_test() throws Throwable {
+    public void StoriesControllerTest_DeleteStories_ResponseEntity() throws Throwable {
         String bank = "tkbbank";
         String platform = "WEB";
         Mockito.when(jsonProcessorService.deleteService(bank, platform, 0L))
                 .thenReturn(new ResponseEntity<>(HttpStatus.valueOf(202)));;
-        mockMvc.perform(delete("/stories/bank/info/delete")
+        mockMvc.perform(delete("/stories/delete/story")
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .param("bankId", bank)
                 .param("platform", platform)
@@ -190,26 +187,14 @@ public class StoriesControllerTest {
                 .andExpect(status().is(202))
         ;
     }
+
     @Test
-    public void delete_story_with_bad_bank_test() throws Throwable {
+    public void StoriesControllerTest_DeleteStories_BadBank() throws Throwable {
         String bank = "asdasd";
         String platform = "WEB";
         Mockito.when(jsonProcessorService.deleteService(bank, platform, 0L))
                 .thenReturn(new ResponseEntity<>(HttpStatus.valueOf(202)));;
-        mockMvc.perform(delete("/stories/bank/info/delete")
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-                        .param("bankId", bank)
-                        .param("platform", platform)
-                        .param("id", "0"))
-                .andExpect(status().is(400));
-    }
-    @Test
-    public void delete_story_with_bad_platform_test() throws Throwable {
-        String bank = "tkbbank";
-        String platform = "asdasdasd";
-        Mockito.when(jsonProcessorService.deleteService(bank, platform, 0L))
-                .thenReturn(new ResponseEntity<>(HttpStatus.valueOf(202)));;
-        mockMvc.perform(delete("/stories/bank/info/delete")
+        mockMvc.perform(delete("/stories/delete/story")
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .param("bankId", bank)
                         .param("platform", platform)
@@ -218,7 +203,21 @@ public class StoriesControllerTest {
     }
 
     @Test
-    public void add_frame_to_story_successful_test() throws Exception {
+    public void StoriesControllerTest_DeleteStories_BadPlatform() throws Throwable {
+        String bank = "tkbbank";
+        String platform = "asdasdasd";
+        Mockito.when(jsonProcessorService.deleteService(bank, platform, 0L))
+                .thenReturn(new ResponseEntity<>(HttpStatus.valueOf(202)));;
+        mockMvc.perform(delete("/stories/delete/story")
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .param("bankId", bank)
+                        .param("platform", platform)
+                        .param("id", "0"))
+                .andExpect(status().is(400));
+    }
+
+    @Test
+    public void StoriesControllerTest_AddFrame_StoryPresentationFrames() throws Exception {
         String bank = "tkbbank";
         String platform = "WEB";
         String path = FILES_TEST_DIRECTORY + "sample.png";
@@ -244,8 +243,7 @@ public class StoriesControllerTest {
                 path,
                 "image/png",
                 input);
-//        doAnswer(i -> i).when(jsonProcessorService).addFrame(asJsonString(requestFrame), image,
-//                bank, platform, 0L);
+
         StoryPresentationFrames mockFrame = new StoryPresentationFrames();
         doReturn(mockFrame).when(jsonProcessorService).addFrame(asJsonString(requestFrame), image,
                 bank, platform, 0L);
@@ -263,7 +261,7 @@ public class StoriesControllerTest {
     }
 
     @Test
-    public void add_frame_to_story_bad_validation_bank_test() throws Exception {
+    public void StoriesControllerTest_AddFrame_BadValidationBank() throws Exception {
         String bank = "tkbbasdank";
         String platform = "WEB";
         String path = FILES_TEST_DIRECTORY + "sample.png";
@@ -305,7 +303,7 @@ public class StoriesControllerTest {
     }
 
     @Test
-    public void add_frame_to_story_bad_validation_platform_test() throws Exception {
+    public void StoriesControllerTest_AddFrame_BadValidationPlatform() throws Exception {
         String bank = "tkbbank";
         String platform = "WEBasdasdasd";
         String path = FILES_TEST_DIRECTORY + "sample.png";

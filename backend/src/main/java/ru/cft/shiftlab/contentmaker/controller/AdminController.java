@@ -10,8 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.cft.shiftlab.contentmaker.dto.ChangedStoryListDto;
 import ru.cft.shiftlab.contentmaker.entity.stories.StoryPresentation;
 import ru.cft.shiftlab.contentmaker.service.FileSaverService;
+import ru.cft.shiftlab.contentmaker.service.implementation.HistoryService;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.PlatformValid;
 import ru.cft.shiftlab.contentmaker.util.validation.annotation.WhiteListValid;
 
@@ -24,11 +26,9 @@ import java.util.List;
 @Validated
 public class AdminController {
     private final FileSaverService storiesService;
-
+    private final HistoryService historyService;
     /**
      * Одобрение истории админом и последующее сохранение в JSON, а также изменение статуса на APPROVED
-     * @param bankId
-     * @param platform
      * @param id
      * @throws IOException
      */
@@ -39,15 +39,9 @@ public class AdminController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     public void approveStory(
-            @RequestParam(value = "bankId")
-            String bankId,
-
-            @RequestParam(value = "platform")
-            String platform,
-
             @RequestParam(value = "id")
             Long id) throws IOException {
-        storiesService.approvedStory(bankId, platform, id);
+        historyService.approveCreateStory(id);
     }
 
     @GetMapping("/getDeletedStories")
@@ -72,6 +66,20 @@ public class AdminController {
     public List<StoryPresentation> getUnApprovedStories(@RequestParam("bankId") String bankId,
                                                         @RequestParam("platform") String platform) throws IOException {
         return storiesService.getUnApprovedStories(bankId, platform);
+    }
+
+    @GetMapping("getUnApprovedChangedStories")
+    @Operation(summary = "Чтение непринятых историй банка и платформы с сервера.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "История прочтена с сервера."),
+            @ApiResponse(responseCode = "400", description = "Неправильные параметры")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    public List<ChangedStoryListDto> getUnApprovedChangedStories(
+            @RequestParam("bankId") String bankId,
+            @RequestParam("platform") String platform)
+            throws IOException {
+        return historyService.getUnApprovedChangedStories(bankId, platform);
     }
 
 
@@ -121,4 +129,30 @@ public class AdminController {
     ) throws IOException {
         storiesService.restoreStory(id);
     }
+
+    @GetMapping("/bank/info/updatePreview")
+    public StoryPresentation updatePreview(
+            @RequestParam(name = "changing")
+            Long first,
+            @RequestParam(name = "changeable")
+            Long second)
+    {
+        return storiesService.updatePreview(first, second);
+    }
+
+    @PatchMapping("/approve/story/change")
+    public void approveChanging(
+            @RequestParam(name = "idOperation")
+            Long id) throws IOException {
+        historyService.approveChangeStory(id);
+    }
+
+    @DeleteMapping("/delete/request/changing")
+    public void deleteChangingRequest(
+            @RequestParam(name = "idOperation")
+            Long id
+    ){
+        historyService.deleteChangingRequest(id);
+    }
+
 }

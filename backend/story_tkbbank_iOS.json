@@ -4,11 +4,16 @@
     "bankId" : "tkbbank",
     "platform" : "IOS",
     "storyFrames" : [ {
-      "id" : "d0b640f3-1a4d-4eea-9748-1aac55fe5a34",
+      "id" : "315916b3-d608-4fe0-aa6a-c3800f9604e4",
       "title" : "mainText",
       "text" : "Text card",
       "textColor" : "FF0000",
-      "visibleButtonOrNone" : "NONE"
+      "visibleButtonOrNone" : "NONE",
+      "buttonText" : "",
+      "buttonTextColor" : "",
+      "buttonBackgroundColor" : "",
+      "buttonUrl" : "",
+      "gradient" : "EMPTY"
     } ]
   } ]
 }

@@ -19,5 +19,4 @@ public class StaticResourceConfiguration extends WebMvcConfigurerAdapter {
                 .addResourceLocations("classpath:/static/")
                 .setCachePeriod(0);
     }
-
 }

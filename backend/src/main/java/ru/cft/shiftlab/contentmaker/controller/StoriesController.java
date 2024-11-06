@@ -70,7 +70,7 @@ public class StoriesController {
                     content = @Content(mediaType = "multipart/form-data"))
             MultipartFile[] images) throws IOException {
 
-        return storiesService.saveFiles(storiesRequestDto, previewImage, images);
+        return storiesService.saveStory(storiesRequestDto, previewImage, images);
     }
 
     @PostMapping(path = "/add/frame", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -136,7 +136,7 @@ public class StoriesController {
             @PlatformValid
             String platform) throws IOException {
 
-        return storiesService.getFilePlatformJson(bankId, platform);
+        return storiesService.getStoriesByBankAndPlatform(bankId, platform);
     }
     /**
      * Метод, который обрабатывает DELETE-запрос на удаление историй.
@@ -305,11 +305,11 @@ public class StoriesController {
             MultipartFile file
             ) throws IOException {
         storiesService.changeFrameStory(storiesRequestDto,
+                file,
                 bankId,
                 platform,
                 id,
-                frameId,
-                file);
+                frameId);
     }
 
     /**
@@ -317,8 +317,6 @@ public class StoriesController {
      * @param id Id истории
      * @param bankId Имя банка
      * @param platform Тип платформы (ALL PLATFORMS | ANDROID | IOS | WEB)
-     * @param first UUID первой карточки
-     * @param second UUID второй карточки
      * @throws IOException
      */
     @PatchMapping("/change/frame/swap")
@@ -344,5 +342,16 @@ public class StoriesController {
         storiesService.swapFrames(
                 id, bankId, platform, newOrder
         );
+    }
+
+    @PatchMapping("/story/rollback")
+    public void rollBackChangeRequest(){
+
+    }
+
+    @GetMapping("/get/story")
+    @ResponseStatus(HttpStatus.OK)
+    public StoryPresentation getStoryById(Long id){
+        return storiesService.getStory(id);
     }
 }

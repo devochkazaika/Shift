@@ -33,4 +33,7 @@ public class KeyCloak {
                 .map(Roles::fromString)
                 .collect(Collectors.toUnmodifiableSet());
     }
+    public String getUserName(){
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 }

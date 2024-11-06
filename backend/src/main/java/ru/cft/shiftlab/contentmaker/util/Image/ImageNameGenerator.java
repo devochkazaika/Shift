@@ -31,6 +31,9 @@ public class ImageNameGenerator {
     public String generateImageName(String picturesSaveDirectory, Long id) {
         return id+"_"+"0";
     }
+    public String generateImageName(String picturesSaveDirectory, Long id, Long secondId) {
+        return id+"_"+"0"+"_"+secondId;
+    }
 
 
 }

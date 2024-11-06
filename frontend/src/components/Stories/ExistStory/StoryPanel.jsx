@@ -1,27 +1,27 @@
 import StoryCard from "./StoryCard";
-import "./StoryPanelStyle.css";
+import styles from "../../../styles/StoryPanelStyle.module.scss";
 import Button from "./../../ui/Button/index";
 import { deleteStory } from "./../../../api/stories";
-import { useState, useEffect, React } from "react";
+import React, { useState, useEffect } from "react";
 import ShowStory from "../ShowStory";
 
-const StoryPanel = ({showStory, storyArray, platform }) => {
+
+const StoryPanel = ({ showStory, storyArray, platform }) => {
   const [stories, setStories] = useState(storyArray);
-  //Для обновления после удаления
+
+  // Для обновления после удаления
   useEffect(() => {
     if (storyArray) {
       setStories(storyArray);
     }
   }, [storyArray]);
-  //Для удаления истории
+
+  // Для удаления истории
   const handleOnSubmit = async (story, platform) => {
     try {
       const success = await deleteStory(story, platform);
       if (success) {
-        setStories((prevStories) => {
-          const updatedStories = prevStories.filter((item) => item.id !== story.id);
-          return updatedStories;
-        });
+        setStories((prevStories) => prevStories.filter((item) => item.id !== story.id));
       }
     } catch (error) {
       console.error("Ошибка при удалении истории", error);
@@ -29,29 +29,27 @@ const StoryPanel = ({showStory, storyArray, platform }) => {
   };
 
   const handleUpdateStory = (value, storyIndex, frameId, field) => {
-    // Создаем копию массива stories
     let newStories = [...stories];
-  
-    // Находим нужный storyFrames по индексу storyIndex
-    newStories[storyIndex].storyFrames = newStories[storyIndex].storyFrames.map(frame => {
+
+    newStories[storyIndex].storyFrames = newStories[storyIndex].storyFrames.map((frame) => {
       if (frame.id === frameId) {
         return {
           ...frame,
-          [field]: value
+          [field]: value,
         };
       }
       return frame;
     });
-  
-    // Обновляем состояние
+
     setStories(newStories);
   };
+
   return (
     <div>
       <ul className="stories">
-          <h2>{platform}</h2>
+        <h2>{platform}</h2>
         {stories.map((story, index) => (
-          <li className="listFrame" key={index}>
+          <li className={styles["listFrame"]} key={index}>
             <details>
               <summary draggable="true">
                 <p>{story.previewTitle}</p>
@@ -66,24 +64,26 @@ const StoryPanel = ({showStory, storyArray, platform }) => {
                   </div>
                 </div>
               </summary>
-              <div style={{display: "flex"}}>
-                {(showStory) ? 
+              <div style={{ display: "flex" }}>
+                {showStory ? (
+                  // История с показом её превью
                   <>
-                  <div style={{width: "70%", paddingRight: "30px"}}>
-                    <StoryCard
-                      key={index}
-                      story={story}
-                      storyIndex={index}
-                      platform={platform}
-                      changeStory={handleUpdateStory}
-                    />
-                  </div>
-                  <div style={{width: "30%", paddingRight: "4px"}}>
-                    <ShowStory stories={storyArray[index]}/>
-                  </div>
+                    <div className={styles["story-with-preview"]}> 
+                      <StoryCard
+                        key={index}
+                        story={story}
+                        storyIndex={index}
+                        platform={platform}
+                        changeStory={handleUpdateStory}
+                      />
+                    </div>
+                    <div className={styles.preview}>
+                      <ShowStory stories={storyArray[index]} />
+                    </div>
                   </>
-                : <>
-                  <div style={{width: "100%", paddingRight: "30px"}}>
+                ) : (
+                  // История без показа превью
+                  <div className={styles["story-without-preview"]}>
                     <StoryCard
                       key={index}
                       story={story}
@@ -91,7 +91,7 @@ const StoryPanel = ({showStory, storyArray, platform }) => {
                       platform={platform}
                     />
                   </div>
-                  </>}
+                )}
               </div>
             </details>
           </li>

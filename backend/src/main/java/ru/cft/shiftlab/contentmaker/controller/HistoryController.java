@@ -2,11 +2,8 @@ package ru.cft.shiftlab.contentmaker.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-import ru.cft.shiftlab.contentmaker.entity.History;
+import org.springframework.web.bind.annotation.*;
+import ru.cft.shiftlab.contentmaker.entity.HistoryEntity;
 import ru.cft.shiftlab.contentmaker.service.HistoryServiceStories;
 
 import java.io.IOException;
@@ -19,7 +16,7 @@ public class HistoryController {
 
     @GetMapping("/history/stories/get")
     @ResponseStatus(HttpStatus.OK)
-    public List<History> getHistoryStory(
+    public List<HistoryEntity> getHistoryStory(
             @RequestParam(name = "id")
             Long id
     ) throws IOException {
@@ -28,20 +25,32 @@ public class HistoryController {
 
     @GetMapping("/history/stories/getByBankAndPlatform")
     @ResponseStatus(HttpStatus.OK)
-    public List<History> getHistoryStory(
+    public List<HistoryEntity> getHistoryStory(
             @RequestParam(name = "bankId")
             String bank,
             @RequestParam(name = "platform")
             String platform
     ) throws IOException {
-        return  historyService.getHistoryByBankAndPlatform(bank, platform);
+        return historyService.getHistoryByBankAndPlatform(bank, platform);
     }
 
     @GetMapping("/history/stories/getAllHistory")
     @ResponseStatus(HttpStatus.OK)
-    public List<History> getAllHistory(
+    public List<HistoryEntity> getAllHistory(
     ) throws IOException {
-        return  historyService.getAllHistory();
+        return historyService.getAllHistory();
+    }
+
+    @PatchMapping("/history/rollback")
+    public boolean rollback(@RequestParam(name = "id") Long historyId){
+        historyService.rollBack(historyId);
+        return true;
+    }
+
+    @GetMapping("history/getRequests")
+    @ResponseStatus(HttpStatus.OK)
+    public List<HistoryEntity> getRequests(){
+        return historyService.getRequestByUser();
     }
 
 }

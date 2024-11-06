@@ -6,6 +6,7 @@ import { NavLink } from "react-router-dom";
 import styles from "./Sidebar.module.scss";
 import { AdminRoute } from "../Security/AdminRoute";
 import keycloak from "../Security/Keycloak";
+import { UserRoute } from "../Security/UserRoute";
 
 const Sidebar = ({ flags }) => {
   const [open, setOpen] = useState(true);
@@ -51,6 +52,12 @@ const Sidebar = ({ flags }) => {
             {open && <div className={styles.text}>{item.name}</div>}
           </NavLink>
         ))}
+        <UserRoute>
+          <NavLink to="/requestUser" className={styles.link}>
+              {open && <div className={styles.text}>Запросы</div>}
+          </NavLink>
+        </UserRoute>
+        
         <AdminRoute>
           <h1 className="textSidebar">
             <span>ADMIN</span>

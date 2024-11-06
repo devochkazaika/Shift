@@ -28,13 +28,12 @@ const Stories = () => {
       const previewImage = values.stories[0].previewUrl;
       values.stories[0].previewUrl = "";
       const cardImages = values.stories[0].storyFrames.map((storyFrame) => {
-        let k = storyFrame.pictureUrl; 
+        let oldPictureUrl = storyFrame.pictureUrl; 
         storyFrame.pictureUrl = "";
-        return k;
+        return oldPictureUrl;
       });
       
       const payload = await convertToPayload(values);
-      console.log(payload);
       const jsonPayload = JSON.stringify(payload, null, 2);
       const uploadResult = await uploadStories(
         jsonPayload,

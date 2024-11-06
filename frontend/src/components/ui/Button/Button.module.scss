@@ -37,10 +37,10 @@
   }
 
   &:global(.grey) {
-    background-color: variables.$grey-color;
+    background-color: variables.$gray-color;
 
     &:hover {
-      background-color: variables.$grey-hover-color;
+      background-color: variables.$gray-color;
       transition: variables.$transition-all-fast;
     }
   }

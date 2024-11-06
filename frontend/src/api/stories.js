@@ -5,6 +5,7 @@ import {
 import { toast } from "react-toastify";
 import { defaultToastMessages } from "../utils/constants/defaultToastMessages";
 import api from "./api";
+// import axios from "axios";
 
 
 const createToast = (toastContent) => {
@@ -70,6 +71,18 @@ export const getUnApprovedStoriesByBank = async (bankId, platform) => {
   }
 };
 
+export const getUnApprovedChangedStoriesByBank = async (bankId, platform) => {
+  try {
+    const response = await api.get(`/stories/admin/getUnApprovedChangedStories?bankId=${bankId}&platform=${platform}`, {
+      responseType: 'json'
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return null;
+  }
+};
+
 export const getDeletedStories = async () => {
   try {
     const response = await api.get('/stories/admin/bank/info/getDeletedStories/', {
@@ -104,7 +117,6 @@ export const uploadStories = async (jsonPayload, previewImage, cardImages) => {
   cardImages.map((image) => {
     form.append("cardImages", image);
   });
-  console.log(jsonPayload);
   try {
     const response = await api.post("/stories/add/story", form, {
       headers: { "Content-Type": "multipart/form-data" },
@@ -238,16 +250,20 @@ export const addFrame = async (story, storyIndex, frame, platform) => {
   form.append("id", story.id);
   form.append("bankId", story.bankId);
   form.append("image", frame[`pictureUrl_${storyIndex}_add`]);
-  try {
-    const response = await api.post(`/stories/add/frame`, form, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    console.log(response.data);
-    updateToast(toastView, response);
-    return response;
-  } catch (exception) {
-    errorFrameSize(toastView);
-  }
+  const response = await api.post(`/stories/add/frame`, form, {
+    headers: { "Content-Type": "multipart/form-data" },
+  })
+  .catch(err => {
+    switch (err.response.status){
+      case 400:
+        errorFrameSize(toastView);
+        break;
+      default:
+        warningToast(toastView);
+    }
+  });
+  updateToast(toastView, response);
+  return response;
 };
 
 export const updateFrameOrder = async (story, platform, newOrder) => {
@@ -274,6 +290,30 @@ export const updateFrameOrder = async (story, platform, newOrder) => {
 export const getAllHistory= async () => {
   try {
     const response = await api.get('/history/stories/getAllHistory', {
+      responseType: 'json',
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return null;
+  }
+};
+
+export const approveChanging = async (historyId) => {
+  try {
+    const response = await api.patch('/stories/admin/approve/story/change?idOperation='+historyId, {
+      responseType: 'json',
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return null;
+  }
+};
+
+export const deleteChangingRequest = async (historyId) => {
+  try {
+    const response = await api.delete('/stories/admin/delete/request/changing?idOperation='+historyId, {
       responseType: 'json',
     });
     return response.data;

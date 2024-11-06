@@ -1,25 +1,26 @@
 spring:
-#  h2:
-#    console:
-#      enabled: true
-#  datasource:
-#    driver-class-name: org.postgresql.Driver
-#    url: jdbc:postgresql://localhost:5433/content_maker
-#    username: admin
-#    password: password
+
+  h2:
+    console:
+      enabled: true
+
   datasource:
-    url: jdbc:h2:mem:test
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
     username: admin
     password: password
-  sql:
-    init:
-      platform: org.hibernate.dialect.H2Dialect
+
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
 
   flyway:
-    enabled: false
+    enabled: true
+    locations:
+      - classpath:db.migration.test
+    validate-on-migrate: true
+    baseline-on-migrate: true
 
   servlet:
     multipart:
@@ -32,5 +33,5 @@ server:
   port: 8081
 
 file_path_to_save:
-  stories: "src/main/test/resources/mobws_story/"
-  banners: "src/main/test/resources/mobws_banners/"
+  stories: "src/test/resources/mobws_story/"
+  banners: "src/test/resources/mobws_banners/"
